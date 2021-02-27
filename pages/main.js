@@ -6,7 +6,7 @@ export default function MainPage({boardItem}) {
 }
 
 export async function getServerSideProps() {
-    const url = `${process.env.REACT_APP_API_URL}/boards`
+    const url = `localhost:8000/boards`
     const res = await axios.get(url)
     // console.log(res.data)
     return {

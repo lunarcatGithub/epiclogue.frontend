@@ -17,7 +17,16 @@ export default function Header() {
     })
 
     const searchSubmit = () => {
-      alert('검색 테스트')
+      e.preventDefault();
+      if(values === ' ' || values === undefined || values === null) return;
+        setSearchData(searchBody);
+        
+        if(searchBody[0]?.match('@')){
+          goURL({values:`/search/users/${values}`, state:{type:'users'}});
+        }else {
+          goURL({values:`/search/${paramsData === undefined ? 'latest' : paramsData}/${searchBody}`, state:{type:'latest'}});
+        }
+      
     }
 
     return (

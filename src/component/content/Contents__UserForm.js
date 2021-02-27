@@ -14,10 +14,10 @@ export default function ContentsUserForm(props) {
             <UserProfileWrap><UserProfile profile={profile}/></UserProfileWrap>
             <Link href={`/myboard/${screenId}/all`}>
             <NickAndIdWrap >
-              <NickName>{nickname}</NickName>
-              <IdNDateWrap>
-              <UserId>{screenId}</UserId>
-              </IdNDateWrap>
+                <NickName>{nickname}</NickName>
+                <IdNDateWrap>
+                <UserId>{screenId}</UserId>
+                </IdNDateWrap>
             </NickAndIdWrap>
             </Link>
             <UserIntroWrap>

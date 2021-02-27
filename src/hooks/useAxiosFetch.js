@@ -11,12 +11,12 @@ export default function useAxiosFetch() {
     setLoding(true);
 
     await axios({
-      url,
-      method: type,
-      withCredentials: true,
-      data,
-      body,
-      params
+        url,
+        method: type,
+        withCredentials: true,
+        data,
+        body,
+        params
     })
     .then( res => {
       setResult(res?.data)
