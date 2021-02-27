@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "next-tutirial",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,8 +8,23 @@
     "start": "next start"
   },
   "dependencies": {
+    "axios": "^0.21.1",
+    "express": "^4.17.1",
     "next": "10.0.7",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "react-helmet": "^6.1.0",
+    "styled-components": "^5.2.1",
+    "styled-reset": "^4.3.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.8",
+    "@babel/plugin-proposal-decorators": "^7.13.5",
+    "@svgr/webpack": "^5.5.0",
+    "babel-plugin-inline-react-svg": "^2.0.1",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "babel-plugin-styled-components": "^1.12.0",
+    "eslint": "^7.20.0",
+    "prettier": "^2.2.1"
   }
 }

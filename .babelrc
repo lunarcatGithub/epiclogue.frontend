@@ -1,0 +1,29 @@
+{
+	"presets": ["next/babel"],
+	"plugins": [
+		[
+        "styled-components",
+            {
+                "ssr": true, 
+                "displayName": true,
+                "preprocess": false
+            }
+        ],
+        [
+            "module-resolver",
+            {
+                "root": ["./"],
+                "alias": {
+                    "@component": "./src/component",
+                    "@utils": "./src/utils",
+                    "@hooks": "./src/hooks",
+                    "@store": "./src/store",
+                    "@reducer": "./src/reducer"
+                }
+            }
+        ],
+        [
+            "inline-react-svg"
+        ]
+	]
+}
