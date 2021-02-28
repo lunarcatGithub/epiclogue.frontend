@@ -26,5 +26,10 @@
     "babel-plugin-styled-components": "^1.12.0",
     "eslint": "^7.20.0",
     "prettier": "^2.2.1"
+  },
+  "proxy": {
+    "/board": {
+      "target": "http://localhost:5000/board"
+    }
   }
 }

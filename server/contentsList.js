@@ -1,5 +1,7 @@
+var express = require('express');
+var router = express.Router();
 
-let contents = [
+const contents = [
     {
         boardTitle: "4412323sad",
         bookmarked: false,
@@ -67,4 +69,17 @@ let contents = [
         _id: "603909f08eca2400a029067b"
     }
 ]
-module.exports = {contents}
+
+// 모든 유저 정보를 제공하는 라우팅
+router.get('/', function (req, res, next) {
+    return res.json(contents);
+});
+
+// 경로 매개변수를 사용한 라우팅: 특정 유저 정보 제공
+router.get('/board/:id', function (req, res, next) {
+    user = contents.find(u => u._id === parseInt(req.params.id))
+    res.send(contents);
+});
+
+module.exports = router;
+
