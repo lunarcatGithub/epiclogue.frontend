@@ -6,17 +6,13 @@ import axios from 'axios'
 export default function MainPage() {
 
     const test = () => {
-        const url = `/board`
-        const data = new FormData();
-        data.append('action', null);
-        axios.get({
-            method:url,
-            headers: {
-                'content-type': 'application/json',
-                'Accept': 'application/json'
-              },
-              data
-        }).then((res) => console.log(res.data))
+        let headers = {
+            'content-type': 'application/json',
+            'Accept': 'application/json'
+          }
+        axios.get(
+            `http://localhost:5000/board`, headers
+        ).then((res) => console.log(res.data))
         
     }
     useEffect(()=>{
