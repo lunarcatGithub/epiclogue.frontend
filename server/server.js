@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-let contents = require('./contentsList');
+let contents = require('./routes/contentsList');
 
 const port = 5000;
 const app = express();
@@ -25,5 +25,5 @@ app.use('/board', contents);
 
 
 app.listen(port, ()=> {
-    console.log('서버켜짐 ㅅㄱ')
+    console.log('서버 온!')
 })

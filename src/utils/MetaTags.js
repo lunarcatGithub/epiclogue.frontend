@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import Head from 'next/head';
 
 // let filter = 'win16|win32|win64|mac';
 // let isMobile = false;
@@ -28,7 +29,9 @@ import { Helmet } from 'react-helmet';
     return (
       <Helmet titleTemplate="%s">
         <html lang={lang} />
+        <Head>
         <title>{title}</title>
+        </Head>
         <meta name="description" content={description} />
         <link rel="canonical" href={`https://www.epiclogue.com/${canonical}`} />
         <link rel="image_src" href={image} />
@@ -52,6 +55,7 @@ import { Helmet } from 'react-helmet';
         <meta name="twitter:image" content={image} />
         <meta name="twitter:site" content="Epic_Logue!" />
          <link rel="alternate" href={`https://www.epiclogue.com/${canonical}`} hreflang={lang} />
+         
       </Helmet>
     );
   };

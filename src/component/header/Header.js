@@ -2,14 +2,30 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
+
 //component
 import MobileHeader from '@component/header/Header__Mobile';
+import Modal from '@utils/Modal';
 
 // hooks && reduce
 import useForm from '@hooks/useForm';
+import {AppDataContext} from '@store/App_Store';
 
 export default function Header() {
-    const router = useRouter()
+    const router = useRouter();
+
+    const { 
+      setSearchData, 
+      setClickedComic, 
+      setClickedIllust, 
+      clickedComic, clickedIllust, 
+      loginOn, 
+      setUnAuth, 
+      paramsData
+    } = useContext(AppDataContext);
+
+    const [category, setCategory] = useState();
+
     const [values, errors, submitting, handleChange, handleSubmit] = useForm({
       type:'search',
       initialValues: {search:''},
@@ -26,10 +42,28 @@ export default function Header() {
         }else {
           goURL({values:`/search/${paramsData === undefined ? 'latest' : paramsData}/${searchBody}`, state:{type:'latest'}});
         }
-      
     }
 
+    // 헤더 코믹/일러스트 필터링
+    const selectFilter = (type) => {
+      if(type === 'comic'){
+        setClickedComic(!clickedComic);
+        if (!clickedComic || !clickedIllust) {
+          setClickedComic(true);
+          setClickedIllust(true);
+        }
+      } else {
+        setClickedIllust(!clickedIllust);
+        if (!clickedComic || !clickedIllust) {
+          setClickedComic(true);
+          setClickedIllust(true);
+        }
+      }
+    };
+
+
     return (
+      <>
         <MainHeader>
         <HeaderOutter>
         <HeaderInner>
@@ -51,7 +85,7 @@ export default function Header() {
               </SearchWrap>
             </FormBox>
             {/* 코믹 / 일러스트 토글 버튼 */}
-            <CategoryWrap >
+            <CategoryWrap onClick={() => setCategory(!category)} >
               <CategoryButton/>
             </CategoryWrap>
             <Dummy />
@@ -103,6 +137,24 @@ export default function Header() {
           <MobileHeader/>
         {/* // 모바일 영역 끝 */}
     </MainHeader>
+    {
+      category &&
+          <CategoryBox>
+            <CategoryHeader>
+              <HeaderTxt>Filter</HeaderTxt>
+              <ClosedBtn onClick={() => setCategory(!category)} />
+            </CategoryHeader>
+            <CategoryInner>
+              <MbCategoryComic styling={clickedComic} onClick={() => selectFilter('comic')}>
+                Comic
+              </MbCategoryComic>
+              <MbCategoryIllust styling={clickedIllust} onClick={() => selectFilter('illust')}>
+                Illust
+              </MbCategoryIllust>
+            </CategoryInner>
+          </CategoryBox>
+      }
+      </>
     )
 }
 
@@ -427,3 +479,97 @@ const FeedbackTitle = styled.span`
   }
 `;
 
+// 카테고리 영역
+const CategoryBox = styled.div`
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  top:3.8em;
+  right: 20em;
+  width: 28em;
+  border-radius:0.4em;
+  overflow: hidden;
+  z-index: 99999;
+  background: ${(props) => props.theme.color.backgroundColor};
+  box-shadow:${(props) => props.theme.boxshadow.popup3};
+@media(max-width:900px){
+  top:initial;
+  bottom: 0;
+  left: 0;
+  right:initial;
+  width: 100%;
+  border-radius: 0.4em 0.4em 0 0;
+} 
+`;
+const CategoryHeader = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 1em 0.3em;
+  margin-bottom: 0.2em;
+  background: ${(props) => props.theme.color.whiteColor};
+`;
+const CategoryInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  background: ${(props) => props.theme.color.whiteColor};
+  padding: 1.1em 2.5em;
+`;
+const HeaderTxt = styled.span`
+  font-size: ${(props) => props.theme.fontSize.font18};
+  font-weight: ${(props) => props.theme.fontWeight.font700};
+  color: ${(props) => props.theme.color.softBlackColor};
+  @media (max-width:900px){
+    font-size: ${(props) => props.theme.fontSize.font15};
+  }
+`;
+
+
+const MbCategoryComic = styled.button`
+  display: flex;
+  justify-content: center;
+  line-height: 38px;
+  padding: 0 5px;
+  width: 100%;
+  min-width: 128px;
+  height: 42px;
+  border-radius: 25px;
+  font-size: ${(props) => props.theme.fontSize.font15};
+  font-weight: ${(props) => props.theme.fontWeight.font700};
+  cursor: pointer;
+  border: 2px solid ${(props) => props.theme.color.orangeColor};
+  color: ${(props) => (props.styling ? props.theme.color.whiteColor : props.theme.color.orangeColor)};
+  background: ${(props) => (props.styling ? props.theme.color.orangeColor : props.theme.color.whiteColor)};
+  margin-right: 4px;
+`;
+
+const MbCategoryIllust = styled(MbCategoryComic)`
+  border: 2px solid ${(props) => props.theme.color.darkGray};
+  color: ${(props) => (props.styling ? props.theme.color.whiteColor : props.theme.color.darkGray)};
+  background: ${(props) => (props.styling ? props.theme.color.darkGray : props.theme.color.whiteColor)};
+  margin-top: 6px;
+`;
+const ClosedBtn = styled.button.attrs({ type: 'button' })`
+    position: absolute;
+    top: 0.5em;
+    right: 1.1em;
+    width: 2.5em;
+    height: 2.5em;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    &::before {
+    content: '';
+    background: url() no-repeat center / cover;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 22px;
+    height: 22px;
+}
+    &:hover {
+        background: ${(props) => props.theme.color.hoverColor};
+    }
+`;

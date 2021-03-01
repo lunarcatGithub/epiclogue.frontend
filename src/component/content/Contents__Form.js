@@ -19,7 +19,6 @@ export default function MainContent(props){
       setContents(contentData.board ? contentData.board : contentData)
   }, [contentData]);
 
-  const {_id} = contents
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
   const { originTxt, reCreateTxt } = LangMain;
@@ -30,7 +29,7 @@ export default function MainContent(props){
     <>
         <ContentBox>
         {/* 유저 콘텐츠 박스*/}
-        <Link href={`/viewer/${contents._id}`}>
+        <Link href={`/viewer/${contents?._id}`}>
             <ImgBox>
                 <UserContentImg image={contents?.thumbnail} />
                 <CategoryIconBox styling={category === '0' ? 'Illust' : 'Comic'}>
@@ -39,7 +38,7 @@ export default function MainContent(props){
             </ImgBox>
         </Link>
         <ContentTxtBox>
-        <Link href={`/viewer/${contents._id}`}>
+        <Link href={`/viewer/${contents?._id}`}>
             <ContentTitle>{contents?.boardTitle}</ContentTitle>
         </Link>
             {/* 유저 정보 및 제목*/}

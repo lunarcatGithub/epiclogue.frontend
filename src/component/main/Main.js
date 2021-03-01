@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Head from 'next/head';
 
 //component
 import { Meta } from '@utils/MetaTags';
@@ -6,11 +7,11 @@ import Contents from '@component/content/Contents';
 
 // Hooks&&reducer import
 
-const Main = () => {
+const Main = ({boardItem}) => {
 
   // Meta 전용
   const metaData = {
-    title: '',
+    title: 'asd',
     description: '',
     image: `static/logo192.svg`,
     canonical: `main`, 
@@ -20,7 +21,7 @@ const Main = () => {
     <>
       <Meta meta={metaData} />
       <Layout>
-            <Contents type="MAIN" />
+          <Contents type="MAIN" boardItem={boardItem} />
         <>
           {/*업로드 버튼*/}
             <UploadButton>

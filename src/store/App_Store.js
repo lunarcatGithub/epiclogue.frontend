@@ -6,11 +6,13 @@
 import { useState, useEffect, useReducer, createContext } from "react";
 import { languageReducer, langInit } from "@reducer/LanguageReducer";
 import {useRouter} from 'next/router';
+import { initialAlert, alertReducer } from '@reducer/AlertReducer';
 
 // create context
 const Context  = createContext({});
 const AppDataContext = createContext({});
 const LanguageContext = createContext({});
+const AlertContext = createContext({});
 
 // combine reducer function
 const combineReducers = (...reducers) => (state, action) => {
@@ -21,6 +23,7 @@ const combineReducers = (...reducers) => (state, action) => {
 // context provider
 const ContextStore = ({ children }) => {
   const [langState, langPatch] = useReducer(combineReducers(languageReducer), langInit);
+  const [alertState, alertPatch] = useReducer(alertReducer, initialAlert);
 
   const [clickedComic, setClickedComic] = useState(true);
   const [clickedIllust, setClickedIllust] = useState(true);
@@ -28,7 +31,8 @@ const ContextStore = ({ children }) => {
   const [paramsData, setParamsData] = useState();
 
   const [myboardData, setMyboardData] = useState([]);
-  // let login = localStorage.getItem('loginOn') 
+  // let login = localStorage.getItem('loginOn');
+  
   let login = true
   const [loginOn, setLoginOn] = useState(Boolean(login));
 
@@ -77,7 +81,12 @@ const ContextStore = ({ children }) => {
           langState,
           langPatch
         }}>
-          {children}
+          <AlertContext.Provider value={{
+            alertState,
+            alertPatch
+            }}>
+              {children}
+          </AlertContext.Provider>
         </LanguageContext.Provider>
       </AppDataContext.Provider>
     );
@@ -85,6 +94,7 @@ const ContextStore = ({ children }) => {
 
 export { 
   AppDataContext, 
-  LanguageContext, 
+  LanguageContext,
+  AlertContext,
   ContextStore 
 };

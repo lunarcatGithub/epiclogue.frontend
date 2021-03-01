@@ -15,7 +15,9 @@ let renderCount = 30;
 let initialCount = 30;
 
 const Contents = (props) => {
-  const {type, searchType} = props;
+  const {type, searchType, boardItem} = props;
+  console.log(type, boardItem)
+
   //차후 viewer === 더보기 같으면 filtering
   const history = useRouter();
   const loader = useRef(null);
@@ -47,8 +49,8 @@ const Contents = (props) => {
     setInitialLoading(true);
     switch (type) {
       case "MAIN":
-        if(initialApi && clickedComic && clickedIllust) {
-          renderDataHandler(initialApi?.data, 'content')
+        if(clickedComic && clickedIllust) {
+          renderDataHandler(boardItem, 'content')
         }else if(comicApi && clickedComic || !clickedIllust){
 
           renderDataHandler(comicApi?.data, 'content')
@@ -80,24 +82,24 @@ const Contents = (props) => {
     setInitialLoading(false);
   }
 
-  useEffect(() => {
-    devideTypeHandler();
-    return ()=> devideTypeHandler();
-  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi])
-
   const renderDataHandler = (renderData, type) => {
       if(!renderData) return;
-      setContentsList(renderData);
-      if(type === 'user'){
+        setContentsList(renderData);
+
+        if(type === 'user'){
         setRenderList(renderData.slice(0, initialCount)); 
       } else {
-
         setRenderList(dataFilter(renderData).slice(0, initialCount));
       }
       // if (contentsList.length = renderData?.slice(0, initialCount).length) {
       //   setHasMore(false);
       // }
   }
+
+  useEffect(() => {
+    devideTypeHandler();
+    return ()=> devideTypeHandler();
+  }, [contentsList])
 
   // pub 여부에 따른 필터링
   const dataFilter = (data = null) => {
@@ -127,10 +129,8 @@ const Contents = (props) => {
       comicFetch(`${process.env.REACT_APP_API_URL}/boards?type=Comic`, 'get', null, null, null);
     } else if (!clickedComic && clickedIllust) {
       illustFetch(`${process.env.REACT_APP_API_URL}/boards?type=Illust`, 'get', null, null, null);
-    } else if (clickedComic && clickedIllust) {
-      // initialFetch(`${process.env.REACT_APP_API_URL}/boards`, 'get', null, null, null);
-    }
-    
+    } 
+
   }, [clickedComic, clickedIllust]);
 
 
@@ -166,11 +166,11 @@ const Contents = (props) => {
     }, [searchType, resultKeyword, searchData]);
 
     // 데이터 메인 스크롤 시키기
+    
 
   const renderDataScroll = useCallback(() => {
-
     if (renderList.length && contentsList.length <= renderList.length) setHasMore(false);
-
+    console.log(renderList)
       let checkRemainingcount;
 
       if (contentsList.length) {
@@ -221,6 +221,7 @@ const Contents = (props) => {
   if(searchType === 'users'){
     renderContents = renderList.map((item, index) => <ContentsUserForm searchData={item} key={index} /> )
   }else {
+    console.log(renderList)
     renderContents = renderList.map((item, index) => <ContentsForm key={index} contentData={item} />)
   }
 
@@ -232,7 +233,8 @@ const Contents = (props) => {
             <NoResultImg />
           </NoResultWrap>
         }
-        { initialLoading && (
+        {
+        initialLoading && (
           <DummyLayout>
             <Progress/>
           </DummyLayout>
@@ -242,7 +244,8 @@ const Contents = (props) => {
             {renderContents}
           </MasonryBox>
         </LayoutInner>
-        { hasMoreLoading && (
+        {
+        hasMoreLoading && (
           <DummyLayout>
             <Progress/>
           </DummyLayout>
