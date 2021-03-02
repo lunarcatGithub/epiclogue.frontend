@@ -15,7 +15,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 export default function ConfirmPopup({handleModal, setAccessConfirm, type}) {
   const { alertBool } = useContext(AlertContext);
 
-  const { languageState } = useContext(LanguageContext);
+  const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
 
   // 유저 정보
@@ -30,7 +30,7 @@ export default function ConfirmPopup({handleModal, setAccessConfirm, type}) {
    const [valiRePw, setValiRePw] = useState('');
  
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = languageState;
+  const { selectedLanguage, defaultLanguage } = langState;
 
   const {
     inactTopTitle,

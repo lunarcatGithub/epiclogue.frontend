@@ -1,13 +1,13 @@
 import { useState, useEffect, useContext } from 'react';
-import {LanguageContext} from '../../Component/Store/App_Store';
-import {LangTime} from '../Languge/Lang.Common';
+import {LanguageContext} from '@store/App_Store';
+import {LangTime} from '@language/Lang.Common';
 
 export const useTimeCalculation = (_Date) => {
   const [currentTime, setCurrentTime] = useState(null);
 
-  const {languageState} = useContext(LanguageContext);
+  const {langState} = useContext(LanguageContext);
   //언어 변수
-  const {selectedLanguage, defaultLanguage} = languageState;
+  const {selectedLanguage, defaultLanguage} = langState;
   const {
     moment,
     minutes,

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import { Link } from 'next/link';
 import { useRouter } from 'next/router';
 
 // 컴포넌트 import
@@ -8,7 +7,7 @@ import { LanguageContext, AppDataContext } from '@store/App_Store';
 import { LangMyBoard } from '@language/Lang.Myboard';
 import { LangCommon } from '@language/Lang.Common';
 import { langMetaBoard } from '@language/Lang.Meta';
-import MainHandler from '../content/Contents';
+import Contents from '../content/Contents';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
 
@@ -28,9 +27,6 @@ export default function MyBoard({boardItem, userId}) {
   const [goURL] = useUrlMove();
   const router = useRouter();
 
-  // const dataId = props.match.params.screenId;
-  const _tab = null
-
   const { langState } = useContext(LanguageContext);
   const { myboardData, setMyboardData } = useContext(AppDataContext);
   const [follow, toggleFollow] = useToggle();
@@ -49,8 +45,10 @@ export default function MyBoard({boardItem, userId}) {
   // confirm popup
   const [state_Confirm, toggle_Modal_Confirm] = useModal();
   // 날짜
-
   const [setGetDate, setCountryDivided, countryResult] = useDate()
+
+  //tab
+  const [isTab, setIsTab] = useState('all');
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
@@ -71,7 +69,7 @@ export default function MyBoard({boardItem, userId}) {
     const [, , , followFetch] = useAxiosFetch();
     const [boardLoding, boardApi, boardError, boardFetch] = useAxiosFetch();
     const [boardDataLoding, boardDataApi, boardDataError, boardDataFetch] = useAxiosFetch();
-
+    console.log(boardDataApi)
     const submitHandler = (e, type, url) => {
       if(!loginOn) return;
       e.preventDefault();
@@ -92,8 +90,8 @@ export default function MyBoard({boardItem, userId}) {
   },[boardItem, countryResult]);
 
   useEffect(() => {
-    boardDataFetch(`http://localhost:5000/myboard`, 'get', null);
-  }, [_tab, userId]);
+    boardDataFetch(`${process.env.API_URL}/myboard/${boardData?.screenId}/${isTab}`, 'get', null);
+  }, [isTab, boardData?.screenId]);
 
 
   useEffect(() => {
@@ -146,11 +144,10 @@ export default function MyBoard({boardItem, userId}) {
                       }
                       goURL({
                       pathname: '/follows',
+                      as:'/follows',
                       query: {
                         follow: 'following',
-                        dataId: boardData?.screenId,
-                        nickname: boardData?.nickname,
-                        UserPfImg: boardData?.profile?.thumbnail
+                        originUser: JSON.stringify(boardData),
                       },
                     })}}>
                     {_followingBtn}
@@ -158,16 +155,14 @@ export default function MyBoard({boardItem, userId}) {
                   </FollowButton>
 
                   <FollowButton
-                    type='follower'
                     onClick={()=>{
                       if(!loginOn){setUnAuth(true); return}
                       goURL({
                       pathname: '/follows',
+                      as:'/follows',
                       query: {
                         follow: 'follower',
-                        dataId: boardData?.screenId,
-                        nickname: boardData?.nickname,
-                        UserPfImg: boardData?.profile?.thumbnail
+                        originUser: JSON.stringify(boardData),
                       },
                     })
                   }}
@@ -208,26 +203,39 @@ export default function MyBoard({boardItem, userId}) {
             <NavBarInner>
               {
               navTabArr.map((nav, index) => (
-                  <NavItem key={index} >
-                    <NavAllButton>{nav.title}</NavAllButton>
-                  </NavItem>
+                <NavItem 
+                key={index}
+                styling={isTab === nav.link}
+                onClick={()=> {
+                  setIsTab(nav.link)
+                  goURL({
+                  pathname:`/myboard/${boardData?.screenId}`, 
+                  as:`/myboard/${boardData?.screenId}`,
+                  query:{
+                    tab:nav.link
+                  }
+                  })
+                }} >
+                  <NavAllButton>{nav.title}</NavAllButton>
+                </NavItem>
               ))
               }
             </NavBarInner>
           </NavBar>
           {/* 작품 콘텐츠 시작 */}
-          <ContentsBox myboardData={myboardData?.length}>
+          <ContentsBox myboardData={boardDataApi?.data.length}>
             <ContentsInner>
-              <MainHandler type="MYBOARD" data={myboardData} />
+              <Contents type="MYBOARD" boardItem={boardDataApi?.data} />
             </ContentsInner>
           </ContentsBox>
         </LayoutInner>
       </Layout>
-      {state_Confirm &&
+      {
+      state_Confirm &&
         <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
           <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={goURL} type={'REMOVE_USER'}/>
         </Modal>
-          }
+      }
     </>
   );
 };
@@ -503,7 +511,7 @@ const NavBarInner = styled.div`
 
 // 네비게이션 - 버튼
 
-const NavAllButton = styled.div`
+const NavAllButton = styled.span`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -516,26 +524,18 @@ const NavAllButton = styled.div`
 
 // NavLink 스타일 ****
 
-const activeClassName = 'nav-item-active';
-const NavItem = styled.span.attrs({
-  activeClassName,
-})`
+const NavItem = styled.button`
   display: flex;
   width: 100%;
   max-width: 8em;
   height: 100%;
   cursor: pointer;
   transition: all 0.05s ease-in-out;
-  &:active {
-    background: ${(props) => props.theme.color.darkGray};
-    opacity: 0.5;
-  }
+  background:${props => props.styling && props.theme.color.darkGray};
 
-  &.${activeClassName} {
-    ${NavAllButton} {
-      background:${(props) => props.theme.color.darkGray};
-      font-weight: ${(props) => props.theme.fontWeight.font700};
-    }
+  &:active {
+    background: ${props => props.theme.color.darkGray};
+    opacity: 0.5;
   }
 `;
 

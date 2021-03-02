@@ -10,9 +10,9 @@ export default function UnauthLogin(props) {
   const {setUnAuth} = props;
   const [goURL] = useUrlMove();
 
-  const { languageState } = useContext(LanguageContext);
+  const { langState } = useContext(LanguageContext);
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = languageState;
+  const { selectedLanguage, defaultLanguage } = langState;
   
   const {
     unAuthTitle,

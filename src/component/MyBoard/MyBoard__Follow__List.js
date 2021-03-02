@@ -11,7 +11,7 @@ import { LanguageContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 const MyBoardFollowList = (props) => {
-  const { languageState } = useContext(LanguageContext);
+  const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
   const [_follow, toggleFollow] = useToggle();
   const [userData, setUserData] = useState();
@@ -21,7 +21,7 @@ const [followListLoding, followListApi, followListError, followListFetch] = useA
   const followSubmit = (e) => {
     e.preventDefault();
     followListFetch(
-      `${process.env.REACT_APP_API_URL}/interaction/follow`,
+      `${process.env.API_URL}/interaction/follow`,
       _follow ? 'post' : 'delete',
       { targetUserId: userData?._id },
       null,
@@ -38,7 +38,7 @@ const [followListLoding, followListApi, followListError, followListFetch] = useA
   }, [])
   
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = languageState;
+  const { selectedLanguage, defaultLanguage } = langState;
   const { followBtn, followingBtn } = LangCommon;
   const _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
         _followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage];

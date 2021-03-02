@@ -70,9 +70,59 @@ const contents = [
     }
 ]
 
+const contents2 = [
+    {
+        boardTitle: "1112333",
+        bookmarked: false,
+        category: "0",
+        liked: false,
+        pub: 1,
+        thumbnail: "https://resized-lunarcatdata.s3.ap-northeast-2.amazonaws.com/resized-20210226144712_4c468b3b16999fd97d9e7ed88f0c615fc3a89b47005569a0.jpeg",
+        writer: {
+            following: false,
+            nickname: "haahahah",
+            profile: {
+                origin: null,
+                thumbnail: null
+            },
+            origin: null,
+            thumbnail: null,
+            screenId: "47dbdcf50864bd",
+            _id: "602f1e42be83e8004001c8ab",
+        },
+
+        _id: "603909f08eca2400a029067b"
+    },
+    {
+        boardTitle: "블루아카이브 omcxxx 작가",
+        bookmarked: false,
+        category: "0",
+        liked: false,
+        pub: 1,
+        thumbnail: "https://resized-lunarcatdata.s3.ap-northeast-2.amazonaws.com/resized-20210226144712_4c468b3b16999fd97d9e7ed88f0c615fc3a89b47005569a0.jpeg",
+        writer: {
+            following: false,
+            nickname: "asdddd",
+            profile: {
+                origin: null,
+                thumbnail: null
+            },
+            origin: null,
+            thumbnail: null,
+            screenId: "47dbdcf50864bd",
+            _id: "602f1e42be83e8004001c8ab",
+        },
+
+        _id: "603909f08eca2400a029067b"
+    }
+]
 // 모든 유저 정보를 제공하는 라우팅
 router.get('/', function (req, res, next) {
     return res.json({result:'ok', data:contents});
+});
+
+router.get('/secondaryWorks', function (req, res, next) {
+    return res.json({result:'ok', data:contents2});
 });
 
 module.exports = router;

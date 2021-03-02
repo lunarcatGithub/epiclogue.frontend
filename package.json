@@ -24,12 +24,8 @@
     "babel-plugin-inline-react-svg": "^2.0.1",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-styled-components": "^1.12.0",
+    "babel-register": "^6.26.0",
     "eslint": "^7.21.0",
     "prettier": "^2.2.1"
-  },
-  "proxy": {
-    "/board": {
-      "target": "http://localhost:5000/board"
-    }
   }
 }

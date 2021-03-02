@@ -10,10 +10,10 @@ import PreviewImg from "../../svg/Preview.svg";
 
 
 export default function SliderEmpty () {
-    const {languageState} = useContext(LanguageContext);
+    const {langState} = useContext(LanguageContext);
 
     //언어 변수
-  const {selectedLanguage, defaultLanguage} = languageState;
+  const {selectedLanguage, defaultLanguage} = langState;
   const {
     beforeContent,
     contentDesc

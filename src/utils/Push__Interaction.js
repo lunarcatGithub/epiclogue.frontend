@@ -11,12 +11,12 @@ import { LanguageContext, AlertContext } from '../../Component/Store/App_Store';
 import {ProgressSmall} from '../Utils/LoadingProgress';
 
 export const InteractTab = () => {
-  const { languageState, dispatch } = useContext(LanguageContext);
+  const { langState, langPatch } = useContext(LanguageContext);
   const { alertState, alertBool } = useContext(AlertContext);
   const { kind, bool } = alertState;
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = languageState;
+  const { selectedLanguage, defaultLanguage } = langState;
   const {
     errorPush,
     uploadedPush,

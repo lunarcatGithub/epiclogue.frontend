@@ -11,47 +11,48 @@ const MyBoardFollow = (props) => {
   const informRef = useRef();
   const router = useRouter();
 
-  const { follow, dataId, nickname, UserPfImg } = router.query
-  const [tab, setTab] = useState(props?.location?.state?.follow);
+  const { originUser, follow } = router.query
+  const convertUser = JSON.parse(originUser)
+  console.log(convertUser?.screenId)
+  const [tab, setTab] = useState(follow);
   const [followingList, setFollowingList] = useState([]);
   const [followerList, setFollowerList] = useState([]);
 
- // 팔로우 리스트 무한 스크롤
+  // 팔로우 리스트 무한 스크롤
  const [items, setItems] = useState(20);
  const [sliceData, setSliceData] = useState();
 
-//fetch
-const [followListLoding, followListApi, followListError, followListFetch] = useAxiosFetch();
+  //fetch
+  const [followListLoding, followListApi, followListError, followListFetch] = useAxiosFetch();
 
   // 팔로우 무한 스크롤
         const infinityScroll = () => {
           let preItem = 0
-          let scrollHeight = informRef.current.scrollHeight;
+          let scrollHeight = informRef?.current?.scrollHeight;
       
-          let scrollTop = informRef.current.scrollTop;
+          let scrollTop = informRef?.current?.scrollTop;
       
-          let clientHeight = informRef.current.clientHeight;
+          let clientHeight = informRef?.current?.clientHeight;
       
           if(scrollTop + clientHeight === scrollHeight){
             setItems(items => items + 20);
             if(tab === 'following'){
-              setSliceData(followingList.slice(preItem, items))
+              setSliceData(followingList?.slice(preItem, items))
             } else {
-              setSliceData(followerList.slice(preItem, items))
-
+              setSliceData(followerList?.slice(preItem, items))
             }
           }
         }
       
         useEffect(()=> {
-          infinityScroll()
+          informRef && infinityScroll()
           return () => {
-            infinityScroll()
+            informRef && infinityScroll()
           }
         },[])
       
   useEffect(() => {
-    followListFetch(`${process.env.REACT_APP_API_URL}/interaction/follow?screenId=${dataId}&type=${tab}`, 'get', null, null, null)
+    followListFetch(`${process.env.API_URL}/interaction/follow?screenId=${convertUser?.screenId}&type=${tab}`, 'get', null, null, null)
   }, [tab]);
 
   useEffect(() => {
@@ -69,11 +70,11 @@ const [followListLoding, followListApi, followListError, followListFetch] = useA
                   <ArrowBtn />
                 </Link> */}
                   <ArrowBtnwrap>
-                   <ArrowBtn onClick={() => history.goBack()} />
+                   <ArrowBtn onClick={() => router.back()} />
                   </ArrowBtnwrap>
                 <UserPfBox>
-                  <UserNick>{nickname}</UserNick>
-                  <UserId>{dataId}</UserId>
+                  <UserNick>{convertUser?.nickname}</UserNick>
+                  <UserId>{convertUser?.screenId}</UserId>
                 </UserPfBox>
               </TopHeaderBox>
               <FollowTabBox>
@@ -97,87 +98,6 @@ const [followListLoding, followListApi, followListError, followListFetch] = useA
       </Layout>
   );
 };
-
-// class MyBoardFollow extends Component {
-//   state = {
-//     tab: 'following',
-//     userList: true,
-//     follow: false,
-//     dummy: [
-//       { id: 1, nick: 'asd', user_id: 'user_id_test', text: '안녕하세요 테스트를 위해서 글을 작성해봅니다.', follow: true },
-//       { id: 2, nick: '허허허', user_id: 'user_id_test', text: '안녕하세요 테스트를 위해서 글을 작성해봅니다.', follow: true },
-//     ],
-//     dummy2: [{ id: 1, nick: 'asd', user_id: 'asfqwfqwqw', text: 'ASadfFsdA', follow: false }],
-//   };
-//   componentDidMount() {
-//     if (this.props.location.follow) {
-//       this.setState({
-//         tab: 'following',
-//       });
-//     } else {
-//       this.setState({
-//         tab: 'follower',
-//       });
-//     }
-//   }
-//   isOpenAll = (name) => {
-//     this.setState({ tab: name });
-//   };
-//   followHandler = (bool) => {
-//     this.setState({ follow: bool });
-//   };
-
-//   render() {
-//     let tabOpen = null,
-//       Progress = null;
-//     const { tab, dummy, dummy2, follow, userList } = this.state;
-
-//     return (
-//       <ThemeProvider theme={theme}>
-//         <Layout>
-//           <FollowsLayout>
-//             <LayoutInner>
-//               {/* 팔로우 헤더 상단 */}
-//               <HeaderBox>
-//                 <TopHeaderBox>
-//                   <Link to="/myboard">
-//                     <ArrowBtn />
-//                   </Link>
-//                   <UserPfBox>
-//                     <UserNick>유저_닉네임_테스트</UserNick>
-//                     <UserId>@User_id_test</UserId>
-//                   </UserPfBox>
-//                 </TopHeaderBox>
-//                 <FollowTabBox>
-//                   {/* <FollowingTab styling={tab} onClick={() => this.isOpenAll('following')}>
-//                                         Following
-//                                     </FollowingTab> */}
-//                   <NavItem exact to="/follows">
-//                     <FollowingTab>Following({dummy.length})</FollowingTab>
-//                   </NavItem>
-//                   <NavItem exact to="/follows">
-//                     <FollowerTab>Follower({dummy2.length})</FollowerTab>
-//                   </NavItem>
-//                 </FollowTabBox>
-//                 {/* // 팔로우 헤더 상단 끝*/}
-//               </HeaderBox>
-//               {/* 팔로우 본문 */}
-//               <ContentBox>
-//                 <Route path="/follows">{userList ? dummy.map((i, index) => <MyBoardFollowList key={index} dummy={i} tab={tab} />) : <ProgressSmall />}</Route>
-//                 <Route path="/follows">
-//                   {dummy2.map((i, index) => (
-//                     <MyBoardFollowList key={index} dummy={i} />
-//                   ))}
-//                 </Route>
-//                 {/* // 팔로우 본문 끝 */}
-//               </ContentBox>
-//             </LayoutInner>
-//           </FollowsLayout>
-//         </Layout>
-//       </ThemeProvider>
-//     );
-//   }
-// }
 
 /* 마이페이지 스타일링 */
 // 공통 부문

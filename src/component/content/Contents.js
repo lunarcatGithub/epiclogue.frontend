@@ -16,7 +16,6 @@ let initialCount = 30;
 
 const Contents = (props) => {
   const {type, searchType, boardItem} = props;
-  console.log(type, boardItem)
 
   //차후 viewer === 더보기 같으면 filtering
   const history = useRouter();
@@ -60,7 +59,7 @@ const Contents = (props) => {
         break;
 
       case "MYBOARD":
-        renderDataHandler(myboardData, 'content')
+        renderDataHandler(boardItem, 'content')
   
         break;
       case "VIEWER":
@@ -98,7 +97,7 @@ const Contents = (props) => {
   useEffect(() => {
     devideTypeHandler();
     return ()=> devideTypeHandler();
-  }, [contentsList])
+  }, [contentsList, boardItem])
 
   // pub 여부에 따른 필터링
   const dataFilter = (data = null) => {
@@ -168,8 +167,8 @@ const Contents = (props) => {
 
   const renderDataScroll = useCallback(() => {
     if (renderList.length && contentsList.length <= renderList.length) setHasMore(false);
-    console.log(renderList)
-      let checkRemainingcount;
+
+    let checkRemainingcount;
 
       if (contentsList.length) {
 

@@ -27,14 +27,14 @@ const HeaderPfPopup = () => {
   const [profileURL, , convertProfileIamge] = useConvertURL();
 
   const { alertBool } = useContext(AlertContext);
-  const { languageState } = useContext(LanguageContext);
+  const { langState } = useContext(LanguageContext);
   const { setLoginOn } = useContext(AppDataContext);
 
   const { toggleSearchPop, show, profileApi, profileError } = useContext(HeaderDataContext);
   const [isOpen, setIsOpen] = useToggle();
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = languageState;
+  const { selectedLanguage, defaultLanguage } = langState;
   const {
     profileSet,
     goToBookMark,
