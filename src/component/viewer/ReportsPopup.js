@@ -10,7 +10,7 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { LanguageContext, AlertContext } from '@store/App_Store';
 
 const ReportsPopup = (props) => {
-  const { alertState, alertBool } = useContext(AlertContext);
+  const { alertState, alertPatch } = useContext(AlertContext);
   const { toggle_Modal_MoreMenu } = useContext(ReplyListContext);
   const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
@@ -60,7 +60,7 @@ const ReportsPopup = (props) => {
 
   const reportSub = (e) => {
     e.preventDefault();
-    alertBool({ type: 'REPORT_SUBMIT', payload: true });
+    alertPatch({ type: 'REPORT_SUBMIT', payload: true });
     props.closeModal();
     toggle_Modal_MoreMenu(false);
   };

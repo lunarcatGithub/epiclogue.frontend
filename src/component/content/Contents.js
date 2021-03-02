@@ -48,18 +48,19 @@ const Contents = (props) => {
     setInitialLoading(true);
     switch (type) {
       case "MAIN":
-        if(clickedComic && clickedIllust) {
-          renderDataHandler(boardItem, 'content')
+        if(initialApi && clickedComic && clickedIllust) {
+          renderDataHandler(initialApi?.data, 'content')
         }else if(comicApi && clickedComic || !clickedIllust){
 
           renderDataHandler(comicApi?.data, 'content')
         } else if(comicApi && clickedIllust || !clickedComic) {
+
           renderDataHandler(illustApi?.data, 'content')
         }
         break;
 
       case "MYBOARD":
-        renderDataHandler(boardItem, 'content')
+        renderDataHandler(myboardData, 'content')
   
         break;
       case "VIEWER":
@@ -81,23 +82,23 @@ const Contents = (props) => {
   }
 
   const renderDataHandler = (renderData, type) => {
-      if(!renderData) return;
-        setContentsList(renderData);
+    if(!renderData) return;
+    setContentsList(renderData);
+    if(type === 'user'){
+      setRenderList(renderData.slice(0, initialCount)); 
+    } else {
 
-        if(type === 'user'){
-        setRenderList(renderData.slice(0, initialCount)); 
-      } else {
-        setRenderList(dataFilter(renderData).slice(0, initialCount));
-      }
-      // if (contentsList.length = renderData?.slice(0, initialCount).length) {
-      //   setHasMore(false);
-      // }
-  }
+      setRenderList(dataFilter(renderData).slice(0, initialCount));
+    }
+    // if (contentsList.length = renderData?.slice(0, initialCount).length) {
+    //   setHasMore(false);
+    // }
+}
 
   useEffect(() => {
     devideTypeHandler();
     return ()=> devideTypeHandler();
-  }, [contentsList, boardItem])
+  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi])
 
   // pub 여부에 따른 필터링
   const dataFilter = (data = null) => {
@@ -124,10 +125,12 @@ const Contents = (props) => {
     setHasMore(true);
     
     if (clickedComic && !clickedIllust) {
-      comicFetch(`${process.env.REACT_APP_API_URL}/boards?type=Comic`, 'get', null, null, null);
+      comicFetch(`${process.env.API_URL}/boards?type=Comic`, 'get', null, null, null);
     } else if (!clickedComic && clickedIllust) {
-      illustFetch(`${process.env.REACT_APP_API_URL}/boards?type=Illust`, 'get', null, null, null);
-    } 
+      illustFetch(`${process.env.API_URL}/boards?type=Illust`, 'get', null, null, null);
+    } else if (clickedComic && clickedIllust) {
+      initialFetch(`${process.env.API_URL}/boards`, 'get', null, null, null);
+    }
   }, [clickedComic, clickedIllust]);
 
 
@@ -152,11 +155,11 @@ const Contents = (props) => {
         }
         const result = fixedEncodeURIComponent(encodedUrl);
         if (url.match('/search/trend') && type === 'SEARCH' && searchType === 'trend') {
-          searchFetch(`${process.env.REACT_APP_API_URL}/search?type=Board&q=${null}`, 'get', null, null, null);
+          searchFetch(`${process.env.API_URL}/search?type=Board&q=${null}`, 'get', null, null, null);
         } else if (url.match('/search/latest') && type === 'SEARCH' && searchType === 'latest') {
-          searchFetch(`${process.env.REACT_APP_API_URL}/search?type=Board&q=${result}`, 'get', null, null, null);
+          searchFetch(`${process.env.API_URL}/search?type=Board&q=${result}`, 'get', null, null, null);
         } else if(url.match('/search/users') && type === 'SEARCH' && searchType === 'users'){
-          userFetch(`${process.env.REACT_APP_API_URL}/search?type=User&q=${result}`, 'get', null, null, null);
+          userFetch(`${process.env.API_URL}/search?type=User&q=${result}`, 'get', null, null, null);
         }
         setInitialLoading(false);
       }

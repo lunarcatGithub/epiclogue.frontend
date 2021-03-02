@@ -177,7 +177,7 @@ export default function MyBoard({boardItem, userId}) {
                     </FollowAddButton> */}
                   <form 
                   action="" 
-                  onSubmit={(e)=>submitHandler(e, 'follow', `${process.env.REACT_APP_API_URL}/interaction/follow`)}>
+                  onSubmit={(e)=>submitHandler(e, 'follow', `${process.env.API_URL}/interaction/follow`)}>
                     <FollowAddButton 
                     styling={follow} 
                     onClick={()=> {

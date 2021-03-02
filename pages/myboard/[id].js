@@ -11,7 +11,7 @@ export default function Myboard({boardItem, id}) {
 
 export async function getServerSideProps(context) {
     const id = context.params.id
-    const url = `${process.env.REACT_APP_API_URL}/myboard/${id}`
+    const url = `${process.env.API_URL}/myboard/${id}`
     const res = await axios.get(url)
 
     return {

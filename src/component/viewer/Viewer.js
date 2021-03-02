@@ -33,11 +33,12 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 
 export const ReplyListContext = React.createContext();
 
-const Viewer = () => {
+const Viewer = ({boardItem, viewerError}) => {
   const router = useRouter();
+  const boardUid = router?.query?.id;
 
-  const { boardUid } = router.query.id;
-  const { alertBool } = useContext(AlertContext);
+  
+  const { alertPatch } = useContext(AlertContext);
   const [profileURL, , convertProfileIamge] = useConvertURL();
   const [O_profileURL, , convertO_ProfileIamge] = useConvertURL();
   const { langState } = useContext(LanguageContext);
@@ -107,7 +108,7 @@ const Viewer = () => {
   const [followLoding, followApi, followError, followFetch] = useAxiosFetch();
   const [likeLoding, likeApi, likeError, likeFetch] = useAxiosFetch();
   const [bookmarkLoding, bookmarkApi, bookmarkError, bookmarkFetch] = useAxiosFetch();
-  const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
+  // const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
 
   // ref
 const feedbackRef = useRef();
@@ -174,7 +175,7 @@ const feedbackRef = useRef();
     e.preventDefault();
     if(!loginOn) return;
     
-    const URL = `${process.env.REACT_APP_API_URL}/interaction/${type}`;
+    const URL = `${process.env.API_URL}/interaction/${type}`;
     const _follow = targetType === 'origin' ? O_follow : follow;
 
     if(type === 'follow'){
@@ -222,12 +223,8 @@ const feedbackRef = useRef();
     fbMoreText();
   }, [renderList, eventCtrl, prevFb]);
 
-  useEffect(()=> {
-    initialFetch(`${process.env.REACT_APP_API_URL}/boards/${boardUid}`, 'get', null, null);
-  },[])
-
   useEffect(() => {
-    const initialData = initialApi;
+    const initialData = boardItem;
     if (initialData?.result === 'ok') {
       const boardData = initialData.data;
       const replyList = initialData.data.feedbacks;
@@ -310,11 +307,11 @@ const feedbackRef = useRef();
         window.location.href = '/login';
       }
     }
-  }, [initialApi])
+  }, [boardItem])
 
   useEffect(() => {
-  initialError?.status === 404 && setNoContents(true);
-  }, [initialError])
+    viewerError?.status === 404 && setNoContents(true);
+  }, [viewerError])
 
   // 공유하기 클립보드
   const clipboardShare = () => {
@@ -328,7 +325,7 @@ const feedbackRef = useRef();
     document.body.removeChild(clipBoard);
 
     // 성공 푸시탭
-    alertBool({ type: 'SHARE', payload: true });
+    alertPatch({ type: 'SHARE', payload: true });
   };
 
   // Meta 전용
@@ -401,7 +398,7 @@ const feedbackRef = useRef();
                       {/* 유저 아이디 등 프로필 */}
                       <UserProfileInfo>
                         {/* 유저 닉네임 팔로잉 */}
-                        <UserNickInfo onClick={() => goURL(`/myboard/${data.originUserId.screenId}/all`)}>{data?.originUserId?.nickname}</UserNickInfo>
+                        <UserNickInfo onClick={() => goURL({pathname:`/myboard/${data.originUserId.screenId}/all`})}>{data?.originUserId?.nickname}</UserNickInfo>
                           {
                           localStorage.getItem('userid') !== data.originUserId.screenId && loginOn && (
                             <form action="" method="post" onSubmit={(e)=>sumitHandler(e, 'follow', 'origin')}>
@@ -414,13 +411,13 @@ const feedbackRef = useRef();
                       </UserProfileInfo>
                       {/* 유저 아이디 */}
                       <UserProfileId>
-                        <UserIdInfo onClick={() => goURL(`/myboard/${data.originUserId.screenId}/all`)}>{data?.originUserId?.screenId}</UserIdInfo>
+                        <UserIdInfo onClick={() => goURL({pathname:`/myboard/${data.originUserId.screenId}/all`})}>{data?.originUserId?.screenId}</UserIdInfo>
                       </UserProfileId>
                       {/* 콘텐츠 */}
                       <OriginalContent>{data?.originBoardId?.boardTitle}</OriginalContent>
                       {/* <TextContent>{converted}</TextContent> */}
                       <ContentImgWrap styling={data.originBoardId}>
-                      { data.originBoardId ? <ContentImgBox onClick={() => goURL(`/viewer/${data.originBoardId._id}`)}>
+                      { data.originBoardId ? <ContentImgBox onClick={() => goURL({pathname:`/viewer/${data.originBoardId._id}`})}>
                           <ContentImg thumNail={data.originBoardId.boardImg[0]} />
                         </ContentImgBox>
                         :
@@ -449,7 +446,7 @@ const feedbackRef = useRef();
                       {/* 유저 아이디 등 프로필 */}
                       <UserProfileInfo>
                         {/* 유저 닉네임 팔로잉 */}
-                        <UserNickInfo onClick={() => goURL(`/myboard/${data.screenId}/all`)}>{data.nickname}</UserNickInfo>
+                        <UserNickInfo onClick={() => goURL({pathname:`/myboard/${data.screenId}/all`})}>{data.nickname}</UserNickInfo>
                         {data.following !== 'me' && loginOn && (
                           <form action="" onSubmit={(e)=>sumitHandler(e, 'follow', 'secondary')}>
                             <UserFollowTxt followData={follow} onClick={() => toggleFollow()}>
@@ -460,7 +457,7 @@ const feedbackRef = useRef();
                       </UserProfileInfo>
                       {/* 유저 아이디 */}
                       <UserProfileId>
-                        <UserIdInfo onClick={() => goURL(`/myboard/${data.screenId}/all`)}>{data.screenId}</UserIdInfo>
+                        <UserIdInfo onClick={() => goURL({pathname:`/myboard/${data.screenId}/all`})}>{data.screenId}</UserIdInfo>
                       </UserProfileId>
                       {/* 메뉴 더보기 */}
                       <FdMoreMenuAnchor onClick={checkMoreMenuType}>
@@ -496,7 +493,7 @@ const feedbackRef = useRef();
                     {/* 유저 아이디 등 프로필 */}
                     <UserProfileInfo>
                       {/* 유저 닉네임 팔로잉 */}
-                      <UserNickInfo onClick={() => goURL(`/myboard/${data.screenId}/all`)}>{data.nickname}</UserNickInfo>
+                      <UserNickInfo onClick={() => goURL({pathname:`/myboard/${data.screenId}/all`})}>{data.nickname}</UserNickInfo>
                       {data.following !== 'me' && loginOn && (
                         <form action="" onSubmit={(e)=>sumitHandler(e, 'follow', 'secondary')}>
                           <UserFollowTxt followData={follow} onClick={() => toggleFollow()}>
@@ -507,7 +504,7 @@ const feedbackRef = useRef();
                     </UserProfileInfo>
                     {/* 유저 아이디 */}
                     <UserProfileId>
-                      <UserIdInfo onClick={() => goURL(`/myboard/${data.screenId}/all`)}>{data.screenId}</UserIdInfo>
+                      <UserIdInfo onClick={() => goURL({pathname:`/myboard/${data.screenId}/all`})}>{data.screenId}</UserIdInfo>
                     </UserProfileId>
                     {/* 메뉴 더보기 */}
                     <FdMoreMenuAnchor onClick={checkMoreMenuType}>
@@ -1115,7 +1112,7 @@ const ShareBtn = styled(BookmarkBtn)`
 
 const GlobeBtn = styled(BookmarkBtn)`
   &::before {
-    background: url(${(props) => (props.globe ? '/static/svg/globe-2.svg' : '/static/svg/globe-1.svg')}) no-repeat center / contain;
+    background: url(${(props) => (props.globe ? '/static/globe-2.svg' : '/static/globe-1.svg')}) no-repeat center / contain;
   }
   &:active {
     &:after {

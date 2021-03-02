@@ -13,7 +13,7 @@ import { useChange } from '@hooks/useChange';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 export default function ConfirmPopup({handleModal, setAccessConfirm, type}) {
-  const { alertBool } = useContext(AlertContext);
+  const { alertPatch } = useContext(AlertContext);
 
   const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
@@ -182,12 +182,12 @@ const passwordChange = () => {
     return;
   }
   
-  pwConfirmFetch(`${process.env.REACT_APP_API_URL}/auth/findPass`, 'patch', {userPwNew, userPwNewRe, email, token}, null, null)
+  pwConfirmFetch(`${process.env.API_URL}/auth/findPass`, 'patch', {userPwNew, userPwNewRe, email, token}, null, null)
   }
 
     useEffect(() => {
       if(!pwConfirmApi) return;
-      alertBool({ type: 'SUCCESS_PWCHANGE', payload: true });
+      alertPatch({ type: 'SUCCESS_PWCHANGE', payload: true });
       goURL('/login');
     }, [pwConfirmApi])
 

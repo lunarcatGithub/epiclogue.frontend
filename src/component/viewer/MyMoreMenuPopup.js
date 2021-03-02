@@ -41,15 +41,15 @@ const MyPopup = (props) => {
   const type = props.conFirmType
 
   const deleteFb = () => {
-    removeFbFetch(`${process.env.REACT_APP_API_URL}/boards/${boardUid}/feedback/${FbUid}`, 'delete', null, null, null);
+    removeFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${FbUid}`, 'delete', null, null, null);
   };
 
   const deleteFbRe = () => {
-    removeReFbFetch(`${process.env.REACT_APP_API_URL}/boards/${boardUid}/feedback/${FbUid}/reply/${ReFbUid}`, 'delete', null, null)
+    removeReFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${FbUid}/reply/${ReFbUid}`, 'delete', null, null)
   };
 
   const removeBoardHandler = () => {
-    removeBoardFetch(`${process.env.REACT_APP_API_URL}/boards/${boardUid}`, 'delete', null, null, null );
+    removeBoardFetch(`${process.env.API_URL}/boards/${boardUid}`, 'delete', null, null, null );
   }
 
   useEffect(() => {

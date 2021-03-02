@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import styled, { css, ThemeProvider } from 'styled-components';
+import styled from 'styled-components';
 
 import { ReplyListContext } from './Viewer';
 
@@ -23,7 +23,7 @@ const SharePopup = () => {
          _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage];
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
         <PopupLayout onClick={() => toggle_Modal_Share()}></PopupLayout>
         <SharePopupInner>
           {/*공유하기 타이틀*/}
@@ -37,20 +37,12 @@ const SharePopup = () => {
             <LinkShareTitle>{_linkShare}</LinkShareTitle>
           </LinkShareBox>
           {/*Api 공유하기 탭*/}
-          <ApiLinkTab>
-            <ApiAnchor>
               <TwitterIcon src={require('../../img/twitter-logo.png')} />
-            <${process.env.REACT_APP_API_URL}Anchor>
-            <ApiAnchor>
               <PinterestIcon src={require('../../img/Pinterest-logo.png')} />
-            <${process.env.REACT_APP_API_URL}Anchor>
-            <ApiAnchor>
               <TumblrIcon src={require('../../img/tumblr-logo.png')} />
-            <${process.env.REACT_APP_API_URL}Anchor>
-          <${process.env.REACT_APP_API_URL}LinkTab>
           <PopupClose onClick={() => toggle_Modal_Share()}>{_closeBtn}</PopupClose>
         </SharePopupInner>
-    </ThemeProvider>
+        </>
   );
 };
 

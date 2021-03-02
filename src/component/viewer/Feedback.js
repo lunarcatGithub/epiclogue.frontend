@@ -71,7 +71,7 @@ const FB = (props) => {
 
   const submitHandler = (e, type) => {
     e.preventDefault();
-    const URL = `${process.env.REACT_APP_API_URL}/interaction/${type}`
+    const URL = `${process.env.API_URL}/interaction/${type}`
     if(type === 'follow'){
       feedbackFetch(
         URL, 
@@ -104,7 +104,7 @@ const FB = (props) => {
 
   // const updateSubmit = () => {
   //   axios({
-  //     url: `${process.env.REACT_APP_API_URL}/boards/${boardUid}/feedback/${_id}`,
+  //     url: `${process.env.API_URL}/boards/${boardUid}/feedback/${_id}`,
   //     method: 'patch',
   //     headers: {
   //       'x-access-token': localStorage.getItem('token'),
@@ -118,7 +118,7 @@ const FB = (props) => {
 
   // const updateSubmitRe = () => {
   //   axios({
-  //     url: `${process.env.REACT_APP_API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`,
+  //     url: `${process.env.API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`,
   //     method: 'patch',
   //     headers: {
   //       'x-access-token': localStorage.getItem('token'),
@@ -217,7 +217,7 @@ const FB = (props) => {
         <form 
         onSubmit={(e)=>{
           // e.preventDefault();
-          // fbSubmit(e, `${process.env.REACT_APP_API_URL}/interaction/like`, loginOn);
+          // fbSubmit(e, `${process.env.API_URL}/interaction/like`, loginOn);
           submitHandler(e, 'like')
           }}>
           {/* 피드백 좋아요 버튼 */}

@@ -14,7 +14,6 @@ export default function MainContent(props){
   const [contents, setContents] = useState();
   const { langState } = useContext(LanguageContext);
 
-  //  props.contentData.board ==> myboard
   useEffect(() => {
       setContents(contentData.board ? contentData.board : contentData)
   }, [contentData]);
@@ -33,7 +32,7 @@ export default function MainContent(props){
             <ImgBox>
                 <UserContentImg image={contents?.thumbnail} />
                 <CategoryIconBox styling={category === '0' ? 'Illust' : 'Comic'}>
-                <CategoryIcon icon={category === '0' ? '/illust_Icon.svg' : '/static/comic_Icon.svg'}/>
+                <CategoryIcon icon={category === '0' ? '/static/illust_Icon.svg' : '/static/comic_Icon.svg'}/>
                 </CategoryIconBox>
             </ImgBox>
         </Link>

@@ -13,7 +13,7 @@ import { useChange } from '@hooks/useChange';
 let fbCnt = 10;
 
 const WriteFbForm = (props) => {
-  const { alertBool } = useContext(AlertContext);
+  const { alertPatch } = useContext(AlertContext);
   const {loginOn, setUnAuth} = useContext(AppDataContext);
   const [feedbackBody, handleChange, resetValue] = useChange('');
   const { boardUid, fbUid, setReplyList, setRenderList } = useContext(ReplyListContext);
@@ -30,12 +30,12 @@ const WriteFbForm = (props) => {
 
     //정상 제출
     if (!feedbackBody || feedbackBody.length <= 1) {
-      return alertBool({ type: 'FEEDBACK_TWO', payload: true })
+      return alertPatch({ type: 'FEEDBACK_TWO', payload: true })
     } else {
       if (props.type === 'Fb') {
-        feedbackFetch(`${process.env.REACT_APP_API_URL}/boards/${boardUid}/feedback`, 'post', {feedbackBody}, null)
+        feedbackFetch(`${process.env.API_URL}/boards/${boardUid}/feedback`, 'post', {feedbackBody}, null)
       } else if (props.type === 'ReFb') {
-        reFeedbackFetch(`${process.env.REACT_APP_API_URL}/boards/${boardUid}/feedback/${fbUid}/reply`, 'post', {replyBody: feedbackBody}, null)
+        reFeedbackFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${fbUid}/reply`, 'post', {replyBody: feedbackBody}, null)
       }
     }
   };

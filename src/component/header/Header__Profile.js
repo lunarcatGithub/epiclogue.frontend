@@ -2,23 +2,17 @@ import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 
 // 컴포넌트 import
-import { LangHeaderProfile } from "../Languge/Lang.Header";
-import {LanguageContext, AlertContext, AppDataContext} from '../../store/App_Store';
+import {LangHeaderProfile} from "@language/Lang.Header";
+import {LanguageContext, AlertContext, AppDataContext} from '@store/App_Store';
 
 // Hook & Context
-import { useToggle } from "../Hook/useToggle";
+import { useToggle } from "@hooks/useToggle";
 import { HeaderDataContext } from "./Header";
-import { useUrlMove } from '../Hook/useUrlMove';
-import { useConvertURL } from '../Hook/useConvertURL';
+import { useUrlMove } from '@hooks/useUrlMove';
+import { useConvertURL } from '@hooks/useConvertURL';
 
 // 이미지 import
-import Xbtn from "../../img/X-mark.png";
-import profileIcon from '../../svg/header/profileIcon.svg';
-import bookmarkIcon from '../../svg/header/headerBookMark.svg';
-import policyIcon from '../../svg/header/policyIcon.svg';
-import switchIcon from '../../svg/header/switchIcon.svg';
-import logoutIcon from '../../svg/header/logoutIcon.svg';
-
+// import Xbtn from "../../img/X-mark.png";
 
 // 프로필 팝업
 
@@ -26,7 +20,7 @@ const HeaderPfPopup = () => {
   const [goURL] = useUrlMove();
   const [profileURL, , convertProfileIamge] = useConvertURL();
 
-  const { alertBool } = useContext(AlertContext);
+  const { alertState, alertPatch } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
   const { setLoginOn } = useContext(AppDataContext);
 
@@ -58,7 +52,7 @@ const HeaderPfPopup = () => {
     localStorage.removeItem("userid");
     setLoginOn(false)
     setIsOpen();
-    goURL('/login')
+    goURL({pathname:'/login'})
   };
 
   useEffect(() => {
@@ -74,11 +68,11 @@ const HeaderPfPopup = () => {
   }, [profileApi]);
 
   const navTabArr = [
-    {method:()=>[ setIsOpen(), goURL({pathname:`/mypage/profile`})], title:_profileSet, icon:profileIcon},
-    {method:()=>[ setIsOpen(), goURL({pathname:`/myboard/${profileApi?.data?.screenId}/bookmarks`})], title:_goToBookMark, icon:bookmarkIcon},    
-    {method:()=>[ setIsOpen(), goURL({pathname:`/policy/service`})], title:_policyInform, icon:policyIcon},    
-    {method:()=> alertBool({ type: "NOT_SERVICE", payload: true }), title:_changeAccount, icon:switchIcon},    
-    {method:()=> logout(), title:_logOutTab, icon:logoutIcon}
+    {method:()=>[ setIsOpen(), goURL({pathname:`/mypage/profile`})], title:_profileSet, icon:'/static/header/profileIcon.svg'},
+    {method:()=>[ setIsOpen(), goURL({pathname:`/myboard/${profileApi?.data?.screenId}/bookmarks`})], title:_goToBookMark, icon:'/static/header/headerBookMark.svg'},    
+    {method:()=>[ setIsOpen(), goURL({pathname:`/policy/service`})], title:_policyInform, icon:'/static/header/policyIcon.svg'},    
+    {method:()=> alertPatch({ type: "NOT_SERVICE", payload: true }), title:_changeAccount, icon:'/static/header/switchIcon.svg'},    
+    {method:()=> logout(), title:_logOutTab, icon:'/static/header/logoutIcon.svg'}
   ];
 
   return (
@@ -103,7 +97,9 @@ const HeaderPfPopup = () => {
                     <ProfileId>{profileApi?.data?.screenId}</ProfileId>
                   </TabIdWrap>
                 </TabWrap>
-              <ClosedBtn onClick={() => setIsOpen()} />
+                <ClosedBox>
+                  <ClosedBtn onClick={() => setIsOpen()} />
+                </ClosedBox>
             </PopupAnchorHd>
             {/* // 유저 프로필 팝업의 헤더 부분 끝 */}
 
@@ -211,30 +207,26 @@ const TabIdWrap = styled.div`
 `;
 
 // 닫기 버튼
-const ClosedBtn = styled.button.attrs({ type: "button" })`
-  position: absolute;
-  top: 6px;
-  right: 13px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  &::before {
-    content: "";
-    background: url(${Xbtn}) no-repeat center / cover;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 22px;
-    height: 22px;
-  }
+
+const ClosedBox = styled.button`
+position:absolute;
+display:flex;
+justify-content:center;
+align-items:center;
+top:1em;
+right: 1.5em;
+border-radius:50%;
+width:3em;
+height:3em;
+overflow:hidden;
+`
+
+const ClosedBtn = styled.span`
+  ${props => props.theme.closeBtn};
   &:hover {
     background: ${(props) => props.theme.color.hoverColor};
   }
 `;
-
 //프로필 유저 정보
 const ProfileNick = styled.h1`
   height: 18px;

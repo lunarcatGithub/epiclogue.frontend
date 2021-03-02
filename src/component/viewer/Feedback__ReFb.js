@@ -18,7 +18,7 @@ const ReFeedback = (props) => {
   const [replyLoding, replyApi, replyError, replyFetch] = useAxiosFetch();
 
   useEffect(() => {
-    replyFetch(`${process.env.REACT_APP_API_URL}/boards/${boardUid}/feedback/${fbUid}/reply`, 'get', null, null)
+    replyFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${fbUid}/reply`, 'get', null, null)
   }, []);
 
   useEffect(() => {

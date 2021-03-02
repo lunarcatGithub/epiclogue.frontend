@@ -12,7 +12,7 @@ import {ProgressSmall} from '../Utils/LoadingProgress';
 
 export const InteractTab = () => {
   const { langState, langPatch } = useContext(LanguageContext);
-  const { alertState, alertBool } = useContext(AlertContext);
+  const { alertState, alertPatch } = useContext(AlertContext);
   const { kind, bool } = alertState;
 
   //언어 변수
@@ -167,7 +167,7 @@ export const InteractTab = () => {
     let timeout = null
    if(kind !== "LOADING_PUSH"){
         timeout = setTimeout(() => {
-      bool && alertBool({ type: kind, payload: false });
+      bool && alertPatch({ type: kind, payload: false });
     }, 3000);
     }
     return () => {

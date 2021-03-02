@@ -25,34 +25,38 @@ export const useConvertTags = () => {
       splitBody?.map((str, index) => {
         if (str[0] === "#") {
           arr.push(
-            <LinkStyle
-              to={{
-                pathname: `/search/latest/${str.split("#").pop()}`,
-                state: {
-                  query: str,
-                  type:'latest'
-                },
-              }}
-              key={index}
+            <Link
+            href={{
+              pathname: `/search/latest/${str.split("#").pop()}`,
+              query: {
+                query: str,
+                type:'latest'
+              },
+            }}
+            key={index}
             >
-              {str}
-            </LinkStyle>
+              <LinkStyle >
+                {str}
+              </LinkStyle>
+            </Link>
           );
         } else if (str[0] === "@"){
           // 유저 찾기
           arr.push(
-            <LinkStyle
-              to={{
-                pathname: `/search/users/${str}`,
-                state: {
-                  query: str,
-                  type:'users'
-                },
-              }}
-              key={index}
+            <Link
+            href={{
+              pathname: `/search/users/${str}`,
+              query: {
+                query: str,
+                type:'users'
+              },
+            }}
+            key={index}
             >
-              {str}
-            </LinkStyle>
+              <LinkStyle>
+                {str}
+              </LinkStyle>
+            </Link>
           );
         } else if (str.toString().match(regExp)){
           // 사이트 주소
@@ -71,7 +75,7 @@ export const useConvertTags = () => {
         //   );
         // }
         else {
-          arr.push( <TextChild key={index}>{str}</TextChild>);
+          arr.push(<TextChild key={index}>{str}</TextChild>);
         }
       });
     
@@ -84,7 +88,7 @@ export const useConvertTags = () => {
 };
 
 const TextChild = styled.span`
-  line-height: 1.4em;
+  line-height: 1.3em;
   margin-right: 0.2em;
   font-weight: ${(props) => props.theme.fontWeight.font300};
   font-size: ${(props) => props.theme.fontSize.font15};
@@ -93,17 +97,17 @@ const TextChild = styled.span`
 `;
 
 // Link style
-const LinkStyle = styled(Link)`
+const LinkStyle = styled.a`
   color: ${(props) => props.theme.color.skyColor};
   margin-right: 0.2em;
   word-break: break-all;
-  line-height: 1.4em;
+  line-height: 1.3em;
 
 `;
 const ExternalLink = styled.a`
   color: ${(props) => props.theme.color.skyColor};
   margin-right: 0.2em;
   word-break: break-all;
-  line-height: 1.4em;
+  line-height: 1.3em;
 
 `;

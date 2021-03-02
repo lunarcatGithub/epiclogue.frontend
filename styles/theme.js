@@ -25,18 +25,16 @@ const moreMenu = css`
 `
 // x버튼
 const closeBtn = css`
-  position:relative;
-  right: 0;
-  top: 0;
-  width: 1.8em;
-  height: 1.8em;
-  
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  height:100%;  
+  cursor:pointer;
   &::before, &::after{
     content: "";
-    position: absolute;
-    left: 15px;
-    height: 28px;
-    width: 3px;
+    height: 2.1em;
+    width: 2px;
     background-color: rgba(164, 159, 186, 1);
   }
   &::before {

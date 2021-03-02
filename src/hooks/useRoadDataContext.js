@@ -10,7 +10,7 @@ const RoadDataContextProvider = (props) => {
   const [URLs, setURLs] = useState([]);
   const boardUid = props.boardUid;
   const getFiletoImgPath = async () => {
-    const article = await fetch(`${process.env.REACT_APP_API_URL}/boards/${boardUid}/edit`, {
+    const article = await fetch(`${process.env.API_URL}/boards/${boardUid}/edit`, {
       method: 'get',
       headers: {
         'x-access-token': localStorage.getItem('token'),

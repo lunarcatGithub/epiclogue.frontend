@@ -13,7 +13,7 @@ const MyBoardFollow = (props) => {
 
   const { originUser, follow } = router.query
   const convertUser = JSON.parse(originUser)
-  console.log(convertUser?.screenId)
+
   const [tab, setTab] = useState(follow);
   const [followingList, setFollowingList] = useState([]);
   const [followerList, setFollowerList] = useState([]);
