@@ -1,9 +1,6 @@
 import Main from '@component/main/Main';
 import axios from 'axios'
 
-// Hooks&&reducer import
-import { AppDataContext } from '@store/App_Store';
-
 export default function MainPage({boardItem}) {
 
     return (
@@ -20,7 +17,7 @@ export async function getServerSideProps() {
 
     return {
         props:{
-            boardItem:res.data
+            boardItem:res.data.data
         }
     }
 }

@@ -23,7 +23,7 @@ const combineReducers = (...reducers) => (state, action) => {
 // context provider
 const ContextStore = ({ children }) => {
   const [langState, langPatch] = useReducer(combineReducers(languageReducer), langInit);
-  const [alertState, alertPatch] = useReducer(alertReducer, initialAlert);
+  const [alertState, alertPatch] = useReducer(combineReducers(alertReducer), initialAlert);
 
   const [clickedComic, setClickedComic] = useState(true);
   const [clickedIllust, setClickedIllust] = useState(true);

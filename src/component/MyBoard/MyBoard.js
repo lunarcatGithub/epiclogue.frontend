@@ -1,36 +1,37 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'next/link';
+import { useRouter } from 'next/router';
 
 // 컴포넌트 import
-import { LangMyBoard } from '../Languge/Lang.Myboard';
-import { LanguageContext, AppDataContext } from '../../Component/Store/App_Store';
-import { LangCommon } from '../Languge/Lang.Common';
-import { langMetaBoard } from '../Languge/Lang.Meta';
-import { Meta } from '../Utils/MetaTags';
-import MainHandler from '../Main/Main_Handler';
-import Modal from '../Utils/Modal';
-import ConfirmPopup from '../Utils/ConfirmPopup';
+import { LanguageContext, AppDataContext } from '@store/App_Store';
+import { LangMyBoard } from '@language/Lang.Myboard';
+import { LangCommon } from '@language/Lang.Common';
+import { langMetaBoard } from '@language/Lang.Meta';
+import MainHandler from '../content/Contents';
+import Modal from '@utils/Modal';
+import ConfirmPopup from '@utils/ConfirmPopup';
 
 // hooks&reducer
-import AutoHiding from '../Utils/autoHiding';
-import { useToggle } from '../Hook/useToggle';
-import {useConvertTags} from '../Hook/useConvertTags';
-import { useModal } from '../Hook/useModal';
-import { useUrlMove } from '../Hook/useUrlMove';
-import {useDate} from '../Hook/useDate';
-import useAxiosFetch from '../Hook/useAxiosFetch';
+import AutoHiding from '@utils/autoHiding';
+import { useToggle } from '@hooks/useToggle';
+import {useConvertTags} from '@hooks/useConvertTags';
+import { useModal } from '@hooks/useModal';
+import { useUrlMove } from '@hooks/useUrlMove';
+import {useDate} from '@hooks/useDate';
+import useAxiosFetch from '@hooks/useAxiosFetch';
 
 // 아이콘 import
 
-  const MyBoard = (props) => {
+export default function MyBoard({boardItem, userId}) {
   const {loginOn, setUnAuth} = useContext(AppDataContext);
   const [goURL] = useUrlMove();
-  
-  const dataId = props.match.params.screenId;
-  const _tab = props.match.params.tab;
+  const router = useRouter();
 
-  const { languageState } = useContext(LanguageContext);
+  // const dataId = props.match.params.screenId;
+  const _tab = null
+
+  const { langState } = useContext(LanguageContext);
   const { myboardData, setMyboardData } = useContext(AppDataContext);
   const [follow, toggleFollow] = useToggle();
 
@@ -52,7 +53,7 @@ import useAxiosFetch from '../Hook/useAxiosFetch';
   const [setGetDate, setCountryDivided, countryResult] = useDate()
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = languageState;
+  const { selectedLanguage, defaultLanguage } = langState;
   const { signDate, noIntro, allTabs, contentsTabs, bookMarkTabs, secondary } = LangMyBoard;
   const { followBtn, followingBtn } = LangCommon;
 
@@ -75,44 +76,32 @@ import useAxiosFetch from '../Hook/useAxiosFetch';
       if(!loginOn) return;
       e.preventDefault();
       if(type === 'follow'){
-        followFetch(url, follow ? 'post' : 'delete',  { targetUserId: boardApi?.data?._id })
+        followFetch(url, follow ? 'post' : 'delete',  { targetUserId: boardItem?.data?._id })
       }
     }
 
   useEffect(()=>{
-    boardFetch(`${process.env.REACT_APP_API_URL}/myboard/${dataId}`, 'get', null, null)
-  },[dataId]);
-
-  useEffect(()=>{
-    setBoardData(boardApi?.data);
+    setBoardData(boardItem?.data);
     setCountryDivided(selectedLanguage || defaultLanguage)
-    convert(boardApi?.data?.intro);
-    setGetDate(boardApi?.data.joinDate);
+    convert(boardItem?.data?.intro);
+    setGetDate(boardItem?.data.joinDate);
     setDate(countryResult);
-    toggleFollow(boardApi?.data?.isFollowing);
-    localStorage.getItem('userid') === boardApi?.data?.screenId && setCheckMe(true)
+    toggleFollow(boardItem?.data?.isFollowing);
+    localStorage.getItem('userid') === boardItem?.data?.screenId && setCheckMe(true)
 
-  },[boardApi, countryResult]);
+  },[boardItem, countryResult]);
 
   useEffect(() => {
-    boardDataFetch(`${process.env.REACT_APP_API_URL}/myboard/${dataId}/${_tab}`, 'get', null);
-
-  }, [_tab, dataId]);
+    boardDataFetch(`http://localhost:5000/myboard`, 'get', null);
+  }, [_tab, userId]);
 
 
   useEffect(() => {
     setMyboardData(boardDataApi?.data)
     boardDataError?.status === 404 && toggle_Modal_Confirm(true)
 
-  }, [boardDataApi]);
+  }, [boardItem]);
 
-  
-  const metaData = {
-    title: `${boardData?.nickname} ${metaBoardTitle}`,
-    description: boardData?.intro,
-    image: boardData?.banner?.origin,
-    canonical: `myboard/${dataId}/${_tab}`
-  };
   const navTabArr = [
     {link:'all', title:_allTabs},
     {link:'originals', title:_contentsTabs},
@@ -122,7 +111,6 @@ import useAxiosFetch from '../Hook/useAxiosFetch';
 
   return (
     <>
-      <Meta meta={metaData} />
       <Layout>
         <LayoutInner>
           <BackgroundBox>
@@ -158,7 +146,7 @@ import useAxiosFetch from '../Hook/useAxiosFetch';
                       }
                       goURL({
                       pathname: '/follows',
-                      state: {
+                      query: {
                         follow: 'following',
                         dataId: boardData?.screenId,
                         nickname: boardData?.nickname,
@@ -170,18 +158,19 @@ import useAxiosFetch from '../Hook/useAxiosFetch';
                   </FollowButton>
 
                   <FollowButton
-                    type='followwer'
+                    type='follower'
                     onClick={()=>{
                       if(!loginOn){setUnAuth(true); return}
                       goURL({
                       pathname: '/follows',
-                      state: {
+                      query: {
                         follow: 'follower',
                         dataId: boardData?.screenId,
                         nickname: boardData?.nickname,
                         UserPfImg: boardData?.profile?.thumbnail
                       },
-                    })}}
+                    })
+                  }}
                   >
                     {_followBtn}
                     <FollowScore>{boardData?.followerCount}</FollowScore>
@@ -219,9 +208,9 @@ import useAxiosFetch from '../Hook/useAxiosFetch';
             <NavBarInner>
               {
               navTabArr.map((nav, index) => (
-                <NavItem key={index} to={`/myboard/${boardData?.screenId}/${nav.link}`}>
-                  <NavAllButton>{nav.title}</NavAllButton>
-                </NavItem>
+                  <NavItem key={index} >
+                    <NavAllButton>{nav.title}</NavAllButton>
+                  </NavItem>
               ))
               }
             </NavBarInner>
@@ -528,7 +517,7 @@ const NavAllButton = styled.div`
 // NavLink 스타일 ****
 
 const activeClassName = 'nav-item-active';
-const NavItem = styled(NavLink).attrs({
+const NavItem = styled.span.attrs({
   activeClassName,
 })`
   display: flex;
@@ -565,4 +554,3 @@ height: 100%;
 background: ${(props) => props.theme.color.backgroundColor};
 `;
 
-export default MyBoard;

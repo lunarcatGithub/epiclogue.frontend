@@ -1,4 +1,3 @@
-import React from "react";
 import Document, {Html, Main, NextScript, Head } from "next/document"; 
 import Helmet from "react-helmet"; // head태그에 넣을 정보를 jsx로 작성할 수 있게 도와준다.
 import {GlobalStyles} from '../styles/GlobalStyles';
@@ -10,6 +9,7 @@ import { ServerStyleSheet } from "styled-components";
 
 export default class MyDocument extends Document {
     static getInitialProps(context) {
+
       const sheet = new ServerStyleSheet(); // 서버사이드 렌더링 할 수 있게함.
       const page = context.renderPage(App => props =>
         sheet.collectStyles(

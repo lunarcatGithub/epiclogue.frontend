@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import Head from 'next/head';
 
 //component
-import { Meta } from '@utils/MetaTags';
 import Contents from '@component/content/Contents';
 
 // Hooks&&reducer import
@@ -10,16 +9,9 @@ import Contents from '@component/content/Contents';
 const Main = ({boardItem}) => {
 
   // Meta 전용
-  const metaData = {
-    title: 'asd',
-    description: '',
-    image: `static/logo192.svg`,
-    canonical: `main`, 
-  };
-  
+
   return (
     <>
-      <Meta meta={metaData} />
       <Layout>
           <Contents type="MAIN" boardItem={boardItem} />
         <>

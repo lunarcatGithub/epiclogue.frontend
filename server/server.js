@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 let contents = require('./routes/contentsList');
+let user = require('./routes/user');
 
 const port = 5000;
 const app = express();
@@ -18,10 +19,11 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 
 app.get('/', (req, res) => {
-    return res.send('aaa')
+    return res.send('main page')
 })
 
 app.use('/board', contents);
+app.use('/myboard', user);
 
 
 app.listen(port, ()=> {

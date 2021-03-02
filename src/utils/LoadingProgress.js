@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
+// 컴포넌트 import
 
 const Progress = () => {
   return (
@@ -8,7 +9,6 @@ const Progress = () => {
           <Circle />
           <CircleSmall />
           <LogoRotate />
-          {/* <InformTxt>Loading...</InformTxt> */}
       </Layout>
   );
 };

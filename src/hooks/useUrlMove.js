@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useCallback } from 'react';
+import { useRouter } from 'next/router';
 
 export const useUrlMove = () => {
-  const history = useHistory();
-  const _useUrlMove = useCallback((url) => history.push(url), [history]);
+  const router = useRouter();
+  const _useUrlMove = useCallback((url) => router.push(url), [router]);
   return [_useUrlMove];
 };

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 
 // 컴포넌트 import
-import { LangMain } from '@component/Languge/Lang.Main';
+import { LangMain } from '@language/Lang.Main';
 
 // hooks&reducer
 import { LanguageContext } from '@store/App_Store';

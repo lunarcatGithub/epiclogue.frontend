@@ -1,10 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import Head from 'next/head';
 
 // let filter = 'win16|win32|win64|mac';
 // let isMobile = false;
-// let navigator = window.navigator
+
 // if (navigator.platform) {
 //   isMobile = filter.indexOf(navigator.platform.toLowerCase()) < 0;
 // }
@@ -17,21 +16,20 @@ import Head from 'next/head';
 //   const language = navigator.language;
   
   export const Meta = ({ meta }) => {
-    const lang = meta.lang || 'ko';
+    // const lang = locales[language] || locales['en'];
+    const lang ='ko';
     const title = meta.title;
     const description = meta.description || undefined;
     const image = meta.image || undefined || undefined;
     const canonical = meta.canonical;
     // const type = isMobile ? 'mobile' :'website';
+    const type = 'website';
     const width = meta.image && (meta.width || 1200) || undefined;
     const height = meta.image && (meta.height || 627) || undefined;
-
     return (
       <Helmet titleTemplate="%s">
         <html lang={lang} />
-        <Head>
         <title>{title}</title>
-        </Head>
         <meta name="description" content={description} />
         <link rel="canonical" href={`https://www.epiclogue.com/${canonical}`} />
         <link rel="image_src" href={image} />
@@ -42,7 +40,8 @@ import Head from 'next/head';
         <meta property="og:description" content={description} />
         <meta property="og:url" content={`https://www.epiclogue.com/${canonical}`} />
         {/* <meta property="og:locale" content={locales[lang]} /> */}
-        {/* <meta property="og:type" content={type} /> */}
+        <meta property="og:locale" content={'ko'} />
+        <meta property="og:type" content={type} />
         <meta property="og:image" content={image} />
         <meta property="og:image:width" content={width} />
         <meta property="og:image:height" content={height} />
@@ -55,7 +54,6 @@ import Head from 'next/head';
         <meta name="twitter:image" content={image} />
         <meta name="twitter:site" content="Epic_Logue!" />
          <link rel="alternate" href={`https://www.epiclogue.com/${canonical}`} hreflang={lang} />
-         
       </Helmet>
     );
   };

@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
 import MyBoardFollowList from './MyBoard__Follow__List';
-import history from '../history';
+import {useRouter} from 'next/router';
 
 // 컴포넌트 import
-import { ProgressSmall } from '../Utils/LoadingProgress';
-import useAxiosFetch from '../Hook/useAxiosFetch';
+import { ProgressSmall } from '@utils/LoadingProgress';
+import useAxiosFetch from '@hooks/useAxiosFetch';
 
 const MyBoardFollow = (props) => {
   const informRef = useRef();
-  const dataId = props?.location?.state?.dataId;
-  const nickname = props?.location?.state?.nickname;
+  const router = useRouter();
 
+  const { follow, dataId, nickname, UserPfImg } = router.query
   const [tab, setTab] = useState(props?.location?.state?.follow);
   const [followingList, setFollowingList] = useState([]);
   const [followerList, setFollowerList] = useState([]);
@@ -303,7 +302,7 @@ const FollowerTab = styled.button`
 `;
 // NavLink 스타일 ****
 const activeClassName = 'nav-item-active';
-const NavItem = styled(NavLink).attrs({
+const NavItem = styled.span.attrs({
   activeClassName,
 })`
   display: flex;

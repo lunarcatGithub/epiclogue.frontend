@@ -4,14 +4,11 @@ import styled from 'styled-components';
 // import 컴포넌트
 
 // hooks&reducer
-import { useToggle } from '../Hook/useToggle';
-import { useUrlMove } from '../Hook/useUrlMove';
-import { LangCommon } from '../Languge/Lang.Common';
-import { LanguageContext } from '../../Component/Store/App_Store';
-import useAxiosFetch from '../Hook/useAxiosFetch';
-
-// 아이콘 import
-import Logo from '../../svg/Logo.svg';
+import { useToggle } from '@hooks/useToggle';
+import { useUrlMove } from '@hooks/useUrlMove';
+import { LangCommon } from '@language/Lang.Common';
+import { LanguageContext } from '@store/App_Store';
+import useAxiosFetch from '@hooks/useAxiosFetch';
 
 const MyBoardFollowList = (props) => {
   const { languageState } = useContext(LanguageContext);
@@ -102,7 +99,7 @@ const UserIconBox = styled.div`
  border: 1px solid ${(props) => props.theme.color.hoverColor};
 `;
 const UserIcon = styled.span`
-  background:url(${props => props.profile ? props.profile : Logo}) no-repeat center center / cover;
+  background:url(${props => props.profile ? props.profile : '/static/Logo.svg'}) no-repeat center center / cover;
   width:100%;
   height:100%;
 `;

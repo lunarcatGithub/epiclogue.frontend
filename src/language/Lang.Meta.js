@@ -1,8 +1,9 @@
 
-let userBrowserLang = navigator.language,
-devidedLang;
+let userBrowserLang,
+    devidedLang;
 
 const devideLang = (() => {
+    userBrowserLang = typeof window !== 'undefined' && navigator.language
     if(userBrowserLang === 'ko' || 'ko-KR' || 'ko-kr' ){
       devidedLang = 0
     } else if(userBrowserLang === 'ja' || 'ja-JA' || 'ja-ja'){
@@ -11,6 +12,7 @@ const devideLang = (() => {
       devidedLang = 2
     }
   })()
+
 function langMetaCommon() {
 
     let commonTitle;

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {useRouter} from 'next/router';
 
 // 컴포넌트 import
-import { Progress } from '@utils/Progress';
+import { Progress } from '@utils/LoadingProgress';
 import ContentsForm from './Contents__Form';
 import ContentsUserForm from './Contents__UserForm';
 
@@ -55,7 +55,6 @@ const Contents = (props) => {
 
           renderDataHandler(comicApi?.data, 'content')
         } else if(comicApi && clickedIllust || !clickedComic) {
-
           renderDataHandler(illustApi?.data, 'content')
         }
         break;
@@ -130,7 +129,6 @@ const Contents = (props) => {
     } else if (!clickedComic && clickedIllust) {
       illustFetch(`${process.env.REACT_APP_API_URL}/boards?type=Illust`, 'get', null, null, null);
     } 
-
   }, [clickedComic, clickedIllust]);
 
 
