@@ -14,7 +14,7 @@ export default function MypageForm(props) {
 
   // contextAPI
   const { LanguageList, interestedList } = useContext(MypageContext);
-  const {langState, dispatch} = useContext(LanguageContext);
+  const {langState, langPatch} = useContext(LanguageContext);
 
   const {selectedLanguage, defaultLanguage} = langState;
   const [toggleSet, setToggleSet] = useState(false);
@@ -73,7 +73,7 @@ const {
   const sendDataHandler = (e) =>{
     if(type === 'language'){
     localStorage.setItem('language', selectData);
-    dispatch({type:'LANGUAGE_UPDATE', payload:selectData });
+    langPatch({type:'LANGUAGE_UPDATE', payload:selectData });
     formDatas.submit(e, 'language', selectData)
   }
   setToggleSet(false)

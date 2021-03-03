@@ -256,7 +256,7 @@ const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
 
   useEffect(() => {
     if(leaveApi?.result === 'ok'){
-      localStorage.setItem('loginOn', false);
+      localStorage.removeItem('loginOn', false);
       localStorage.removeItem('userNick');
       localStorage.removeItem('userid');
       setAccessConfirm(false)

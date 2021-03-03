@@ -1,12 +1,14 @@
-// export const CommandContext = createContext();
-// export const FilterContext = createContext();
-// export const ContentsContext = createContext();
-// export const ProfileContext = createContext();
-
 import { useState, useEffect, useReducer, createContext } from "react";
 import { languageReducer, langInit } from "@reducer/LanguageReducer";
 import {useRouter} from 'next/router';
 import { initialAlert, alertReducer } from '@reducer/AlertReducer';
+
+// 컴포넌트 import
+import UnauthLogin from '@utils/UnauthLogin';
+
+// Utils
+import Modal from '@utils/Modal';
+import { InteractTab } from '@utils/Push__Interaction';
 
 // create context
 const Context  = createContext({});
@@ -33,25 +35,25 @@ const ContextStore = ({ children }) => {
   const [myboardData, setMyboardData] = useState([]);
   // let login = localStorage.getItem('loginOn');
   
-  let login = false
-  const [loginOn, setLoginOn] = useState(Boolean(login));
-
+  
+  const [loginOn, setLoginOn] = useState();
   const[unAuth, setUnAuth] = useState(false);
   const location = useRouter();
 
   useEffect(() => {
+    let login = localStorage.getItem('loginOn');
+    setLoginOn(Boolean(login))
+  }, []);
+
+  useEffect(() => {
       if(!loginOn){
-          // localStorage.removeItem("loginOn");
-          // localStorage.removeItem("userNick");
-          // localStorage.removeItem("userid");
-          // localStorage.removeItem("token");
         if(
           location.pathname.match('/upload') ||
           location.pathname.match('/follow') ||
           location.pathname.match('/report') ||
           location.pathname.match('/editor')
         ){
-            document.location.href = '/login';
+          document.location.href = '/login';
             return;
           } else {
             return
@@ -86,6 +88,15 @@ const ContextStore = ({ children }) => {
             alertPatch
             }}>
               {children}
+              {
+                unAuth && 
+                <Modal 
+                  visible={unAuth}
+                  maskClosable={unAuth}
+                  onClose={setUnAuth}
+                ><UnauthLogin setUnAuth={setUnAuth}/>
+              </Modal>            
+              }
           </AlertContext.Provider>
         </LanguageContext.Provider>
       </AppDataContext.Provider>

@@ -7,8 +7,8 @@ import styled from "styled-components";
 
 // 컴포넌트 import
 import { LangPush } from "@language/Lang.Common";
-import { LanguageContext, AlertContext } from '../../Component/Store/App_Store';
-import {ProgressSmall} from '../Utils/LoadingProgress';
+import { LanguageContext, AlertContext } from '@store/App_Store';
+import {ProgressSmall} from '@utils/LoadingProgress';
 
 export const InteractTab = () => {
   const { langState, langPatch } = useContext(LanguageContext);

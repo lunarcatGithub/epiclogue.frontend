@@ -10,9 +10,12 @@ export default function ViewerPage({boardItem,error,id}) {
 
 export async function getServerSideProps(context) {
     let error = null;
+    let res = null;
     const id = context.params.id
     const url = `${process.env.API_URL}/boards/${id}`
-    const res = await axios.get(url).catch(err => error = err.response)
+    await axios.get(url)
+    .then(result => res = result)
+    .catch(err => error = err.response)
 
     return {
         props:{

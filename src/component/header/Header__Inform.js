@@ -67,11 +67,11 @@ const UserInform = () => {
   // 알림용 무한 스크롤
   const infinityScroll = () => {
     
-    let scrollHeight = informRef.current.scrollHeight;
+    let scrollHeight = informRef?.current?.scrollHeight;
 
-    let scrollTop = informRef.current.scrollTop;
+    let scrollTop = informRef?.current?.scrollTop;
 
-    let clientHeight = informRef.current.clientHeight;
+    let clientHeight = informRef?.current?.clientHeight;
     
     if(scrollTop + clientHeight === scrollHeight){
       setItems( items => items + 10);
@@ -103,7 +103,9 @@ const UserInform = () => {
       <InformHeader>
         <InformIcon />
         <InformText>{_headerInfrom}</InformText>
-        <ClosedBtn onClick={() => toggleNoti()}></ClosedBtn>
+          <ClosedBox>
+            <ClosedBtn onClick={() => toggleNoti()}/>
+          </ClosedBox>
       </InformHeader>
       <InformBodyInner onScroll={infinityScroll} ref={informRef}>
         {/* {sliceData &&  */}
@@ -212,30 +214,20 @@ const InformText = styled.p`
   font-size: ${(props) => props.theme.fontSize.font18};
   font-weight: ${(props) => props.theme.fontWeight.font700};
 `;
-// const ClosedBtn = styled.button.attrs({ type: 'button' })`
-//   position: absolute;
-//   top: 4px;
-//   right: 20px;
-//   width: 40px;
-//   height: 40px;
-//   border-radius: 50%;
-//   cursor: pointer;
-//   transition: all 0.2s ease;
-//   &::before {
-//     content: '';
-//     background: url(${Xbtn}) no-repeat center / cover;
-//     position: absolute;
-//     top: 50%;
-//     left: 50%;
-//     transform: translate(-50%, -50%);
-//     width: 22px;
-//     height: 22px;
-//   }
-//   &:hover {
-//     background: ${(props) => props.theme.color.hoverColor};
-//   }
-// `;
-const ClosedBtn = styled.button.attrs({ type: 'button' })`
+  // 닫기 버튼
+  const ClosedBox = styled.button`
+  position:absolute;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  top:0.6em;
+  right: 1.5em;
+  border-radius:50%;
+  width:3em;
+  height:3em;
+  overflow:hidden;
+`
+const ClosedBtn = styled.span`
   ${props => props.theme.closeBtn};
   &:hover {
     background: ${(props) => props.theme.color.hoverColor};

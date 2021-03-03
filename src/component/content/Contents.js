@@ -221,7 +221,6 @@ const Contents = (props) => {
   if(searchType === 'users'){
     renderContents = renderList.map((item, index) => <ContentsUserForm searchData={item} key={index} /> )
   }else {
-    console.log(renderList)
     renderContents = renderList.map((item, index) => <ContentsForm key={index} contentData={item} />)
   }
 

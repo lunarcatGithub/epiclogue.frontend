@@ -138,7 +138,7 @@ export const SignIn = (props) => {
             <LogingWrap>
               <GoogleButton
                 name="google"
-                clientId={process.env.REACT_APP_GOOGLE_API_KEY}
+                clientId={process.env.GOOGLE_API_KEY}
                 onSuccess={res => responseSuccess(res, 'google')}
                 onFailure={responseFail}
               />

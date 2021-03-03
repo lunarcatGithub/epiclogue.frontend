@@ -192,9 +192,6 @@ export const EditorStore = () => {
               key={img.id}
               id={img.id}
               image={img.canvas}
-              // getCanvas={getCanvas}
-              // imgData={imageArr}
-              // savedCanvas={_savedCanvas}
               />
                 }
             })

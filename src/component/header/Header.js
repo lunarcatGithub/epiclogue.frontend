@@ -132,7 +132,7 @@ const Header = () => {
       if(!loginOn) return;
       profileFetch(`${process.env.API_URL}/user/editProfile`, 'get', null, null, null);
     }, [loginOn]);
-
+    
     useEffect(() => {
       if(profileApi){
         localStorage.setItem('language', profileApi.data.displayLanguage);
@@ -141,11 +141,8 @@ const Header = () => {
     }, [profileApi])
 
     useEffect(() => {
-      pathname.match('/editor/') || 
-      pathname.match('/epiclogueadmin') || 
-      pathname.match('/welcome') || 
-      pathname.match('/findPass') || 
-      pathname.match('/login') ? 
+      ['/editor/', '/epiclogueadmin', '/welcome', '/findPass', '/login'].includes(pathname)
+      ? 
       setPreventHeader(false) 
       : 
       setPreventHeader(true);
@@ -181,7 +178,8 @@ const Header = () => {
             <Dummy />
             
             {/* 팔로우 작품 및 프로필 버튼 영역 */}
-            { loginOn ?
+            { 
+              loginOn ?
             <>
               <ProfileWrap>
                 <FollowBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
@@ -196,24 +194,24 @@ const Header = () => {
             </ProfileWrap>
             <Dummy />
             {/* 옵션 set 영역 */}
-            <OptionWrap>
-              <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
-                <OptionDm />
+              <OptionWrap>
+                <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+              <OptionDm />
               </OptionBtn>
               {/* 알림 */}
               <OptionBtn onClick={() => toggleNoti()} >
-                <OptionInfomation styling={isOpen} />
+                <OptionInfomation styling={isNotification} />
                 {read > 0 && <InformIconRing/> }
               </OptionBtn>
 
               {/* setting */}
-              <NavItem
+                <OptionBtn
                 onClick={()=> goURL({pathname:`/mypage/profile`})}
-                isActive={() => ['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)}>
-                <OptionBtn>
-                  <OptionSetting />
+                >
+                  <OptionSetting
+                  styling={['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)}
+                  />
                 </OptionBtn>
-              </NavItem>
             </OptionWrap>
             </>
             : 
@@ -247,11 +245,9 @@ const Header = () => {
               {/* Upload */}
               {
               loginOn ?
-                <NavItem exact to="/upload">
-                <MbOptionWrap>
-                  <MbOptionUpload />
-                </MbOptionWrap>
-              </NavItem>
+                  <MbOptionWrap onClick={()=> goURL({pathname:"/upload"})}>
+                    <MbOptionUpload />
+                  </MbOptionWrap>
               :
               <MbOptionWrap onClick={()=>setUnAuth(true)}>
                 <MbOptionUpload />
@@ -282,7 +278,9 @@ const Header = () => {
         <CategoryBox>
           <CategoryHeader>
             <HeaderTxt>Filter</HeaderTxt>
-            <ClosedBtn onClick={() => toggleCategory()} />
+            <ClosedBox>
+              <ClosedBtn onClick={() => toggleCategory()} />
+            </ClosedBox>
           </CategoryHeader>
           <CategoryInner>
             <MbCategoryComic styling={clickedComic} onClick={() => selectFilterComic()}>
@@ -572,7 +570,7 @@ const OptionInfomation = styled.button`
   ${PositionCenter};
 `;
 const OptionSetting = styled.button`
-  background: url('/static/set.svg') no-repeat center / contain;
+  background: url(${props => props.styling ? '/static/setOn.svg' : '/static/set.svg'}) no-repeat center / contain;
   width: 28px;
   height: 28px;
   cursor: pointer;
@@ -712,32 +710,8 @@ padding: 0.3em 0.3em 0.1em 0.3em ;
 `;
 
 // NavLink 스타일 ****
-const activeClassName = 'nav-item-active';
 const NavItem = styled.span`
-  /* &.${activeClassName} {
-    ${MbOptionUpload} {
-      &::before {
-        background-image: url('/static/uploadOn.svg');
-      }
-    }
-    ${MbFollows} {
-      &::before {
-        background-image: url('/static/follow_1.svg');
-      }
-    }
-    ${ProfileFollow} {
-      background-image: url('/static/follow_1.svg');
-      &:before {
-        color: ${(props) => props.theme.color.orangeColor};
-      }
-    }
-    ${OptionSetting} {
-      background-image: url('/static/setOn.svg');
-    }
-    ${FollowTxt} {
-      color: ${(props) => props.theme.color.orangeColor};
-    }
-  } */
+  
 `;
 
 // 카테고리 영역
@@ -803,26 +777,21 @@ const MbCategoryIllust = styled(MbCategoryComic)`
   background: ${(props) => (props.styling ? props.theme.color.darkGray : props.theme.color.whiteColor)};
   margin-top: 6px;
 `;
-// const ClosedBtn = styled.button.attrs({ type: 'button' })`
-//   position: absolute;
-//   top: 0.5em;
-//   right: 1.1em;
-//   width: 2.5em;
-//   height: 2.5em;
-//   border-radius: 50%;
-//   cursor: pointer;
-//   transition: all 0.2s ease;
-//   &::before {
-//     content: '';
-//     background: url(${Xbtn}) no-repeat center / cover;
-//     ${PositionCenter};
-//     width: 22px;
-//     height: 22px;
-//   }
-//   &:hover {
-//     background: ${(props) => props.theme.color.hoverColor};
-//   }
-// `;
+// 닫기 버튼
+
+const ClosedBox = styled.button`
+position:absolute;
+display:flex;
+justify-content:center;
+align-items:center;
+top:0.4em;
+right: 1.5em;
+border-radius:50%;
+width:3em;
+height:3em;
+overflow:hidden;
+`
+
 const ClosedBtn = styled.button.attrs({ type: 'button' })`
   ${props => props.theme.closeBtn};
   &:hover {

@@ -1,15 +1,14 @@
 import React, {useEffect} from 'react'
-import { withRouter } from 'react-router-dom';
+import { withRouter } from 'next/router';
 
 const ScrollTop = (props) => {
-  
+    console.log(props)
     useEffect(() => {
-
-        if (props.history.action === 'POP') {
+        if (props?.history?.action === 'POP') {
             return;
           }
           
-          let hash = props.location.hash;
+          let hash = props?.location?.hash;
 
           if (hash) {
             let element = document.querySelector(hash);

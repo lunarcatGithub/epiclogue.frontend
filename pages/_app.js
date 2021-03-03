@@ -3,9 +3,11 @@ import { ThemeProvider } from 'styled-components';
 import theme from '../styles/theme';
 import {GlobalStyles} from '../styles/GlobalStyles';
 import Header from '@component/header/Header';
+import ScrollTop from '@utils/ScrollTop';
+import '../styles/App.css';
+
+// hooks & reducer
 import {ContextStore} from '@store/App_Store';
-import {EditorStore} from '@component/editor/Editor_Store'
-//contenxt
 
 function MyApp({ Component, pageProps }) {
 
@@ -14,6 +16,7 @@ function MyApp({ Component, pageProps }) {
     <GlobalStyles/>
       <ContextStore>
         <Header/>
+        {/* <ScrollTop/> */}
         <Component {...pageProps} />
       </ContextStore>
   </ThemeProvider>

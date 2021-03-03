@@ -80,7 +80,7 @@ const Mypage = () => {
                 {
                   navArr.map((tab, i)=>(
                   <NavItem key={i} onClick={()=> goURL({pathname:`/mypage/${tab.name}`})} >
-                    <TabSelect> {tab.lang} </TabSelect>
+                    <TabSelect styling={ router.asPath.match(tab.name) }> {tab.lang} </TabSelect>
                   </NavItem>
                   ))
                 }
@@ -154,8 +154,8 @@ const TabSelect = styled.button`
   margin-top: 6px;
   width: 100%;
   white-space: nowrap;
-  color: ${(props) => props.theme.color.softBlackColor};
-  border-bottom: 3px solid ${(props) => props.theme.color.softGrayColor};
+  color:  ${(props) => props.styling ? props.theme.color.orangeColor : props.theme.color.softBlackColor};
+  border-bottom: 3px solid ${(props) => props.styling ? props.theme.color.softOrangeColor : props.theme.color.softGrayColor};
   font-size: ${(props) => props.theme.fontSize.font15};
   font-weight: ${(props) => props.theme.fontWeight.font700};
   transition: all 0.2s ease-out;
@@ -167,17 +167,8 @@ const TabSelect = styled.button`
 `;
 
 // NavLink 스타일 ****
-const activeClassName = 'nav-item-active';
 const NavItem = styled.span`
   display: flex;
   width: 100%;
-
-  &.${activeClassName} {
-    ${TabSelect} {
-      color: ${(props) => props.theme.color.orangeColor};
-      border-bottom: 3px solid ${(props) => props.theme.color.softOrangeColor};
-      font-weight: ${(props) => props.theme.fontWeight.font700};
-    }
-  }
 `;
 export default Mypage;

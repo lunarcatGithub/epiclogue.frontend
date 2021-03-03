@@ -1,10 +1,8 @@
-import {ImageEditor} from '@component/editor/ImageEditor';
+import {EditorStore} from '@component/editor/Editor_Store';
 
 export default function EditorPage() {
 
     return (
-      <>
-       <ImageEditor/>
-      </>
+      <EditorStore/>
     )
 }

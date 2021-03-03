@@ -11,6 +11,5 @@ export const useModal = () => {
       setIsShowing(value ? value : !isShowing || !value ? !isShowing : '');
     }
   };
-  console.log(isShowing)
   return [isShowing, toggle];
 };

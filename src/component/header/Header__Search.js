@@ -36,7 +36,9 @@ const SearchPopup = () => {
            <SearchTxtTag>{_searchHd}</SearchTxtTag> 
 
             </SearchTabHdBox>
-            <ClosedBtn onClick={() => toggleSearchPop()}></ClosedBtn>
+            <ClosedBox>
+              <ClosedBtn onClick={() => toggleSearchPop()}/>
+            </ClosedBox>
             <SearchResultInner>
               {/* 일반 검색 결과 */}
               <SearchWrap>
@@ -180,31 +182,19 @@ const HeaderWrap = styled.span`
   color: ${(props) => props.theme.color.darkGray};
 `;
 
-  /* 닫기 버튼 */
-
-// const ClosedBtn2 = styled.button.attrs({ type: 'button' })`
-//   position: absolute;
-//   top: 4px;
-//   right: 20px;
-//   width: 40px;
-//   height: 40px;
-//   border-radius: 50%;
-//   cursor: pointer;
-//   transition: all 0.2s ease;
-//   &::before {
-//     content: '';
-//     background: url(${Xbtn}) no-repeat center / cover;
-//     position: absolute;
-//     top: 50%;
-//     left: 50%;
-//     transform: translate(-50%, -50%);
-//     width: 22px;
-//     height: 22px;
-//   }
-//   &:hover {
-//     background: ${(props) => props.theme.color.hoverColor};
-//   }
-// `;
+// 닫기 버튼
+const ClosedBox = styled.button`
+position:absolute;
+display:flex;
+justify-content:center;
+align-items:center;
+top:1em;
+right: 1.5em;
+border-radius:50%;
+width:3em;
+height:3em;
+overflow:hidden;
+`
 const ClosedBtn = styled.button.attrs({ type: 'button' })`
   ${props => props.theme.closeBtn};
   &:hover {

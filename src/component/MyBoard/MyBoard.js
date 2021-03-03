@@ -96,9 +96,11 @@ export default function MyBoard({boardItem, userId}) {
 
   useEffect(() => {
     setMyboardData(boardDataApi?.data)
-    boardDataError?.status === 404 && toggle_Modal_Confirm(true)
+  }, [boardDataApi]);
 
-  }, [boardItem]);
+  useEffect(() => {
+    boardDataError?.status === 404 && toggle_Modal_Confirm(true)
+  }, []);
 
   const navTabArr = [
     {link:'all', title:_allTabs},

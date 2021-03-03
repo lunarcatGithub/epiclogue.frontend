@@ -4,9 +4,7 @@ import styled from 'styled-components';
 import Portal from './Portal';
 
 function Modal({ className, onClose, maskClosable, closable, visible, children }) {
-  console.log(
-    className, onClose, maskClosable, closable, visible, children
-  )
+ 
   const onMaskClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose(!maskClosable)
