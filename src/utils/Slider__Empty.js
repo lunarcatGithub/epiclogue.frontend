@@ -2,12 +2,8 @@ import React, {useContext} from 'react';
 import styled from "styled-components"
 
 //컴포넌트 import
-import {langUploadPreView} from '../Languge/Lang.Upload';
-import {LanguageContext} from '../../Component/Store/App_Store';
-
-// 이미지 import
-import PreviewImg from "../../svg/Preview.svg";
-
+import {langUploadPreView} from '@language/Lang.Upload';
+import {LanguageContext} from '@store/App_Store';
 
 export default function SliderEmpty () {
     const {langState} = useContext(LanguageContext);
@@ -79,7 +75,7 @@ const LastBox = styled(TextBox)`
 `
 
 const Img = styled.span`
-background:url(${PreviewImg}) no-repeat center center / cover;
+background:url("/static/Preview.svg") no-repeat center center / cover;
 width:156px;
 height:174px;
 @media(max-width:900px){

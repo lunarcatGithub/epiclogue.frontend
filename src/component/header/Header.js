@@ -27,7 +27,6 @@ export const HeaderDataContext = React.createContext();
 
 const Header = () => {
   const router = useRouter();
-  console.log(router)
 
   const pathname = router.asPath;
   // 경고용 푸시

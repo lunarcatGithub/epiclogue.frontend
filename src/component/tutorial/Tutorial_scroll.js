@@ -1,24 +1,18 @@
 import React, {useContext} from 'react'
 import styled from 'styled-components';
-import useScrollFadeIn from '../Hook/useScrollFadeIn';
-import {LangTutorial} from '../Languge/Lang.Tutorial';
+import useScrollFadeIn from '@hooks/useScrollFadeIn';
+import {LangTutorial} from '@language/Lang.Tutorial';
 
 // hooks&reducer
-import { LanguageContext } from '../../Component/Store/App_Store';
-import { useUrlMove } from '../Hook/useUrlMove';
-
-import welcome from '../../vedio/welcome_epic1.mp4';
-import edited from '../../vedio/edited.mp4';
-import mobile from '../../vedio/mobile.mp4';
-
-import Logo from '../../svg/test.svg';
+import { LanguageContext } from '@store/App_Store';
+import { useUrlMove } from '@hooks/useUrlMove';
 
 export default function TutorialScroll(){
     const [goURL] = useUrlMove();
 
   //언어 변수
-    const { languageState } = useContext(LanguageContext);
-    const { selectedLanguage, defaultLanguage } = languageState;
+    const { langState } = useContext(LanguageContext);
+    const { selectedLanguage, defaultLanguage } = langState;
     const { 
     title1, desc1,
     title2, desc2,
@@ -41,10 +35,10 @@ export default function TutorialScroll(){
     const animatedItem4 = useScrollFadeIn();
 
     const imageArr = [
-        {id:0, img:welcome, title:_title1, desc:_desc1, animation:{...animatedItem}, color:`#FCF6EB`},
-        {id:1, img:edited, title:_title2, desc:_desc2, animation:{...animatedItem2}, color:`#F1FBF5`},
-        {id:2, img:mobile, title:_title3, desc:_desc3, animation:{...animatedItem3}, color:`#F2EAE6`, mobile:true},
-        {id:3, img:welcome, title:_title4, desc:_desc4, animation:{...animatedItem4}, color:`#E8F5FE`, last:true}
+        {id:0, img:'/static/vedio/welcome_epic1.mp4', title:_title1, desc:_desc1, animation:{...animatedItem}, color:`#FCF6EB`},
+        {id:1, img:'/static/vedio/edited.mp4', title:_title2, desc:_desc2, animation:{...animatedItem2}, color:`#F1FBF5`},
+        {id:2, img:'/static/vedio/mobile.mp4', title:_title3, desc:_desc3, animation:{...animatedItem3}, color:`#F2EAE6`, mobile:true},
+        {id:3, img:null, title:_title4, desc:_desc4, animation:{...animatedItem4}, color:`#E8F5FE`, last:true}
     ];
 
     return (
@@ -162,7 +156,7 @@ const Descript = styled.span`
 `
 
 const EpicImg = styled.svg`
-    background:url(${Logo}) no-repeat center center / contain;
+    background:url('/static/test.svg') no-repeat center center / contain;
     margin:0;
     width: 100%;
 `;

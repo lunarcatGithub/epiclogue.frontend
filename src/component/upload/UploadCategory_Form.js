@@ -1,17 +1,11 @@
 import React, {useState, useEffect, useContext} from 'react'
 import styled from 'styled-components';
-import { langUploadCategory } from '../Languge/Lang.Upload';
+import { langUploadCategory } from '@language/Lang.Upload';
 
 // Hooks&&reducer
-import { useToggle } from '../Hook/useToggle';
-import { LanguageContext } from '../../Component/Store/App_Store';
+import { useToggle } from '@hooks/useToggle';
+import { LanguageContext } from '@store/App_Store';
 import {uploadContext} from './UploadCategory';
-
-// 아이콘 import
-import ComicBook from '../../svg/comic_Icon.svg';
-import IllustPen from '../../svg/illust_Icon.svg';
-import SecretContent from '../../svg/secretcontent.svg';
-import PublicShare from '../../svg/publicshare.svg';
 
 export default function UploadCategoryForm(props) {
     const {type, initialNum} = props;
@@ -33,8 +27,8 @@ export default function UploadCategoryForm(props) {
     const [languageTxt, setlanguageTxt] = useState();
 
       //언어 변수
-    const { languageState } = useContext(LanguageContext);
-    const { selectedLanguage, defaultLanguage } = languageState;
+    const { langState } = useContext(LanguageContext);
+    const { selectedLanguage, defaultLanguage } = langState;
     const {
     thisComic,
     thisIllust,
@@ -235,7 +229,7 @@ const ComicIcon = styled.span`
   border-radius:3px;
   &::before{
     content:'';
-    background: url(${ComicBook}) no-repeat center center / contain;
+    background: url('/static/comic_Icon.svg') no-repeat center center / contain;
     width: 1.6em;
     height: 1.6em;
 
@@ -243,21 +237,21 @@ const ComicIcon = styled.span`
 `;
 const IllustIcon = styled(ComicIcon)`
   &::before{
-    background: url(${IllustPen}) no-repeat center center / contain;
+    background: url('/static/illust_Icon.svg') no-repeat center center / contain;
   }
 
 `;
 const PublicIcon = styled(ComicIcon)`
   border-radius:50%;
   &::before{
-    background: url(${PublicShare}) no-repeat center center / contain;
+    background: url('/static/publicshare.svg') no-repeat center center / contain;
   }
 
 `;
 const SecretIcon = styled(ComicIcon)`
   background:none;
   &::before{
-    background: url(${SecretContent}) no-repeat center center / contain;
+    background: url('/static/secretcontent.svg') no-repeat center center / contain;
   }
 
 `;

@@ -1,6 +1,21 @@
 import {createGlobalStyle} from "styled-components";
 import reset from "styled-reset";
 
+let fontStyling,
+userBrowserLang = typeof window !== 'undefined' && navigator.language
+
+switch (userBrowserLang) {
+  case 'ko' || 'ko-KR' || 'ko-kr' :
+    fontStyling = `font-family:-apple-system, 'Noto Sans KR', sans-serif;`
+    break;
+    case 'ja' || 'ja-JA' || 'ja-ja' :
+      fontStyling = `font-family:-apple-system, 'Noto Sans JP', sans-serif;`
+    break;
+
+  default: fontStyling = `font-family:-apple-system, sans-serif;`
+
+    break;
+}
 
 export const GlobalStyles = createGlobalStyle `
 
@@ -30,6 +45,7 @@ ${reset}
    body{
       background:#F5F5F6;
       /* font-family:-apple-system, 'Noto Sans KR', 'Noto Sans JP', 'Roboto', sans-serif; */
+      ${fontStyling}
       font-size: 15px;
       -webkit-tap-highlight-color: rgba(0,0,0,0);
       -webkit-tap-highlight-color: transparent;
@@ -46,3 +62,5 @@ ${reset}
 
     }
 `;
+
+export default GlobalStyles;

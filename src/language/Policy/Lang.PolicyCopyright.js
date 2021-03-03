@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 const SPAN = styled.span`
   color: rgb(113,113,113);
@@ -141,15 +141,15 @@ export const copyrightGuide = {
       },
       definition4: {
         2: <>
-            <SPAN>If you think your work has been violated, you can <Link to='/report'><BOLD>report</BOLD></Link>it directly and notify us. You may exercise your rights directly to the copyright holder through other national rules or legal procedures.</SPAN>
+            <SPAN>If you think your work has been violated, you can <Link href={{pathname:'/report'}}><BOLD>report</BOLD></Link>it directly and notify us. You may exercise your rights directly to the copyright holder through other national rules or legal procedures.</SPAN>
             <SPAN>However, please think carefully and report because legal disputes related to copyright can take a long time and cause financial problems. If there is no direct damage or concerns, we can mediate through the deletion and warning of the post in our EpicLogue.</SPAN>
           </>,
         0: <>
-            <SPAN>만약 회원 여러분의 저작물이 침해되었다고 생각할 경우 <Link to='/report'><BOLD>저작물 신고</BOLD></Link>에서 회원님이 직접 신고를 하여 저희에게 통지할 수 있습니다. 그 외 국가에서 정한 규칙이나 법적인 절차를 통하여 해당 저작권자에게 직접 권리를 행사 할 수 있습니다</SPAN>
+            <SPAN>만약 회원 여러분의 저작물이 침해되었다고 생각할 경우 <Link href={{pathname:'/report'}}><BOLD>저작물 신고</BOLD></Link>에서 회원님이 직접 신고를 하여 저희에게 통지할 수 있습니다. 그 외 국가에서 정한 규칙이나 법적인 절차를 통하여 해당 저작권자에게 직접 권리를 행사 할 수 있습니다</SPAN>
             <SPAN>하지만 저작권과 관련한 법적 분쟁은 상당한 시일을 소요하고 또 금전적 문제를 야기할 수 있기 때문에 신중하게 생각하시고 신고해주세요. 직접적인 피해가 없거나 우려가 되는 상황이라면 저희 에픽로그에서 해당 게시물의 삭제 및 경고를 통해 중재할 수 있습니다.</SPAN>
           </>,
         1: <>
-            <SPAN>会員様の著作物が侵害されたと判断した場合、<Link to='/report'><BOLD>著作物届出</BOLD></Link>において会員様が直接届出をして我々に通知することができます。 その他、国家が定めた規則や法的手続きを経て当該著作権者に直接権利を行使することができます。</SPAN>
+            <SPAN>会員様の著作物が侵害されたと判断した場合、<Link href={{pathname:'/report'}}><BOLD>著作物届出</BOLD></Link>において会員様が直接届出をして我々に通知することができます。 その他、国家が定めた規則や法的手続きを経て当該著作権者に直接権利を行使することができます。</SPAN>
             <SPAN>しかし、著作権に関する法的紛争は、かなりの時間がかかり、また金銭的問題が生じることがあるため、慎重に考えて申告してください。 直接的な被害がないか、または懸念される状況であれば、当EpicLogueで当該掲示物の削除および警告を通じて仲裁することができます。</SPAN>
           </>
       }

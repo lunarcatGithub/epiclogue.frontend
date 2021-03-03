@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import {uploadContext} from './UploadCategory';
-import {langUploadSource} from '../Languge/Lang.Upload';
-import {LanguageContext} from '../../Component/Store/App_Store';
+import {langUploadSource} from '@language/Lang.Upload';
+import {LanguageContext} from '@store/App_Store';
 
 export default function OriginUserSource() {
   const {
@@ -12,8 +12,8 @@ export default function OriginUserSource() {
     setSourceHref
   } = useContext(uploadContext);
   
-  const {languageState} = useContext(LanguageContext);
-  const { selectedLanguage, defaultLanguage } = languageState;
+  const {langState} = useContext(LanguageContext);
+  const { selectedLanguage, defaultLanguage } = langState;
   const {externalSource, uploadPermission} = langUploadSource;
   const _externalSource = externalSource[selectedLanguage] || externalSource[defaultLanguage],
         _uploadPermission = uploadPermission[selectedLanguage] || uploadPermission[defaultLanguage];

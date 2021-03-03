@@ -5,8 +5,10 @@ import Head from 'next/head';
 import Contents from '@component/content/Contents';
 
 // Hooks&&reducer import
+import { useUrlMove } from '@hooks/useUrlMove';
 
 const Main = ({boardItem}) => {
+  const [goURL] = useUrlMove();
 
   // Meta 전용
 
@@ -16,7 +18,7 @@ const Main = ({boardItem}) => {
           <Contents type="MAIN" boardItem={boardItem} />
         <>
           {/*업로드 버튼*/}
-            <UploadButton>
+            <UploadButton onClick={()=> goURL({pathname:'/upload'})}>
                 <UploadSvg />
             </UploadButton>
         </>

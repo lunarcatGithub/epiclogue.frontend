@@ -1,30 +1,28 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import {useRouter} from 'next/router';
 
 // 컴포넌트 import
 import OriginUserForm from './Upload__OriginUser';
-import { useUrlMove } from '../Hook/useUrlMove';
-import history from '../history';
-import { ProgressSmall } from '../Utils/LoadingProgress';
-import { langUploadCategory } from '../Languge/Lang.Upload';
-import { LanguageContext, AlertContext } from '../../Component/Store/App_Store';
+import { useUrlMove } from '@hooks/useUrlMove';
+import { ProgressSmall } from '@utils/LoadingProgress';
+import { langUploadCategory } from '@language/Lang.Upload';
+import { LanguageContext, AlertContext } from '@store/App_Store';
 import UploadCategoryForm from './UploadCategory_Form';
 import OriginUserSource from './Upload__Source';
 
 // Hooks&&reducer import
-import useFetchData from '../Hook/useFetchData';
+import useFetchData from '@hooks/useFetchData';
+import { RoadDataContext } from '@hooks/useRoadDataContext';
 
-// 아이콘 import
-import { RoadDataContext } from '../Hook/useRoadDataContext';
 
 export const uploadContext = React.createContext();
 
 const UploadCategory = (props) => {
   const {categoryToggle, mergyImage, type, imageAdjust, urlToFileConvert, editorData, category, setCategory} = props;
-
-  const { alertBool } = useContext(AlertContext);
-  const { languageState } = useContext(LanguageContext);
+  const router = useRouter();
+  const { alertPatch } = useContext(AlertContext);
+  const { langState } = useContext(LanguageContext);
   const { roadData, boardImg } = useContext(RoadDataContext);
 
   const _roadData = props.type === 'editor' ? [] : roadData;
@@ -32,7 +30,6 @@ const UploadCategory = (props) => {
   const boardUid = _roadData.boardUid;
 
   let _boardImg = props.type === 'editor' ? [] : boardImg;
-  const location = useLocation();
   
   // 카테고리 선택 데이터
   const [boardTitle, setBoardTitle] = useState();
@@ -64,11 +61,11 @@ const UploadCategory = (props) => {
 
 
   useEffect(() => {
-    setOriginData(location.state || editorData);
-  }, [location, editorData]);
+    setOriginData(router.query || editorData);
+  }, [router, editorData]);
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = languageState;
+  const { selectedLanguage, defaultLanguage } = langState;
   const {
     titlePlaceholder,
     alertPlaceholder,
@@ -123,7 +120,7 @@ const UploadCategory = (props) => {
     setDisabled(true);
 
     if (imageData?.length === 0) {
-      alertBool({ type: 'UPLOADED_IMAGE', payload: true });
+      alertPatch({ type: 'UPLOADED_IMAGE', payload: true });
       setDisabled(false);
       return;
     }
@@ -140,7 +137,7 @@ const UploadCategory = (props) => {
       setDisabled(false);
       return;
     } else {
-      alertBool({ type: 'LOADING_PUSH', payload: true });
+      alertPatch({ type: 'LOADING_PUSH', payload: true });
 
       let _uploadData = new FormData();
       for (let i = 0; i < imageData.length; i++) {
@@ -166,13 +163,13 @@ const UploadCategory = (props) => {
       }
 
       if (!_boardImg) {
-        alertBool({ type: 'UPLOADED_IMAGE', payload: true });
+        alertPatch({ type: 'UPLOADED_IMAGE', payload: true });
         setDisabled(false);
         return;
       }
 
       if (!boardTitle) {
-        alertBool({ type: 'UPLOADED_TITLE', payload: true });
+        alertPatch({ type: 'UPLOADED_TITLE', payload: true });
         setDisabled(false);
         setAlertTitle(true);
         return;
@@ -195,15 +192,15 @@ const UploadCategory = (props) => {
   useEffect(() => {
     if (uploadApi) {
       if (uploadApi?.result === 'ok') {
-        alertBool({ type: 'UPLOADED_UPDATE', payload: true });
+        alertPatch({ type: 'UPLOADED_UPDATE', payload: true });
         goViewer(`/viewer/${uploadApi?.data._id}`);
-        alertBool({ type: 'LOADING_PUSH', payload: false });
+        alertPatch({ type: 'LOADING_PUSH', payload: false });
       } else {
-        alertBool({ type: 'UPLOADED', payload: true });
+        alertPatch({ type: 'UPLOADED', payload: true });
         goViewer(`/viewer/${uploadApi?.data._id}`);
       }
     } else if (uploadApi?.result === 'error') {
-      alertBool({ type: 'UPLOADED_FAIL', payload: true });
+      alertPatch({ type: 'UPLOADED_FAIL', payload: true });
     } else {
       setDisabled(false);
       // goViewer(`/main`);
@@ -281,7 +278,7 @@ const UploadCategory = (props) => {
         <Form action="" onSubmit={editorDevideHandler} encType="multipart/form-data" autoComplete="off">
           <SubmitBox>
             <ArrowBtn onClick={() =>{
-              location.pathname.match('/editor') ? categoryToggle(false) : history.goBack()
+              router.pathname.match('/editor') ? categoryToggle(false) : history.goBack()
             }} />
              <AlertText>{ fileSize && fileSize }</AlertText>
             {sourceToggleOn && !fileSize && <AlertText>{ _sourceAlert }</AlertText>}

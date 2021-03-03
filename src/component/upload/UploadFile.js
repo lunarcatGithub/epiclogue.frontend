@@ -1,15 +1,15 @@
 import React, { useState, useCallback, useContext } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { langUpload } from '../Languge/Lang.Upload';
+import { langUpload } from '@language/Lang.Upload';
 
 // 컴포넌트 import
-import Slider from '../Utils/Slider';
+import Slider from '@utils/Slider';
 import UploadCategory from './UploadCategory';
-import SliderEmpty from '../Utils/Slider__Empty';
-import { RoadDataContext } from '../Hook/useRoadDataContext';
+import SliderEmpty from '@utils/Slider__Empty';
+import { RoadDataContext } from '@hooks/useRoadDataContext';
 
 // Hooks & Reducer
-import { LanguageContext } from '../../Component/Store/App_Store';
+import { LanguageContext } from '@store/App_Store';
 
 let G_index = 0;
 
@@ -20,8 +20,8 @@ const UploadFile = () => {
   const [category, setCategory] = useState(0);
 
   // 언어 변수
-  const { languageState } = useContext(LanguageContext);
-  const { selectedLanguage, defaultLanguage } = languageState;
+  const { langState } = useContext(LanguageContext);
+  const { selectedLanguage, defaultLanguage } = langState;
   const { dropImage } = langUpload;
   const _dropImage = dropImage[selectedLanguage] || dropImage[defaultLanguage];
 

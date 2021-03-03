@@ -2,12 +2,12 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
   
 // 컴포넌트 import
+import { LangHeaderInform } from '@language/Lang.Header';
+import {HeaderDataContext} from './Header';
 
 // hooks&&reducer
 import { useUrlMove } from '@hooks/useUrlMove';
-import { LangHeaderInform } from '@language/Lang.Header';
 import { LanguageContext, AppDataContext} from '@store/App_Store';
-import {HeaderDataContext} from './Header';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 // 아이콘 import
