@@ -14,7 +14,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 // import Xbtn from '../../img/X-mark.png';
 
 const UserInform = () => {
-  const { languageState } = useContext(LanguageContext);
+  const { langState } = useContext(LanguageContext);
   const { toggleNoti } = useContext(HeaderDataContext);
   const { loginOn } = useContext(AppDataContext);
   const informRef = useRef();
@@ -27,7 +27,7 @@ const UserInform = () => {
  const [tagetUser, setTargetUser] = useState();
 
  //언어 변수
-  const { selectedLanguage, defaultLanguage } = languageState;
+  const { selectedLanguage, defaultLanguage } = langState;
   const { 
     headerInfrom,
     userReactLike, 

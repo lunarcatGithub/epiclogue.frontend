@@ -11,11 +11,11 @@ import {LanguageContext} from '@store/App_Store';
 import { HeaderDataContext } from './Header';
 
 const SearchPopup = () => {
-  const {languageState} = useContext(LanguageContext);
+  const {langState} = useContext(LanguageContext);
 
   const { searchBody, toggleSearchPop } = useContext(HeaderDataContext);
   //언어 변수
-  const {selectedLanguage, defaultLanguage} = languageState;
+  const {selectedLanguage, defaultLanguage} = langState;
   const {
     searchHd,
     searchTags,

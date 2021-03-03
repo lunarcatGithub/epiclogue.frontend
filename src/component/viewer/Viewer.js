@@ -225,6 +225,7 @@ const feedbackRef = useRef();
 
   useEffect(() => {
     const initialData = boardItem;
+    console.log(boardItem)
     if (initialData?.result === 'ok') {
       const boardData = initialData.data;
       const replyList = initialData.data.feedbacks;
@@ -248,7 +249,6 @@ const feedbackRef = useRef();
         allowSecondaryCreation,
         sourceUrl
       } = boardData;
-
       const { screenId, nickname, _id, following, profile } = writer;
 
       setData({

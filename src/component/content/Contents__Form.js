@@ -7,12 +7,14 @@ import { LangMain } from '@language/Lang.Main';
 
 // hooks&reducer
 import { LanguageContext } from '@store/App_Store';
+import { useUrlMove } from '@hooks/useUrlMove';
 
 export default function MainContent(props){
   const { contentData } = props;
   const { category, originUserId } = contentData;
   const [contents, setContents] = useState();
   const { langState } = useContext(LanguageContext);
+  const [goURL] = useUrlMove();
 
   useEffect(() => {
       setContents(contentData.board ? contentData.board : contentData)
@@ -28,27 +30,23 @@ export default function MainContent(props){
     <>
         <ContentBox>
         {/* 유저 콘텐츠 박스*/}
-        <Link href={`/viewer/${contents?._id}`}>
-            <ImgBox>
+            <ImgBox onClick={()=> goURL({pathname:`/viewer/${contents?._id}`})}>
                 <UserContentImg image={contents?.thumbnail} />
                 <CategoryIconBox styling={category === '0' ? 'Illust' : 'Comic'}>
                 <CategoryIcon icon={category === '0' ? '/static/illust_Icon.svg' : '/static/comic_Icon.svg'}/>
                 </CategoryIconBox>
             </ImgBox>
-        </Link>
         <ContentTxtBox>
         <Link href={`/viewer/${contents?._id}`}>
             <ContentTitle>{contents?.boardTitle}</ContentTitle>
         </Link>
             {/* 유저 정보 및 제목*/}
-            <Link href={`/myboard/${contents?.writer?.screenId}/all`}>
-                <UserBox>
+                <UserBox onClick={()=> goURL({pathname:`/myboard/[id]?tab=all`, as:`/myboard/${contents?.writer?.screenId}`})}>
                 <UserPfImgBox><UserPfImg profile={contents?.writer?.profile?.thumbnail}/></UserPfImgBox>
                     <UserNick>{contents?.writer?.nickname}</UserNick>
                     <RecreateType>{originUserId ? _reCreateTxt : _originTxt}</RecreateType>
                     {/* // 유저 정보 및 제목 끝 */}
                 </UserBox>
-            </Link>
         </ContentTxtBox>
           {/* // 유저 콘텐츠 박스 끝 */}
         </ContentBox>

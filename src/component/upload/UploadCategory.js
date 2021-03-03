@@ -180,11 +180,11 @@ const UploadCategory = (props) => {
       // }
 
         if (boardUid) {
-          uploadFetch(`${process.env.REACT_APP_API_URL}/boards/${boardUid}/edit`, 'post', null, _uploadData);
+          uploadFetch(`${process.env.API_URL}/boards/${boardUid}/edit`, 'post', null, _uploadData);
         } else if (originData) {
-          uploadFetch(`${process.env.REACT_APP_API_URL}/boards/sec`, 'post', null, _uploadData);
+          uploadFetch(`${process.env.API_URL}/boards/sec`, 'post', null, _uploadData);
         } else {
-          uploadFetch(`${process.env.REACT_APP_API_URL}/boards`, 'post', null, _uploadData);
+          uploadFetch(`${process.env.API_URL}/boards`, 'post', null, _uploadData);
         }
       setDisabled(false);
     }

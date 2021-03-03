@@ -5,8 +5,8 @@ import { ReplyListContext } from './Viewer';
 
 // 컴포넌트 import
 import theme from '../../theme/theme';
-import { LangCommon } from '../Languge/Lang.Common';
-import { langSharePopup}  from '../Languge/Lang.Viewer';
+import { LangCommon } from '@language/Lang.Common';
+import { langSharePopup}  from '@language/Lang.Viewer';
 import {LanguageContext} from '../../App';
 
 const SharePopup = () => {

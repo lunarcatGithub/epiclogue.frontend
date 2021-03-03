@@ -4,7 +4,7 @@ import theme from '../styles/theme';
 import {GlobalStyles} from '../styles/GlobalStyles';
 import Header from '@component/header/Header';
 import {ContextStore} from '@store/App_Store';
-
+import {EditorStore} from '@component/editor/Editor_Store'
 //contenxt
 
 function MyApp({ Component, pageProps }) {

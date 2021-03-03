@@ -2,9 +2,9 @@ import React, {useContext} from 'react';
 import styled from 'styled-components';
 
 // Hooks&&reducer import
-import { useUrlMove } from '../Hook/useUrlMove';
+import { useUrlMove } from '@hooks/useUrlMove';
 import { LanguageContext } from '../../Component/Store/App_Store';
-import { unAuthLang } from '../Languge/Lang.Common';
+import { unAuthLang } from '@language/Lang.Common';
 
 export default function UnauthLogin(props) {
   const {setUnAuth} = props;

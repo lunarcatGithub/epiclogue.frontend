@@ -16,7 +16,7 @@ const ReactPopup = () => {
   const [reactData, setReactData] = useState([]);
 
   const { boardUid, toggle_Modal_React } = useContext(ReplyListContext);
-
+  console.log(boardUid)
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
   const {

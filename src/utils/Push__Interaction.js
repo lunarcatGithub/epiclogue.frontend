@@ -6,7 +6,7 @@ import React, {
 import styled from "styled-components";
 
 // 컴포넌트 import
-import { LangPush } from "../Languge/Lang.Common";
+import { LangPush } from "@language/Lang.Common";
 import { LanguageContext, AlertContext } from '../../Component/Store/App_Store';
 import {ProgressSmall} from '../Utils/LoadingProgress';
 

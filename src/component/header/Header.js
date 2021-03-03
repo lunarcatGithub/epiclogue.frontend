@@ -160,11 +160,12 @@ const Header = () => {
       <MainHeader id="header" >
         <HeaderOutter show={show} pathname={pathname.match('/upload') && 'none'} >
           <HeaderInner pathname={pathname.match('/viewer') && 'none' }>
-            <Link href="/main">
-              <LogoWrap onClick={() => toggleSearchPop(false)}>
+              <LogoWrap onClick={() => {
+                toggleSearchPop(false)
+                goURL({pathname:"/main"})
+                }}>
                 <LogoImg />
               </LogoWrap>
-            </Link>
             {/* form box 스타일링*/}
             <FormBox id="searchForm" onSubmit={handleSearch} autoComplete="off">
               <SearchWrap>
@@ -206,8 +207,8 @@ const Header = () => {
               </OptionBtn>
 
               {/* setting */}
-              <NavItem 
-                to={`/mypage/profile`} 
+              <NavItem
+                onClick={()=> goURL({pathname:`/mypage/profile`})}
                 isActive={() => ['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)}>
                 <OptionBtn>
                   <OptionSetting />

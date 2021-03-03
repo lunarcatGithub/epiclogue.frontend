@@ -33,7 +33,7 @@ const ContextStore = ({ children }) => {
   const [myboardData, setMyboardData] = useState([]);
   // let login = localStorage.getItem('loginOn');
   
-  let login = true
+  let login = false
   const [loginOn, setLoginOn] = useState(Boolean(login));
 
   const[unAuth, setUnAuth] = useState(false);

@@ -28,12 +28,16 @@ export const LangLogin = {
         you will be considered to
         <br />
         agree to the&nbsp;
-        <Link to="/policy/service" target="_blank">
-          <AgreeCheckBtn>Terms</AgreeCheckBtn>
+        <Link href="/policy/service">
+          <a target="_blank">
+            <AgreeCheckBtn>Terms</AgreeCheckBtn>
+          </a>
         </Link>
         &nbsp;and&nbsp;
-        <Link to="/policy/private" target="_blank">
-          <AgreeCheckBtn>Privacy policy</AgreeCheckBtn>
+        <Link href="/policy/private">
+          <a target="_blank">
+            <AgreeCheckBtn>Privacy policy</AgreeCheckBtn>
+          </a>
         </Link>
       </>
     ),
@@ -41,12 +45,16 @@ export const LangLogin = {
       <>
         SNS 로그인을 하시면
         <br />
-        <Link to="/policy/service" target="_blank">
-          <AgreeCheckBtn>이용약관</AgreeCheckBtn>
+        <Link href="/policy/service" >
+          <a target="_blank">
+           <AgreeCheckBtn>이용약관</AgreeCheckBtn>
+          </a>
         </Link>
         &nbsp;및&nbsp;
-        <Link to="/policy/private" target="_blank">
-          <AgreeCheckBtn>개인정보 취급방침</AgreeCheckBtn>에
+        <Link href="/policy/private">
+          <a target="_blank">
+           <AgreeCheckBtn>개인정보 취급방침</AgreeCheckBtn>에
+          </a>
         </Link>
         <br />
         동의하는 것으로 간주됩니다.
@@ -56,12 +64,16 @@ export const LangLogin = {
       <>
         SNSにログインすると、
         <br />
-        <Link to="/policy/service" target="_blank">
-          <AgreeCheckBtn>利用規約</AgreeCheckBtn>
+        <Link href="/policy/service">
+          <a target="_blank">
+            <AgreeCheckBtn>利用規約</AgreeCheckBtn>
+          </a>
         </Link>
         &nbsp;及び&nbsp;
-        <Link to="/policy/private" target="_blank">
-          <AgreeCheckBtn>個人情報取扱方針</AgreeCheckBtn>に
+        <Link href="/policy/private">
+          <a target="_blank">
+            <AgreeCheckBtn>個人情報取扱方針</AgreeCheckBtn>に
+          </a>
         </Link>
         <br />
         同意するものとみなされます
@@ -135,34 +147,46 @@ export const langSignUp = {
     2: (
       <>
         I agree to the
-        <Link to="/policy/service" target="_blank">
-          <AgreeCheckBtn>&nbsp;Terms&nbsp;</AgreeCheckBtn>
+        <Link href="/policy/service">
+          <a target="_blank">
+             <AgreeCheckBtn>&nbsp;Terms&nbsp;</AgreeCheckBtn>
+          </a>
         </Link>
         &nbsp;And&nbsp;
-        <Link to="/policy/private" target="_blank">
-          <AgreeCheckBtn>&nbsp;Privacy policy&nbsp;</AgreeCheckBtn>
+        <Link href="/policy/private" >
+          <a target="_blank">
+            <AgreeCheckBtn>&nbsp;Privacy policy&nbsp;</AgreeCheckBtn>
+          </a>
         </Link>
       </>
     ),
     0: (
       <>
-        <Link to="/policy/service" target="_blank">
-          <AgreeCheckBtn>&nbsp;이용약관&nbsp;</AgreeCheckBtn>
+        <Link href="/policy/service">
+          <a target="_blank">
+            <AgreeCheckBtn>&nbsp;이용약관&nbsp;</AgreeCheckBtn>
+          </a>
         </Link>
         &nbsp;및&nbsp;
-        <Link to="/policy/private" target="_blank">
-          <AgreeCheckBtn>&nbsp;개인정보 취급방침&nbsp;</AgreeCheckBtn>에 동의
+        <Link href="/policy/private" >
+          <a target="_blank">
+            <AgreeCheckBtn>&nbsp;개인정보 취급방침&nbsp;</AgreeCheckBtn>에 동의
+          </a>
         </Link>
       </>
     ),
     1: (
       <>
-        <Link to="/policy/service" target="_blank">
-          <AgreeCheckBtn>&nbsp;利用規約&nbsp;</AgreeCheckBtn>
+        <Link href="/policy/service">
+          <a target="_blank">
+            <AgreeCheckBtn>&nbsp;利用規約&nbsp;</AgreeCheckBtn>
+          </a>
         </Link>
         &nbsp;及び&nbsp;
-        <Link to="/policy/private" target="_blank">
-          <AgreeCheckBtn>&nbsp;個人情報取扱方針&nbsp;</AgreeCheckBtn>
+        <Link href="/policy/private">
+          <a target="_blank">
+            <AgreeCheckBtn>&nbsp;個人情報取扱方針&nbsp;</AgreeCheckBtn>
+          </a>
           に同意します。
         </Link>
       </>

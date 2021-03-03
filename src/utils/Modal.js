@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import Portal from './Portal';
 
 function Modal({ className, onClose, maskClosable, closable, visible, children }) {
-
+  console.log(
+    className, onClose, maskClosable, closable, visible, children
+  )
   const onMaskClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose(!maskClosable)
@@ -21,12 +23,18 @@ function Modal({ className, onClose, maskClosable, closable, visible, children }
   }, []);
 
   return (
-    <Portal elementId="modal-root">
-      <ModalOverlay visible={visible} />
-        <ModalWrapper className={className} tabIndex={-1} visible={visible} onClick={maskClosable ? onMaskClick : null}>
-          {children}
-        </ModalWrapper>
-    </Portal>
+    // <Portal elementId="modal-root">
+    //   <ModalOverlay visible={true} />
+    //     <ModalWrapper className={className} tabIndex={-1} visible={visible} onClick={maskClosable ? onMaskClick : null}>
+    //       {children}
+    //     </ModalWrapper>
+    // </Portal>
+      <>
+        <ModalOverlay visible={true} />
+          <ModalWrapper className={className} tabIndex={-1} visible={visible} onClick={maskClosable ? onMaskClick : null}>
+            {children}
+          </ModalWrapper>
+      </>
   );
 }
 
