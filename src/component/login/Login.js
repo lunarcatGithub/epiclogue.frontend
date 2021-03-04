@@ -14,13 +14,12 @@ import { useUrlMove } from '@hooks/useUrlMove';
 const LoginLayOut = () => {
   const router = useRouter();
   const sign = router?.query
-  console.log(router?.query)
   const [changePage, setChangePage] = useState(Object.keys(sign).length === 0 ? false : true);
   const [goURL] = useUrlMove();
 
   useEffect(() => {
     if (localStorage.getItem('loginOn')) {
-      goURL({pathname:'/main'});
+      goURL({pathname:'/'});
     }
   }, []);
 

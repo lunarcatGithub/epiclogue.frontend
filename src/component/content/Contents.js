@@ -18,13 +18,13 @@ const Contents = (props) => {
   const {type, searchType, boardItem} = props;
 
   //차후 viewer === 더보기 같으면 filtering
-  const history = useRouter();
+  const router = useRouter();
   const loader = useRef(null);
   const { searchData, clickedComic, clickedIllust, myboardData } = useContext(AppDataContext);
   const [resultKeyword, setResultKeyword] = useState();
 
-  const url = history.pathname;
-  const keyword = history.pathname.split('/')[3];
+  const url = router.asPath;
+  const keyword = router.query.text;
   
   const [initialLoading, setInitialLoading] = useState(false);
   const [hasMoreLoading, setHasMoreLoading] = useState(false);

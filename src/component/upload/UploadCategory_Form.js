@@ -7,11 +7,9 @@ import { useToggle } from '@hooks/useToggle';
 import { LanguageContext } from '@store/App_Store';
 import {uploadContext} from './UploadCategory';
 
-export default function UploadCategoryForm(props) {
-    const {type, initialNum} = props;
+export default function UploadCategoryForm({type, initialNum}) {
 
     const {
-      setCategory,
       setPublic,
       setSecondCreate,
       setSendLang
@@ -75,14 +73,12 @@ export default function UploadCategoryForm(props) {
   
         switch (type) {
             case 'CONTENTS':
-            if(categoryNum === 0){
+            if(initialNum === 0){
                 setCategoryIcon(<IllustIcon />)
                 setCategoryTxt(_thisIllust)
-                setCategory(0)
-            } else if(categoryNum === 1){
+            } else if(initialNum === 1){
                 setCategoryIcon(<ComicIcon />)
                 setCategoryTxt(_thisComic)
-                setCategory(1)
             }
             setScriptTxt({title:_comicFillterCategory, sub:_comicFillterDesc})
             setContents([{id:0, title:'illust', lang:_thisIllust}, {id:1, title:'comic', lang:_thisComic}])
@@ -139,7 +135,7 @@ export default function UploadCategoryForm(props) {
 
     useEffect(() => {
       typeHandler()
-    }, [type, categoryNum])
+    }, [type, categoryNum, initialNum])
 
     return (
         <>

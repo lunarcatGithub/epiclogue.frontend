@@ -8,7 +8,6 @@ import UnauthLogin from '@utils/UnauthLogin';
 
 // Utils
 import Modal from '@utils/Modal';
-import { InteractTab } from '@utils/Push__Interaction';
 
 // create context
 const Context  = createContext({});
@@ -33,11 +32,9 @@ const ContextStore = ({ children }) => {
   const [paramsData, setParamsData] = useState();
 
   const [myboardData, setMyboardData] = useState([]);
-  // let login = localStorage.getItem('loginOn');
-  
   
   const [loginOn, setLoginOn] = useState();
-  const[unAuth, setUnAuth] = useState(false);
+  const [unAuth, setUnAuth] = useState(false);
   const location = useRouter();
 
   useEffect(() => {
@@ -65,19 +62,19 @@ const ContextStore = ({ children }) => {
 
   return (
       <AppDataContext.Provider value={{
-         searchData,
-         setSearchData,
-         clickedComic,
-         setClickedComic,
-         clickedIllust,
-         setClickedIllust,
-         myboardData,
-         setMyboardData,
-         setLoginOn,
-         loginOn,
-         setUnAuth,
-         paramsData,
-         setParamsData
+        searchData,
+        setSearchData,
+        clickedComic,
+        setClickedComic,
+        clickedIllust,
+        setClickedIllust,
+        myboardData,
+        setMyboardData,
+        setLoginOn,
+        loginOn,
+        setUnAuth,
+        paramsData,
+        setParamsData
       }}>
         <LanguageContext.Provider value={{
           langState,

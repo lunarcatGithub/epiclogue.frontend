@@ -44,7 +44,7 @@ const [followListLoding, followListApi, followListError, followListFetch] = useA
         _followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage];
         return (
     <ContentInner>
-      <UserIconNickBox onClick={()=>goURL(`/myboard/${userData?.screenId}/all`)}>
+      <UserIconNickBox onClick={()=>goURL({pathname:`/myboard/${userData?.screenId}`})}>
       <UserIconBox>
         <UserIcon profile={userData?.profile?.thumbnail} />
       </UserIconBox>

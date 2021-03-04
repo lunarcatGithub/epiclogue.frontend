@@ -3,17 +3,28 @@ import Head from 'next/head';
 
 //component
 import Contents from '@component/content/Contents';
+import { Meta } from '@utils/MetaTags';
+import { langMetaMain } from '@language/Lang.Meta';
 
 // Hooks&&reducer import
 import { useUrlMove } from '@hooks/useUrlMove';
 
 const Main = ({boardItem}) => {
   const [goURL] = useUrlMove();
+  
+  //언어 변수
+  const [metaMainTitle, metaMainDesc] = langMetaMain();
 
   // Meta 전용
-
+  const metaData = {
+    title: metaMainTitle,
+    description: metaMainDesc,
+    image: '/static/logo192.svg',
+    canonical: `/`,
+  };
   return (
     <>
+      <Meta meta={metaData} />
       <Layout>
           <Contents type="MAIN" boardItem={boardItem} />
         <>

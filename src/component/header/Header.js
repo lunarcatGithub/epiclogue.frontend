@@ -10,7 +10,7 @@ import SearchPopup from './Header__Search';
 import { LangHeader } from '@language/Lang.Header';
 import AutoHiding from '@utils/autoHiding';
 import Modal from '@utils/Modal';
-// import AdminFeedback from '@components/AdminFeedback';
+import AdminFeedback from '@component/develop/AdminFeedback';
 import { LangFeedbackMain } from '@language/Lang.Common';
 import HeaderUnauth from './Header__Unauth';
 
@@ -82,11 +82,10 @@ const Header = () => {
       setSearchData(searchBody);
       
       if(searchBody[0]?.match('@')){
-        goURL({pathname:`/search/users/${searchBody}`, state:{type:'users'}});
+        goURL({pathname:`/search/users`, query:{type:'users', text:searchBody}});
       }else {
-        goURL({pathname:`/search/${paramsData === undefined ? 'latest' : paramsData}/${searchBody}`, state:{type:'latest'}});
+        goURL({pathname:`/search/${paramsData === undefined ? 'latest' : paramsData}`, query:{type:'latest', text:searchBody}});
       }
-    
   };
 
   // useEffect(() => {
@@ -109,8 +108,6 @@ const Header = () => {
       setClickedIllust(true);
     }
   };
-
-
 
     // 유저 알림 Read 여부
     const readObserver = () => {
@@ -141,14 +138,16 @@ const Header = () => {
     }, [profileApi])
 
     useEffect(() => {
-      ['/editor/', '/epiclogueadmin', '/welcome', '/findPass', '/login'].includes(pathname)
+      [ '/epiclogueadmin', '/welcome' , '/login'].includes(pathname) ||
+      pathname.match('/editor/') ||
+      pathname.match('/findPass')
       ? 
       setPreventHeader(false) 
       : 
       setPreventHeader(true);
     }, [pathname])
 
-  return (
+    return (
     <HeaderDataContext.Provider value={{ searchBody, toggleSearchPop, toggleIsOpen, toggleNoti, profileApi, profileError }}>
       {/* 헤더 레이아웃 */}
       { 
@@ -159,7 +158,7 @@ const Header = () => {
           <HeaderInner pathname={pathname.match('/viewer') && 'none' }>
               <LogoWrap onClick={() => {
                 toggleSearchPop(false)
-                goURL({pathname:"/main"})
+                goURL({pathname:"/"})
                 }}>
                 <LogoImg />
               </LogoWrap>
@@ -224,7 +223,6 @@ const Header = () => {
             </MbHeaderInner>
           </HeaderOutter>
           {/*모바일 영역*/}
-
           <MobileHeader show={show}>
             <MobileHdInner>
                {/* DM */}
@@ -268,7 +266,7 @@ const Header = () => {
         {/* // 모바일 영역 끝 */}
       </MainHeader>
         {/*관리자 피드백 버튼*/}
-        <AdminFeedbackBtn onClick={toggleIsOpen} pathname={pathname.match('/main') ? 'flex' : 'none'}>
+        <AdminFeedbackBtn onClick={toggleIsOpen} pathname={pathname.length < 2 ? 'flex' : 'none'}>
           <FeedbackTitle>{_fbBtn}</FeedbackTitle>
         </AdminFeedbackBtn> 
       </>
@@ -792,7 +790,7 @@ height:3em;
 overflow:hidden;
 `
 
-const ClosedBtn = styled.button.attrs({ type: 'button' })`
+const ClosedBtn = styled.span`
   ${props => props.theme.closeBtn};
   &:hover {
     background: ${(props) => props.theme.color.hoverColor};

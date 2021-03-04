@@ -1,29 +1,27 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
-// let filter = 'win16|win32|win64|mac';
-// let isMobile = false;
+let filter = 'win16|win32|win64|mac';
+let isMobile = false;
+let navi = typeof window !== 'undefined' && navigator.language
+if (navi.platform) {
+  isMobile = filter.indexOf(navi.platform.toLowerCase()) < 0;
+}
 
-// if (navigator.platform) {
-//   isMobile = filter.indexOf(navigator.platform.toLowerCase()) < 0;
-// }
-
-// const locales = {
-//     en: 'en',
-//     ko: 'ko',
-//     ja: 'ja',
-//   };
-//   const language = navigator.language;
+const locales = {
+    en: 'en',
+    ko: 'ko',
+    ja: 'ja',
+  };
+  const language = navi.language;
   
   export const Meta = ({ meta }) => {
-    // const lang = locales[language] || locales['en'];
-    const lang ='ko';
+    const lang = locales[language] || locales['en'];
     const title = meta.title;
     const description = meta.description || undefined;
     const image = meta.image || undefined || undefined;
     const canonical = meta.canonical;
-    // const type = isMobile ? 'mobile' :'website';
-    const type = 'website';
+    const type = isMobile ? 'mobile' :'website';
     const width = meta.image && (meta.width || 1200) || undefined;
     const height = meta.image && (meta.height || 627) || undefined;
     return (
@@ -39,8 +37,7 @@ import { Helmet } from 'react-helmet';
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:url" content={`https://www.epiclogue.com/${canonical}`} />
-        {/* <meta property="og:locale" content={locales[lang]} /> */}
-        <meta property="og:locale" content={'ko'} />
+        <meta property="og:locale" content={locales[lang]} />
         <meta property="og:type" content={type} />
         <meta property="og:image" content={image} />
         <meta property="og:image:width" content={width} />
@@ -53,7 +50,9 @@ import { Helmet } from 'react-helmet';
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
         <meta name="twitter:site" content="Epic_Logue!" />
-         <link rel="alternate" href={`https://www.epiclogue.com/${canonical}`} hreflang={lang} />
+        <link rel="alternate" href={`https://www.epiclogue.com/${canonical}`} hreflang={lang} />
+        <link rel="manifest" href="/static/manifest.json" />
+        <link rel="shortcut icon" href="/static/favicon_128.ico" />
       </Helmet>
     );
   };

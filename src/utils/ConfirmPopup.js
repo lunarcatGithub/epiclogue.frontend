@@ -188,7 +188,7 @@ const passwordChange = () => {
     useEffect(() => {
       if(!pwConfirmApi) return;
       alertPatch({ type: 'SUCCESS_PWCHANGE', payload: true });
-      goURL('/login');
+      goURL({pathname:'/login'});
     }, [pwConfirmApi])
 
     useEffect(()=> {
@@ -233,7 +233,7 @@ const passwordChange = () => {
             {type === 'GOBACK' || type === 'REMOVE' || type === 'REMOVE_USER' ?
             <ConfirmBtn
                  onClick={() => {
-                  setAccessConfirm('/main');
+                  setAccessConfirm({pathname:'/'});
                 }}
                 >
               {confirmBtn}

@@ -16,7 +16,7 @@ import { useModal } from '@hooks/useModal';
 
 
 const MypageProfile = () => {
-  const { alertBool } = useContext(AlertContext);
+  const { alertPatch } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
 
   const [goUrl] = useUrlMove();
@@ -51,7 +51,7 @@ const MypageProfile = () => {
   const [validationError, setValidationError] = useState();
   const [pwNotMatch, setPwNotMatch] = useState();
   const [noPassword, setNoPassword] = useState();
-  const [imgSize, setImgSize] = useState();
+  const [imgSize, setImgSize] = useState(null);
 
   // 일단 임시로 넣어둠
   const [userCountry, setUserCountry] = useState();
@@ -61,7 +61,7 @@ const MypageProfile = () => {
   const [accessConfirm, setAccessConfirm] = useState(false);
 
 // fetch useAxiosFetch
-const [myProfileLoding, myProfileApi, myProfileError, myProfileFetch] = useAxiosFetch();
+const [myProfileLoding, myProfileApi, myProfileError, myProfileFetch] = useFetchData();
 const [imageLoding, imageApi, imageError, imageFetch] = useFetchData();
 const [pwLoding, pwApi, pwError, pwFetch] = useAxiosFetch();
 const [leaveLoding, leaveApi, leaveError, leaveFetch] = useAxiosFetch();
@@ -173,7 +173,7 @@ const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
     if(myProfileApi?.result !== 'ok') return;
     localStorage.setItem('userNick', myProfileApi?.data.nickname);
     localStorage.setItem('userid', myProfileApi?.data.screenId);
-    alertBool({ type: 'PROFILE_UPDATE', payload: true });
+    alertPatch({ type: 'PROFILE_UPDATE', payload: true });
     toggleTab(0, 0, 0, 0);
     setUserNick(myProfileApi?.data.nickname);
     setScreenId(myProfileApi?.data.screenId);
@@ -189,7 +189,7 @@ const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
 
   useEffect(() => {
     if(pwApi?.result === 'ok'){
-      alertBool({ type: 'PASSWORD_UPDATE', payload: true });
+      alertPatch({ type: 'PASSWORD_UPDATE', payload: true });
     } else {
       if(pwError){
         if(pwError?.data.message === "비밀번호 규칙을 확인해주세요."){
@@ -202,15 +202,6 @@ const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
     }
   }, [pwApi, pwError])
   
-  const sizeErrorAlert = (e) => {
-    //handlePreview에서 검증
-    let sumByte = e.target.files[0].size;
-    if (sumByte > 10485760){
-      setImgSize(_sizeError);
-      return;
-    }
-  }
-
   const imageDataAppend = (e, type) => {
     //handlePreview에서 분류
     let profileData = new FormData();
@@ -221,7 +212,11 @@ const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
   }
 
   const handlePreview = (e, type) => {
-    sizeErrorAlert(e)
+    let sumByte = e.target.files[0].size;
+    if (sumByte > 10485760){
+      setImgSize(_sizeError);
+      return;
+    }
     const profileData = imageDataAppend(e, type);
     imageFetch(`${process.env.API_URL}/user/editProfile`, 'post', null, profileData, null);
   };

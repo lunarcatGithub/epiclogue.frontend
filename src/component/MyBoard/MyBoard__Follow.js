@@ -7,16 +7,16 @@ import {useRouter} from 'next/router';
 import { ProgressSmall } from '@utils/LoadingProgress';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
-const MyBoardFollow = (props) => {
+const MyBoardFollow = () => {
   const informRef = useRef();
   const router = useRouter();
 
   const { originUser, follow } = router.query
-  const convertUser = JSON.parse(originUser)
 
   const [tab, setTab] = useState(follow);
   const [followingList, setFollowingList] = useState([]);
   const [followerList, setFollowerList] = useState([]);
+  const [convertUser, setConvertUser] = useState();
 
   // 팔로우 리스트 무한 스크롤
  const [items, setItems] = useState(20);
@@ -26,34 +26,39 @@ const MyBoardFollow = (props) => {
   const [followListLoding, followListApi, followListError, followListFetch] = useAxiosFetch();
 
   // 팔로우 무한 스크롤
-        const infinityScroll = () => {
-          let preItem = 0
-          let scrollHeight = informRef?.current?.scrollHeight;
+  const infinityScroll = () => {
+    let preItem = 0
+    let scrollHeight = informRef?.current?.scrollHeight;
+
+    let scrollTop = informRef?.current?.scrollTop;
+
+    let clientHeight = informRef?.current?.clientHeight;
+
+    if(scrollTop + clientHeight === scrollHeight){
+      setItems(items => items + 20);
+      if(tab === 'following'){
+        setSliceData(followingList?.slice(preItem, items))
+      } else {
+        setSliceData(followerList?.slice(preItem, items))
+      }
+    }
+  }
       
-          let scrollTop = informRef?.current?.scrollTop;
-      
-          let clientHeight = informRef?.current?.clientHeight;
-      
-          if(scrollTop + clientHeight === scrollHeight){
-            setItems(items => items + 20);
-            if(tab === 'following'){
-              setSliceData(followingList?.slice(preItem, items))
-            } else {
-              setSliceData(followerList?.slice(preItem, items))
-            }
-          }
-        }
-      
-        useEffect(()=> {
-          informRef && infinityScroll()
-          return () => {
-            informRef && infinityScroll()
-          }
-        },[])
-      
+  useEffect(()=> {
+    informRef && infinityScroll()
+    return () => {
+      informRef && infinityScroll()
+    }
+  },[])
+  
+  useEffect(() => {
+    const convert = JSON.parse(originUser);
+    setConvertUser(convert)
+  }, [])
+
   useEffect(() => {
     followListFetch(`${process.env.API_URL}/interaction/follow?screenId=${convertUser?.screenId}&type=${tab}`, 'get', null, null, null)
-  }, [tab]);
+  }, [tab, convertUser]);
 
   useEffect(() => {
     tab === 'following' ? setFollowingList(followListApi?.data) : setFollowerList(followListApi?.data);
@@ -218,25 +223,6 @@ const FollowerTab = styled.button`
   border-bottom: 3px solid ${(props) => (props.tabType === 'follower' ? props.theme.color.softOrangeColor : props.theme.color.softGrayColor)};
   &:hover {
     background: ${(props) => props.theme.color.semiOrangeColor};
-  }
-`;
-// NavLink 스타일 ****
-const activeClassName = 'nav-item-active';
-const NavItem = styled.span.attrs({
-  activeClassName,
-})`
-  display: flex;
-  width: 100%;
-
-  &.${activeClassName} {
-    ${FollowingTab} {
-      color: ${(props) => props.theme.color.orangeColor};
-      border-bottom: 3px solid ${(props) => props.theme.color.softOrangeColor};
-    }
-    ${FollowerTab} {
-      color: ${(props) => props.theme.color.orangeColor};
-      border-bottom: 3px solid ${(props) => props.theme.color.softOrangeColor};
-    }
   }
 `;
 

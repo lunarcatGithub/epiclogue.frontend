@@ -13,8 +13,7 @@ export const EditorContext = React.createContext();
 
 export const EditorStore = () => {
   const router = useRouter();
-  const { boardImg } = router.query
-  // const convertImg = JSON.parse(boardImg);
+  const { boardImg, data, boardUid } = router?.query
 
   // 원작 유저 정보
   const [originData, setOriginData] = useState();
@@ -25,7 +24,6 @@ export const EditorStore = () => {
   const [selectPage, setSelectPage] = useState(null);
   const [canvasData, setCanvasData] = useState([{id:0, cnavasJSON:null}]);
   const [finishCanvas, setFinishCanvas] = useState();
-
   // 아웃라인 컴포넌트
   const [textOutline, toggleTextOutline] = useToggle(false);
   const [outlineWidth, setOutlineWidth] = useState(0);
@@ -51,7 +49,10 @@ export const EditorStore = () => {
   const [categoryShowing, categoryToggle] = useModal();
 
   const getFiletoImgPath = async () => {
-    const _uploadData = boardImg
+    
+    let boardImgArr = [];
+    boardImgArr.push(boardImg)
+    const _uploadData = Array.isArray(boardImg) ? boardImg : boardImgArr
     getImages(_uploadData);
 
     let Urls = [];
@@ -73,7 +74,7 @@ export const EditorStore = () => {
   
   const getImages = (images) => {
     if(!images) return;
-    const imgLoad =(url) => {
+    const imgLoad = (url) => {
       return new Promise((resolve, reject) => {
         var img = new Image();
         img.src = url;
@@ -82,8 +83,8 @@ export const EditorStore = () => {
         }
         img.onerror = reject
       });
-     }
-     let imageLoadpromises = images?.map(imgLoad);
+    }
+    let imageLoadpromises = images?.map(imgLoad);
 
      Promise.all(imageLoadpromises).then(images => {
        let arr = [...images]
@@ -132,7 +133,7 @@ export const EditorStore = () => {
   }, []);
 
   useEffect(() => {
-    setOriginData(router?.query);
+    setOriginData(JSON.parse(data));
   }, [router?.query]);
 
     return (
@@ -181,6 +182,7 @@ export const EditorStore = () => {
           categoryToggle,
           // 최종
           originData,
+          boardUid,
           setFinishCanvas,
           URLs
         }

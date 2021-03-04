@@ -67,7 +67,7 @@ const MyPopup = (props) => {
 
   useEffect(() => {
     if(!removeBoardApi) return;
-    goURL('/main');
+    goURL({pathname:'/'});
     handleModal_Menu();
   }, [removeBoardApi])
 

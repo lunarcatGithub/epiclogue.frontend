@@ -31,7 +31,8 @@ export default class MyDocument extends Document {
         <Html {...htmlAttrs}> 
           <Head> 
             {this.props.styleTags}
-            {Object.values(helmet).map(el => el.toComponent())} 
+            {Object.values(helmet).map(el => el.toComponent())}
+
           </Head>
           <body {...bodyAttrs}>
             <Main />

@@ -1,10 +1,10 @@
 import Viewer from '@component/viewer/Viewer';
 import axios from 'axios'
 
-export default function ViewerPage({boardItem,error,id}) {
+export default function ViewerPage({boardItem, id, error}) {
 
     return (
-        <Viewer boardItem={boardItem} userId={id} viewerError={error} />
+        <Viewer boardItem={boardItem} userId={id} nonError={error} />
     )
 }
 
@@ -13,15 +13,16 @@ export async function getServerSideProps(context) {
     let res = null;
     const id = context.params.id
     const url = `${process.env.API_URL}/boards/${id}`
-    await axios.get(url)
-    .then(result => res = result)
-    .catch(err => error = err.response)
+    res = await axios.get(url).catch(res => {
+        if(res.response.status === 404) error = 404
+        return res.response
+    })
 
     return {
         props:{
-            boardItem:res.data,
-            error,
-            id:id
+            boardItem:res?.data,
+            id:id,
+            error
         }
-    }
+    } 
 }

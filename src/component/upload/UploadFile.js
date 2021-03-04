@@ -6,10 +6,10 @@ import { langUpload } from '@language/Lang.Upload';
 import Slider from '@utils/Slider';
 import UploadCategory from './UploadCategory';
 import SliderEmpty from '@utils/Slider__Empty';
-import { RoadDataContext } from '@hooks/useRoadDataContext';
 
 // Hooks & Reducer
 import { LanguageContext } from '@store/App_Store';
+import { RoadDataContext } from '@hooks/useRoadDataContext';
 
 let G_index = 0;
 
@@ -17,7 +17,6 @@ const UploadFile = () => {
   const { boardImg, URLs, setBoardImg, setURLs } = useContext(RoadDataContext);
   // const [roadData, setRoadData] = useState([]);
   const [dragging, toggleDragging] = useState(false);
-  const [category, setCategory] = useState(0);
 
   // 언어 변수
   const { langState } = useContext(LanguageContext);
@@ -97,14 +96,14 @@ const UploadFile = () => {
             URLs.map((file, index) => {
               return (
                 <PreviewImgWrap key={file.key}>
-                  <PreviewImg src={file.url} category={category} draggable="false" />
+                  <PreviewImg src={file.url} draggable="false" />
                 </PreviewImgWrap>
               );
             })
           )}
         </ContentImgBox>
         <ContentOptionBox>
-          <UploadCategory boardImg={boardImg} category={category} setCategory={setCategory} />
+          <UploadCategory boardImg={boardImg} />
         </ContentOptionBox>
         <DummyLayout />
       </ContentContainer>
@@ -181,7 +180,7 @@ const PreviewImg = styled.img`
   object-fit: contain;
   width: auto;
   height: auto;
-  max-width:${props => props.category === '0' ? '100%': '48em'};
+  max-width:100%;
   -webkit-user-select: none;
   user-select: none;
 `;

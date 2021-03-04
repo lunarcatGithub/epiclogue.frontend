@@ -22,7 +22,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 
 // 아이콘 import
 
-export default function MyBoard({boardItem, userId}) {
+export default function MyBoard({boardItem, userId, nonError}) {
   const {loginOn, setUnAuth} = useContext(AppDataContext);
   const [goURL] = useUrlMove();
   const router = useRouter();
@@ -69,7 +69,7 @@ export default function MyBoard({boardItem, userId}) {
     const [, , , followFetch] = useAxiosFetch();
     const [boardLoding, boardApi, boardError, boardFetch] = useAxiosFetch();
     const [boardDataLoding, boardDataApi, boardDataError, boardDataFetch] = useAxiosFetch();
-    console.log(boardDataApi)
+
     const submitHandler = (e, type, url) => {
       if(!loginOn) return;
       e.preventDefault();
@@ -99,8 +99,8 @@ export default function MyBoard({boardItem, userId}) {
   }, [boardDataApi]);
 
   useEffect(() => {
-    boardDataError?.status === 404 && toggle_Modal_Confirm(true)
-  }, []);
+    nonError === 404 && toggle_Modal_Confirm(true)
+  }, [nonError]);
 
   const navTabArr = [
     {link:'all', title:_allTabs},

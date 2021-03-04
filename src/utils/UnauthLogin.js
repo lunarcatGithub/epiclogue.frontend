@@ -30,7 +30,7 @@ export default function UnauthLogin(props) {
         <HeaderTxt>🎈{_unAuthTitle}🎈</HeaderTxt>
         <SubTxt>{_unAuthSub}</SubTxt>
         <LoginButton onClick={()=>{goURL({pathname:'/login'}); setUnAuth(false)}}>{_unAuthLogin}</LoginButton>
-        <SignUpButton onClick={()=>{goURL({pathname:'/login', state:{sign:true}}); setUnAuth(false)}}>{_unAuthSignUp}</SignUpButton>
+        <SignUpButton onClick={()=>{goURL({pathname:'/login', query:{sign:true}}); setUnAuth(false)}}>{_unAuthSignUp}</SignUpButton>
       </LayoutInner>
     </Layout>
   )

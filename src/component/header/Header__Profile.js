@@ -58,7 +58,7 @@ const HeaderPfPopup = () => {
   useEffect(() => {
     // if(profileError){
     //   logout()
-    //   goURL('/main')
+    //   goURL('/')
     // }
   }, []) 
 
@@ -88,7 +88,7 @@ const HeaderPfPopup = () => {
           <PopUpInner show={show}>
             {/* 유저 프로필 팝업의 헤더 부분 */}
             <PopupAnchorHd>
-                <TabWrap onClick={() => goURL({pathname:`/myboard/${profileApi.data.screenId}/all`})}>
+                <TabWrap onClick={() => goURL({pathname:`/myboard/${profileApi.data.screenId}`})}>
                   <ProfileImgBox>
                     <ProfileImgInner profile={profileApi?.data?.profile?.thumbnail} />
                   </ProfileImgBox>

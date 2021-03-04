@@ -11,7 +11,7 @@ import { LanguageContext, AlertContext } from '@store/App_Store';
 import {ProgressSmall} from '@utils/LoadingProgress';
 
 export const InteractTab = () => {
-  const { langState, langPatch } = useContext(LanguageContext);
+  const { langState } = useContext(LanguageContext);
   const { alertState, alertPatch } = useContext(AlertContext);
   const { kind, bool } = alertState;
 

@@ -1,4 +1,4 @@
-import {useContext} from 'react';
+import React,{useContext, useState, useEffect} from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
@@ -21,7 +21,9 @@ const EpicloguePolicy = () => {
   const {tab} = router.query;
 
   const { langState } = useContext(LanguageContext);
-
+  const [sideHeader, setSideHeader] = useState();
+  const [sideColor, setSideColor] = useState();
+  
     //언어 변수
     const { selectedLanguage, defaultLanguage } = langState;
     const {
@@ -65,34 +67,39 @@ const EpicloguePolicy = () => {
   ];
 
   const linkArr = [
-    {id:1, component:<ServicePolicys>{_poliService}</ServicePolicys>, link:"/policy/service", query:'service'},
-    {id:2, component:<PrivatePolicys>{_poliPrivate}</PrivatePolicys>, link:"/policy/private", query:'private'},
-    {id:3, component:<Communitys>{_poliCommunity}</Communitys>, link:"/policy/community", query:'community'},
-    {id:4, component:<AdvertisingPolicy>{_poliAdvertising}</AdvertisingPolicy>, link:"/policy/advertising", query:'advertising'},
-    {id:5, component:<CopyrightPolicy>{_poliCopyright}</CopyrightPolicy>, link:"/policy/copyright", query:'copyright'}
+    {id:1, title:_poliService, link:"/policy/service", query:'service', color:'#F3BD60'},
+    {id:2, title:_poliPrivate, link:"/policy/private", query:'private', color:`rgba(247, 112, 143, 1)`},
+    {id:3, title:_poliCommunity, link:"/policy/community", query:'community', color:`#358786`},
+    {id:4, title:_poliAdvertising, link:"/policy/advertising", query:'advertising', color:`#986444`},
+    {id:5, title:_poliCopyright, link:"/policy/copyright", query:'copyright', color:`rgba(73, 173, 239, 1)`}
   ]
-  let sideHeader,
-      sideColor;
 
+useEffect(() => {
   switch (tab){
     case 'service' :
-      sideHeader = _serviceTerm;
-      sideColor = '#222';
+      setSideHeader(_serviceTerm);
+      setSideColor('#222')
         break;
     case 'private' :
-      sideHeader = _privacyPoli
+      setSideHeader(_privacyPoli);
+      setSideColor('#222')
         break;
     case 'community' :
-      sideHeader = _poliCommunity
+      setSideHeader(_poliCommunity);
+      setSideColor('#222')
         break;
     case 'advertising' :
-      sideHeader = _poliAdvertising
+      setSideHeader(_poliAdvertising);
+      setSideColor('#222')
         break;
     case 'copyright' :
-      sideHeader = _CopyrightPoli
+      setSideHeader(_CopyrightPoli);
+      setSideColor('#222')
         break;
     default :
 }
+}, [tab])
+  
 
   return (
       <PolicyLayout>
@@ -100,9 +107,9 @@ const EpicloguePolicy = () => {
           {/* 상단 헤더 */}
           <TabWrap>
             {
-              linkArr.map(({id, component, link, query}) => (
+              linkArr.map(({id, title, link, query, color}) => (
                 <NavItem key={id} onClick={() => goURL({pathname:link, as:link, query})}>
-                  {component}
+                  <ServiceTab styling={tab === query && color}>{title}</ServiceTab>
                 </NavItem>
               ))
             }
@@ -240,12 +247,13 @@ const TabWrap = styled.div`
   overflow-x: auto;
   overflow-y: hidden;
 `;
-const ServicePolicys = styled.button`
+const ServiceTab = styled.button`
   display: flex;
   align-items: center;
   font-size: ${(props) => props.theme.fontSize.font18};
-  font-weight: ${(props) => props.theme.fontWeight.font500};
-  color: ${(props) => props.theme.color.softBlackColor};
+  font-weight: ${props => props.styling && props.theme.fontWeight.font700};
+  color:${props => props.styling ? props.styling : props.theme.color.softBlackColor};
+
   white-space: nowrap;
   cursor: pointer;
   @media (max-width: 900px) {
@@ -255,78 +263,11 @@ const ServicePolicys = styled.button`
     padding-bottom: 1em;
     padding-left: 0;
   }
-  &:hover {
-    color: ${(props) => props.theme.color.orangeColor};
-  }
-`;
-const PrivatePolicys = styled(ServicePolicys)`
-  &:hover {
-    color: ${(props) => props.theme.color.pinkColor};
-  }
-`;
-const Communitys = styled(ServicePolicys)`
-  &:hover {
-    color: ${(props) => props.theme.color.greenColor};
-  }
-`;
-const AdvertisingPolicy = styled(ServicePolicys)`
-  &:hover {
-    color: ${(props) => props.theme.color.brownColor};
-  }
-`;
-const CopyrightPolicy = styled(ServicePolicys)`
-padding-right:20px;
-  &:hover {
-    color: ${(props) => props.theme.color.skyColor};
-  }
-`;
-// NavLink 스타일 ****
-const activeClassName = 'nav-item-active';
-const NavItem = styled.span.attrs({
-  activeClassName,
-})`
-  display: flex;
-  margin: 0 12px;
-  &.${activeClassName} {
-    ${ServicePolicys} {
-      color: ${(props) => props.theme.color.orangeColor};
-      font-weight: ${(props) => props.theme.fontWeight.font700};
-    }
-    ${PrivatePolicys} {
-      color: ${(props) => props.theme.color.pinkColor};
-      font-weight: ${(props) => props.theme.fontWeight.font700};
-    }
-    ${Communitys} {
-      color: ${(props) => props.theme.color.greenColor};
-      font-weight: ${(props) => props.theme.fontWeight.font700};
-    }
-    ${AdvertisingPolicy} {
-      color: ${(props) => props.theme.color.brownColor};
-      font-weight: ${(props) => props.theme.fontWeight.font700};
-    }
-    ${CopyrightPolicy} {
-      color: ${(props) => props.theme.color.skyColor};
-      font-weight: ${(props) => props.theme.fontWeight.font700};
-    }
-  }
 `;
 
-// 헤더 - 다운로드 버튼
-const Pdfdownload = styled.button`
+const NavItem = styled.span`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 136px;
-  height: 38px;
-  border: 2px solid ${(props) => props.theme.color.orangeColor};
-  color: ${(props) => props.theme.color.orangeColor};
-  font-size: ${(props) => props.theme.fontSize.font15};
-  border-radius: 25px;
-  margin-right: 58px;
-  cursor: pointer;
-  @media (max-width: 900px) {
-    display: none;
-  }
+  margin: 0 12px;
 `;
 
 // 사이드 헤더

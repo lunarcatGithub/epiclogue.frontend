@@ -79,7 +79,7 @@ export const SignIn = (props) => {
   const [values, handleChange, handleSubmit, disabled, resData, errors] = useForm({
     initialValues: { type: 'signIn', email: '', userPw: '' }
   });
-  console.log()
+
   const errorHandle = () => {
     if(Object.keys(errors).length === 0) return;
       if(errors === 'incorrect'){
@@ -98,7 +98,7 @@ export const SignIn = (props) => {
         localStorage.setItem('loginOn', true);
         localStorage.setItem('userNick', mergyData?.nick);
         localStorage.setItem('userid', mergyData?.screenId);
-        goURL('/main');
+        goURL({pathname:'/'});
       }
   }, [resData, snsLoginListApi]);
 
@@ -106,7 +106,6 @@ export const SignIn = (props) => {
     errors && errorHandle();
   }, [errors]);
 
-  console.log(disabled)
   return (
     <>
     <LoginBox>

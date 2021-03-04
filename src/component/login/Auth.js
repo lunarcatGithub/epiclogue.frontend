@@ -36,12 +36,12 @@ export function Auth() {
         if(authApi?.result === 'ok'){
           setAuthState(true);
           setTimeout(()=>{
-              goURL('/login');
+              goURL({pathname:'/login'});
           }, 3000);
         } else {
           setAuthState(false)
           setTimeout(()=>{
-              goURL('/login');
+              goURL({pathname:'/login'});
           }, 3000);
         }
       }, [authApi])

@@ -13,9 +13,11 @@ export const ImageEditorCategory =()=> {
         categoryShowing,
         categoryToggle,
         originData,
+        boardUid,
         saveCanvas,
         imageSample
        } = useContext(EditorContext);
+
        // 작업 이미지 가져와서 file convert
        // 최종 이미지 캔버스 맞추기
     const imageAdjust = async() => {
@@ -65,8 +67,8 @@ export const ImageEditorCategory =()=> {
 
     useEffect(() => {
         categoryShowing && categoryToggle(true)
-       })
-       
+    })
+    
     return (
         <>
             {
@@ -80,6 +82,7 @@ export const ImageEditorCategory =()=> {
                     mergyImage={mergyImage}
                     categoryToggle={categoryToggle} 
                     editorData={originData}
+                    editorUid={boardUid}
                     type={'editor'} 
                     />
                 </CategoryLayout>

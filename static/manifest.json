@@ -1,0 +1,25 @@
+{
+  "short_name": "Epic_Logue!",
+  "name": "Imagine your potential",
+  "icons": [
+    {
+      "src": "/static/favicon_32.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/static/favicon_64.ico",
+      "type": "image/x-icon",
+      "sizes": "64x64"
+    },
+    {
+      "src": "/static/favicon_128.ico",
+      "type": "image/x-icon",
+      "sizes": "128x128"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#F5F5F6"
+}

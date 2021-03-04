@@ -629,28 +629,28 @@ export const ImageEditor = (props) => {
       moveTab()
       },[canvas, currentPage])
 
-     useEffect(()=>{
+    useEffect(()=>{
       if(!canvas) return;
       addText();
-     },[])
+    },[])
 
-     useEffect(()=>{
+    useEffect(()=>{
       if(!canvas) return;
       textChange()
       textHandler()
-     },[canvas, textColor, textWidth, currentFont, radioBtn, eyeDropMode, useEyeDropper, textUnderbar, textBold, textSlope, textSpace, textHeight, outlineColor, outlineWidth])
+    },[canvas, textColor, textWidth, currentFont, radioBtn, eyeDropMode, useEyeDropper, textUnderbar, textBold, textSlope, textSpace, textHeight, outlineColor, outlineWidth])
 
-     useEffect(()=>{
+    useEffect(()=>{
       if(!canvas) return;
       drawingChange()
-     },[lineColor, drawWidth])
+    },[lineColor, drawWidth])
 
-     useEffect(()=>{
+    useEffect(()=>{
       if(!canvas) return;
       eyedropHandler()
-     },[canvas, eyeDropMode, useEyeDropper, selectObj])
+    },[canvas, eyeDropMode, useEyeDropper, selectObj])
 
-     return (
+    return (
 
       <RoadDataContextProvider>
         {/* mobile ver prevent */}
@@ -661,11 +661,11 @@ export const ImageEditor = (props) => {
               <EditorHeader hide={mode === 'pan' || mode === 'select' }>
                 <EditorHeaderInner>
                   {/* ================= Logo button ========================*/}
-                  <LogoWrap goURL={{pathname:`/main`}}>
+                  <LogoWrap onClick={()=>goURL({pathname:`/`})}>
                       <LogoImg  />
                   </LogoWrap>
                   {/* ================================= text toolbar ======================= */}
-                 {
+                {
                   mode === 'text' && 
                   <EditorTextWrap id="TextMode">
                     <AddTextBox onClick={addText}><AddTextImg/></AddTextBox>

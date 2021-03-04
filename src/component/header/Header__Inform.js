@@ -10,9 +10,6 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { LanguageContext, AppDataContext} from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
-// 아이콘 import
-// import Xbtn from '../../img/X-mark.png';
-
 const UserInform = () => {
   const { langState } = useContext(LanguageContext);
   const { toggleNoti } = useContext(HeaderDataContext);
@@ -116,11 +113,11 @@ const UserInform = () => {
               onClick={() => {
                 if(!targetInfo) return;
                 if(notificationType === "Follow"){
-                  goURL(`/myboard/${maker.screenId}/all`);
+                  goURL({pathname:`/myboard/${maker.screenId}`});
                 } else if(notificationType === "Reply"){
-                  goURL(`/viewer/${targetInfo.boardId}`)
+                  goURL({pathname:`/viewer/${targetInfo.boardId}`})
                 } else{
-                  goURL(`/viewer/${targetInfo._id}`)
+                  goURL({pathname:`/viewer/${targetInfo._id}`})
                 }
                 toggleNoti();
               }}
