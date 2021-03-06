@@ -36,12 +36,13 @@ const Viewer = ({boardItem, nonError}) => {
   const router = useRouter();
   const boardUid = router?.query?.id;
 
-  
   const { alertPatch } = useContext(AlertContext);
   const [profileURL, , convertProfileIamge] = useConvertURL();
   const [O_profileURL, , convertO_ProfileIamge] = useConvertURL();
   const { langState } = useContext(LanguageContext);
   const {loginOn, setUnAuth} = useContext(AppDataContext);
+  // login handle
+  const [loginHandle, setLoginHandle] = useState();
 
   const [goURL] = useUrlMove();
   const [goUploadUpdate] = useUrlMove();
@@ -190,6 +191,9 @@ const feedbackRef = useRef();
     likeApi && setHeartCount(likeApi?.data.heartCount);
   }, [likeApi])
 
+  useEffect(() => {
+    loginOn && setLoginHandle(loginOn);
+  }, [loginOn])
   const checkMoreMenuType = () => {
     // 비회원 유저
     if(!loginOn){
@@ -399,7 +403,7 @@ const feedbackRef = useRef();
                         {/* 유저 닉네임 팔로잉 */}
                         <UserNickInfo onClick={() => goURL({pathname:`/myboard/${data?.originUserId?.screenId}`})}>{data?.originUserId?.nickname}</UserNickInfo>
                           {
-                          localStorage.getItem('userid') !== data.originUserId.screenId && loginOn && (
+                          localStorage.getItem('userid') !== data.originUserId.screenId && loginHandle && (
                             <form action="" method="post" onSubmit={(e)=>sumitHandler(e, 'follow', 'origin')}>
                               <UserFollowTxt followData={O_follow} onClick={() => toggle_O_follow()}>
                                 {O_follow ? _followingBtn : _followBtn}
@@ -446,7 +450,7 @@ const feedbackRef = useRef();
                       <UserProfileInfo>
                         {/* 유저 닉네임 팔로잉 */}
                         <UserNickInfo onClick={() => goURL({pathname:`/myboard/[id]?tab=all`, as:`/myboard/${data?.writer?.screenId}`})}>{data.nickname}</UserNickInfo>
-                        {data.following !== 'me' && loginOn && (
+                        {data.following !== 'me' && loginHandle && (
                           <form action="" onSubmit={(e)=>sumitHandler(e, 'follow', 'secondary')}>
                             <UserFollowTxt followData={follow} onClick={() => toggleFollow()}>
                               {follow ? _followingBtn : _followBtn}
@@ -493,7 +497,7 @@ const feedbackRef = useRef();
                     <UserProfileInfo>
                       {/* 유저 닉네임 팔로잉 */}
                       <UserNickInfo onClick={() => goURL({pathname:`/myboard/[id]?tab=all`, as:`/myboard/${data?.writer?.screenId}`})}>{data.nickname}</UserNickInfo>
-                      {data.following !== 'me' && loginOn && (
+                      {data.following !== 'me' && loginHandle && (
                         <form action="" onSubmit={(e)=>sumitHandler(e, 'follow', 'secondary')}>
                           <UserFollowTxt followData={follow} onClick={() => toggleFollow()}>
                             {follow ? _followingBtn : _followBtn}
