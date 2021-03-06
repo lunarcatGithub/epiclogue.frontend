@@ -208,7 +208,7 @@ const Contents = (props) => {
     let options = {
       root: null,
       rootMargin: '10px',
-      threshold: 0.5,
+      threshold: 0.7,
     };
 
     const observer = new IntersectionObserver(handleObserver, options);

@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import MyBoardFollowList from './MyBoard__Follow__List';
 import {useRouter} from 'next/router';
 
-// 컴포넌트 import
-import { ProgressSmall } from '@utils/LoadingProgress';
+// hooks&&reducer
 import useAxiosFetch from '@hooks/useAxiosFetch';
+import useScroll from '@hooks/useScroll';
 
 const MyBoardFollow = () => {
   const informRef = useRef();
@@ -19,38 +19,25 @@ const MyBoardFollow = () => {
   const [convertUser, setConvertUser] = useState();
 
   // 팔로우 리스트 무한 스크롤
- const [items, setItems] = useState(20);
- const [sliceData, setSliceData] = useState();
+ const [items, setItems] = useState(5);
+ const [sliceFollowing, setSliceFollowing] = useState();
+ const [sliceFollower, setSliceFollower] = useState();
+ const [page, scroll] = useScroll();
 
   //fetch
   const [followListLoding, followListApi, followListError, followListFetch] = useAxiosFetch();
 
-  // 팔로우 무한 스크롤
-  const infinityScroll = () => {
-    let preItem = 0
-    let scrollHeight = informRef?.current?.scrollHeight;
-
-    let scrollTop = informRef?.current?.scrollTop;
-
-    let clientHeight = informRef?.current?.clientHeight;
-
-    if(scrollTop + clientHeight === scrollHeight){
-      setItems(items => items + 20);
-      if(tab === 'following'){
-        setSliceData(followingList?.slice(preItem, items))
-      } else {
-        setSliceData(followerList?.slice(preItem, items))
-      }
-    }
-  }
-      
   useEffect(()=> {
-    informRef && infinityScroll()
-    return () => {
-      informRef && infinityScroll()
-    }
-  },[])
-  
+
+    setItems( items => items + 10);
+    if(tab === 'following'){
+      setSliceFollowing(followingList?.slice(0, items))
+      } else {
+        setSliceFollower(followerList?.slice(0, items))
+      }
+
+  },[page, followingList, followerList]);
+
   useEffect(() => {
     const convert = JSON.parse(originUser);
     setConvertUser(convert)
@@ -61,6 +48,7 @@ const MyBoardFollow = () => {
   }, [tab, convertUser]);
 
   useEffect(() => {
+    if(!followListApi) return
     tab === 'following' ? setFollowingList(followListApi?.data) : setFollowerList(followListApi?.data);
   }, [followListApi])
 
@@ -93,10 +81,11 @@ const MyBoardFollow = () => {
               {/* // 팔로우 헤더 상단 끝*/}
             </HeaderBox>
             {/* 팔로우 본문 */}
-            <ContentBox ref={informRef} onScroll={infinityScroll}>
-              {tab === 'following' && followingList?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)}
-              {tab === 'follower' && followerList?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower"/>)}
+            <ContentBox>
+              {tab === 'following' && sliceFollowing?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)}
+              {tab === 'follower' && sliceFollower?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower"/>)}
               {/* // 팔로우 본문 끝 */}
+              <Observer {...scroll}/>
             </ContentBox>
           </LayoutInner>
         </FollowsLayout>
@@ -236,4 +225,10 @@ const ContentBox = styled.div`
   background: ${(props) => props.theme.color.whiteColor};
 `;
 
+const Observer = styled.span`
+display:block;
+width:100%;
+height:1;
+margin:1px 0;
+`
 export default MyBoardFollow;

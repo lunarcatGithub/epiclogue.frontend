@@ -12,7 +12,7 @@ export default function ContentsUserForm(props) {
           <ContentInner banner={banner}>
             <GradientBox>
             <UserProfileWrap><UserProfile profile={profile}/></UserProfileWrap>
-            <Link href={`/myboard/${screenId}/all`}>
+            <Link href={`/myboard/${screenId}`}>
             <NickAndIdWrap >
                 <NickName>{nickname}</NickName>
                 <IdNDateWrap>
@@ -23,7 +23,7 @@ export default function ContentsUserForm(props) {
             <UserIntroWrap>
                 <UserIntro>{intro}</UserIntro>
             </UserIntroWrap>
-            <Link href={`/myboard/${screenId}/all`}>
+            <Link href={`/myboard/${screenId}`}>
                 <ContentsNumBox>
                 <AllContentsBox>
                 <ComicIconBox><ComicIcon/></ComicIconBox>

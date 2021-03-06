@@ -23,31 +23,32 @@ const combineReducers = (...reducers) => (state, action) => {
 
 // context provider
 const ContextStore = ({ children }) => {
+  // app all method
   const [langState, langPatch] = useReducer(combineReducers(languageReducer), langInit);
   const [alertState, alertPatch] = useReducer(combineReducers(alertReducer), initialAlert);
-
+  
+  // set filter
   const [clickedComic, setClickedComic] = useState(true);
   const [clickedIllust, setClickedIllust] = useState(true);
+
+  // get Data
   const [searchData, setSearchData] = useState();
   const [paramsData, setParamsData] = useState();
-
   const [myboardData, setMyboardData] = useState([]);
-  
-  const [loginOn, setLoginOn] = useState();
-  const [unAuth, setUnAuth] = useState(false);
-  const location = useRouter();
 
-  useEffect(() => {
-    let login = localStorage.getItem('loginOn');
-    setLoginOn(Boolean(login))
-  }, []);
+  // initial Login
+  let login = typeof window !== 'undefined' && localStorage.getItem('loginOn');
+  const [loginOn, setLoginOn] = useState(Boolean(login));
+  const [unAuth, setUnAuth] = useState(false);
+
+  // router
+  const location = useRouter();
 
   useEffect(() => {
       if(!loginOn){
         if(
           location.pathname.match('/upload') ||
           location.pathname.match('/follow') ||
-          location.pathname.match('/report') ||
           location.pathname.match('/editor')
         ){
           document.location.href = '/login';

@@ -9,19 +9,21 @@ import {HeaderDataContext} from './Header';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { LanguageContext, AppDataContext} from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
+import useScroll from '@hooks/useScroll';
 
 const UserInform = () => {
   const { langState } = useContext(LanguageContext);
   const { toggleNoti } = useContext(HeaderDataContext);
   const { loginOn } = useContext(AppDataContext);
-  const informRef = useRef();
+
   // 유저 알림
   const [goURL] = useUrlMove();
 
- // 알림 스크롤
- const [items, setItems] = useState(20);
- const [sliceData, setSliceData] = useState(null);
- const [tagetUser, setTargetUser] = useState();
+  // 알림 스크롤
+  const [items, setItems] = useState(5);
+  const [sliceData, setSliceData] = useState(null);
+  const [tagetUser, setTargetUser] = useState();
+  const [page, scroll] = useScroll();
 
  //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
@@ -52,29 +54,15 @@ const UserInform = () => {
   const [infromLoding, , infromError, infromFetch] = useAxiosFetch();
 
   useEffect(() => {
-    if(notiApi){
-      let data;
-      data = notiApi?.data.map(i => i).filter(i => i !== undefined )
+    if(!notiApi) return;
+      let data = notiApi?.data.map(i => i).filter(i => i !== undefined )
       setTargetUser(data)
-      setSliceData(data?.slice(0, items))
-    }
-    
   }, [notiApi])
 
-  // 알림용 무한 스크롤
-  const infinityScroll = () => {
-    
-    let scrollHeight = informRef?.current?.scrollHeight;
-
-    let scrollTop = informRef?.current?.scrollTop;
-
-    let clientHeight = informRef?.current?.clientHeight;
-    
-    if(scrollTop + clientHeight === scrollHeight){
-      setItems( items => items + 10);
-      setSliceData(tagetUser?.slice(10, items))
-    }
-  }
+  useEffect(()=> {
+    setSliceData(tagetUser?.slice(0, items))
+    setItems( items => items + 15);
+  },[page, tagetUser]);
 
   // 유저 알림 API
   useEffect(() => {
@@ -88,13 +76,6 @@ const UserInform = () => {
     infromFetch(`${process.env.API_URL}/notification/all`, 'patch', null);
   },[]);
 
-  useEffect(()=> {
-    infinityScroll()
-    return () => {
-      infinityScroll()
-    }
-  },[])
-
   return (
     <InformContainer>
       <InformHeader>
@@ -104,9 +85,9 @@ const UserInform = () => {
             <ClosedBtn onClick={() => toggleNoti()}/>
           </ClosedBox>
       </InformHeader>
-      <InformBodyInner onScroll={infinityScroll} ref={informRef}>
-        {/* {sliceData &&  */}
-        {sliceData && sliceData.map(({maker, notificationType, read, targetInfo, targetType}, key) => (
+      <InformBodyInner >
+        {
+          sliceData?.map(({maker, notificationType, read, targetInfo, targetType}, key) => (
             <ContentBox
               key={key}
               read={read}
@@ -159,7 +140,10 @@ const UserInform = () => {
             )
           )
         }
+        
+        <Observer {...scroll}/>
       </InformBodyInner>
+      
     </InformContainer>
   );
 };
@@ -367,6 +351,12 @@ const DeletedContent = styled(InteractContent)`
   color: ${(props) => props.theme.color.popupColor};
   font-weight: ${(props) => props.theme.fontWeight.font500};
 
+`
+const Observer = styled.span`
+display:block;
+width:100%;
+height:1;
+margin:1px 0;
 `
 
 export default UserInform;
