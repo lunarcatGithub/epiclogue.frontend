@@ -19,7 +19,7 @@ artifacts:
     - src/**/*
     - scripts/**/*
     - node_modules/**/*
-    - next/**/*
+    - .next/**/*
     - package.json
     - appspec.yml
     - buildspec.yml
