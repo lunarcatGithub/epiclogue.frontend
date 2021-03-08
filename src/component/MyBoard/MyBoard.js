@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
 // 컴포넌트 import
-import { LanguageContext, AppDataContext } from '@store/App_Store';
 import { LangMyBoard } from '@language/Lang.Myboard';
 import { LangCommon } from '@language/Lang.Common';
 import { langMetaBoard } from '@language/Lang.Meta';
@@ -19,22 +18,25 @@ import { useModal } from '@hooks/useModal';
 import { useUrlMove } from '@hooks/useUrlMove';
 import {useDate} from '@hooks/useDate';
 import useAxiosFetch from '@hooks/useAxiosFetch';
+import { LanguageContext, AppDataContext } from '@store/App_Store';
 
 // 아이콘 import
 
 export default function MyBoard({boardItem, userId, nonError}) {
-  const {loginOn, setUnAuth} = useContext(AppDataContext);
   const [goURL] = useUrlMove();
   const router = useRouter();
 
   const { langState } = useContext(LanguageContext);
-  const { myboardData, setMyboardData } = useContext(AppDataContext);
+  const { setMyboardData, loginOn, setUnAuth, followData, setFollowData, setFollowButton } = useContext(AppDataContext);
   const [follow, toggleFollow] = useToggle();
 
   const [date, setDate] = useState();
   const [checkMe, setCheckMe] = useState();
+  const [userScreenId, setUserScreenId] = useState();
 
-  const [boardData, setBoardData] = useState();
+  useEffect(() => {
+    setUserScreenId(followData?.screenId);
+  }, [followData])
 
   // 헤더 스크롤용
   const show = AutoHiding()
@@ -78,8 +80,15 @@ export default function MyBoard({boardItem, userId, nonError}) {
       }
     }
 
+    const moveFollowList = (type) => {
+      if(!loginOn){ setUnAuth(true); return; }
+      setFollowButton(type)
+      goURL({ pathname: '/follows' });
+      
+    }
+    
   useEffect(()=>{
-    setBoardData(boardItem?.data);
+    setFollowData(boardItem?.data);
     setCountryDivided(selectedLanguage || defaultLanguage)
     convert(boardItem?.data?.intro);
     setGetDate(boardItem?.data.joinDate);
@@ -90,8 +99,8 @@ export default function MyBoard({boardItem, userId, nonError}) {
   },[boardItem, countryResult]);
 
   useEffect(() => {
-    boardDataFetch(`${process.env.API_URL}/myboard/${boardData?.screenId}/${isTab}`, 'get', null);
-  }, [isTab, boardData?.screenId]);
+    userScreenId && boardDataFetch(`${process.env.API_URL}/myboard/${userScreenId}/${isTab}`, 'get', null);
+  }, [isTab, userScreenId]);
 
 
   useEffect(() => {
@@ -114,63 +123,42 @@ export default function MyBoard({boardItem, userId, nonError}) {
       <Layout>
         <LayoutInner>
           <BackgroundBox>
-            <BackgroundImg banner={boardData?.banner?.origin} />
+            <BackgroundImg banner={followData?.banner?.origin} />
           </BackgroundBox>
 
           <GradientBox>
             {/* 레이아웃 상단 유저정보 레이아웃 시작 */}
             <UserInformBox>
               <UserPfImgBox>
-                <UserPfImg profile={boardData?.profile?.origin} />
+                <UserPfImg profile={followData?.profile?.origin} />
               </UserPfImgBox>
-              <UserNickName>{boardData?.nickname}</UserNickName>
+              <UserNickName>{followData?.nickname}</UserNickName>
               {/* 유저 아이디, 가입일 시작 */}
               <UserIdCreateDateBox>
-                <UserIdTag>{boardData?.screenId}</UserIdTag>
+                <UserIdTag>{followData?.screenId}</UserIdTag>
                 <CreateIdDate>
                   {_signDate} {date}
                 </CreateIdDate>
               </UserIdCreateDateBox>
               {/* 유저 소개 시작 */}
               <UserIntroduceBox>
-                <UserIntroduce>{converted.length === 0 ? `${boardData?.nickname} ${_noIntro}` : converted}</UserIntroduce>
+                <UserIntroduce>{converted.length === 0 ? `${followData?.nickname} ${_noIntro}` : converted}</UserIntroduce>
               </UserIntroduceBox>
               {/* 팔로우 버튼 시작 */}
               <FollowsBox>
                   <FollowButton
                     type='following'
-                    onClick={()=>{
-                      if(!loginOn){
-                        setUnAuth(true); 
-                        return;
-                      }
-                      goURL({
-                      pathname: '/follows',
-                      as:'/follows',
-                      query: {
-                        follow: 'following',
-                        originUser: JSON.stringify(boardData),
-                      },
-                    })}}>
+                    onClick={()=> moveFollowList('following')}
+                  >
                     {_followingBtn}
-                    <FollowScore>{boardData?.followingCount}</FollowScore>
+                    <FollowScore>{followData?.followingCount}</FollowScore>
                   </FollowButton>
 
                   <FollowButton
-                    onClick={()=>{
-                      if(!loginOn){setUnAuth(true); return}
-                      goURL({
-                      pathname: '/follows',
-                      as:'/follows',
-                      query: {
-                        follow: 'follower',
-                        originUser: JSON.stringify(boardData),
-                      },
-                    })
-                  }}
+                    onClick={()=> moveFollowList('follower')}
                   >
                     {_followBtn}
-                    <FollowScore>{boardData?.followerCount}</FollowScore>
+                    <FollowScore>{followData?.followerCount}</FollowScore>
                   </FollowButton>
                 {!checkMe &&
                   <ButtonWrap>
@@ -211,8 +199,8 @@ export default function MyBoard({boardItem, userId, nonError}) {
                 onClick={()=> {
                   setIsTab(nav.link)
                   goURL({
-                  pathname:`/myboard/${boardData?.screenId}`, 
-                  as:`/myboard/${boardData?.screenId}`,
+                  pathname:`/myboard/${followData?.screenId}`, 
+                  as:`/myboard/${followData?.screenId}`,
                   query:{
                     tab:nav.link
                   }

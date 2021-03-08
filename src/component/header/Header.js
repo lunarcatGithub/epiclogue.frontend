@@ -88,9 +88,11 @@ const Header = () => {
       }
   };
 
-  // useEffect(() => {
-  //   searchBody && goURL(`/search/trend/${searchBody}`);
-  // }, [])
+  useEffect(() => {
+    if(profileApi?.status === 401){
+      goURL({pathname:`/login`});
+    }
+  }, [profileApi])
 
   // 헤더 코믹/일러스트 필터링
   const selectFilterComic = () => {

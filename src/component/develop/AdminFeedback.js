@@ -27,7 +27,7 @@ export default function AdminFeedback({ toggleIsOpen }) {
     e.preventDefault();
     setLoading(true);
     if (textLimit.length < 29 && textLimit.length > 1) {
-      emailjs.sendForm('service_ioi4itk', 'template_bz0em58', e.target, 'user_gt6hlyvj0N9qSVz8RsNva').then(
+      emailjs.sendForm(process.env.EMAILJS_FIRST, process.env.EMAILJS_SECOND, e.target, process.env.EMAILJS_THIRD).then(
         (result) => {
           setOpenFb(false);
           setTextLimit('');

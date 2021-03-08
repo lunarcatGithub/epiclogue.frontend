@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components';
 import MyBoardFollowList from './MyBoard__Follow__List';
 import {useRouter} from 'next/router';
@@ -6,31 +6,30 @@ import {useRouter} from 'next/router';
 // hooks&&reducer
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
+import { AppDataContext } from '@store/App_Store';
 
 const MyBoardFollow = () => {
-  const informRef = useRef();
   const router = useRouter();
 
-  const { originUser, follow } = router.query
+  const { followData, followButton, setFollowButton } = useContext(AppDataContext);
 
-  const [tab, setTab] = useState(follow);
   const [followingList, setFollowingList] = useState([]);
   const [followerList, setFollowerList] = useState([]);
-  const [convertUser, setConvertUser] = useState();
+  const [useIdStore, setUseIdStore] = useState();
 
   // 팔로우 리스트 무한 스크롤
  const [items, setItems] = useState(5);
  const [sliceFollowing, setSliceFollowing] = useState();
  const [sliceFollower, setSliceFollower] = useState();
  const [page, scroll] = useScroll();
-
+  
   //fetch
-  const [followListLoding, followListApi, followListError, followListFetch] = useAxiosFetch();
+  const [, followListApi, , followListFetch] = useAxiosFetch();
 
   useEffect(()=> {
 
     setItems( items => items + 10);
-    if(tab === 'following'){
+    if(followButton === 'following'){
       setSliceFollowing(followingList?.slice(0, items))
       } else {
         setSliceFollower(followerList?.slice(0, items))
@@ -39,17 +38,16 @@ const MyBoardFollow = () => {
   },[page, followingList, followerList]);
 
   useEffect(() => {
-    const convert = JSON.parse(originUser);
-    setConvertUser(convert)
-  }, [])
+    setUseIdStore(followData?.screenId)
+   }, [followData])
 
-  useEffect(() => {
-    followListFetch(`${process.env.API_URL}/interaction/follow?screenId=${convertUser?.screenId}&type=${tab}`, 'get', null, null, null)
-  }, [tab, convertUser]);
+   useEffect(() => {
+    useIdStore && followButton && followListFetch(`${process.env.API_URL}/interaction/follow?screenId=${useIdStore}&type=${followButton}`, 'get', null, null, null)
+  }, [followButton, useIdStore]);
 
   useEffect(() => {
     if(!followListApi) return
-    tab === 'following' ? setFollowingList(followListApi?.data) : setFollowerList(followListApi?.data);
+    followButton === 'following' ? setFollowingList(followListApi?.data) : setFollowerList(followListApi?.data);
   }, [followListApi])
 
   return (
@@ -66,15 +64,15 @@ const MyBoardFollow = () => {
                    <ArrowBtn onClick={() => router.back()} />
                   </ArrowBtnwrap>
                 <UserPfBox>
-                  <UserNick>{convertUser?.nickname}</UserNick>
-                  <UserId>{convertUser?.screenId}</UserId>
+                  <UserNick>{followData?.nickname}</UserNick>
+                  <UserId>{followData?.screenId}</UserId>
                 </UserPfBox>
               </TopHeaderBox>
               <FollowTabBox>
-                <FollowingTab tabType={tab} onClick={() => setTab('following')}>
+                <FollowingTab tabType={followButton} onClick={() => setFollowButton('following')}>
                   Following
                 </FollowingTab>
-                <FollowerTab tabType={tab} onClick={() => setTab('follower')}>
+                <FollowerTab tabType={followButton} onClick={() => setFollowButton('follower')}>
                   Follower
                 </FollowerTab>
               </FollowTabBox>
@@ -82,8 +80,8 @@ const MyBoardFollow = () => {
             </HeaderBox>
             {/* 팔로우 본문 */}
             <ContentBox>
-              {tab === 'following' && sliceFollowing?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)}
-              {tab === 'follower' && sliceFollower?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower"/>)}
+              {followButton === 'following' && sliceFollowing?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)}
+              {followButton === 'follower' && sliceFollower?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower"/>)}
               {/* // 팔로우 본문 끝 */}
               <Observer {...scroll}/>
             </ContentBox>

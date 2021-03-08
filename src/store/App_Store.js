@@ -35,6 +35,8 @@ const ContextStore = ({ children }) => {
   const [searchData, setSearchData] = useState();
   const [paramsData, setParamsData] = useState();
   const [myboardData, setMyboardData] = useState([]);
+  const [followData, setFollowData] = useState();
+  const [followButton, setFollowButton] = useState('following');
 
   // initial Login
   let login = typeof window !== 'undefined' && localStorage.getItem('loginOn');
@@ -75,7 +77,11 @@ const ContextStore = ({ children }) => {
         loginOn,
         setUnAuth,
         paramsData,
-        setParamsData
+        setParamsData,
+        followData,
+        setFollowData,
+        followButton,
+        setFollowButton
       }}>
         <LanguageContext.Provider value={{
           langState,
