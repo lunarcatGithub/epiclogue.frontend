@@ -1,4 +1,4 @@
-version: 0.2
+version: 1.0
 phases:
   pre_build:
     commands:
@@ -8,21 +8,19 @@ phases:
     commands:
       - echo 'Build started...'
       - npm run build
-      - npm run export
   post_build:
     commands:
       - echo 'Build completed!'
 
 artifacts:
-  files:     - '**/*'
-  
-    # - public/**/*
-    # - src/**/*
-    # - scripts/**/*
-    # - node_modules/**/*
-    # - build/**/*
-    # - package.json
-    # - appspec.yml
-    # - buildspec.yml
-    # - yarn.lock
-  base-directory: 'dist'
+    - public/**/*
+    - styles/**/*
+    - static/**/*
+    - src/**/*
+    - scripts/**/*
+    - node_modules/**/*
+    - next/**/*
+    - package.json
+    - appspec.yml
+    - buildspec.yml
+    - yarn.lock

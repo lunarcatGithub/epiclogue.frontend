@@ -1,11 +1,7 @@
 import {useRouter} from 'next/router';
 
 export default function Error({statusCode}) {
-    if(statusCode) {
-        router.push('/')
-    } else {
-        router.push('/')
-    }
+
     return (
         <div>
         {
