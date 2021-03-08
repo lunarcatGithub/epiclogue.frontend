@@ -1,0 +1,28 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo 'Install npm dependencies...'
+      - npm install
+  build:
+    commands:
+      - echo 'Build started...'
+      - npm run build
+      - npm run export
+  post_build:
+    commands:
+      - echo 'Build completed!'
+
+artifacts:
+  files:     - '**/*'
+  
+    # - public/**/*
+    # - src/**/*
+    # - scripts/**/*
+    # - node_modules/**/*
+    # - build/**/*
+    # - package.json
+    # - appspec.yml
+    # - buildspec.yml
+    # - yarn.lock
+  base-directory: 'dist'
