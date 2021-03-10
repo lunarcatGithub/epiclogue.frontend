@@ -76,7 +76,7 @@ export const EditorStore = () => {
     if(!images) return;
     const imgLoad = (url) => {
       return new Promise((resolve, reject) => {
-        var img = new Image();
+        let img = new Image();
         img.src = url;
         img.onload = () => {
           resolve(img);

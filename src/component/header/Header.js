@@ -82,9 +82,9 @@ const Header = () => {
       setSearchData(searchBody);
       
       if(searchBody[0]?.match('@')){
-        goURL({pathname:`/search/users`, query:{type:'users', text:searchBody}});
+        goURL({pathname:`/search/users`, as:`/search/users/${searchBody}`, query:{type:'users', text:searchBody}});
       }else {
-        goURL({pathname:`/search/${paramsData === undefined ? 'latest' : paramsData}`, query:{type:'latest', text:searchBody}});
+        goURL({pathname:`/search/${paramsData === undefined ? 'latest' : paramsData}`, as:`/search/${paramsData === undefined ? 'latest' : paramsData}/${searchBody}`, query:{type:'latest', text:searchBody}});
       }
   };
 

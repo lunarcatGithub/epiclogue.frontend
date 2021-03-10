@@ -68,7 +68,7 @@ const UserInform = () => {
   useEffect(() => {
     if(!loginOn) return;
     notiFetch(`${process.env.API_URL}/notification`, 'get', null, null, null)
-  },[toggleNoti]);
+  },[]);
 
     // 읽음 처리용
   useEffect(()=> {

@@ -107,6 +107,7 @@ const Contents = (props) => {
       if(i.pub === 1){
         arr.push(i);
       } else if(i.pub === 0){
+        console.log(i.writer.screenId)
         if(i.writer.screenId === localStorage.getItem('userid')){
           arr.push(i);
         } else {

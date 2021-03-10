@@ -285,8 +285,8 @@ const UploadCategory = (props) => {
             <ArrowBtn onClick={() =>{
               router.pathname.match('/editor') ? categoryToggle(false) : history.goBack()
             }} />
-            <AlertText>{ fileSize && fileSize }</AlertText>
-            {sourceToggleOn && !fileSize && <AlertText>{ _sourceAlert }</AlertText>}
+            <AlertText>{ fileSize && fileSize } {sourceToggleOn && !fileSize && _sourceAlert}</AlertText>
+            
             
             <SubmitBtn>{disabled ? <ProgressSmall disabled={disabled} /> : _uploadBtn}</SubmitBtn>
           </SubmitBox>

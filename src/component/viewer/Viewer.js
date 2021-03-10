@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import {useRouter} from 'next/router'
 
 // 컴포넌트 import
@@ -11,14 +11,13 @@ import UserPopup from './UserMoreMenuPopUp';
 import TranslatePopup from './TranslatePopup';
 import { ProgressSmall } from '@utils/LoadingProgress';
 import { langViewer, langViewerUser } from '@language/Lang.Viewer';
-
 import { LangCommon } from '@language/Lang.Common';
-import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store';
 import { langMetaViewer } from '@language/Lang.Meta';
 import { Meta } from '@utils/MetaTags';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup'; 
 import Contents from '../content/Contents';
+import ViewerUserForm from './Viewer__UserForm'
 
 // Hooks&&reducer
 import { useModal } from '@hooks/useModal';
@@ -29,6 +28,7 @@ import { useConvertURL } from '@hooks/useConvertURL';
 import usePublic from '@hooks/usePublic';
 import {useConvertTags} from '@hooks/useConvertTags';
 import useAxiosFetch from '@hooks/useAxiosFetch';
+import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store';
 
 export const ReplyListContext = React.createContext();
 
@@ -41,8 +41,6 @@ const Viewer = ({boardItem, nonError}) => {
   const [O_profileURL, , convertO_ProfileIamge] = useConvertURL();
   const { langState } = useContext(LanguageContext);
   const {loginOn, setUnAuth} = useContext(AppDataContext);
-  // login handle
-  const [loginHandle, setLoginHandle] = useState();
 
   const [goURL] = useUrlMove();
   const [goUploadUpdate] = useUrlMove();
@@ -59,10 +57,6 @@ const Viewer = ({boardItem, nonError}) => {
   const [type_MoreMenu, setType_MoreMenu] = useState();
   const [type_O_MoreMenu, setType_O_MoreMenu] = useState();
 
-  const [indicateDate] = useTimeCalculation(getIndicateDate);
-
-  const [O_follow, toggle_O_follow] = useToggle();
-  const [follow, toggleFollow] = useToggle();
   const [bookmark, toggleBookmark] = useToggle();
   const [like, toggleLike] = useToggle();
   const [globe, toggleGloobe] = useToggle();
@@ -105,7 +99,6 @@ const Viewer = ({boardItem, nonError}) => {
   // 태그 및 하이퍼링크 convert
   const [converted, convert] = useConvertTags();
   // 토글 submit 전용
-  const [followLoding, followApi, followError, followFetch] = useAxiosFetch();
   const [likeLoding, likeApi, likeError, likeFetch] = useAxiosFetch();
   const [bookmarkLoding, bookmarkApi, bookmarkError, bookmarkFetch] = useAxiosFetch();
   // const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
@@ -176,11 +169,8 @@ const feedbackRef = useRef();
     if(!loginOn) return;
     
     const URL = `${process.env.API_URL}/interaction/${type}`;
-    const _follow = targetType === 'origin' ? O_follow : follow;
 
-    if(type === 'follow'){
-      followFetch(URL, _follow ? 'post' : 'delete', {targetUserId: targetType === 'origin' ? originId : data._id}, null)
-    } else if(type === 'like'){
+    if(type === 'like'){
       likeFetch( URL, like ? 'post' : 'delete', {targetInfo: boardUid, targetType}, null)
     } else if(type === 'bookmark') {
       bookmarkFetch( URL, bookmark ? 'post' : 'delete', {boardId: boardUid}, null)
@@ -191,9 +181,6 @@ const feedbackRef = useRef();
     likeApi && setHeartCount(likeApi?.data.heartCount);
   }, [likeApi])
 
-  useEffect(() => {
-    loginOn && setLoginHandle(loginOn);
-  }, [loginOn])
   const checkMoreMenuType = () => {
     // 비회원 유저
     if(!loginOn){
@@ -275,7 +262,6 @@ const feedbackRef = useRef();
       });
 
       if(originUserId){
-        toggle_O_follow(originUserId.following);
         setOriginId(originUserId._id)
       }
       //tag && email convert
@@ -284,7 +270,6 @@ const feedbackRef = useRef();
       
       // useProfile
       convertProfileIamge(profile?.origin);
-      toggleFollow(following);
       toggleBookmark(!loginOn ? false : bookmarked);
       toggleLike(!loginOn ? false : liked);
       setReplyList(replyList);
@@ -378,155 +363,51 @@ const feedbackRef = useRef();
           <UserComment>
             {/* 원작 유저 */}
             {
-            checkOrigin ? (
+            checkOrigin ? 
               <>
                 {/* 원작자 */}
-                <UserForm>
-                  <UserProfileWrap>
-                    <UserUploadInfoImg image={ externalSource ? '/static/linkIcon.svg' : '/static/originWrite.svg' } />
-                    {
-                    externalSource ? 
-                    <SourceLink href={`${externalSource}`} target="_blank">{externalSource}</SourceLink>
-                    :
-                    <UserUploadInfo>{_originalUser}</UserUploadInfo>
-                    }
-                  </UserProfileWrap>
-                  <ProfileImgContent>
-                    {/* 프로필 박스 */}
-                    <ProfileImgBox>
-                      <ProfileImg profile={O_profileURL} />
-                    </ProfileImgBox>
-                    {/* 유저 프로필 콘텐츠 박스 */}
-                    <UserProfileContentsBox>
-                      {/* 유저 아이디 등 프로필 */}
-                      <UserProfileInfo>
-                        {/* 유저 닉네임 팔로잉 */}
-                        <UserNickInfo onClick={() => goURL({pathname:`/myboard/${data?.originUserId?.screenId}`})}>{data?.originUserId?.nickname}</UserNickInfo>
-                          {
-                          localStorage.getItem('userid') !== data.originUserId.screenId && loginHandle && (
-                            <form action="" method="post" onSubmit={(e)=>sumitHandler(e, 'follow', 'origin')}>
-                              <UserFollowTxt followData={O_follow} onClick={() => toggle_O_follow()}>
-                                {O_follow ? _followingBtn : _followBtn}
-                              </UserFollowTxt>
-                            </form>
-                          )
-                          }
-                      </UserProfileInfo>
-                      {/* 유저 아이디 */}
-                      <UserProfileId>
-                        <UserIdInfo onClick={() => goURL({pathname:`/myboard/[id]?tab=all`, as:`/myboard/${data?.originUserId?.screenId}`})}>{data?.originUserId?.screenId}</UserIdInfo>
-                      </UserProfileId>
-                      {/* 콘텐츠 */}
-                      <OriginalContent>{data?.originBoardId?.boardTitle}</OriginalContent>
-                      {/* <TextContent>{converted}</TextContent> */}
-                      <ContentImgWrap styling={data.originBoardId}>
-                      { data.originBoardId ? <ContentImgBox onClick={() => goURL({pathname:`/viewer/${data.originBoardId._id}`})}>
-                          <ContentImg thumNail={data.originBoardId.boardImg[0]} />
-                        </ContentImgBox>
-                        :
-                        <ContentImgBox>
-                          <NullContent>{_removedContents}</NullContent>
-                        </ContentImgBox>
-                        }
-                      </ContentImgWrap>
-                    </UserProfileContentsBox>
-                  </ProfileImgContent>
-                </UserForm>
-
+                <ViewerUserForm
+                  type='ORIGIN' 
+                  externalSource={externalSource} 
+                  userLang={_originalUser}
+                  followLang={_followBtn}
+                  followOnLang={_followingBtn}
+                  removedContents={_removedContents}
+                  profile={O_profileURL}
+                  userData={data}
+                  boardUid={boardUid}
+                />
                 {/* 2차 창작자 */}
-                <UserForm>
-                  <UserProfileWrap>
-                    <UserTransImg image={'/static/trans.svg'} />
-                    <UserUploadInfo>{_recreateUser}</UserUploadInfo>
-                  </UserProfileWrap>
-                  <ProfileImgContent>
-                    {/* 프로필 박스 */}
-                    <ProfileImgBox>
-                      <ProfileImg profile={profileURL} />
-                    </ProfileImgBox>
-                    {/* 유저 프로필 콘텐츠 박스 */}
-                    <UserProfileContentsBox>
-                      {/* 유저 아이디 등 프로필 */}
-                      <UserProfileInfo>
-                        {/* 유저 닉네임 팔로잉 */}
-                        <UserNickInfo onClick={() => goURL({pathname:`/myboard/[id]?tab=all`, as:`/myboard/${data?.writer?.screenId}`})}>{data.nickname}</UserNickInfo>
-                        {data.following !== 'me' && loginHandle && (
-                          <form action="" onSubmit={(e)=>sumitHandler(e, 'follow', 'secondary')}>
-                            <UserFollowTxt followData={follow} onClick={() => toggleFollow()}>
-                              {follow ? _followingBtn : _followBtn}
-                            </UserFollowTxt>
-                          </form>
-                        )}
-                      </UserProfileInfo>
-                      {/* 유저 아이디 */}
-                      <UserProfileId>
-                        <UserIdInfo onClick={() => goURL({pathname:`/myboard/[id]?tab=all`, as:`/myboard/${data?.writer?.screenId}`})}>{data.screenId}</UserIdInfo>
-                      </UserProfileId>
-                      {/* 메뉴 더보기 */}
-                      <FdMoreMenuAnchor onClick={checkMoreMenuType}>
-                        <MoreMenuDot />
-                      </FdMoreMenuAnchor>
-                      {/* 콘텐츠 */}
-                      <OriginalContent>{data.boardTitle}</OriginalContent>
-                      <TextContent>{converted}</TextContent>
-                      <BottomWrap><PostedTime>Posted by {indicateDate}</PostedTime>{data.edited && <ModifyText>{_modified}</ModifyText>}</BottomWrap>
-                    </UserProfileContentsBox>
-                  </ProfileImgContent>
-                </UserForm>
+                <ViewerUserForm
+                  type='SECOND'
+                  userLang={_recreateUser}
+                  followLang={_followBtn}
+                  followOnLang={_followingBtn}
+                  profile={profileURL}
+                  userData={data}
+                  boardUid={boardUid}
+                />
               </>
-            ) : (
-              <UserForm>
-                {/* 2차 창작이 없을 때 */}
-                <UserProfileWrap>
-                  <UserUploadInfoImg image={externalSource ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />
-                  {
-                    externalSource ? 
-                    <SourceLink href={`${externalSource}`} target="_blank">{externalSource}</SourceLink>
-                    :
-                    <UserUploadInfo>{_originalUser}</UserUploadInfo>
-                  }
-                </UserProfileWrap>
-                <ProfileImgContent>
-                  {/* 프로필 박스 */}
-                  <ProfileImgBox>
-                    <ProfileImg profile={profileURL} />
-                  </ProfileImgBox>
-                  {/* 유저 프로필 콘텐츠 박스 */}
-                  <UserProfileContentsBox>
-                    {/* 유저 아이디 등 프로필 */}
-                    <UserProfileInfo>
-                      {/* 유저 닉네임 팔로잉 */}
-                      <UserNickInfo onClick={() => goURL({pathname:`/myboard/[id]?tab=all`, as:`/myboard/${data?.writer?.screenId}`})}>{data.nickname}</UserNickInfo>
-                      {data.following !== 'me' && loginHandle && (
-                        <form action="" onSubmit={(e)=>sumitHandler(e, 'follow', 'secondary')}>
-                          <UserFollowTxt followData={follow} onClick={() => toggleFollow()}>
-                            {follow ? _followingBtn : _followBtn}
-                          </UserFollowTxt>
-                        </form>
-                      )}
-                    </UserProfileInfo>
-                    {/* 유저 아이디 */}
-                    <UserProfileId>
-                      <UserIdInfo onClick={() => goURL({pathname:`/myboard/[id]?tab=all`, as:`/myboard/${data?.writer?.screenId}`})}>{data.screenId}</UserIdInfo>
-                    </UserProfileId>
-                    {/* 메뉴 더보기 */}
-                    <FdMoreMenuAnchor onClick={checkMoreMenuType}>
-                      <MoreMenuDot />
-                    </FdMoreMenuAnchor>
-                    {/* 콘텐츠 */}
-                    <OriginalContent>{data.boardTitle}</OriginalContent>
-                      <TextContent>{converted}</TextContent>
-                    <BottomWrap><PostedTime>Posted by {indicateDate}</PostedTime>{data.edited && <ModifyText>{_modified}</ModifyText>}</BottomWrap>
-                  </UserProfileContentsBox>
-                </ProfileImgContent>
-              </UserForm>
-            )}
+            : 
+            <ViewerUserForm
+              type='NOSECOND'
+              externalSource={externalSource} 
+              userLang={_originalUser}
+              followLang={_followBtn}
+              followOnLang={_followingBtn}
+              profile={profileURL}
+              userData={data}
+              boardUid={boardUid}
+            />
+            }
 
             {/* 모바일용 뷰어 */}
             <MobileViewerPort>
-              { _public === 'none' ? null : boardImg.map((item, index) => {
-                return <ViewImg key={index} src={boardImg[index]} />;
-              })}
+              {
+                _public === 'none' ? null : boardImg.map((item, index) => (
+                  <ViewImg key={index} src={boardImg[index]} />
+                ))
+              }
             </MobileViewerPort>
             {/* 반응 탭 */}
             <ReactTab>
@@ -643,67 +524,32 @@ const feedbackRef = useRef();
       )}
       {/* 비공개 작품일 경우 */}
       {_public === 'none' && 
-         <Modal visible={true} onClose={() => toggle_Modal_Trans(false)} >
-           <ConfirmPopup  setAccessConfirm={goURL} type={'GOBACK'}/>
-         </Modal>
+        <Modal visible={true} onClose={() => toggle_Modal_Trans(false)} >
+          <ConfirmPopup  setAccessConfirm={goURL} type={'GOBACK'}/>
+        </Modal>
       }
       {/* 삭제or없는 콘텐츠 일 경우*/}
       {noContents &&
-       <Modal visible={true} onClose={() => toggle_Modal_Trans(false)} >
-         <ConfirmPopup  setAccessConfirm={goURL} type={'REMOVE'}/>
+      <Modal visible={true} onClose={() => toggle_Modal_Trans(false)} >
+        <ConfirmPopup  setAccessConfirm={goURL} type={'REMOVE'}/>
       </Modal>
       }
       {/* 2차 창작이 금지된 경우 */}
       {allowSecondary &&
-       <Modal visible={allowSecondary} onClose={() => setAllowSecondary(false)} >
-         <ConfirmPopup handleModal={() => setAllowSecondary(false)} type={'TRANS'}/>
+      <Modal visible={allowSecondary} onClose={() => setAllowSecondary(false)} >
+        <ConfirmPopup handleModal={() => setAllowSecondary(false)} type={'TRANS'}/>
       </Modal>
       }
       {/* 2차 창작하려는데 원작글이 삭제된 경우 */}
       {originDeleted &&
-       <Modal visible={originDeleted} onClose={() => setOriginDeleted(false)} >
-         <ConfirmPopup handleModal={() => setOriginDeleted(false)} type={'REMOVEORIGIN'}/>
+      <Modal visible={originDeleted} onClose={() => setOriginDeleted(false)} >
+        <ConfirmPopup handleModal={() => setOriginDeleted(false)} type={'REMOVEORIGIN'}/>
       </Modal>
       }
 
     </ReplyListContext.Provider>
   );
 };
-
-  /* 애니메이션 */
-
-const Following = keyframes`
-from{
-  color:rgba(164, 159, 186, 1);
-}
-to{
-  color:rgba(241, 173, 57, 0.8);
-}`;
-
-const UnFollowing = keyframes`
-from{
-  color:rgba(241, 173, 57, 0.8);
-}
-to{
-  color:rgba(164, 159, 186, 1);
-}
-`;
-
-//공통 스타일링
-const FdMoreMenuAnchor = styled.button.attrs({
-  type: 'button',
-})`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 24px;
-  right: 12px;
-  ${(props) => props.theme.ImgButtonHover};
-`;
-const MoreMenuDot = styled.div`
-  display: flex;
-  ${(props) => props.theme.moreMenu};
-`;
 
 // 전체 레이아웃
 const ViewerPortWrap = styled.section`
@@ -807,211 +653,6 @@ const UserComment = styled.div`
   width: 100%;
   height: auto;
 `;
-
-const UserForm = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding: 12px 6px;
-  width: 100%;
-  height: auto;
-  /* max-height: 400px; */
-  margin-bottom: 5px;
-  background: ${(props) => props.theme.color.whiteColor};
-`;
-// 유저 헤더
-const UserProfileWrap = styled.div`
-  display: flex;
-  align-items: center;
-  width:100%;
-  height: 100%;
-  margin-top: 3px;
-  user-select: none;
-`;
-const UserUploadInfoImg = styled.svg`
-  background: url(${props => props.image}) no-repeat center / contain;
-  margin-left: 1.6em;
-  width: 1.2em;
-  height: 1.2em;
-  min-width: 1.2em;
-`;
-const UserTransImg = styled(UserUploadInfoImg)`
-  background: url(${props => props.image}) no-repeat center / contain;
-  width: 1.1em;
-  height: 1.1em;
-
-`;
-const UserUploadInfo = styled.span`
-  margin-left: 3px;
-  font-weight: ${(props) => props.theme.fontWeight.font100};
-  font-size: ${(props) => props.theme.fontSize.font13};
-  color: ${(props) => props.theme.color.softBlackColor};
-  max-width:25em;
-`;
-// 외부 출처가 있을 경우
-const SourceLink = styled.a`
-  margin-left: 0.6em;
-  font-weight: ${(props) => props.theme.fontWeight.font100};
-  font-size: ${(props) => props.theme.fontSize.font14};
-  color: ${(props) => props.theme.color.orangeColor};
-  /* max-width:24em; */
-  padding-right:4em;
-  line-height:1.4em;
-  ${props => props.theme.textTwoLine};
-  cursor:pointer;
-
-`;
-
-// 유저 프로필 && 콘텐츠
-const ProfileImgContent = styled.div`
-  display: flex;
-`;
-// 유저 프로필 이미지
-const ProfileImgBox = styled.div`
-  display: flex;
-  min-width: 42px;
-  min-height: 42px;
-  max-width: 42px;
-  max-height: 42px;
-  border-radius: 50%;
-  margin: 4px 10px;
-  overflow: hidden;
-`;
-const ProfileImg = styled.span`
-  background:${props => props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`}; 
-  width: 100%;
-  height: 100%;
-`;
-// 유저 프로필 콘텐츠
-const UserProfileContentsBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 5px;
-  width: 100%;
-`;
-
-const UserProfileInfo = styled.div`
-  display: flex;
-  align-items: center;
-  min-width: 0;
-`;
-const UserProfileId = styled.div`
-  display: flex;
-  align-items: center;
-  min-height: 0;
-`;
-
-// 유저 닉네임
-const UserNickInfo = styled.span`
-  display: flex;
-  word-break: break-all;
-  line-height: 19px;
-  ${(props) => props.theme.textTwoLine};
-  font-weight: ${(props) => props.theme.fontWeight.font700};
-  margin-right: 8px;
-  font-size: ${(props) => props.theme.fontSize.font15};
-  color: ${(props) => props.theme.color.blackColor};
-  cursor: pointer;
-`;
-//
-
-const UserFollowTxt = styled.button.attrs({
-  type: 'submit',
-})`
-  white-space: nowrap;
-  margin-right: 58px;
-  font-weight: ${(props) => props.theme.fontWeight.font700};
-  font-size: ${(props) => props.theme.fontSize.font15};
-  cursor: pointer;
-
-  animation: ${(props) => (props.followData ? Following : UnFollowing)} 0.3s ease forwards;
-`;
-
-// 유저 아이디
-const UserIdInfo = styled.span`
-  ${(props) => props.theme.textOneLine};
-  font-weight: ${(props) => props.theme.fontWeight.font500};
-  font-size: ${(props) => props.theme.fontSize.font14};
-  color: ${(props) => props.theme.color.darkGray};
-  height: 18px;
-  margin-right: 60px;
-
-  cursor: pointer;
-`;
-
-const OriginalContent = styled.span`
-  margin-top: 10px;
-  font-weight: ${(props) => props.theme.fontWeight.font700};
-  font-size: ${(props) => props.theme.fontSize.font15};
-  color: ${(props) => props.theme.color.blackColor};
-`;
-const PostedTime = styled.span`
- 
-  font-weight: ${(props) => props.theme.fontWeight.font100};
-  font-size: ${(props) => props.theme.fontSize.font14};
-  color: ${(props) => props.theme.color.softBlackColor};
-`;
-const ContentImgWrap = styled.div`
-  display: flex;
-  width: 100%;
-`;
-
-const ContentImgBox = styled.div`
-  display: flex;
-  width: 100%;
-  height: 140px;
-  overflow: hidden;
-  border-radius: 12px;
-  margin: 14px 26px 6px 0;
-  border: 3px solid ${props => props.styling ? props.theme.color.semiOrangeColor : props.theme.color.softGrayColor};
-  background:${props => props.styling ? '' : `${props => props.theme.color.hoverColor}`};
-  cursor: pointer;
-`;
-
-const ContentImg = styled.span`
-  display: flex;
-  background: url(${(props) => props.thumNail}) no-repeat center center / cover;
-  width: 100%;
-  height: 100%;
-`;
-const NullContent = styled.span`
-  display: flex;
-  justify-content:center;
-  align-items:center;
-  background: ${(props) => props.theme.color.hoverColor};
-  width: 100%;
-  height: 100%;
-  font-weight: ${(props) => props.theme.fontWeight.font700};
-  font-size: ${(props) => props.theme.fontSize.font18};
-  color: ${(props) => props.theme.color.darkGray};
-`
-
-const TextContent = styled.span`
-padding-top:0.5em;
-padding-right:3em;
-@media (max-width:900px){
-  padding-right:2em;
-}
-`;
-
-// 수정 여부
-const BottomWrap = styled.div`
-display:flex;
-height:auto;
-align-items:center;
-flex-direction:row;
-margin-top: 8px;
-`
-const ModifyText = styled.span`
-margin-left:8px;
-padding:4px 8px;
-border-radius:25px;
-background: ${(props) => props.theme.color.orangeColor};
-font-weight: ${(props) => props.theme.fontWeight.font500};
-font-size: ${(props) => props.theme.fontSize.font13};
-color: ${(props) => props.theme.color.whiteColor};
-
-`
 
 // 반응 탭
 const ReactTab = styled.div`
@@ -1176,6 +817,5 @@ const MoreContents = styled.div`
 `;
 
 const MoreContentsTxt = styled(ViewMoreTitle)``;
-
 
 export default Viewer;

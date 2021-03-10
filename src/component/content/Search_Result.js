@@ -40,7 +40,7 @@ const SearchResult = () => {
           <MypageTabBox>
             {
               navArr.map((nav, i) => (
-                <NavItems key={i} styling={nav.data === type} onClick={()=>goURL({pathname:`/search/${nav.data}`, query:{type, text}})}>
+                <NavItems key={i} styling={nav.data === type} onClick={()=>goURL({pathname:`/search/${nav.data}`, as:`/search/${nav.data}/${text}`, query:{type, text}})}>
                   <SearchTab styling={nav.data === type} onClick={()=>setParamsData(nav.data)}>{nav.lang}</SearchTab>
                 </NavItems>
               ))

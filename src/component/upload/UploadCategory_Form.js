@@ -12,7 +12,8 @@ export default function UploadCategoryForm({type, initialNum}) {
     const {
       setPublic,
       setSecondCreate,
-      setSendLang
+      setSendLang,
+      setCategory,
     } = useContext(uploadContext);
 
     const [isCategory, toggleModal_Category] = useToggle();
@@ -73,12 +74,14 @@ export default function UploadCategoryForm({type, initialNum}) {
   
         switch (type) {
             case 'CONTENTS':
-            if(initialNum === 0){
+            if(categoryNum === 0){
                 setCategoryIcon(<IllustIcon />)
                 setCategoryTxt(_thisIllust)
-            } else if(initialNum === 1){
+                setCategory(0)
+            } else if(categoryNum === 1){
                 setCategoryIcon(<ComicIcon />)
                 setCategoryTxt(_thisComic)
+                setCategory(1)
             }
             setScriptTxt({title:_comicFillterCategory, sub:_comicFillterDesc})
             setContents([{id:0, title:'illust', lang:_thisIllust}, {id:1, title:'comic', lang:_thisComic}])

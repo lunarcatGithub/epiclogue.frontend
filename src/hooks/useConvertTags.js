@@ -27,12 +27,13 @@ export const useConvertTags = () => {
           arr.push(
             <Link
             href={{
-              pathname: `/search/latest/${str.split("#").pop()}`,
+              pathname: `/search/latest/`,
               query: {
-                query: str,
+                text: str.split("#").pop(),
                 type:'latest'
               },
             }}
+            as={`/search/latest/${str.split("#").pop()}`}
             key={index}
             >
               <LinkStyle >
@@ -45,12 +46,13 @@ export const useConvertTags = () => {
           arr.push(
             <Link
             href={{
-              pathname: `/search/users/${str}`,
+              pathname: `/search/users/`,
               query: {
-                query: str,
+                text: str,
                 type:'users'
               },
             }}
+            as={`/search/latest/${str}`}
             key={index}
             >
               <LinkStyle>

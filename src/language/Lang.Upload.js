@@ -161,7 +161,7 @@ export const langUploadCategory = {
     },
     sourceAlert: {
         2: `This post may be deleted if it is illegal.`,
-        0: '불법 작품의 경우 삭제될 수 있어요',
+        0: '저작권에 저촉되는 경우 삭제될 수 있어요',
         1: '不法作品の場合、削除されることがあります'
     }
 
@@ -175,9 +175,9 @@ export const langUploadSource = {
         1: '出所'
     },
     uploadPermission: {
-        2: `You can only register posts with the author's permission`,
-        0: '원작자의 허락을 받은 작품만 등록할 수 있어요',
-        1: '原作者の許諾を得た作品のみ登録できます'
+        2: `You need the consent of the original author`,
+        0: '원작자의 동의가 필요합니다',
+        1: '原作者の同意が必要です'
     }
 
 }

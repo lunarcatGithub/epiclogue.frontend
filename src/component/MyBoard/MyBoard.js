@@ -19,6 +19,7 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import {useDate} from '@hooks/useDate';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { LanguageContext, AppDataContext } from '@store/App_Store';
+import useDebounce from '@hooks/useDebounce';
 
 // 아이콘 import
 
@@ -33,6 +34,9 @@ export default function MyBoard({boardItem, userId, nonError}) {
   const [date, setDate] = useState();
   const [checkMe, setCheckMe] = useState();
   const [userScreenId, setUserScreenId] = useState();
+
+  // debounce 처리
+  const followDebounce = useDebounce(follow ,2000);
 
   useEffect(() => {
     setUserScreenId(followData?.screenId);
@@ -72,13 +76,16 @@ export default function MyBoard({boardItem, userId, nonError}) {
     const [boardLoding, boardApi, boardError, boardFetch] = useAxiosFetch();
     const [boardDataLoding, boardDataApi, boardDataError, boardDataFetch] = useAxiosFetch();
 
-    const submitHandler = (e, type, url) => {
+    const submitHandler = () => {
       if(!loginOn) return;
-      e.preventDefault();
-      if(type === 'follow'){
-        followFetch(url, follow ? 'post' : 'delete',  { targetUserId: boardItem?.data?._id })
-      }
+      toggleFollow();
     }
+
+    useEffect(() => {
+      if(followDebounce === null || followDebounce === undefined) return;
+      followFetch(`${process.env.API_URL}/interaction/follow`, followDebounce ? 'post' : 'delete',  { targetUserId: boardItem?.data?._id })
+    
+    }, [followDebounce])
 
     const moveFollowList = (type) => {
       if(!loginOn){ setUnAuth(true); return; }
@@ -95,7 +102,6 @@ export default function MyBoard({boardItem, userId, nonError}) {
     setDate(countryResult);
     toggleFollow(boardItem?.data?.isFollowing);
     localStorage.getItem('userid') === boardItem?.data?.screenId && setCheckMe(true)
-
   },[boardItem, countryResult]);
 
   useEffect(() => {
@@ -165,20 +171,14 @@ export default function MyBoard({boardItem, userId, nonError}) {
                     {/* <FollowAddButton data={String(follow)} onClick={toggleFollow}>
                       {follow ? _followingBtn : _followBtn}
                     </FollowAddButton> */}
-                  <form 
-                  action="" 
-                  onSubmit={(e)=>submitHandler(e, 'follow', `${process.env.API_URL}/interaction/follow`)}>
                     <FollowAddButton 
                     styling={follow} 
                     onClick={()=> {
-                      if(!loginOn) {
-                        setUnAuth(true); return
-                      }
-                      toggleFollow()
+                      if(!loginOn) { setUnAuth(true); return; }
+                      submitHandler()
                     }}>
                       {follow ? _followingBtn : _followBtn}
                     </FollowAddButton>
-                  </form>
                     {/* <MoreMenuBtn>
                       <MoreMenu />
                     </MoreMenuBtn> */}
