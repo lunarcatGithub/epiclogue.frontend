@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "eslint \"src/**/*.js\" --fix",
-    "format": "prettier \"src/**/*.js\" --write"
+    "format": "prettier \"src/**/*.js\" \"pages/**/*.js\" --write"
   },
   "dependencies": {
     "axios": "^0.21.1",
