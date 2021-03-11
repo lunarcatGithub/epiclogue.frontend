@@ -6,6 +6,7 @@
     "start": "next start",
     "dev": "next dev",
     "build": "next build",
+    "export": "next export",
     "lint": "eslint \"src/**/*.js\" --fix",
     "format": "prettier \"src/**/*.js\" \"pages/**/*.js\" --write"
   },
