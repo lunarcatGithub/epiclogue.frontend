@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import { GoogleLogin } from 'react-google-login';
+
+import {useRouter} from 'next/router';
+import {GoogleLogin} from 'react-google-login';
+
 // import FBLogin from 'react-facebook-login'
 import KakaoLogin from 'react-kakao-login';
 
@@ -19,13 +22,22 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import useForm from '@hooks/useForm';
 
 export const SignIn = (props) => {
-  const { setChangePage } = props;
-  const { langState } = useContext(LanguageContext);
-  const { setLoginOn } = useContext(AppDataContext);
-  const [errorTitle, setErrorTitle] = useState();
-  const [goURL] = useUrlMove();
-  const [_isShowing, _toggle] = useModal();
 
+  const {setChangePage} = props;
+  const router = useRouter();
+  const {main} = router.query;
+  const {langState} = useContext(LanguageContext);
+  const {setLoginOn} = useContext(AppDataContext);
+  const [errorTitle, setErrorTitle] = useState()
+  const [ goURL ] = useUrlMove();
+  const [_isShowing, _toggle] = useModal();
+  // router 변경에 의한 로그인 화면 변화
+  const [isBack, setIsBack] = useState(false);
+
+  useEffect(() => {
+    setIsBack(main ? main : false)
+  }, [router.query])
+  
   // 로그인 에러
   // fetch
   const [snsLoginListLoding, snsLoginListApi, snsLoginListError, snsLoginFetch] = useAxiosFetch();
@@ -95,31 +107,45 @@ export const SignIn = (props) => {
 
   return (
     <>
-      <LoginBox>
-        <LoginInner>
-          <LoginHeader>
+    <LoginBox>
+      <LoginInner>
+        <LoginHeader styling={main}>
+          {
+            main ?
+            <>
+            <BackIconAnchor onClick={()=>router.back()}>
+              <PureBackIcon/>
+              </BackIconAnchor>
+              <SubTitle>메인으로 돌아가기</SubTitle></>
+            :
+            <>
             <LoginLogo />
             <LoginTitle>"Welcome to EpicLogue"</LoginTitle>
-          </LoginHeader>
-          <FormInner>
-            {/* 로그인 찾기 */}
-            <LostLogin onClick={_toggle}>{_lostPassword}</LostLogin>
+            </>
+            
+          }
+        </LoginHeader>
+        <FormInner>
+          {/* 로그인 찾기 */}
+        <LostLogin onClick={_toggle}>{_lostPassword}</LostLogin>
 
-            <form action="" method="post" onSubmit={handleSubmit}>
-              <UserEmailInput name="email" onChange={handleChange} placeholder={_idPlaceHolder} />
-              <UserPwInput name="userPw" onChange={handleChange} placeholder={_pwPlaceHolder} />
-              <PlaceHolderBox>
-                <PlaceHolderTxt>{errorTitle}</PlaceHolderTxt>
-              </PlaceHolderBox>
-              <LoginButton login={values.userPw.length} userPw={values.userPw} email={values.email} disabled={disabled}>
-                {disabled ? <ProgressSmall disabled={disabled} /> : _loginButton}
-              </LoginButton>
-            </form>
-          </FormInner>
-          <SignUpEtcBtn>
-            <SignUpButton onClick={() => setChangePage(true)}>{_signUpButton}</SignUpButton>
-            <Dummy />
-            <SnsLogin>SNS Login</SnsLogin>
+        <form action="" method="post" onSubmit={handleSubmit}>
+          <UserEmailInput name="email" onChange={handleChange} placeholder={_idPlaceHolder} />
+          <UserPwInput name="userPw" onChange={handleChange} placeholder={_pwPlaceHolder}/>
+            <PlaceHolderBox>
+              <PlaceHolderTxt>{errorTitle}</PlaceHolderTxt>
+            </PlaceHolderBox>
+          <LoginButton
+            login={values.userPw.length} userPw={values.userPw} email={values.email} disabled={disabled}>
+            {disabled ? <ProgressSmall disabled={disabled}/> : _loginButton}
+          </LoginButton>
+        </form>
+        </FormInner>
+        <SignUpEtcBtn>
+          <SignUpButton onClick={()=>setChangePage(true)}>{_signUpButton}</SignUpButton>
+          <Dummy />
+          <SubTitle>SNS Login</SubTitle>
+
             <LogingWrap>
               <GoogleButton name="google" clientId={process.env.GOOGLE_API_KEY} onSuccess={(res) => responseSuccess(res, 'google')} onFailure={responseFail} />
               <GoogleStyle>{_googleAccount}</GoogleStyle>
@@ -216,9 +242,9 @@ const LoginHeader = styled.div`
   display: flex;
   flex-flow: row;
   align-items: center;
-  justify-content: center;
+  justify-content: ${props => props.styling ? 'flex-start' : 'center'};
   width: 100%;
-  margin-bottom: 22px;
+  margin: 0.2em 0;
 `;
 const LoginTitle = styled.h1`
   margin-right: 10px;
@@ -260,6 +286,30 @@ const UserPwInput = styled(UserEmailInput).attrs({
 })`
   margin-bottom: 8px;
 `;
+
+// 뒤로가기
+const BackIconAnchor = styled.button`
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position: relative;
+  padding:18px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  &:hover {
+    background: ${(props) => props.theme.color.hoverColor};
+  }
+`;
+const PureBackIcon = styled.span`
+ display: flex;
+ width:0.9em;
+ height:0.9em;
+ border-top:3px solid ${(props) => props.theme.color.darkGray};
+ border-right:3px solid ${(props) => props.theme.color.darkGray};
+ -webkit-transform: rotate(225deg);
+ transform: rotate(225deg);
+ margin-left:0.3em;
+`
 // 로그인 찾기
 const LostLogin = styled.button.attrs({ type: 'button' })`
   position: absolute;
@@ -405,13 +455,13 @@ const Dummy = styled.div`
   margin: 16px 0;
   border-bottom: 3px solid ${(props) => props.theme.color.hoverColor};
 `;
-const SnsLogin = styled.h2`
+const SubTitle = styled.span`
   text-align: center;
   font-weight: ${(props) => props.theme.fontWeight.font700};
   color: ${(props) => props.theme.color.placeHolderColor};
   font-size: ${(props) => props.theme.fontSize.font15};
-  margin-bottom: 0.3em;
 `;
+
 const GoogleLog = styled.span`
   display: flex;
   justify-content: center;

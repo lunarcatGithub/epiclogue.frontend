@@ -143,12 +143,12 @@ export default function MyBoard({ boardItem, userId, nonError }) {
               <UserIdCreateDateBox>
                 <UserIdTag>{followData?.screenId}</UserIdTag>
                 <CreateIdDate>
-                  {_signDate} {date}
+                  {_signDate} {!boardDataLoding && date}
                 </CreateIdDate>
               </UserIdCreateDateBox>
               {/* 유저 소개 시작 */}
               <UserIntroduceBox>
-                <UserIntroduce>{converted.length === 0 ? `${followData?.nickname} ${_noIntro}` : converted}</UserIntroduce>
+                <UserIntroduce>{!boardDataLoding && converted.length === 0 ? `${followData?.nickname} ${_noIntro}` : converted}</UserIntroduce>
               </UserIntroduceBox>
               {/* 팔로우 버튼 시작 */}
               <FollowsBox>

@@ -26,7 +26,7 @@ export default function UnauthLogin(props) {
         <SubTxt>{_unAuthSub}</SubTxt>
         <LoginButton
           onClick={() => {
-            goURL({ pathname: '/login' });
+            goURL({ pathname: '/login', query:{main:true} });
             setUnAuth(false);
           }}
         >

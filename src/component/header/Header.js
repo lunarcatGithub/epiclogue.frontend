@@ -116,7 +116,7 @@ const Header = () => {
   useEffect(() => {
     if (!loginOn) return;
     readFetch(`${process.env.API_URL}/notification/check`, 'get', null, null, null);
-  }, [pathname, read]);
+  }, []);
 
   useEffect(() => {
     readObserver();
@@ -140,6 +140,7 @@ const Header = () => {
   }, [pathname]);
 
   return (
+
     <HeaderDataContext.Provider value={{ searchBody, toggleSearchPop, toggleIsOpen, toggleNoti, profileApi, profileError }}>
       {/* 헤더 레이아웃 */}
       {preventHeader && (
