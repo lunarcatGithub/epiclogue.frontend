@@ -297,17 +297,18 @@ const Header = () => {
       }
 
           {searchPopup ? <SearchPopup /> : ''}
-          {isNotification && (
-            <Modal visible={isNotification} closable={true} maskClosable={true} onClose={() => toggleNoti(false)}>
-              <UserInform/>
-            </Modal>
-          )}
-          {isOpen && (
-            <Modal visible={isOpen ? true : false} closable={true} maskClosable={true} onClose={() => toggleIsOpen(false)}>
-              <AdminFeedback toggleIsOpen={() => toggleIsOpen(false)} />
-            </Modal>
-          )}
-       
+          {
+            isNotification && (
+              <Modal visible={isNotification} closable={true} maskClosable={true} onClose={() => toggleNoti(false)}>
+                <UserInform/>
+              </Modal>)
+          }
+          {
+            isOpen && (
+              <Modal visible={isOpen ? true : false} closable={true} maskClosable={true} onClose={() => toggleIsOpen(false)}>
+                <AdminFeedback toggleIsOpen={() => toggleIsOpen(false)} />
+              </Modal>)
+          }
       </HeaderDataContext.Provider>
   );
 };

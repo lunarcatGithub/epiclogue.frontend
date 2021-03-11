@@ -12,7 +12,7 @@ export default function HeaderUnauth() {
     <>
         <LayoutInner>
             <LoginBtn onClick={()=>goURL({pathname:'/login'})}>Login</LoginBtn>
-            <SignUpBtn onClick={()=>goURL({pathname:'/login', state:{sign:true}})}>Sign up</SignUpBtn>
+            <SignUpBtn onClick={()=>goURL({pathname:'/login', query:{sign:true}})}>Sign up</SignUpBtn>
             <Link href={`/mypage/setting`}>
               <NavItem  >
                   <OptionSetting />

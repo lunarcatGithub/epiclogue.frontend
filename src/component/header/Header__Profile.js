@@ -35,6 +35,7 @@ const HeaderPfPopup = () => {
     policyInform,
     changeAccount,
     logOutTab,
+    sessionExpire
   } = LangHeaderProfile;
   const _profileSet =
       profileSet[selectedLanguage] || profileSet[defaultLanguage],
@@ -44,7 +45,8 @@ const HeaderPfPopup = () => {
       policyInform[selectedLanguage] || policyInform[defaultLanguage],
     _changeAccount =
       changeAccount[selectedLanguage] || changeAccount[defaultLanguage],
-    _logOutTab = logOutTab[selectedLanguage] || logOutTab[defaultLanguage];
+    _logOutTab = logOutTab[selectedLanguage] || logOutTab[defaultLanguage],
+    _sessionExpire = sessionExpire[selectedLanguage] || sessionExpire[defaultLanguage];
 
   const logout = () => {
     localStorage.removeItem("loginOn");
@@ -56,11 +58,12 @@ const HeaderPfPopup = () => {
   };
 
   useEffect(() => {
-    // if(profileError){
-    //   logout()
-    //   goURL('/')
-    // }
-  }, []) 
+    if(profileError?.status === 401) {
+        alert(_sessionExpire)
+        logout()
+      
+    }
+  }, [profileError]) 
 
   useEffect(() => {
     toggleSearchPop(false);

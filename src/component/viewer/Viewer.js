@@ -54,8 +54,6 @@ const Viewer = ({boardItem, nonError}) => {
   const [getIndicateDate, setGetIndicateDate] = useState();
   const [_heartCount, setHeartCount] = useState();
 
-  const [type_MoreMenu, setType_MoreMenu] = useState();
-  const [type_O_MoreMenu, setType_O_MoreMenu] = useState();
 
   const [bookmark, toggleBookmark] = useToggle();
   const [like, toggleLike] = useToggle();
@@ -180,21 +178,6 @@ const feedbackRef = useRef();
   useEffect(()=> {
     likeApi && setHeartCount(likeApi?.data.heartCount);
   }, [likeApi])
-
-  const checkMoreMenuType = () => {
-    // 비회원 유저
-    if(!loginOn){
-      setUnAuth(true);
-      return;
-    }
-    // 회원 유저
-    toggle_Modal_MoreMenu();
-    if (data.screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
-      setType_MoreMenu(<MyPopup type="_More" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-    } else {
-      setType_MoreMenu(<UserPopup handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-    }
-  };
 
   // const checkO_MoreMenuType = () => {
   //   toggle_O_Modal_MoreMenu();
@@ -502,16 +485,12 @@ const feedbackRef = useRef();
         <Contents boardId={data._id} type="MAIN"/>
       </MoreContents>
       {/*Modal*/}
-      {state_O_MoreMenu && (
+      {/* {state_O_MoreMenu && (
         <Modal visible={state_O_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_O_Modal_MoreMenu(false)}>
           {type_O_MoreMenu}
         </Modal>
       )}
-      {state_MoreMenu && (
-        <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
-          {type_MoreMenu}
-        </Modal>
-      )}
+      */}
       {state_React && (
         <Modal visible={state_React} closable={true} maskClosable={true} onClose={() => toggle_Modal_React(false)}>
           <ReactPopup />

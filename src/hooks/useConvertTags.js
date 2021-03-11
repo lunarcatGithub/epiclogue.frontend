@@ -11,30 +11,34 @@ export const useConvertTags = () => {
     if(!props) return;
     const arr = [];
     let splitBody;
-    
+          console.log(props)
+
       if(props.match(' ')){
         splitBody = props.split(' ');
       }else if(props.match('\n')){
-        splitBody = props.split('\n');
+
+        splitBody = props.replaceAll("\n", "+<br/>+").split('+')
+        
       } else {
         splitBody = [props];
       }
+    
+      console.log(splitBody)
       // arr.push(props.map(i => i.replace('\n', `,<br/>,`)));
       // splitBody.replace('\n', `<br/>`)
-      
       splitBody?.map((str, index) => {
         if (str[0] === "#") {
           arr.push(
             <Link
-            href={{
-              pathname: `/search/latest/`,
-              query: {
-                text: str.split("#").pop(),
-                type:'latest'
-              },
-            }}
-            as={`/search/latest/${str.split("#").pop()}`}
-            key={index}
+              href={{
+                pathname: `/search/latest/`,
+                query: {
+                  text: str.split("#").pop(),
+                  type:'latest'
+                },
+              }}
+              as={`/search/latest/${str.split("#").pop()}`}
+              key={index}
             >
               <LinkStyle >
                 {str}
@@ -45,15 +49,15 @@ export const useConvertTags = () => {
           // 유저 찾기
           arr.push(
             <Link
-            href={{
-              pathname: `/search/users/`,
-              query: {
-                text: str,
-                type:'users'
-              },
-            }}
-            as={`/search/latest/${str}`}
-            key={index}
+              href={{
+                pathname: `/search/users/`,
+                query: {
+                  text: str,
+                  type:'users'
+                },
+              }}
+              as={`/search/latest/${str}`}
+              key={index}
             >
               <LinkStyle>
                 {str}
@@ -63,9 +67,9 @@ export const useConvertTags = () => {
         } else if (str.toString().match(regExp)){
           // 사이트 주소
           arr.push(
-            <ExternalLink href={`https://${str}`} target="_blank" key={index}>
+            <LinkStyle href={`https://${str}`} target="_blank" key={index}>
               {str}
-            </ExternalLink>
+            </LinkStyle>
           );
         } 
         // else if(str.toString().match(regURL)){
@@ -76,7 +80,9 @@ export const useConvertTags = () => {
         //     </ExternalLink>
         //   );
         // }
-        else {
+        else if(str === '<br/>'){
+          arr.push(<br/>)
+        } else {
           arr.push(<TextChild key={index}>{str}</TextChild>);
         }
       });
@@ -90,7 +96,7 @@ export const useConvertTags = () => {
 };
 
 const TextChild = styled.span`
-  line-height: 1.3em;
+  line-height: 1.2em;
   margin-right: 0.2em;
   font-weight: ${(props) => props.theme.fontWeight.font300};
   font-size: ${(props) => props.theme.fontSize.font15};
@@ -104,12 +110,6 @@ const LinkStyle = styled.a`
   margin-right: 0.2em;
   word-break: break-all;
   line-height: 1.3em;
-
+  cursor:pointer;
 `;
-const ExternalLink = styled.a`
-  color: ${(props) => props.theme.color.skyColor};
-  margin-right: 0.2em;
-  word-break: break-all;
-  line-height: 1.3em;
 
-`;

@@ -1,7 +1,13 @@
 import React, {useEffect, useState, useContext} from 'react'
 import styled from 'styled-components';
 
+// 컴포넌트 import
+import Modal from '@utils/Modal';
+import MyPopup from './MyMoreMenuPopup';
+import UserPopup from './UserMoreMenuPopUp';
+
 // Hooks&&reducer
+import { useModal } from '@hooks/useModal';
 import { useToggle } from '@hooks/useToggle';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { AppDataContext } from '@store/App_Store';
@@ -23,24 +29,25 @@ export default function ViewerUserForm(props) {
         } = props;
 
     const {loginOn, setUnAuth} = useContext(AppDataContext);
-        console.log(userData)
+
     //fetch
     const [followLoding, followApi, followError, followFetch] = useAxiosFetch();
-    const [likeLoding, likeApi, likeError, likeFetch] = useAxiosFetch();
-    const [bookmarkLoding, bookmarkApi, bookmarkError, bookmarkFetch] = useAxiosFetch();
-  
+
     const [goURL] = useUrlMove();
     const [kindContent, setKindContent] = useState();
     const [screenId, setScreenId] = useState();
     const [originUserData, setOriginUserData] = useState();
     const [title, setTitle] = useState();
+    //popup
+    const [type_MoreMenu, setType_MoreMenu] = useState();
+    const [state_MoreMenu, toggle_Modal_MoreMenu] = useModal();
 
     // follow
     const [follow, toggleFollow] = useToggle();
     const [followMe, setFollowMe] = useState()
     const [indicateDate] = useTimeCalculation(userData?.writeDate);
     const [converted, convert] = useConvertTags();
-
+    console.log(userData?.boardBody)
     const changeHandler = () => {
         const localScreenId = localStorage.getItem('userid')
         switch (type) {
@@ -49,7 +56,8 @@ export default function ViewerUserForm(props) {
                 setScreenId(userData?.writer?.screenId);
                 setFollowMe(localScreenId !== userData?.screenId);
                 toggleFollow(userData?.following);
-                setTitle
+                setTitle(userData?.boardTitle);
+                convert(userData?.boardBody)
                 break;
 
             case 'SECOND':
@@ -57,6 +65,8 @@ export default function ViewerUserForm(props) {
                 setScreenId(userData?.writer?.screenId)
                 setFollowMe(localScreenId !== userData?.screenId)
                 toggleFollow(userData?.following);
+                setTitle(userData?.boardTitle);
+                convert(userData?.boardBody)
 
             break;
 
@@ -66,7 +76,8 @@ export default function ViewerUserForm(props) {
                 setOriginUserData(userData?.originBoardId);
                 setFollowMe(localScreenId !== userData?.originUserId?.screenId)
                 toggleFollow(userData?.originUserId?.following);
-
+                setTitle(userData?.originBoardId?.boardTitle)
+                convert(userData?.originBoardId?.boardBody)
                 break;
             default:
             break;
@@ -95,12 +106,14 @@ export default function ViewerUserForm(props) {
             setType_MoreMenu(<UserPopup handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
         }
     };
+
     useEffect(() => {
         changeHandler()
     }, [type, externalSource, userData])
-    console.log(externalSource)
+
     return (
-        <UserForm>
+    <>
+    <UserForm>
         <UserProfileWrap>
             {kindContent}
             {
@@ -142,7 +155,7 @@ export default function ViewerUserForm(props) {
                 <MoreMenuDot />
             </FdMoreMenuAnchor>
             {/* 콘텐츠 */}
-            <OriginalContent>{userData?.boardTitle}</OriginalContent>
+            <OriginalContent>{title}</OriginalContent>
                 <TextContent>{converted}</TextContent>
             <BottomWrap><PostedTime>Posted by {indicateDate}</PostedTime>{userData?.edited && <ModifyText>{_modified}</ModifyText>}</BottomWrap>
             { originUserData &&
@@ -161,6 +174,14 @@ export default function ViewerUserForm(props) {
             </UserProfileContentsBox>
         </ProfileImgContent>
     </UserForm>
+    {
+        state_MoreMenu && (
+        <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
+            {type_MoreMenu}
+        </Modal>
+        )
+    }
+    </>
     )
 }
 

@@ -92,7 +92,7 @@ export const SignUp = (props) => {
         setValiNick(_nickError)
       }
     }   
-   }
+  }
 
   useEffect(() => {
     if (resData) {

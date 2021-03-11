@@ -14,6 +14,7 @@ import { useUrlMove } from '@hooks/useUrlMove';
 const LoginLayOut = () => {
   const router = useRouter();
   const sign = router?.query
+  console.log(router)
   const [changePage, setChangePage] = useState(Object.keys(sign).length === 0 ? false : true);
   const [goURL] = useUrlMove();
 
@@ -30,13 +31,13 @@ const LoginLayOut = () => {
 
         <ContentSection>
         {
-        changePage ?
-        <SignUp
-          backToLogin={sign}
-          setChangePage={setChangePage}
+          changePage ?
+          <SignUp
+            backToLogin={sign}
+            setChangePage={setChangePage}
           />
-        :
-        <SignIn setChangePage={setChangePage} />
+          :
+          <SignIn setChangePage={setChangePage} />
         }
         </ContentSection>
       </ContentInner>
