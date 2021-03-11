@@ -16,6 +16,7 @@ phases:
       - echo 'Export completed!'
 
 artifacts:
+  files:
     - public/**/*
     - styles/**/*
     - static/**/*
