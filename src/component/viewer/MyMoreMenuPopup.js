@@ -29,28 +29,28 @@ const MyPopup = (props) => {
   const { myOptions, modifyContent, deleteContent } = langMymoreMenu;
 
   const _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage],
-        _myOptions = myOptions[selectedLanguage] || myOptions[defaultLanguage],
-        // _modifyContent = modifyContent[selectedLanguage] || modifyContent[defaultLanguage],
-        _deleteContent = deleteContent[selectedLanguage] || deleteContent[defaultLanguage];
+    _myOptions = myOptions[selectedLanguage] || myOptions[defaultLanguage],
+    // _modifyContent = modifyContent[selectedLanguage] || modifyContent[defaultLanguage],
+    _deleteContent = deleteContent[selectedLanguage] || deleteContent[defaultLanguage];
 
   const [goURL] = useUrlMove();
   const [state_Confirm, toggle_Modal_Confirm] = useModal();
 
   const { boardUid, replyList, renderList, setReplyList, setRenderList, setFbReList, fbReList, ReFbUid } = useContext(ReplyListContext);
   let FbUid = props._id;
-  const type = props.conFirmType
+  const type = props.conFirmType;
 
   const deleteFb = () => {
     removeFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${FbUid}`, 'delete', null, null, null);
   };
 
   const deleteFbRe = () => {
-    removeReFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${FbUid}/reply/${ReFbUid}`, 'delete', null, null)
+    removeReFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${FbUid}/reply/${ReFbUid}`, 'delete', null, null);
   };
 
   const removeBoardHandler = () => {
-    removeBoardFetch(`${process.env.API_URL}/boards/${boardUid}`, 'delete', null, null, null );
-  }
+    removeBoardFetch(`${process.env.API_URL}/boards/${boardUid}`, 'delete', null, null, null);
+  };
 
   useEffect(() => {
     // * 삭제 확인 이후 로직 실행
@@ -58,7 +58,7 @@ const MyPopup = (props) => {
       if (ReFbUid) {
         deleteFbRe();
       } else if (props.type === '_More') {
-        removeBoardHandler()
+        removeBoardHandler();
       } else {
         deleteFb();
       }
@@ -66,48 +66,46 @@ const MyPopup = (props) => {
   }, [accessConfirm]);
 
   useEffect(() => {
-    if(!removeBoardApi) return;
-    goURL({pathname:'/'});
+    if (!removeBoardApi) return;
+    goURL({ pathname: '/' });
     handleModal_Menu();
-  }, [removeBoardApi])
+  }, [removeBoardApi]);
 
   useEffect(() => {
-    if(!removeFbFbApi) return;
+    if (!removeFbFbApi) return;
     setRenderList(removeFbFbApi?.data);
     setReplyList(removeFbFbApi?.data);
     handleModal_Menu();
-}, [removeFbFbApi])
+  }, [removeFbFbApi]);
 
   useEffect(() => {
-    if(!removeReFbFbApi) return;
+    if (!removeReFbFbApi) return;
     setFbReList(fbReList.filter((item) => item._id !== ReFbUid));
-  }, [removeReFbFbApi])
+  }, [removeReFbFbApi]);
 
   return (
     <>
       <MyPopupInner>
         <MyTitleBox>{_myOptions}</MyTitleBox>
         <MyTabBox>
-        { 
-        //  props.type === '_More' && 
-        //  <MyTab
-        //     onClick={(e) => {
-        //       props.onUpdate();
-        //       handleModal_Menu();
-        //     }}
-        //   >
-        //     {_modifyContent}
-        //   </MyTab>
+          {
+            //  props.type === '_More' &&
+            //  <MyTab
+            //     onClick={(e) => {
+            //       props.onUpdate();
+            //       handleModal_Menu();
+            //     }}
+            //   >
+            //     {_modifyContent}
+            //   </MyTab>
           }
-          <MyTab onClick={(e) => toggle_Modal_Confirm()}>
-            {_deleteContent}
-          </MyTab>
+          <MyTab onClick={(e) => toggle_Modal_Confirm()}>{_deleteContent}</MyTab>
         </MyTabBox>
         <PopupClose onClick={() => handleModal_Menu()}>{_closeBtn}</PopupClose>
       </MyPopupInner>
       {state_Confirm && (
         <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
-          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={setAccessConfirm} type={type}/>
+          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={setAccessConfirm} type={type} />
         </Modal>
       )}
     </>
@@ -166,7 +164,7 @@ const PopupClose = styled.button.attrs({ type: 'submit' })`
 const MyTitleBox = styled.div`
   display: flex;
   align-items: center;
-  justify-content:center;
+  justify-content: center;
   padding-left: 26px;
   width: 100%;
   height: 42px;

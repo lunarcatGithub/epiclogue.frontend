@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 
 // 컴포넌트 import
 import OriginUserForm from './Upload__OriginUser';
@@ -15,11 +15,10 @@ import OriginUserSource from './Upload__Source';
 import useFetchData from '@hooks/useFetchData';
 import { RoadDataContext } from '@hooks/useRoadDataContext';
 
-
 export const uploadContext = React.createContext();
 
 const UploadCategory = (props) => {
-  const {categoryToggle, mergyImage, type, imageAdjust, urlToFileConvert, editorData, editorUid} = props;
+  const { categoryToggle, mergyImage, type, imageAdjust, urlToFileConvert, editorData, editorUid } = props;
   const router = useRouter();
   // 직접 업로드 하기에서 가져온 데이터
   const { data, boardUid } = router.query;
@@ -30,7 +29,7 @@ const UploadCategory = (props) => {
   const _roadData = props.type === 'editor' ? editorData : roadData;
 
   const uploadData = _roadData || _roadData.uploadData;
-  const modifyContent = null
+  const modifyContent = null;
 
   let _boardImg = props.type === 'editor' ? [] : boardImg;
 
@@ -43,41 +42,34 @@ const UploadCategory = (props) => {
   const [goViewer] = useUrlMove();
   const [fileSize, setFileSize] = useState();
 
-    // 카테고리 선택 데이터
-    const [pub, setPublic] = useState(1);
-    const [secondCreate, setSecondCreate] = useState(1);
-    const [category, setCategory] = useState(0);
+  // 카테고리 선택 데이터
+  const [pub, setPublic] = useState(1);
+  const [secondCreate, setSecondCreate] = useState(1);
+  const [category, setCategory] = useState(0);
 
-    // 외부출처
-    const [sourceToggleOn, setSourceToggleOn] = useState(false);
-    const [sourceHref, setSourceHref] = useState(null);
-  
-    // 언어API 통신 관련
-    const [sendLang, setSendLang] = useState();
-  
-    // 원작 여부
-    const [originData, setOriginData] = useState();
+  // 외부출처
+  const [sourceToggleOn, setSourceToggleOn] = useState(false);
+  const [sourceHref, setSourceHref] = useState(null);
 
-    // 업로드 막기
-    const [disabled, setDisabled] = useState(false);
+  // 언어API 통신 관련
+  const [sendLang, setSendLang] = useState();
+
+  // 원작 여부
+  const [originData, setOriginData] = useState();
+
+  // 업로드 막기
+  const [disabled, setDisabled] = useState(false);
 
   //fetch
   const [uploadLoding, uploadApi, uploadError, uploadFetch] = useFetchData();
 
   useEffect(() => {
-    setOriginData(data && JSON.parse(data) || uploadData);
+    setOriginData((data && JSON.parse(data)) || uploadData);
   }, [router, editorData]);
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
-  const {
-    titlePlaceholder,
-    alertPlaceholder,
-    descPlaceholder,
-    uploadBtn,
-    fileSizeErr,
-    sourceAlert
-  } = langUploadCategory;
+  const { titlePlaceholder, alertPlaceholder, descPlaceholder, uploadBtn, fileSizeErr, sourceAlert } = langUploadCategory;
 
   const _titlePlaceholder = titlePlaceholder[selectedLanguage] || titlePlaceholder[defaultLanguage],
     _alertPlaceholder = alertPlaceholder[selectedLanguage] || titlePlaceholder[defaultLanguage],
@@ -97,28 +89,28 @@ const UploadCategory = (props) => {
 
   const editorDevideHandler = (e) => {
     e.preventDefault();
-    if(type === 'editor'){
+    if (type === 'editor') {
       new Promise((res, rej) => {
-        let adjustedData = imageAdjust()
-        res(adjustedData)
+        let adjustedData = imageAdjust();
+        res(adjustedData);
       })
-      .then((adjustedData) => {
-        let merged = mergyImage(adjustedData)
-        return merged
-      })
-      .then((merged)=>{
-        let converted = urlToFileConvert(merged)
-        return converted
-      })
-      .then((converted) => {
-        // 에디터에서 받아온 이미지
-        handleSubmit(converted)
-      })
-     } else {
-       // 일반 업로드를 통해 받아온 이미지
-      handleSubmit(_boardImg)
+        .then((adjustedData) => {
+          let merged = mergyImage(adjustedData);
+          return merged;
+        })
+        .then((merged) => {
+          let converted = urlToFileConvert(merged);
+          return converted;
+        })
+        .then((converted) => {
+          // 에디터에서 받아온 이미지
+          handleSubmit(converted);
+        });
+    } else {
+      // 일반 업로드를 통해 받아온 이미지
+      handleSubmit(_boardImg);
     }
-  }
+  };
 
   const handleSubmit = (imageData) => {
     setDisabled(true);
@@ -137,7 +129,7 @@ const UploadCategory = (props) => {
 
     // 업로드 용량
     if (sumByte >= 52428800) {
-      setFileSize(_fileSizeErr)
+      setFileSize(_fileSizeErr);
       setDisabled(false);
       return;
     } else {
@@ -147,17 +139,17 @@ const UploadCategory = (props) => {
       for (let i = 0; i < imageData.length; i++) {
         _uploadData.append('boardImg', imageData[i].img);
       }
-        _uploadData.append('boardTitle', boardTitle);
-        _uploadData.append('boardBody', boardBody);
-        _uploadData.append('category', category);
-        _uploadData.append('pub', pub);
-        _uploadData.append('language', sendLang);
-        _uploadData.append('allowSecondaryCreation', secondCreate);
-        _uploadData.append('sourceUrl', sourceHref);
-        
-        // 2차 창작 분류
-        if(originData?.length !== 0){
-          if (originData?.originUserId) {
+      _uploadData.append('boardTitle', boardTitle);
+      _uploadData.append('boardBody', boardBody);
+      _uploadData.append('category', category);
+      _uploadData.append('pub', pub);
+      _uploadData.append('language', sendLang);
+      _uploadData.append('allowSecondaryCreation', secondCreate);
+      _uploadData.append('sourceUrl', sourceHref);
+
+      // 2차 창작 분류
+      if (originData?.length !== 0) {
+        if (originData?.originUserId) {
           _uploadData.append('originUserId', originData?.originUserId._id);
           _uploadData.append('originBoardId', originData?.originBoardId._id);
         } else {
@@ -178,22 +170,22 @@ const UploadCategory = (props) => {
         setAlertTitle(true);
         return;
       }
-      
+
       // for (let [key, value] of _uploadData.entries()) {
       //   console.log(key, value);
       // }
 
-        if (modifyContent) {
-          // uploadFetch(`${process.env.API_URL}/boards/${modifyContent}/edit`, 'post', null, _uploadData);
-        } else if (originData?.length !== 0) {
-          uploadFetch(`${process.env.API_URL}/boards/sec`, 'post', null, _uploadData);
-        } else {
-          uploadFetch(`${process.env.API_URL}/boards`, 'post', null, _uploadData);
-        }
+      if (modifyContent) {
+        // uploadFetch(`${process.env.API_URL}/boards/${modifyContent}/edit`, 'post', null, _uploadData);
+      } else if (originData?.length !== 0) {
+        uploadFetch(`${process.env.API_URL}/boards/sec`, 'post', null, _uploadData);
+      } else {
+        uploadFetch(`${process.env.API_URL}/boards`, 'post', null, _uploadData);
+      }
       setDisabled(false);
     }
   };
-  
+
   useEffect(() => {
     if (uploadApi) {
       if (uploadApi?.result === 'ok') {
@@ -211,7 +203,7 @@ const UploadCategory = (props) => {
       // goViewer(`/main`);
       return;
     }
-  }, [uploadApi])
+  }, [uploadApi]);
 
   useEffect(() => {
     // 콘텐츠 수정하기 할 때 기존의 데이터 대입
@@ -225,28 +217,28 @@ const UploadCategory = (props) => {
   }, [_roadData, editorData]);
 
   return (
-    <uploadContext.Provider 
-    value={{
-      category,
-      setCategory,
-      setPublic,
-      pub,
-      setSecondCreate,
-      secondCreate,
-      setSendLang,
-      sendLang,
-      // 외부 출처
-      sourceToggleOn,
-      setSourceToggleOn,
-      sourceHref,
-      setSourceHref,
-      //원작여부
-      setOriginData,
-      originData,
-      //업로드 막기
-      disabled,
-      setDisabled
-    }}
+    <uploadContext.Provider
+      value={{
+        category,
+        setCategory,
+        setPublic,
+        pub,
+        setSecondCreate,
+        secondCreate,
+        setSendLang,
+        sendLang,
+        // 외부 출처
+        sourceToggleOn,
+        setSourceToggleOn,
+        sourceHref,
+        setSourceHref,
+        //원작여부
+        setOriginData,
+        originData,
+        //업로드 막기
+        disabled,
+        setDisabled,
+      }}
     >
       <ContentOptionBox>
         <ContentTitle alertTitle={alertTitle}>
@@ -264,30 +256,32 @@ const UploadCategory = (props) => {
           <ContentInfo defaultValue={uploadData ? uploadData.boardBody : ''} name="boardBody" onChange={changeBoardBody} placeholder={_descPlaceholder} />
         </ContentInfoBox>
         {/* 원작자 폼 */}
-        {originData?.length !== 0 ? <OriginUserForm originData={originData} /> : <OriginUserSource/>}
-        
+        {originData?.length !== 0 ? <OriginUserForm originData={originData} /> : <OriginUserSource />}
+
         <CategorySelectLayout>
           {/* 일러스트 & 만화 선택 카테고리 */}
-          <UploadCategoryForm type='CONTENTS' initialNum={category} />
-         
+          <UploadCategoryForm type="CONTENTS" initialNum={category} />
+
           {/* 작품 공개 or 비공개 선택 */}
-          <UploadCategoryForm type='PUB' initialNum={pub} />
+          <UploadCategoryForm type="PUB" initialNum={pub} />
 
           {/* 2차 창작 허용 여부 */}
-          {!sourceToggleOn && originData?.length === 0 && <UploadCategoryForm type='SECONDARY' initialNum={secondCreate} />}
-        
-          {/* 작품의 언어 설정 */}
-          <UploadCategoryForm type='LANGUAGE' initialNum={selectedLanguage || defaultLanguage}/>
+          {!sourceToggleOn && originData?.length === 0 && <UploadCategoryForm type="SECONDARY" initialNum={secondCreate} />}
 
+          {/* 작품의 언어 설정 */}
+          <UploadCategoryForm type="LANGUAGE" initialNum={selectedLanguage || defaultLanguage} />
         </CategorySelectLayout>
         <Form action="" onSubmit={editorDevideHandler} encType="multipart/form-data" autoComplete="off">
           <SubmitBox>
-            <ArrowBtn onClick={() =>{
-              router.pathname.match('/editor') ? categoryToggle(false) : history.goBack()
-            }} />
-            <AlertText>{ fileSize && fileSize } {sourceToggleOn && !fileSize && _sourceAlert}</AlertText>
-            
-            
+            <ArrowBtn
+              onClick={() => {
+                router.pathname.match('/editor') ? categoryToggle(false) : history.goBack();
+              }}
+            />
+            <AlertText>
+              {fileSize && fileSize} {sourceToggleOn && !fileSize && _sourceAlert}
+            </AlertText>
+
             <SubmitBtn>{disabled ? <ProgressSmall disabled={disabled} /> : _uploadBtn}</SubmitBtn>
           </SubmitBox>
         </Form>
@@ -301,8 +295,8 @@ const UploadCategory = (props) => {
 
 // 작품 옵션 컨테이너
 const ContentOptionBox = styled.section`
-  display:flex;
-  flex-direction:column;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   min-width: 420px;
   max-width: 480px;
@@ -397,8 +391,8 @@ const SubmitBox = styled.div`
   width: 100%;
   align-items: center;
   justify-content: space-between;
-padding: 7px;
- background: ${(props) => props.theme.color.whiteColor};
+  padding: 7px;
+  background: ${(props) => props.theme.color.whiteColor};
   @media (max-width: 900px) {
     position: fixed;
     top: 0;

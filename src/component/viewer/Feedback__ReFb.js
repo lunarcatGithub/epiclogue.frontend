@@ -5,7 +5,7 @@ import WriteFbForm from './Viewer__WriteFbForm';
 import FB from './Feedback';
 import { ProgressSmall } from '@utils/LoadingProgress';
 import { ReplyListContext } from './Viewer';
-import {AppDataContext } from '@store/App_Store';
+import { AppDataContext } from '@store/App_Store';
 
 // Hooks&&reducer
 import useAxiosFetch from '@hooks/useAxiosFetch';
@@ -13,17 +13,17 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 const ReFeedback = (props) => {
   const { fbReList, setFbReList, boardUid, fbUid } = useContext(ReplyListContext);
   const { data, onClose } = props;
-  const {loginOn} = useContext(AppDataContext);
+  const { loginOn } = useContext(AppDataContext);
 
   const [replyLoding, replyApi, replyError, replyFetch] = useAxiosFetch();
 
   useEffect(() => {
-    replyFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${fbUid}/reply`, 'get', null, null)
+    replyFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${fbUid}/reply`, 'get', null, null);
   }, []);
 
   useEffect(() => {
-    replyApi && setFbReList(replyApi?.data)
-  }, [replyApi])
+    replyApi && setFbReList(replyApi?.data);
+  }, [replyApi]);
 
   return (
     <ModalLayout>
@@ -140,13 +140,12 @@ const FBheaderInner = styled.div`
 //   }
 // `;
 const ClosedBtn = styled.button.attrs({ type: 'button' })`
- ${props => props.theme.closeBtn};
+  ${(props) => props.theme.closeBtn};
 
   &:hover {
     background: ${(props) => props.theme.color.hoverColor};
   }
 `;
-
 
 // 원댓글자 레이아웃
 const OriginUserBox = styled.div`

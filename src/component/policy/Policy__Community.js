@@ -1,8 +1,7 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { LanguageContext } from '@store/App_Store';
 import { communityInfo } from '@language/Policy/Lang.PolicyCommunity';
-
 
 const Community = () => {
   const { langState } = useContext(LanguageContext);
@@ -12,29 +11,23 @@ const Community = () => {
   const { reason1, definition1 } = communityInfo;
 
   const _reason1 = reason1[selectedLanguage] || reason1[defaultLanguage],
-      _definition1 = definition1[selectedLanguage] || definition1[defaultLanguage];
+    _definition1 = definition1[selectedLanguage] || definition1[defaultLanguage];
 
-      const langArr = [
-        {a:_reason1, b: _definition1}
-      ]
+  const langArr = [{ a: _reason1, b: _definition1 }];
 
   return (
     <>
-    {
-        langArr.map((i, index) => {
-          return(
+      {langArr.map((i, index) => {
+        return (
           <CategoryWrap key={index}>
-          <CategoryTitleWrap>
-            <CategoryTitle>{i.a}</CategoryTitle>
-          </CategoryTitleWrap>
-          <CategoryTxtWrap>
-            {i.b}
-          </CategoryTxtWrap>
-        </CategoryWrap>
-        )
-      })
-    }  
-  </>
+            <CategoryTitleWrap>
+              <CategoryTitle>{i.a}</CategoryTitle>
+            </CategoryTitleWrap>
+            <CategoryTxtWrap>{i.b}</CategoryTxtWrap>
+          </CategoryWrap>
+        );
+      })}
+    </>
   );
 };
 

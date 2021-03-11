@@ -8,9 +8,12 @@ phases:
     commands:
       - echo 'Build started...'
       - npm run build
+      - echo 'Build completed!'
   post_build:
     commands:
-      - echo 'Build completed!'
+      - echo 'Export started...'
+      - npm run export
+      - echo 'Export completed!'
 
 artifacts:
     - public/**/*
@@ -20,6 +23,7 @@ artifacts:
     - scripts/**/*
     - node_modules/**/*
     - .next/**/*
+    - out/**/*
     - package.json
     - appspec.yml
     - buildspec.yml

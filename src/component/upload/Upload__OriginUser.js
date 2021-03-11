@@ -4,29 +4,24 @@ import styled from 'styled-components';
 
 // 이미지 import
 
-export default function OriginUserForm({originData}) {
-
+export default function OriginUserForm({ originData }) {
   return (
     <OriginUser>
       <OriginUserInner>
-        <ProfileImgBox >
+        <ProfileImgBox>
           <OriginUserProfile profile={originData?.writer?.profil?.thumbnail} />
         </ProfileImgBox>
 
         <OriginUserInfoWrap>
           <OriginUserBox>
             {/* 유저 닉네임 */}
-            <OriginUserNick >
-              {originData?.writer?.nickname}
-              </OriginUserNick>
+            <OriginUserNick>{originData?.writer?.nickname}</OriginUserNick>
             {/* <UserCheckBox>
               <OriginUserCheck>원작자</OriginUserCheck>
             </UserCheckBox> */}
           </OriginUserBox>
           {/* constents title*/}
-          <OriginUserId>
-            {originData?.data?.boardTitle}
-            </OriginUserId>
+          <OriginUserId>{originData?.data?.boardTitle}</OriginUserId>
         </OriginUserInfoWrap>
       </OriginUserInner>
     </OriginUser>
@@ -44,9 +39,9 @@ const OriginUser = styled.div`
 `;
 const OriginUserInner = styled.div`
   display: flex;
-  align-items:center;
-  width:100%;
-  height:100%;
+  align-items: center;
+  width: 100%;
+  height: 100%;
   padding: 0.7em 0.8em;
 `;
 // 유저 프로필 이미지
@@ -54,8 +49,8 @@ const ProfileImgBox = styled.div`
   display: flex;
   min-width: 42px;
   min-height: 42px;
-  width:42px;
-  height:42px;
+  width: 42px;
+  height: 42px;
   max-width: 42px;
   max-height: 42px;
   border-radius: 50%;
@@ -63,7 +58,7 @@ const ProfileImgBox = styled.div`
   overflow: hidden;
 `;
 const OriginUserProfile = styled.span`
-  background:${props => props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`}; 
+  background: ${(props) => (props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`)};
   width: 100%;
   height: 100%;
 `;
@@ -81,7 +76,7 @@ const OriginUserBox = styled.div`
   display: flex;
   align-items: center;
   min-width: 0;
-  user-select:none;
+  user-select: none;
 `;
 
 const OriginUserNick = styled.span`
@@ -92,13 +87,13 @@ const OriginUserNick = styled.span`
   font-size: ${(props) => props.theme.fontSize.font15};
   color: ${(props) => props.theme.color.blackColor};
   font-weight: ${(props) => props.theme.fontWeight.font700};
-  line-height:1.2em;
+  line-height: 1.2em;
 `;
 
 const UserCheckBox = styled.div`
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   width: auto;
   height: auto;
@@ -120,7 +115,7 @@ const OriginUserId = styled.span`
   color: ${(props) => props.theme.color.darkGray};
   font-weight: ${(props) => props.theme.fontWeight.font500};
   /* margin-top: 3px; */
-  line-height:1.4em;
+  line-height: 1.4em;
   padding-right: 2.5em;
-  user-select:none;
+  user-select: none;
 `;

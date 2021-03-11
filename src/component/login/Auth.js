@@ -22,52 +22,54 @@ export function Auth() {
   const { selectedLanguage, defaultLanguage } = langState;
   const { authTitle, authSubTitle, authFailTitle, authFailSub, contact } = authPage;
   const _authTitle = authTitle[selectedLanguage] || authTitle[defaultLanguage],
-        _authSubTitle = authSubTitle[selectedLanguage] || authSubTitle[defaultLanguage],
-        _authFailTitle = authFailTitle[selectedLanguage] || authFailTitle[defaultLanguage],
-        _authFailSub = authFailSub[selectedLanguage] || authFailSub[defaultLanguage],
-        _contact = contact[selectedLanguage] || contact[defaultLanguage];
+    _authSubTitle = authSubTitle[selectedLanguage] || authSubTitle[defaultLanguage],
+    _authFailTitle = authFailTitle[selectedLanguage] || authFailTitle[defaultLanguage],
+    _authFailSub = authFailSub[selectedLanguage] || authFailSub[defaultLanguage],
+    _contact = contact[selectedLanguage] || contact[defaultLanguage];
 
-    useEffect(() => {
-        const query = qs.parse(window.location.search)
-        authFetch(`${process.env.API_URL}/auth/mailAuth`, 'get', null, null, { email: query.email, token: query.token })
-    }, [])
+  useEffect(() => {
+    const query = qs.parse(window.location.search);
+    authFetch(`${process.env.API_URL}/auth/mailAuth`, 'get', null, null, { email: query.email, token: query.token });
+  }, []);
 
-    useEffect(() => {
-        if(authApi?.result === 'ok'){
-          setAuthState(true);
-          setTimeout(()=>{
-              goURL({pathname:'/login'});
-          }, 3000);
-        } else {
-          setAuthState(false)
-          setTimeout(()=>{
-              goURL({pathname:'/login'});
-          }, 3000);
-        }
-      }, [authApi])
-        
-    return (
-        <Layout>
-            <LayoutInner>
-                <HeaderTitle>{authState ? _authTitle : _authFailTitle}</HeaderTitle>
-                <SubHdTitleBox>
-                <TeleportEoji>🌀</TeleportEoji>
-                <SubHdTitle>{authState ? _authSubTitle : _authFailSub}</SubHdTitle>
-                <TeleportEoji>🌀</TeleportEoji>
-                </SubHdTitleBox>
-                {authState && <SubHdTitleBox>
-                <RocketIcon>🚀</RocketIcon>
-                <RocketSecond>🚀</RocketSecond>
-                <RocketThird>🚀</RocketThird>
-                </SubHdTitleBox>}
-                {!authState && <SubHdTitleBox>
-                <ContactBtn onClick={()=>window.open('https://twitter.com/epiclogue_lunar', "_blank")}
-                >{_contact}</ContactBtn>
-                </SubHdTitleBox>}
-            </LayoutInner>
-        </Layout>
-    )
+  useEffect(() => {
+    if (authApi?.result === 'ok') {
+      setAuthState(true);
+      setTimeout(() => {
+        goURL({ pathname: '/login' });
+      }, 3000);
+    } else {
+      setAuthState(false);
+      setTimeout(() => {
+        goURL({ pathname: '/login' });
+      }, 3000);
+    }
+  }, [authApi]);
 
+  return (
+    <Layout>
+      <LayoutInner>
+        <HeaderTitle>{authState ? _authTitle : _authFailTitle}</HeaderTitle>
+        <SubHdTitleBox>
+          <TeleportEoji>🌀</TeleportEoji>
+          <SubHdTitle>{authState ? _authSubTitle : _authFailSub}</SubHdTitle>
+          <TeleportEoji>🌀</TeleportEoji>
+        </SubHdTitleBox>
+        {authState && (
+          <SubHdTitleBox>
+            <RocketIcon>🚀</RocketIcon>
+            <RocketSecond>🚀</RocketSecond>
+            <RocketThird>🚀</RocketThird>
+          </SubHdTitleBox>
+        )}
+        {!authState && (
+          <SubHdTitleBox>
+            <ContactBtn onClick={() => window.open('https://twitter.com/epiclogue_lunar', '_blank')}>{_contact}</ContactBtn>
+          </SubHdTitleBox>
+        )}
+      </LayoutInner>
+    </Layout>
+  );
 }
 
 // 공통

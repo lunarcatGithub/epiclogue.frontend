@@ -1,34 +1,28 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { langUploadCategory } from '@language/Lang.Upload';
 
 // Hooks&&reducer
 import { useToggle } from '@hooks/useToggle';
 import { LanguageContext } from '@store/App_Store';
-import {uploadContext} from './UploadCategory';
+import { uploadContext } from './UploadCategory';
 
-export default function UploadCategoryForm({type, initialNum}) {
+export default function UploadCategoryForm({ type, initialNum }) {
+  const { setPublic, setSecondCreate, setSendLang, setCategory } = useContext(uploadContext);
 
-    const {
-      setPublic,
-      setSecondCreate,
-      setSendLang,
-      setCategory,
-    } = useContext(uploadContext);
+  const [isCategory, toggleModal_Category] = useToggle();
+  const [categoryIcon, setCategoryIcon] = useState();
+  const [categoryNum, setCategoryNum] = useState(type && initialNum);
+  const [categoryTxt, setCategoryTxt] = useState();
+  const [contents, setContents] = useState([]);
+  const [scriptTxt, setScriptTxt] = useState({ title: null, sub: null });
 
-    const [isCategory, toggleModal_Category] = useToggle();
-    const [categoryIcon, setCategoryIcon] = useState();
-    const [categoryNum, setCategoryNum] = useState(type && initialNum);
-    const [categoryTxt, setCategoryTxt] = useState();
-    const [contents, setContents] = useState([]);
-    const [scriptTxt, setScriptTxt] = useState({title:null, sub:null})
-    
-    const [languageTxt, setlanguageTxt] = useState();
+  const [languageTxt, setlanguageTxt] = useState();
 
-      //언어 변수
-    const { langState } = useContext(LanguageContext);
-    const { selectedLanguage, defaultLanguage } = langState;
-    const {
+  //언어 변수
+  const { langState } = useContext(LanguageContext);
+  const { selectedLanguage, defaultLanguage } = langState;
+  const {
     thisComic,
     thisIllust,
     comicFillterCategory,
@@ -70,115 +64,113 @@ export default function UploadCategoryForm({type, initialNum}) {
     _languageCategory = languageCategory[selectedLanguage] || languageCategory[defaultLanguage],
     _languageDesc = languageDesc[selectedLanguage] || languageDesc[defaultLanguage];
 
-    const typeHandler = () => {
-  
-        switch (type) {
-            case 'CONTENTS':
-            if(categoryNum === 0){
-                setCategoryIcon(<IllustIcon />)
-                setCategoryTxt(_thisIllust)
-                setCategory(0)
-            } else if(categoryNum === 1){
-                setCategoryIcon(<ComicIcon />)
-                setCategoryTxt(_thisComic)
-                setCategory(1)
-            }
-            setScriptTxt({title:_comicFillterCategory, sub:_comicFillterDesc})
-            setContents([{id:0, title:'illust', lang:_thisIllust}, {id:1, title:'comic', lang:_thisComic}])
-                break;
-            case 'PUB':
-                if(categoryNum === 0){
-                    setCategoryIcon(<SecretIcon />)
-                    setCategoryTxt(_thisSecret)
-                    setPublic(0)
-                } else if(categoryNum === 1){
-                    setCategoryIcon(<PublicIcon />)
-                    setCategoryTxt(_thisPublic)
-                    setPublic(1)
-                }
-                setScriptTxt({title:_publicCategory, sub:_publicDesc})
-                setContents([{id:0, title:'secret', lang:_thisSecret}, {id:1, title:'public', lang:_thisPublic}])
-                break;
-            case 'SECONDARY':
-                if(categoryNum === 0){
-                    setCategoryTxt(_reCreateDisallow)
-                    setSecondCreate(0)
-                } else if(categoryNum === 1){
-                    setCategoryTxt(_reCreateAllow)
-                    setSecondCreate(1)
-                }
-                setScriptTxt({title:_reCreateCategory, sub:_reCreateDesc})
-                setContents([{id:0, title:'noneAllow', lang:_reCreateDisallow}, {id:1, title:'allow', lang:_reCreateAllow}])
-                break;
-            case 'LANGUAGE':
-                if(categoryNum === 0){
-                    setCategoryTxt(`${_thisLanguage} ${_koreanSet} ${_thisLanguageEnd}`);
-                    setlanguageTxt('KOR');
-                    setSendLang(0);
-                } else if(categoryNum === 1){
-                    setCategoryTxt(`${_thisLanguage} ${_japaneseSet} ${_thisLanguageEnd}`);
-                    setlanguageTxt('JAN');
-                    setSendLang(1);
-                } else if(categoryNum === 2){
-                    setCategoryTxt(`${_thisLanguage} ${_englishSet} ${_thisLanguageEnd}`);
-                    setlanguageTxt('ENG');
-                    setSendLang(2);
-                }
-                setScriptTxt({title:_languageCategory, sub:_languageDesc})
-                setContents([
-                    {id:0, title:'korean', lang:_koreanSet}, 
-                    {id:1, title:'japanese', lang:_japaneseSet},
-                    {id:2, title:'english', lang:_englishSet}
-                ])
-                break;
-            default:
-                break;
+  const typeHandler = () => {
+    switch (type) {
+      case 'CONTENTS':
+        if (categoryNum === 0) {
+          setCategoryIcon(<IllustIcon />);
+          setCategoryTxt(_thisIllust);
+          setCategory(0);
+        } else if (categoryNum === 1) {
+          setCategoryIcon(<ComicIcon />);
+          setCategoryTxt(_thisComic);
+          setCategory(1);
         }
+        setScriptTxt({ title: _comicFillterCategory, sub: _comicFillterDesc });
+        setContents([
+          { id: 0, title: 'illust', lang: _thisIllust },
+          { id: 1, title: 'comic', lang: _thisComic },
+        ]);
+        break;
+      case 'PUB':
+        if (categoryNum === 0) {
+          setCategoryIcon(<SecretIcon />);
+          setCategoryTxt(_thisSecret);
+          setPublic(0);
+        } else if (categoryNum === 1) {
+          setCategoryIcon(<PublicIcon />);
+          setCategoryTxt(_thisPublic);
+          setPublic(1);
+        }
+        setScriptTxt({ title: _publicCategory, sub: _publicDesc });
+        setContents([
+          { id: 0, title: 'secret', lang: _thisSecret },
+          { id: 1, title: 'public', lang: _thisPublic },
+        ]);
+        break;
+      case 'SECONDARY':
+        if (categoryNum === 0) {
+          setCategoryTxt(_reCreateDisallow);
+          setSecondCreate(0);
+        } else if (categoryNum === 1) {
+          setCategoryTxt(_reCreateAllow);
+          setSecondCreate(1);
+        }
+        setScriptTxt({ title: _reCreateCategory, sub: _reCreateDesc });
+        setContents([
+          { id: 0, title: 'noneAllow', lang: _reCreateDisallow },
+          { id: 1, title: 'allow', lang: _reCreateAllow },
+        ]);
+        break;
+      case 'LANGUAGE':
+        if (categoryNum === 0) {
+          setCategoryTxt(`${_thisLanguage} ${_koreanSet} ${_thisLanguageEnd}`);
+          setlanguageTxt('KOR');
+          setSendLang(0);
+        } else if (categoryNum === 1) {
+          setCategoryTxt(`${_thisLanguage} ${_japaneseSet} ${_thisLanguageEnd}`);
+          setlanguageTxt('JAN');
+          setSendLang(1);
+        } else if (categoryNum === 2) {
+          setCategoryTxt(`${_thisLanguage} ${_englishSet} ${_thisLanguageEnd}`);
+          setlanguageTxt('ENG');
+          setSendLang(2);
+        }
+        setScriptTxt({ title: _languageCategory, sub: _languageDesc });
+        setContents([
+          { id: 0, title: 'korean', lang: _koreanSet },
+          { id: 1, title: 'japanese', lang: _japaneseSet },
+          { id: 2, title: 'english', lang: _englishSet },
+        ]);
+        break;
+      default:
+        break;
     }
+  };
 
-    useEffect(() => {
-      typeHandler()
-    }, [type, categoryNum, initialNum])
+  useEffect(() => {
+    typeHandler();
+  }, [type, categoryNum, initialNum]);
 
-    return (
-        <>
-        <CategoryBox>
-            <CategoryBtn 
-            onClick={toggleModal_Category}>
-            {
-            type === 'SECONDARY' && <RecreateIcon>{categoryNum === 1 ? 'CC' : 'ND'}</RecreateIcon>
-            }
-            {
-            type === 'LANGUAGE' && <RecreateIcon styling={type}>{languageTxt}</RecreateIcon>
-            }
-              {categoryIcon}
-              <CategoryTxt>{categoryTxt}</CategoryTxt>
-            </CategoryBtn>
-                {isCategory && (
-              <ModalLayout>
-                <ModalInnerTop onClick={()=>toggleModal_Category(false)}>
-                    {
-                    contents.map(value => (
-                    <CategoryBtnTxt 
-                    key={value.id} 
-                    onClick={() => setCategoryNum(value.id)}
-                    >
-                    <SelectTxt>{value.lang}</SelectTxt>
-                    </CategoryBtnTxt>
-                    ))
-                    }
-                </ModalInnerTop>
-                <DummyLine />
-                <ModalInnerBottom>
-                  <CategoryTxt>{scriptTxt.title}</CategoryTxt>
-                  <CategoryDescript>{scriptTxt.sub}</CategoryDescript>
-                </ModalInnerBottom>
-              </ModalLayout>
-            )}
-        </CategoryBox>
-        {isCategory && <Modal id='modal' onClick={()=>toggleModal_Category(false)} />}
-        </>
-    )
+  return (
+    <>
+      <CategoryBox>
+        <CategoryBtn onClick={toggleModal_Category}>
+          {type === 'SECONDARY' && <RecreateIcon>{categoryNum === 1 ? 'CC' : 'ND'}</RecreateIcon>}
+          {type === 'LANGUAGE' && <RecreateIcon styling={type}>{languageTxt}</RecreateIcon>}
+          {categoryIcon}
+          <CategoryTxt>{categoryTxt}</CategoryTxt>
+        </CategoryBtn>
+        {isCategory && (
+          <ModalLayout>
+            <ModalInnerTop onClick={() => toggleModal_Category(false)}>
+              {contents.map((value) => (
+                <CategoryBtnTxt key={value.id} onClick={() => setCategoryNum(value.id)}>
+                  <SelectTxt>{value.lang}</SelectTxt>
+                </CategoryBtnTxt>
+              ))}
+            </ModalInnerTop>
+            <DummyLine />
+            <ModalInnerBottom>
+              <CategoryTxt>{scriptTxt.title}</CategoryTxt>
+              <CategoryDescript>{scriptTxt.sub}</CategoryDescript>
+            </ModalInnerBottom>
+          </ModalLayout>
+        )}
+      </CategoryBox>
+      {isCategory && <Modal id="modal" onClick={() => toggleModal_Category(false)} />}
+    </>
+  );
 }
 
 // 옵션 선택란
@@ -220,39 +212,35 @@ const CategoryDescript = styled.span`
 // 카테고리 아이콘 이미지
 const ComicIcon = styled.span`
   display: flex;
-  justify-content:center;
-  align-items:center;
-  background:${props => props.theme.color.popupColor};
+  justify-content: center;
+  align-items: center;
+  background: ${(props) => props.theme.color.popupColor};
   margin-right: 10px;
   margin-left: 2px;
-  border-radius:3px;
-  &::before{
-    content:'';
+  border-radius: 3px;
+  &::before {
+    content: '';
     background: url('/static/comic_Icon.svg') no-repeat center center / contain;
     width: 1.6em;
     height: 1.6em;
-
   }
 `;
 const IllustIcon = styled(ComicIcon)`
-  &::before{
+  &::before {
     background: url('/static/illust_Icon.svg') no-repeat center center / contain;
   }
-
 `;
 const PublicIcon = styled(ComicIcon)`
-  border-radius:50%;
-  &::before{
+  border-radius: 50%;
+  &::before {
     background: url('/static/publicshare.svg') no-repeat center center / contain;
   }
-
 `;
 const SecretIcon = styled(ComicIcon)`
-  background:none;
-  &::before{
+  background: none;
+  &::before {
     background: url('/static/secretcontent.svg') no-repeat center center / contain;
   }
-
 `;
 const RecreateIcon = styled.span`
   display: flex;
@@ -262,9 +250,9 @@ const RecreateIcon = styled.span`
   height: 20px;
   margin-right: 0.8em;
   border-radius: 4px;
-  background:${props => props.styling === 'LANGUAGE' ? props.theme.color.greenColor : props.theme.color.brownColor};
-  font-size:${props => props.styling === 'LANGUAGE' ? `10px` : `12px`};
-  font-weight:${props => props.styling === 'LANGUAGE' ? props.theme.fontWeight.font500 : props.theme.fontWeight.font700};
+  background: ${(props) => (props.styling === 'LANGUAGE' ? props.theme.color.greenColor : props.theme.color.brownColor)};
+  font-size: ${(props) => (props.styling === 'LANGUAGE' ? `10px` : `12px`)};
+  font-weight: ${(props) => (props.styling === 'LANGUAGE' ? props.theme.fontWeight.font500 : props.theme.fontWeight.font700)};
   color: ${(props) => props.theme.color.whiteColor};
   user-select: none;
 `;

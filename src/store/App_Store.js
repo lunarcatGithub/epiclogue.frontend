@@ -1,6 +1,6 @@
-import { useState, useEffect, useReducer, createContext } from "react";
-import { languageReducer, langInit } from "@reducer/LanguageReducer";
-import {useRouter} from 'next/router';
+import { useState, useEffect, useReducer, createContext } from 'react';
+import { languageReducer, langInit } from '@reducer/LanguageReducer';
+import { useRouter } from 'next/router';
 import { initialAlert, alertReducer } from '@reducer/AlertReducer';
 
 // 컴포넌트 import
@@ -10,7 +10,7 @@ import UnauthLogin from '@utils/UnauthLogin';
 import Modal from '@utils/Modal';
 
 // create context
-const Context  = createContext({});
+const Context = createContext({});
 const AppDataContext = createContext({});
 const LanguageContext = createContext({});
 const AlertContext = createContext({});
@@ -26,7 +26,7 @@ const ContextStore = ({ children }) => {
   // app all method
   const [langState, langPatch] = useReducer(combineReducers(languageReducer), langInit);
   const [alertState, alertPatch] = useReducer(combineReducers(alertReducer), initialAlert);
-  
+
   // set filter
   const [clickedComic, setClickedComic] = useState(true);
   const [clickedIllust, setClickedIllust] = useState(true);
@@ -47,24 +47,21 @@ const ContextStore = ({ children }) => {
   const location = useRouter();
 
   useEffect(() => {
-      if(!loginOn){
-        if(
-          location.pathname.match('/upload') ||
-          location.pathname.match('/follow') ||
-          location.pathname.match('/editor')
-        ){
-          document.location.href = '/login';
-            return;
-          } else {
-            return
-          }
+    if (!loginOn) {
+      if (location.pathname.match('/upload') || location.pathname.match('/follow') || location.pathname.match('/editor')) {
+        document.location.href = '/login';
+        return;
       } else {
-        return
+        return;
       }
-    },[]);
+    } else {
+      return;
+    }
+  }, []);
 
   return (
-      <AppDataContext.Provider value={{
+    <AppDataContext.Provider
+      value={{
         searchData,
         setSearchData,
         clickedComic,
@@ -81,35 +78,31 @@ const ContextStore = ({ children }) => {
         followData,
         setFollowData,
         followButton,
-        setFollowButton
-      }}>
-        <LanguageContext.Provider value={{
+        setFollowButton,
+      }}
+    >
+      <LanguageContext.Provider
+        value={{
           langState,
-          langPatch
-        }}>
-          <AlertContext.Provider value={{
+          langPatch,
+        }}
+      >
+        <AlertContext.Provider
+          value={{
             alertState,
-            alertPatch
-            }}>
-              {children}
-              {
-                unAuth && 
-                <Modal 
-                  visible={unAuth}
-                  maskClosable={unAuth}
-                  onClose={setUnAuth}
-                ><UnauthLogin setUnAuth={setUnAuth}/>
-              </Modal>            
-              }
-          </AlertContext.Provider>
-        </LanguageContext.Provider>
-      </AppDataContext.Provider>
-    );
+            alertPatch,
+          }}
+        >
+          {children}
+          {unAuth && (
+            <Modal visible={unAuth} maskClosable={unAuth} onClose={setUnAuth}>
+              <UnauthLogin setUnAuth={setUnAuth} />
+            </Modal>
+          )}
+        </AlertContext.Provider>
+      </LanguageContext.Provider>
+    </AppDataContext.Provider>
+  );
 };
 
-export { 
-  AppDataContext, 
-  LanguageContext,
-  AlertContext,
-  ContextStore 
-};
+export { AppDataContext, LanguageContext, AlertContext, ContextStore };

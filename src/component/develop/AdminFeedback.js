@@ -42,7 +42,6 @@ export default function AdminFeedback({ toggleIsOpen }) {
     }
   };
 
-
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
   const { fbBtn, fbTitle, dpTitle, fbSub, dpTab, fbForm, fbTitlePH, alertPh, fbDescriptPH, sendBtn } = LangFeedbackMain;

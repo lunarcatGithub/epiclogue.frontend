@@ -7,7 +7,7 @@ import MyPopup from './MyMoreMenuPopup';
 import UserPopup from './UserMoreMenuPopUp';
 import { LanguageContext, AppDataContext } from '@store/App_Store';
 import { LangCommon } from '@language/Lang.Common';
-import ReFeedback from '../Viewer/Feedback__ReFb';
+import ReFeedback from './Feedback__ReFb';
 import Modal from '@utils/Modal';
 
 // Hooks & context import
@@ -16,7 +16,7 @@ import { useModal } from '@hooks/useModal';
 import { ReplyListContext } from './Viewer';
 import { useTimeCalculation } from '@hooks/useTimeCalculation';
 import { useConvertURL } from '@hooks/useConvertURL';
-import {useConvertTags} from '@hooks/useConvertTags';
+import { useConvertTags } from '@hooks/useConvertTags';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { useUrlMove } from '@hooks/useUrlMove';
 
@@ -29,7 +29,7 @@ const FB = (props) => {
   const [typeMenu, setTypeMenu] = useState();
 
   const { langState } = useContext(LanguageContext);
-  const {loginOn, setUnAuth} = useContext(AppDataContext);
+  const { loginOn, setUnAuth } = useContext(AppDataContext);
 
   const { feedbackBody, heartCount, _id, writeDate, writer, replyBody, liked } = props.data;
   const { fbUid, setFbUid, setReFbUid } = useContext(ReplyListContext);
@@ -42,24 +42,23 @@ const FB = (props) => {
   const [comment, toggle_comment] = useToggle();
 
   const [profileURL, , convertProfileIamge] = useConvertURL();
-    // 태그 및 하이퍼링크 convert
-    const [converted, convert] = useConvertTags();
-    const [reConverted, reConvert] = useConvertTags();
+  // 태그 및 하이퍼링크 convert
+  const [converted, convert] = useConvertTags();
+  const [reConverted, reConvert] = useConvertTags();
 
   //임시임 바꿔야함
   const [clickedUpdate, setClickedUpdate] = useState(true);
-  
+
   // ============================
   const [_heartCount, setHeartCount] = useState(heartCount && heartCount);
   const [goURL] = useUrlMove();
 
-  
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
 
   const { followBtn, followingBtn } = LangCommon;
   const _followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage],
-        _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage];
+    _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage];
   // fetch
   const [feedbackLoding, feedbackApi, feedbackError, feedbackFetch] = useAxiosFetch();
   const [likeLoding, likeApi, likeError, likeFetch] = useAxiosFetch();
@@ -71,15 +70,10 @@ const FB = (props) => {
 
   const submitHandler = (e, type) => {
     e.preventDefault();
-    const URL = `${process.env.API_URL}/interaction/${type}`
-    if(type === 'follow'){
-      feedbackFetch(
-        URL, 
-        follow ? 'post' : 'delete', 
-        {targetUserId: writer._id}, 
-        null
-        )
-    } else if(type === 'like'){
+    const URL = `${process.env.API_URL}/interaction/${type}`;
+    if (type === 'follow') {
+      feedbackFetch(URL, follow ? 'post' : 'delete', { targetUserId: writer._id }, null);
+    } else if (type === 'like') {
       likeFetch(
         URL,
         like ? 'post' : 'delete',
@@ -88,11 +82,11 @@ const FB = (props) => {
           targetType: fbUid && props.type === 'ReFb' ? 'Reply' : 'Feedback',
         },
         null
-      )
+      );
     } else {
       return;
     }
-  }
+  };
   // const handleSubmit = (e) => {
   //   e.preventDefault();
   //   if (props.type === 'Fb') {
@@ -138,14 +132,14 @@ const FB = (props) => {
   //     })
   // },[like, _id, fbUid])
 
-  useEffect(()=> {
+  useEffect(() => {
     likeApi && setHeartCount(likeApi?.data?.heartCount);
-  },[likeApi])
+  }, [likeApi]);
 
-  useEffect(()=> {
+  useEffect(() => {
     convert(feedbackBody);
     reConvert(replyBody);
-  },[])
+  }, []);
 
   useEffect(() => {
     setGetIndicateDate(writeDate, '');
@@ -153,11 +147,11 @@ const FB = (props) => {
   }, [setFbUid, fbUid]);
 
   useEffect(() => {
-      // 일반 회원 팝업
+    // 일반 회원 팝업
     if (localStorage.getItem('userid') === writer.screenId) {
-      setTypeMenu(<MyPopup type="Fb_More" conFirmType="COMMANT" onUpdate={setClickedUpdate} _id={_id} handleModal_Menu={() => handleModal_Menu(false)} />)
+      setTypeMenu(<MyPopup type="Fb_More" conFirmType="COMMANT" onUpdate={setClickedUpdate} _id={_id} handleModal_Menu={() => handleModal_Menu(false)} />);
     } else {
-      setTypeMenu(<UserPopup handleModal_Menu={() => handleModal_Menu(false)} />)
+      setTypeMenu(<UserPopup handleModal_Menu={() => handleModal_Menu(false)} />);
     }
     if (props.type === 'ReFb') {
       setReFbUid(props.data._id);
@@ -166,19 +160,19 @@ const FB = (props) => {
 
   return (
     <FeedbackUserWrap>
-        <UserLink onClick={()=>goURL({pathname:`/myboard/${writer.screenId}`})}>
-          <ProfileImgBox>
-            <FeedbackProfileImg profile={profileURL} />
-          </ProfileImgBox>
-        </UserLink>
+      <UserLink onClick={() => goURL({ pathname: `/myboard/${writer.screenId}` })}>
+        <ProfileImgBox>
+          <FeedbackProfileImg profile={profileURL} />
+        </ProfileImgBox>
+      </UserLink>
       <FeedbackProfileWrap>
         <FeedbackProfile>
-          <UserLink onClick={()=>goURL({pathname:`/myboard/${writer.screenId}`})}>
+          <UserLink onClick={() => goURL({ pathname: `/myboard/${writer.screenId}` })}>
             <FeedbackNickInfo>{writer.nickname}</FeedbackNickInfo>
           </UserLink>
 
           {writer.following !== 'me' && loginOn && (
-            <form action="" method="post" onSubmit={(e)=>submitHandler(e, 'follow')} >
+            <form action="" method="post" onSubmit={(e) => submitHandler(e, 'follow')}>
               <FeedbackFollowTxt clickState={follow} onClick={() => toggle_follow()}>
                 {follow ? _followingBtn : _followBtn}
               </FeedbackFollowTxt>
@@ -186,63 +180,66 @@ const FB = (props) => {
           )}
         </FeedbackProfile>
         <FeedbackProfile>
-          <UserLink  onClick={()=>goURL({pathname:`/myboard/${writer.screenId}`})}>
+          <UserLink onClick={() => goURL({ pathname: `/myboard/${writer.screenId}` })}>
             <FeedbackIdInfo>{writer.screenId}</FeedbackIdInfo>
           </UserLink>
         </FeedbackProfile>
       </FeedbackProfileWrap>
       <FdMoreMenuAnchor
         onClick={() => {
-          if(!loginOn){
+          if (!loginOn) {
             setUnAuth(true);
             return;
-          }else {
+          } else {
             handleModal_Menu();
           }
         }}
       >
         <MoreMenuDot />
       </FdMoreMenuAnchor>
-      {clickedUpdate &&
+      {clickedUpdate && (
         <FeedbackContentBox>
           <FeedbackContentInner>
-            {props.type === 'Fb'  && <FeedbackTextContent>{converted}</FeedbackTextContent>}
+            {props.type === 'Fb' && <FeedbackTextContent>{converted}</FeedbackTextContent>}
             {props.type === 'popupFb' && <FeedbackTextContent>{converted}</FeedbackTextContent>}
             {props.type === 'ReFb' && <FeedbackTextContent>{reConverted}</FeedbackTextContent>}
             <FeedbackPostedTime>{`Posted by ${indicateDate}`}</FeedbackPostedTime>
           </FeedbackContentInner>
         </FeedbackContentBox>
-      }
+      )}
       <FeedbackBtnWrap>
-        <form 
-        onSubmit={(e)=>{
-          // e.preventDefault();
-          // fbSubmit(e, `${process.env.API_URL}/interaction/like`, loginOn);
-          submitHandler(e, 'like')
-          }}>
+        <form
+          onSubmit={(e) => {
+            // e.preventDefault();
+            // fbSubmit(e, `${process.env.API_URL}/interaction/like`, loginOn);
+            submitHandler(e, 'like');
+          }}
+        >
           {/* 피드백 좋아요 버튼 */}
-          <ReactBtnWrap onClick={() => {
-            if(!loginOn){
-              setUnAuth(true)
-              return;
-            }else{
-              toggle_like()
-            }
-            }}>
+          <ReactBtnWrap
+            onClick={() => {
+              if (!loginOn) {
+                setUnAuth(true);
+                return;
+              } else {
+                toggle_like();
+              }
+            }}
+          >
             <LikeFbBtn heart={like} />
             <LikeFbScore>{_heartCount && _heartCount}</LikeFbScore>
           </ReactBtnWrap>
         </form>
         {props.type === 'ReFb' && (
           <ReactBtnWrap
-            // onClick={() => {
-            //   toggle_comment();
-            // }}
+          // onClick={() => {
+          //   toggle_comment();
+          // }}
           >
             <ReReFbBtn />
           </ReactBtnWrap>
         )}
-        {props.type === 'Fb' && 
+        {props.type === 'Fb' && (
           <ReactBtnWrap>
             {/* 피드백 버튼 */}
             <ReFbBtn
@@ -254,13 +251,13 @@ const FB = (props) => {
               }}
             />
           </ReactBtnWrap>
-        }
+        )}
       </FeedbackBtnWrap>
 
       {/* Modal */}
       {isShowing_ReFb && (
         <Modal visible={isShowing_ReFb} closable={true} maskClosable={true} onClose={() => handleModal_ReFb(false)}>
-          <ReFeedback data={props.data} onClose={() => handleModal_ReFb(false)} type='ReFb' />
+          <ReFeedback data={props.data} onClose={() => handleModal_ReFb(false)} type="ReFb" />
         </Modal>
       )}
       {isShowing_Menu && (
@@ -272,7 +269,7 @@ const FB = (props) => {
   );
 };
 
-  /* 애니메이션 */
+/* 애니메이션 */
 
 const Following = keyframes`
 from{
@@ -385,7 +382,7 @@ const ProfileImgBox = styled.div`
 `;
 
 const FeedbackProfileImg = styled.span`
-  background:${props => props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`}; 
+  background: ${(props) => (props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`)};
   width: 100%;
   height: 100%;
 `;

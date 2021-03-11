@@ -42,7 +42,7 @@ const RoadDataContextProvider = (props) => {
     setRoadData({ uploadData, boardUid });
     G_index = G_index + uploadData.boardImg.length;
   };
- 
+
   useEffect(() => {
     if (boardUid) {
       getFiletoImgPath();

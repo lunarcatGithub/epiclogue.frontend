@@ -9,9 +9,9 @@ import { langMetaMain } from '@language/Lang.Meta';
 // Hooks&&reducer import
 import { useUrlMove } from '@hooks/useUrlMove';
 
-const Main = ({boardItem}) => {
+const Main = ({ boardItem }) => {
   const [goURL] = useUrlMove();
-  
+
   //언어 변수
   const [metaMainTitle, metaMainDesc] = langMetaMain();
 
@@ -26,18 +26,17 @@ const Main = ({boardItem}) => {
     <>
       <Meta meta={metaData} />
       <Layout>
-          <Contents type="MAIN" boardItem={boardItem} />
+        <Contents type="MAIN" boardItem={boardItem} />
         <>
           {/*업로드 버튼*/}
-            <UploadButton onClick={()=> goURL({pathname:'/upload'})}>
-                <UploadSvg />
-            </UploadButton>
+          <UploadButton onClick={() => goURL({ pathname: '/upload' })}>
+            <UploadSvg />
+          </UploadButton>
         </>
       </Layout>
     </>
   );
 };
-
 
 //레이아웃
 const Layout = styled.div`
@@ -61,7 +60,7 @@ const UploadButton = styled.span`
   border-radius: 50%;
   box-shadow: ${(props) => props.theme.boxshadow.nav};
   @media (max-width: 900px) {
-   display:none;
+    display: none;
   }
 `;
 const UploadSvg = styled.svg`

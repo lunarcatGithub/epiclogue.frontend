@@ -1,13 +1,13 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-  
+
 // 컴포넌트 import
 import { LangHeaderInform } from '@language/Lang.Header';
-import {HeaderDataContext} from './Header';
+import { HeaderDataContext } from './Header';
 
 // hooks&&reducer
 import { useUrlMove } from '@hooks/useUrlMove';
-import { LanguageContext, AppDataContext} from '@store/App_Store';
+import { LanguageContext, AppDataContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
 
@@ -25,129 +25,110 @@ const UserInform = () => {
   const [tagetUser, setTargetUser] = useState();
   const [page, scroll] = useScroll();
 
- //언어 변수
+  //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
-  const { 
-    headerInfrom,
-    userReactLike, 
-    userFeedback, 
-    userSecondary, 
-    userBookmark, 
-    userFollowMe, 
-    userReply,
-    dataRemove,
-    feedbackRemove
-  } = LangHeaderInform;
+  const { headerInfrom, userReactLike, userFeedback, userSecondary, userBookmark, userFollowMe, userReply, dataRemove, feedbackRemove } = LangHeaderInform;
 
   const _headerInfrom = headerInfrom[selectedLanguage] || headerInfrom[defaultLanguage],
-        _userReactLike = userReactLike[selectedLanguage] || userReactLike[defaultLanguage],
-        _userFeedback = userFeedback[selectedLanguage] || userFeedback[defaultLanguage],
-        _userSecondary = userSecondary[selectedLanguage] || userSecondary[defaultLanguage],
-        _userBookmark = userBookmark[selectedLanguage] || userBookmark[defaultLanguage],
-        _userFollowMe = userFollowMe[selectedLanguage] || userFollowMe[defaultLanguage],
-        _userReply = userReply[selectedLanguage] || userReply[defaultLanguage],
-        _dataRemove = dataRemove[selectedLanguage] || dataRemove[defaultLanguage],
-        _feedbackRemove = feedbackRemove[selectedLanguage] || feedbackRemove[defaultLanguage];
-    
+    _userReactLike = userReactLike[selectedLanguage] || userReactLike[defaultLanguage],
+    _userFeedback = userFeedback[selectedLanguage] || userFeedback[defaultLanguage],
+    _userSecondary = userSecondary[selectedLanguage] || userSecondary[defaultLanguage],
+    _userBookmark = userBookmark[selectedLanguage] || userBookmark[defaultLanguage],
+    _userFollowMe = userFollowMe[selectedLanguage] || userFollowMe[defaultLanguage],
+    _userReply = userReply[selectedLanguage] || userReply[defaultLanguage],
+    _dataRemove = dataRemove[selectedLanguage] || dataRemove[defaultLanguage],
+    _feedbackRemove = feedbackRemove[selectedLanguage] || feedbackRemove[defaultLanguage];
+
   //fetch
   const [notiLoding, notiApi, notiError, notiFetch] = useAxiosFetch();
   const [infromLoding, , infromError, infromFetch] = useAxiosFetch();
 
   useEffect(() => {
-    if(!notiApi) return;
-      let data = notiApi?.data.map(i => i).filter(i => i !== undefined )
-      setTargetUser(data)
-  }, [notiApi])
+    if (!notiApi) return;
+    let data = notiApi?.data.map((i) => i).filter((i) => i !== undefined);
+    setTargetUser(data);
+  }, [notiApi]);
 
-  useEffect(()=> {
-    setSliceData(tagetUser?.slice(0, items))
-    setItems( items => items + 15);
-  },[page, tagetUser]);
+  useEffect(() => {
+    setSliceData(tagetUser?.slice(0, items));
+    setItems((items) => items + 15);
+  }, [page, tagetUser]);
 
   // 유저 알림 API
   useEffect(() => {
-    if(!loginOn) return;
-    notiFetch(`${process.env.API_URL}/notification`, 'get', null, null, null)
-  },[]);
+    if (!loginOn) return;
+    notiFetch(`${process.env.API_URL}/notification`, 'get', null, null, null);
+  }, []);
 
-    // 읽음 처리용
-  useEffect(()=> {
-    if(!loginOn) return;
+  // 읽음 처리용
+  useEffect(() => {
+    if (!loginOn) return;
     infromFetch(`${process.env.API_URL}/notification/all`, 'patch', null);
-  },[]);
+  }, []);
 
   return (
     <InformContainer>
       <InformHeader>
         <InformIcon />
         <InformText>{_headerInfrom}</InformText>
-          <ClosedBox>
-            <ClosedBtn onClick={() => toggleNoti()}/>
-          </ClosedBox>
+        <ClosedBox>
+          <ClosedBtn onClick={() => toggleNoti()} />
+        </ClosedBox>
       </InformHeader>
-      <InformBodyInner >
-        {
-          sliceData?.map(({maker, notificationType, read, targetInfo, targetType}, key) => (
-            <ContentBox
-              key={key}
-              read={read}
-              onClick={() => {
-                if(!targetInfo) return;
-                if(notificationType === "Follow"){
-                  goURL({pathname:`/myboard/${maker.screenId}`});
-                } else if(notificationType === "Reply"){
-                  goURL({pathname:`/viewer/${targetInfo.boardId}`})
-                } else{
-                  goURL({pathname:`/viewer/${targetInfo._id}`})
-                }
-                toggleNoti();
-              }}
-            >
-              {/* 유저 이미지 */}
-              <UserImgWrap>
-                <UserImgBox>
+      <InformBodyInner>
+        {sliceData?.map(({ maker, notificationType, read, targetInfo, targetType }, key) => (
+          <ContentBox
+            key={key}
+            read={read}
+            onClick={() => {
+              if (!targetInfo) return;
+              if (notificationType === 'Follow') {
+                goURL({ pathname: `/myboard/${maker.screenId}` });
+              } else if (notificationType === 'Reply') {
+                goURL({ pathname: `/viewer/${targetInfo.boardId}` });
+              } else {
+                goURL({ pathname: `/viewer/${targetInfo._id}` });
+              }
+              toggleNoti();
+            }}
+          >
+            {/* 유저 이미지 */}
+            <UserImgWrap>
+              <UserImgBox>
                 <UserImg profile={maker.profile.thumbnail} />
-                  <InformTypeIcon>
-                    {notificationType === 'Bookmark' && <BookmarkImg infoImg={'/static/bookmark-2.svg'} />}
-                    {notificationType === 'Feedback' && <FeedbackImg infoImg={'/static/comment-3.svg'} />}
-                    {notificationType === 'Like' && <LikeImg infoImg={'/static/heart-2.svg'} />}
-                    {notificationType === 'Secondary' && <RecreateImg infoImg={'/static/globe-2.svg'} />}
-                    {notificationType === 'Follow' && <FollowImg infoImg={'/static/followAdd.svg'} />}
-                    {notificationType === 'Reply' && <ReplyImg infoImg={'/static/comment-2.svg'} />}
-                  </InformTypeIcon>
-                </UserImgBox>
-              </UserImgWrap>
-              {/* 콘텐츠 내용 */}
-              <ContentRColumn>
-                <TextBox>
-                  <UserText >{maker.nickname}
+                <InformTypeIcon>
+                  {notificationType === 'Bookmark' && <BookmarkImg infoImg={'/static/bookmark-2.svg'} />}
+                  {notificationType === 'Feedback' && <FeedbackImg infoImg={'/static/comment-3.svg'} />}
+                  {notificationType === 'Like' && <LikeImg infoImg={'/static/heart-2.svg'} />}
+                  {notificationType === 'Secondary' && <RecreateImg infoImg={'/static/globe-2.svg'} />}
+                  {notificationType === 'Follow' && <FollowImg infoImg={'/static/followAdd.svg'} />}
+                  {notificationType === 'Reply' && <ReplyImg infoImg={'/static/comment-2.svg'} />}
+                </InformTypeIcon>
+              </UserImgBox>
+            </UserImgWrap>
+            {/* 콘텐츠 내용 */}
+            <ContentRColumn>
+              <TextBox>
+                <UserText>
+                  {maker.nickname}
                   {notificationType === 'Bookmark' && <UserInteract>{_userBookmark}</UserInteract>}
                   {notificationType === 'Feedback' && <UserInteract>{_userFeedback}</UserInteract>}
                   {notificationType === 'Like' && <UserInteract>{_userReactLike}</UserInteract>}
                   {notificationType === 'Secondary' && <UserInteract>{_userSecondary}</UserInteract>}
                   {notificationType === 'Follow' && <UserInteract>{_userFollowMe}</UserInteract>}
                   {notificationType === 'Reply' && <UserInteract>{_userReply}</UserInteract>}
-                  </UserText>
-                </TextBox>
-                {
-                  targetInfo ?
-                    <InteractContent>{targetInfo?.boardTitle || targetInfo?.feedbackBody}</InteractContent>
-                    :
-                    <DeletedContent>{_dataRemove}</DeletedContent>
-                }
-              </ContentRColumn>
-            </ContentBox>
-            )
-          )
-        }
-        
-        <Observer {...scroll}/>
+                </UserText>
+              </TextBox>
+              {targetInfo ? <InteractContent>{targetInfo?.boardTitle || targetInfo?.feedbackBody}</InteractContent> : <DeletedContent>{_dataRemove}</DeletedContent>}
+            </ContentRColumn>
+          </ContentBox>
+        ))}
+
+        <Observer {...scroll} />
       </InformBodyInner>
-      
     </InformContainer>
   );
 };
-
 
 /* 알림 스타일링 */
 // 공통
@@ -165,9 +146,9 @@ const InformContainer = styled.div`
   background: ${(props) => props.theme.color.backgroundColor};
 
   @media (max-width: 900px) {
-   width: 100%;
-  height: 100%;
-  border-radius: 0em;
+    width: 100%;
+    height: 100%;
+    border-radius: 0em;
   }
 `;
 
@@ -195,21 +176,21 @@ const InformText = styled.p`
   font-size: ${(props) => props.theme.fontSize.font18};
   font-weight: ${(props) => props.theme.fontWeight.font700};
 `;
-  // 닫기 버튼
-  const ClosedBox = styled.button`
-  position:absolute;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  top:0.6em;
+// 닫기 버튼
+const ClosedBox = styled.button`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0.6em;
   right: 1.5em;
-  border-radius:50%;
-  width:3em;
-  height:3em;
-  overflow:hidden;
-`
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+  overflow: hidden;
+`;
 const ClosedBtn = styled.span`
-  ${props => props.theme.closeBtn};
+  ${(props) => props.theme.closeBtn};
   &:hover {
     background: ${(props) => props.theme.color.hoverColor};
   }
@@ -217,13 +198,13 @@ const ClosedBtn = styled.span`
 // 알림 body 콘텐츠
 
 const InformBodyInner = styled.div`
-  display:flex;
+  display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   overflow-x: scroll;
   overflow-x: hidden;
-  z-index:999;
+  z-index: 999;
   &::-webkit-scrollbar {
     display: block;
   }
@@ -274,7 +255,7 @@ const UserImgBox = styled.div`
 `;
 
 const UserImg = styled.span`
-  background:${props => props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`};
+  background: ${(props) => (props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`)};
   width: 100%;
   height: 100%;
 `;
@@ -350,13 +331,12 @@ const InteractContent = styled.span`
 const DeletedContent = styled(InteractContent)`
   color: ${(props) => props.theme.color.popupColor};
   font-weight: ${(props) => props.theme.fontWeight.font500};
-
-`
+`;
 const Observer = styled.span`
-display:block;
-width:100%;
-height:1;
-margin:1px 0;
-`
+  display: block;
+  width: 100%;
+  height: 1;
+  margin: 1px 0;
+`;
 
 export default UserInform;

@@ -14,14 +14,12 @@ import useFetchData from '@hooks/useFetchData';
 // hooks&&reducer
 import { useModal } from '@hooks/useModal';
 
-
 const MypageProfile = () => {
   const { alertPatch } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
 
   const [goUrl] = useUrlMove();
 
-  
   // toggle Nav
   const [idTab, toggleIdTab] = useState(0);
   const [nickTab, toggleNickTab] = useState(0);
@@ -35,10 +33,10 @@ const MypageProfile = () => {
   const [inituserIntro, setUserIntro] = useState();
   const [userIntro, handleUserIntro] = useChange('');
   const [inituserNick, setUserNick] = useState();
-  const [userNick, handleUserNick, ] = useChange('');
+  const [userNick, handleUserNick] = useChange('');
 
   const [initscreenId, setScreenId] = useState();
-  const [screenId, handleScreenId, ] = useChange('');
+  const [screenId, handleScreenId] = useChange('');
 
   const [email, setEmail] = useState();
 
@@ -60,12 +58,12 @@ const MypageProfile = () => {
   const [state_Confirm, toggle_Modal_Confirm] = useModal();
   const [accessConfirm, setAccessConfirm] = useState(false);
 
-// fetch useAxiosFetch
-const [myProfileLoding, myProfileApi, myProfileError, myProfileFetch] = useFetchData();
-const [imageLoding, imageApi, imageError, imageFetch] = useFetchData();
-const [pwLoding, pwApi, pwError, pwFetch] = useAxiosFetch();
-const [leaveLoding, leaveApi, leaveError, leaveFetch] = useAxiosFetch();
-const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
+  // fetch useAxiosFetch
+  const [myProfileLoding, myProfileApi, myProfileError, myProfileFetch] = useFetchData();
+  const [imageLoding, imageApi, imageError, imageFetch] = useFetchData();
+  const [pwLoding, pwApi, pwError, pwFetch] = useAxiosFetch();
+  const [leaveLoding, leaveApi, leaveError, leaveFetch] = useAxiosFetch();
+  const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
 
   // 언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
@@ -115,7 +113,6 @@ const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
     _valiPwError = valiPwError[selectedLanguage] || valiPwError[defaultLanguage],
     _sizeError = sizeError[selectedLanguage] || sizeError[defaultLanguage];
 
-
   const validationIDandNick = (e) => {
     // 아이디 -> 띄워쓰기x, min2 max15, 영문만, 중복x, 첫글자 @
     // 닉네임 -> 띄워쓰기x, min2 max30
@@ -136,7 +133,7 @@ const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
       }
     }
     //nickname
-    if (userNick === localStorage.getItem('userNick')) error.nickname = '닉네임 에러'
+    if (userNick === localStorage.getItem('userNick')) error.nickname = '닉네임 에러';
     if (userNick !== '') {
       if (
         checkLength(userNick, 2, 30) === true
@@ -170,50 +167,51 @@ const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
   };
 
   useEffect(() => {
-    if(myProfileApi?.result !== 'ok') return;
+    if (myProfileApi?.result !== 'ok') return;
     localStorage.setItem('userNick', myProfileApi?.data.nickname);
     localStorage.setItem('userid', myProfileApi?.data.screenId);
     alertPatch({ type: 'PROFILE_UPDATE', payload: true });
     toggleTab(0, 0, 0, 0);
     setUserNick(myProfileApi?.data.nickname);
     setScreenId(myProfileApi?.data.screenId);
-  }, [myProfileApi?.result])
+  }, [myProfileApi?.result]);
 
   const handleSubmitUserPw = (e) => {
     e.preventDefault();
     setValidationError('');
     setPwNotMatch('');
     setNoPassword('');
-    pwFetch(`${process.env.API_URL}/user/changePass`, 'patch', { userPw, userPwNew, userPwNewRe }, null)
+    pwFetch(`${process.env.API_URL}/user/changePass`, 'patch', { userPw, userPwNew, userPwNewRe }, null);
   };
 
   useEffect(() => {
-    if(pwApi?.result === 'ok'){
+    if (pwApi?.result === 'ok') {
       alertPatch({ type: 'PASSWORD_UPDATE', payload: true });
     } else {
-      if(pwError){
-        if(pwError?.data.message === "비밀번호 규칙을 확인해주세요."){
-        setValidationError(_changePwError);
-      } else if(pwError?.data.message === "비밀번호과 재입력이 다릅니다."){
-        setPwNotMatch(_valiPwError);
-      } else{
-        setNoPassword(_originPwError);
-      }}
+      if (pwError) {
+        if (pwError?.data.message === '비밀번호 규칙을 확인해주세요.') {
+          setValidationError(_changePwError);
+        } else if (pwError?.data.message === '비밀번호과 재입력이 다릅니다.') {
+          setPwNotMatch(_valiPwError);
+        } else {
+          setNoPassword(_originPwError);
+        }
+      }
     }
-  }, [pwApi, pwError])
-  
+  }, [pwApi, pwError]);
+
   const imageDataAppend = (e, type) => {
     //handlePreview에서 분류
     let profileData = new FormData();
-    let imageUrl = window.URL.createObjectURL(e.target.files[0])
-    type === 'banner' ? setBannerURL(imageUrl) : setProfileURL(imageUrl)
+    let imageUrl = window.URL.createObjectURL(e.target.files[0]);
+    type === 'banner' ? setBannerURL(imageUrl) : setProfileURL(imageUrl);
     profileData.append(type, e.target.files[0]);
-    return profileData
-  }
+    return profileData;
+  };
 
   const handlePreview = (e, type) => {
     let sumByte = e.target.files[0].size;
-    if (sumByte > 10485760){
+    if (sumByte > 10485760) {
       setImgSize(_sizeError);
       return;
     }
@@ -231,240 +229,251 @@ const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
   };
 
   // 탈퇴 유효성 검사
-  const deleteConfirm = (e)=> {
+  const deleteConfirm = (e) => {
     e.preventDefault();
-    if(userPw){
+    if (userPw) {
       if (userPw.length > 7) {
-      toggle_Modal_Confirm(true);
-      }else {
+        toggle_Modal_Confirm(true);
+      } else {
         setValidationError(_changePwError);
       }
-      }else {
-        setValidationError(_changePwError);
+    } else {
+      setValidationError(_changePwError);
     }
-  }
-  
+  };
+
   const deleteUser = () => {
-      setValidationError('');
-      leaveFetch(`${process.env.API_URL}/user`, 'delete', { userPw: userPw }, null)
+    setValidationError('');
+    leaveFetch(`${process.env.API_URL}/user`, 'delete', { userPw: userPw }, null);
   };
 
   useEffect(() => {
-    if(leaveApi?.result === 'ok'){
+    if (leaveApi?.result === 'ok') {
       localStorage.removeItem('loginOn', false);
       localStorage.removeItem('userNick');
       localStorage.removeItem('userid');
-      setAccessConfirm(false)
-      goUrl('/login');  
+      setAccessConfirm(false);
+      goUrl('/login');
     }
 
-    if(leaveError?.status === 400){
+    if (leaveError?.status === 400) {
       setValidationError(_originPwError);
     }
-  }, [leaveApi, leaveError])
-  
-  // 삭제 확인 이후 실행
-  useEffect(()=>{
-    accessConfirm && deleteUser()
-  },[accessConfirm])
+  }, [leaveApi, leaveError]);
 
-  
+  // 삭제 확인 이후 실행
   useEffect(() => {
-    initialFetch(`${process.env.API_URL}/user/editProfile`, 'get', null, null)
+    accessConfirm && deleteUser();
+  }, [accessConfirm]);
+
+  useEffect(() => {
+    initialFetch(`${process.env.API_URL}/user/editProfile`, 'get', null, null);
   }, []);
 
   useEffect(() => {
-  const profileData = initialApi?.data;
-  setBannerURL(profileData?.banner?.origin);
-  setProfileURL(profileData?.profile?.origin);
-  setUserIntro(profileData?.intro);
-  setUserNick(profileData?.nickname);
-  setScreenId(profileData?.screenId);
-  setUserCountry(profileData?.country);
-  setEmail(profileData?.email);
-  // alert(res.data.reason);
-}, [initialApi]);
+    const profileData = initialApi?.data;
+    setBannerURL(profileData?.banner?.origin);
+    setProfileURL(profileData?.profile?.origin);
+    setUserIntro(profileData?.intro);
+    setUserNick(profileData?.nickname);
+    setScreenId(profileData?.screenId);
+    setUserCountry(profileData?.country);
+    setEmail(profileData?.email);
+    // alert(res.data.reason);
+  }, [initialApi]);
 
   return (
-      <Container>
-          <BannerAllContainer>
-          <BannerImgSet id="bannerImg" onChange={(e)=>handlePreview(e, 'banner')} accept=".jpg, .jpeg, .png" />
-            {/* banner Image */}
-            <BannerImgSetBox>
-              <BannerImgSetLabel styling={bannerURL} />
-            </BannerImgSetBox>
-            {/* max size */}
-            <SizeErrorWrap><SIzeError>{imgSize && imgSize}</SIzeError></SizeErrorWrap>
-             {/* profile Image */}
-            <ProfileImgSet id="profileImg" onChange={(e)=>handlePreview(e, 'profile')} accept=".jpg, .jpeg, .png" />
-            <ProfileImgSetBox>
-              <ProfileImgSetLabel styling={profileURL} />
-            </ProfileImgSetBox>
-          </BannerAllContainer>
-          
-          <SendForm action="" method="post" onSubmit={handleSubmit} autoComplete="off">
-          <InfoContent maxLength="300" name="userIntro" defaultValue={inituserIntro} onChange={handleUserIntro} placeholder={_introPlaceHoder} />
-          {
-          userIntro.length > 300 &&
-            <ErrorTextWrap>
-              <ErrorText>{_errorintro}</ErrorText>
-            </ErrorTextWrap>
-          }
-          <BtnWrap>
-            <ChangeBtn disabled={userIntro ? false : true}>{_setChange}</ChangeBtn>
-          </BtnWrap>
-        </SendForm>
-        <ProfileWrap>
-          <ContentsBox>
-            {/* 이메일 */}
-            <EmailInnerBox>
-              <TitleWrap>
-                <ContentsTitle>{_profileEmail}</ContentsTitle>
-                <ContentsScript>{email}</ContentsScript>
-              </TitleWrap>
-            </EmailInnerBox>
-            {/* // 이메일 끝 */}
-          </ContentsBox>
-          <ContentsBox>
-            {/* 닉네임 변경 */}
+    <Container>
+      <BannerAllContainer>
+        <BannerImgSet id="bannerImg" onChange={(e) => handlePreview(e, 'banner')} accept=".jpg, .jpeg, .png" />
+        {/* banner Image */}
+        <BannerImgSetBox>
+          <BannerImgSetLabel styling={bannerURL} />
+        </BannerImgSetBox>
+        {/* max size */}
+        <SizeErrorWrap>
+          <SIzeError>{imgSize && imgSize}</SIzeError>
+        </SizeErrorWrap>
+        {/* profile Image */}
+        <ProfileImgSet id="profileImg" onChange={(e) => handlePreview(e, 'profile')} accept=".jpg, .jpeg, .png" />
+        <ProfileImgSetBox>
+          <ProfileImgSetLabel styling={profileURL} />
+        </ProfileImgSetBox>
+      </BannerAllContainer>
 
-            <IdContentInnerBox styling={nickTab}>
-              <TitleWrap id="nickTab" onClick={() => toggleTab(0, 2, 0, 0)}>
-                <ContentsTitle>{_nickChange}</ContentsTitle>
-                <ContentsScript>{inituserNick}</ContentsScript>
-              </TitleWrap>
-              {nickTab === 2 ? (
-                <HiddenBox>
-                  <SendForm id="editNicknameForm" action="" method="post" onSubmit={handleSubmit} autoComplete="off">
-                    <HiddenInput id="userNick" name="userNick" onChange={handleUserNick} />
-                    <HiddenBtn disabled={userNick ? false : true}>{_changeSmallBtn}</HiddenBtn>
-                  </SendForm>
-                  {validationError && (
+      <SendForm action="" method="post" onSubmit={handleSubmit} autoComplete="off">
+        <InfoContent maxLength="300" name="userIntro" defaultValue={inituserIntro} onChange={handleUserIntro} placeholder={_introPlaceHoder} />
+        {userIntro.length > 300 && (
+          <ErrorTextWrap>
+            <ErrorText>{_errorintro}</ErrorText>
+          </ErrorTextWrap>
+        )}
+        <BtnWrap>
+          <ChangeBtn disabled={userIntro ? false : true}>{_setChange}</ChangeBtn>
+        </BtnWrap>
+      </SendForm>
+      <ProfileWrap>
+        <ContentsBox>
+          {/* 이메일 */}
+          <EmailInnerBox>
+            <TitleWrap>
+              <ContentsTitle>{_profileEmail}</ContentsTitle>
+              <ContentsScript>{email}</ContentsScript>
+            </TitleWrap>
+          </EmailInnerBox>
+          {/* // 이메일 끝 */}
+        </ContentsBox>
+        <ContentsBox>
+          {/* 닉네임 변경 */}
+
+          <IdContentInnerBox styling={nickTab}>
+            <TitleWrap id="nickTab" onClick={() => toggleTab(0, 2, 0, 0)}>
+              <ContentsTitle>{_nickChange}</ContentsTitle>
+              <ContentsScript>{inituserNick}</ContentsScript>
+            </TitleWrap>
+            {nickTab === 2 ? (
+              <HiddenBox>
+                <SendForm id="editNicknameForm" action="" method="post" onSubmit={handleSubmit} autoComplete="off">
+                  <HiddenInput id="userNick" name="userNick" onChange={handleUserNick} />
+                  <HiddenBtn disabled={userNick ? false : true}>{_changeSmallBtn}</HiddenBtn>
+                </SendForm>
+                {validationError && (
+                  <ErrorTextWrap>
+                    <ErrorText>{validationError}</ErrorText>
+                  </ErrorTextWrap>
+                )}
+              </HiddenBox>
+            ) : null}
+          </IdContentInnerBox>
+          {/* // 닉네임 변경 끝 */}
+        </ContentsBox>
+
+        <ContentsBox>
+          {/* 아이디 변경 */}
+
+          <IdContentInnerBox styling={idTab}>
+            <TitleWrap id="idTab" onClick={() => toggleTab(1, 0, 0, 0)}>
+              <ContentsTitle>{_idChange}</ContentsTitle>
+              <ContentsScript>{initscreenId}</ContentsScript>
+            </TitleWrap>
+            {idTab === 1 ? (
+              <HiddenBox>
+                <SendForm id="editScreenIdForm" action="" method="post" onSubmit={handleSubmit} autoComplete="off">
+                  <HiddenInput id="screenId" name="screenId" onChange={handleScreenId} />
+                  <HiddenBtn disabled={screenId ? false : true}>{_changeSmallBtn}</HiddenBtn>
+                </SendForm>
+                {validationError && (
+                  <ErrorTextWrap>
+                    <ErrorText>{validationError}</ErrorText>
+                  </ErrorTextWrap>
+                )}
+              </HiddenBox>
+            ) : null}
+          </IdContentInnerBox>
+          {/* // 아이디 변경 끝 */}
+        </ContentsBox>
+
+        <ContentsBox>
+          {/* 비밀번호 변경 */}
+
+          <PwContentInnerBox styling={pwTab}>
+            <TitleWrap id="pwTab" onClick={() => toggleTab(0, 0, 3, 0)}>
+              <ContentsTitle>{_pwChange}</ContentsTitle>
+            </TitleWrap>
+            {pwTab === 3 ? (
+              <HiddenBox>
+                <SendForm id="changePassForm" action="" method="post" onSubmit={handleSubmitUserPw}>
+                  <InputWrap>
+                    <InputText htmlFor="userPw">{_originPw}</InputText>
+                    <HiddenPwInput name="userPw" onChange={handleUserPw} />
+                    {noPassword && (
+                      <ErrorTextWrap>
+                        <ErrorText>{noPassword}</ErrorText>
+                      </ErrorTextWrap>
+                    )}
+                  </InputWrap>
+                  <InputWrap>
+                    <InputText htmlFor="userPwNew">{_newPassword}</InputText>
+                    <HiddenPwInput name="userPwNew" onChange={handleuserPwNew} />
+                    {validationError && (
+                      <ErrorTextWrap>
+                        <ErrorText>{validationError}</ErrorText>
+                      </ErrorTextWrap>
+                    )}
+                  </InputWrap>
+                  <InputWrap>
+                    <InputText htmlFor="userPwNewRe">{_confirmPw}</InputText>
+                    <HiddenPwInput name="userPwNewRe" onChange={handleUserPwNewRe} />
+                  </InputWrap>
+                  {pwNotMatch && (
                     <ErrorTextWrap>
-                      <ErrorText>{validationError}</ErrorText>
+                      <ErrorText>{pwNotMatch}</ErrorText>
                     </ErrorTextWrap>
                   )}
-                </HiddenBox>
-              ) : null}
-            </IdContentInnerBox>
-            {/* // 닉네임 변경 끝 */}
-          </ContentsBox>
-
-          <ContentsBox>
-            {/* 아이디 변경 */}
-
-            <IdContentInnerBox styling={idTab}>
-              <TitleWrap id="idTab" onClick={() => toggleTab(1, 0, 0, 0)}>
-                <ContentsTitle>{_idChange}</ContentsTitle>
-                <ContentsScript>{initscreenId}</ContentsScript>
-              </TitleWrap>
-              {idTab === 1 ? (
-                <HiddenBox>
-                  <SendForm id="editScreenIdForm" action="" method="post" onSubmit={handleSubmit} autoComplete="off">
-                    <HiddenInput id="screenId" name="screenId" onChange={handleScreenId} />
-                    <HiddenBtn disabled={screenId ? false : true}>{_changeSmallBtn}</HiddenBtn>
-                  </SendForm>
-                  {validationError && (
-                    <ErrorTextWrap>
-                      <ErrorText>{validationError}</ErrorText>
-                    </ErrorTextWrap>
-                  )}
-                </HiddenBox>
-              ) : null}
-            </IdContentInnerBox>
-            {/* // 아이디 변경 끝 */}
-          </ContentsBox>
-
-          <ContentsBox>
-            {/* 비밀번호 변경 */}
-
-            <PwContentInnerBox styling={pwTab}>
-              <TitleWrap id="pwTab" onClick={() => toggleTab(0, 0, 3, 0)}>
-                <ContentsTitle>{_pwChange}</ContentsTitle>
-              </TitleWrap>
-              {pwTab === 3 ? (
-                <HiddenBox>
-                  <SendForm id="changePassForm" action="" method="post" onSubmit={handleSubmitUserPw}>
-                    <InputWrap>
-                      <InputText htmlFor="userPw">{_originPw}</InputText>
-                      <HiddenPwInput name="userPw" onChange={handleUserPw} />
-                      {noPassword && <ErrorTextWrap><ErrorText>{noPassword}</ErrorText></ErrorTextWrap>}
-                    </InputWrap>
-                    <InputWrap>
-                      <InputText htmlFor="userPwNew">{_newPassword}</InputText>
-                      <HiddenPwInput name="userPwNew" onChange={handleuserPwNew} />
-                      {validationError && <ErrorTextWrap><ErrorText>{validationError}</ErrorText></ErrorTextWrap>}
-                    </InputWrap>
-                    <InputWrap>
-                      <InputText htmlFor="userPwNewRe">{_confirmPw}</InputText>
-                      <HiddenPwInput name="userPwNewRe" onChange={handleUserPwNewRe} />
-                    </InputWrap>
-                    {pwNotMatch && <ErrorTextWrap><ErrorText>{pwNotMatch}</ErrorText></ErrorTextWrap>}
-                    <BtnWrap>
-                      {/* {validationError && (
+                  <BtnWrap>
+                    {/* {validationError && (
                         <ErrorTextWrap>
                           <ErrorText>{validationError}</ErrorText>
                         </ErrorTextWrap>
                       )} */}
 
-                      <ChangeBtn>{_setChange}</ChangeBtn>
-                    </BtnWrap>
-                  </SendForm>
-                </HiddenBox>
-              ) : null}
-            </PwContentInnerBox>
-          </ContentsBox>
+                    <ChangeBtn>{_setChange}</ChangeBtn>
+                  </BtnWrap>
+                </SendForm>
+              </HiddenBox>
+            ) : null}
+          </PwContentInnerBox>
+        </ContentsBox>
 
-          {/* // 비밀번호 변경 끝 */}
+        {/* // 비밀번호 변경 끝 */}
 
-          <ContentsBox>
-            {/* 회원탈퇴 */}
-            <OutContentInnerBox styling={outTab}>
-              <TitleWrap id="outTab" onClick={() => toggleTab(0, 0, 0, 4)}>
-                <ContentsTitle>{_widthDrawl}</ContentsTitle>
-              </TitleWrap>
-              {outTab === 4 ? (
-                <HiddenBox>
-                  <SendForm action="" method="post">
-                    <InputWrap>
-                      <InputText htmlFor="userPw">{_confirmPw}</InputText>
+        <ContentsBox>
+          {/* 회원탈퇴 */}
+          <OutContentInnerBox styling={outTab}>
+            <TitleWrap id="outTab" onClick={() => toggleTab(0, 0, 0, 4)}>
+              <ContentsTitle>{_widthDrawl}</ContentsTitle>
+            </TitleWrap>
+            {outTab === 4 ? (
+              <HiddenBox>
+                <SendForm action="" method="post">
+                  <InputWrap>
+                    <InputText htmlFor="userPw">{_confirmPw}</InputText>
 
-                      <HiddenPwInput name="userPw" onChange={handleUserPw} />
-                    </InputWrap>
-                    <ErrorTextWrap>
+                    <HiddenPwInput name="userPw" onChange={handleUserPw} />
+                  </InputWrap>
+                  <ErrorTextWrap>
                     <ErrorText>{_widthDrawlAlert}</ErrorText>
-                    </ErrorTextWrap>
-                    
-                    <BtnWrap postion={validationError}>
-                      {validationError && (
-                        <ErrorTextWrap>
-                          <ErrorText>{validationError}</ErrorText>
-                        </ErrorTextWrap>
-                      )}
+                  </ErrorTextWrap>
 
-                      <ChangeBtn styling={outTab} onClick={deleteConfirm}>
-                        {_widthDrawlBtn}
-                      </ChangeBtn>
-                    </BtnWrap>
-                  </SendForm>
-                </HiddenBox>
-              ) : null}
-            </OutContentInnerBox>
-          </ContentsBox>
-          {/* // 회원탈퇴 끝 */}
-        </ProfileWrap>
-        {/* confirm popup */}
-        {state_Confirm &&
+                  <BtnWrap postion={validationError}>
+                    {validationError && (
+                      <ErrorTextWrap>
+                        <ErrorText>{validationError}</ErrorText>
+                      </ErrorTextWrap>
+                    )}
+
+                    <ChangeBtn styling={outTab} onClick={deleteConfirm}>
+                      {_widthDrawlBtn}
+                    </ChangeBtn>
+                  </BtnWrap>
+                </SendForm>
+              </HiddenBox>
+            ) : null}
+          </OutContentInnerBox>
+        </ContentsBox>
+        {/* // 회원탈퇴 끝 */}
+      </ProfileWrap>
+      {/* confirm popup */}
+      {state_Confirm && (
         <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
-          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={setAccessConfirm} type={'INACTIVE'}/>
+          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={setAccessConfirm} type={'INACTIVE'} />
         </Modal>
-          }
-      </Container>
+      )}
+    </Container>
   );
 };
 
-
-  /* 프로필 디자인 컴포넌트 */
+/* 프로필 디자인 컴포넌트 */
 
 // 애니메이션 영역
 
@@ -476,7 +485,7 @@ const ErrorText = styled.span`
   font-size: ${(props) => props.theme.fontSize.font15};
   font-weight: ${(props) => props.theme.fontWeight.font500};
   color: ${(props) => props.theme.color.pinkColor};
-  line-height:19px;
+  line-height: 19px;
 `;
 
 // 프로필 레이아웃
@@ -539,7 +548,7 @@ const ProfileWrap = styled.div`
 
 const SendForm = styled.form``;
 
-  /*배너 및 프로필 이미지 영역*/
+/*배너 및 프로필 이미지 영역*/
 
 const BannerAllContainer = styled.div`
   position: relative;
@@ -573,19 +582,18 @@ const BannerImgSetLabel = styled.label.attrs({
 `;
 
 const SizeErrorWrap = styled.div`
-position:relative;
-display:flex;
-justify-content:flex-end;
-`
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+`;
 const SIzeError = styled.span`
-position:absolute;
-top:0.5em;
-right:0;
+  position: absolute;
+  top: 0.5em;
+  right: 0;
   font-size: ${(props) => props.theme.fontSize.font14};
   font-weight: ${(props) => props.theme.fontWeight.font500};
   color: ${(props) => props.theme.color.pinkColor};
-
-`
+`;
 // 프로필 이미지
 
 const ProfileImgSetBox = styled.div`

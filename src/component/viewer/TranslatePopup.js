@@ -27,32 +27,31 @@ const TranslatePopup = ({ writer }) => {
     _selfUpload = selfUpload[selectedLanguage] || selfUpload[defaultLanguage],
     _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage];
 
-    const boardIdDevide = () => {
-      if(data.originBoardId){
-        setOriginBoardId(data.originBoardId._id)
-      } else {
-        setOriginBoardId(boardUid)
-      }
+  const boardIdDevide = () => {
+    if (data.originBoardId) {
+      setOriginBoardId(data.originBoardId._id);
+    } else {
+      setOriginBoardId(boardUid);
     }
+  };
 
-    useEffect(() => {
-      boardIdDevide()
-    }, [])
+  useEffect(() => {
+    boardIdDevide();
+  }, []);
 
-    return (
+  return (
     <UserContentPopupInner>
       <UserContentTitleBox>{_secondaryOpt}</UserContentTitleBox>
       <UserContentTabBox>
-            <UserContentTab onClick={() => {
-              toggle_Modal_Trans();
-              goURL({ pathname:`/editor/${originBoardId}`, query: { writer, boardUid, data:JSON.stringify(data), boardImg }})
-              }}
-              >{_useEditor}</UserContentTab>
-          <UserContentTab
-          onClick={()=> 
-            goURL({ pathname: `/upload`, query: { writer, boardUid, data:JSON.stringify(data)}})
-          }
-          >{_selfUpload}</UserContentTab>
+        <UserContentTab
+          onClick={() => {
+            toggle_Modal_Trans();
+            goURL({ pathname: `/editor/${originBoardId}`, query: { writer, boardUid, data: JSON.stringify(data), boardImg } });
+          }}
+        >
+          {_useEditor}
+        </UserContentTab>
+        <UserContentTab onClick={() => goURL({ pathname: `/upload`, query: { writer, boardUid, data: JSON.stringify(data) } })}>{_selfUpload}</UserContentTab>
       </UserContentTabBox>
       <PopupClose onClick={() => toggle_Modal_Trans()}>{_closeBtn}</PopupClose>
     </UserContentPopupInner>

@@ -83,11 +83,11 @@ const ReportsPopup = (props) => {
               <ListRadioCustom />
             </ReportTab>
           ))}
-            <ReportTab onClick={()=>goURL({pathname:"/report"})}>
-              <ReportTxtWrap>
-                <ReportTxt>내 저작물 침해</ReportTxt>
-              </ReportTxtWrap>
-            </ReportTab>
+          <ReportTab onClick={() => goURL({ pathname: '/report' })}>
+            <ReportTxtWrap>
+              <ReportTxt>내 저작물 침해</ReportTxt>
+            </ReportTxtWrap>
+          </ReportTab>
         </ReportTabBox>
       </SendForm>
       <PopupClose
@@ -129,15 +129,14 @@ const ContentPopupInner = styled.div`
   flex-flow: column;
   justify-content: space-around;
   overflow: hidden;
-  max-width:480px;
-  width:100%;
+  max-width: 480px;
+  width: 100%;
   min-width: 360px;
   height: auto;
   border-radius: 12px;
   background: ${(props) => props.theme.color.backgroundColor};
   box-shadow: ${(props) => props.theme.boxshadow.popup};
 `;
-
 
 /* 유저 팝업 */
 //헤더 탭

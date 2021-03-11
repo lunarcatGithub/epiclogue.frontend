@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled, { css, keyframes } from 'styled-components';
+
+import {useRouter} from 'next/router';
 import {GoogleLogin} from 'react-google-login';
+
 // import FBLogin from 'react-facebook-login'
-import KakaoLogin from 'react-kakao-login'
+import KakaoLogin from 'react-kakao-login';
 
 // 컴포넌트 import
 import { LoginInfoPopup } from './Login_Info_Popup';
@@ -13,93 +16,89 @@ import Modal from '@utils/Modal';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { LangLogin, socialLogin } from '@language/Lang.Login';
 import { ProgressSmall } from '@utils/LoadingProgress';
-import {LanguageContext, AppDataContext} from '@store/App_Store';
+import { LanguageContext, AppDataContext } from '@store/App_Store';
 import { useModal } from '@hooks/useModal';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useForm from '@hooks/useForm';
 
 export const SignIn = (props) => {
+
   const {setChangePage} = props;
+  const router = useRouter();
+  const {main} = router.query;
   const {langState} = useContext(LanguageContext);
   const {setLoginOn} = useContext(AppDataContext);
   const [errorTitle, setErrorTitle] = useState()
   const [ goURL ] = useUrlMove();
   const [_isShowing, _toggle] = useModal();
+  // router 변경에 의한 로그인 화면 변화
+  const [isBack, setIsBack] = useState(false);
 
+  useEffect(() => {
+    setIsBack(main ? main : false)
+  }, [router.query])
+  
   // 로그인 에러
   // fetch
   const [snsLoginListLoding, snsLoginListApi, snsLoginListError, snsLoginFetch] = useAxiosFetch();
 
-//언어 변수
-    const {selectedLanguage, defaultLanguage} = langState;
-    const {
-        idPlaceHolder,
-        pwPlaceHolder,
-        loginButton,
-        signUpButton,
-        snsLoginDesc,
-        loginFailHolder,
-        leaveUser,
-        lostPassword
-      } = LangLogin;
-    const {googleAccount, facebookAccount, kakaoAccount, loginErr} = socialLogin;
-    const _idPlaceHolder = idPlaceHolder[selectedLanguage] || idPlaceHolder[defaultLanguage],
-        _pwPlaceHolder = pwPlaceHolder[selectedLanguage] || pwPlaceHolder[defaultLanguage],
-        _loginButton = loginButton[selectedLanguage] || loginButton[defaultLanguage],
-        _signUpButton = signUpButton[selectedLanguage] || signUpButton[defaultLanguage],
-        _snsLoginDesc = snsLoginDesc[selectedLanguage] || snsLoginDesc[defaultLanguage],
-        _loginFailHolder = loginFailHolder[selectedLanguage] || loginFailHolder[defaultLanguage],
-        _googleAccount = googleAccount[selectedLanguage] || googleAccount[defaultLanguage],
-        _facebookAccount = facebookAccount[selectedLanguage] || facebookAccount[defaultLanguage],
-        _kakaoAccount = kakaoAccount[selectedLanguage] || kakaoAccount[defaultLanguage],
-        _loginErr = loginErr[selectedLanguage] || loginErr[defaultLanguage],
-        _leaveUser = leaveUser[selectedLanguage] || leaveUser[defaultLanguage],
-        _lostPassword = lostPassword[selectedLanguage] || lostPassword[defaultLanguage];
-      
-  // sns 로그인 통신
-    const responseSuccess = (res, type) => {
-      snsLoginFetch(
-        `${process.env.API_URL}/auth/snsLogin`,
-        'post',
-        {
-        snsData: res,
-        snsType: type,
-        userLang: defaultLanguage
-        }
-      )
-    }
+  //언어 변수
+  const { selectedLanguage, defaultLanguage } = langState;
+  const { idPlaceHolder, pwPlaceHolder, loginButton, signUpButton, snsLoginDesc, loginFailHolder, leaveUser, lostPassword } = LangLogin;
+  const { googleAccount, facebookAccount, kakaoAccount, loginErr } = socialLogin;
+  const _idPlaceHolder = idPlaceHolder[selectedLanguage] || idPlaceHolder[defaultLanguage],
+    _pwPlaceHolder = pwPlaceHolder[selectedLanguage] || pwPlaceHolder[defaultLanguage],
+    _loginButton = loginButton[selectedLanguage] || loginButton[defaultLanguage],
+    _signUpButton = signUpButton[selectedLanguage] || signUpButton[defaultLanguage],
+    _snsLoginDesc = snsLoginDesc[selectedLanguage] || snsLoginDesc[defaultLanguage],
+    _loginFailHolder = loginFailHolder[selectedLanguage] || loginFailHolder[defaultLanguage],
+    _googleAccount = googleAccount[selectedLanguage] || googleAccount[defaultLanguage],
+    _facebookAccount = facebookAccount[selectedLanguage] || facebookAccount[defaultLanguage],
+    _kakaoAccount = kakaoAccount[selectedLanguage] || kakaoAccount[defaultLanguage],
+    _loginErr = loginErr[selectedLanguage] || loginErr[defaultLanguage],
+    _leaveUser = leaveUser[selectedLanguage] || leaveUser[defaultLanguage],
+    _lostPassword = lostPassword[selectedLanguage] || lostPassword[defaultLanguage];
 
-    const responseFail = (err) => {
-      if(!err) return;
-      if(err.error === 'idpiframe_initialization_failed') return;
-      alert(_loginErr);
-    }
+  // sns 로그인 통신
+  const responseSuccess = (res, type) => {
+    snsLoginFetch(`${process.env.API_URL}/auth/snsLogin`, 'post', {
+      snsData: res,
+      snsType: type,
+      userLang: defaultLanguage,
+    });
+  };
+
+  const responseFail = (err) => {
+    if (!err) return;
+    if (err.error === 'idpiframe_initialization_failed') return;
+    alert(_loginErr);
+  };
 
   // 로그인
   const [values, handleChange, handleSubmit, disabled, resData, errors] = useForm({
-    initialValues: { type: 'signIn', email: '', userPw: '' }
+    initialValues: { type: 'signIn', email: '', userPw: '' },
   });
 
   const errorHandle = () => {
-    if(Object.keys(errors).length === 0) return;
-      if(errors === 'incorrect'){
-        setErrorTitle(_loginFailHolder)
-      } else if(errors === 'leave') {
-        setErrorTitle(_leaveUser)
+    if (Object.keys(errors).length === 0) return;
+    if (errors === 'incorrect') {
+      setErrorTitle(_loginFailHolder);
+    } else if (errors === 'leave') {
+      setErrorTitle(_leaveUser);
     } else {
-      alert('login error')
+      alert('login error');
     }
-  }
+  };
 
   useEffect(() => {
-      const mergyData = resData || snsLoginListApi;
-      if (mergyData?.result === 'ok') {
-        setLoginOn(true)
-        localStorage.setItem('loginOn', true);
-        localStorage.setItem('userNick', mergyData?.nick);
-        localStorage.setItem('userid', mergyData?.screenId);
-        goURL({pathname:'/'});
-      }
+    const mergyData = resData || snsLoginListApi;
+    if (mergyData?.result === 'ok') {
+      setLoginOn(true);
+      localStorage.setItem('loginOn', true);
+      localStorage.setItem('userNick', mergyData?.nick);
+      localStorage.setItem('userid', mergyData?.screenId);
+      goURL({ pathname: '/' });
+    }
   }, [resData, snsLoginListApi]);
 
   useEffect(() => {
@@ -110,9 +109,21 @@ export const SignIn = (props) => {
     <>
     <LoginBox>
       <LoginInner>
-        <LoginHeader>
-          <LoginLogo />
-          <LoginTitle>"Welcome to EpicLogue"</LoginTitle>
+        <LoginHeader styling={main}>
+          {
+            main ?
+            <>
+            <BackIconAnchor onClick={()=>router.back()}>
+              <PureBackIcon/>
+              </BackIconAnchor>
+              <SubTitle>메인으로 돌아가기</SubTitle></>
+            :
+            <>
+            <LoginLogo />
+            <LoginTitle>"Welcome to EpicLogue"</LoginTitle>
+            </>
+            
+          }
         </LoginHeader>
         <FormInner>
           {/* 로그인 찾기 */}
@@ -133,16 +144,11 @@ export const SignIn = (props) => {
         <SignUpEtcBtn>
           <SignUpButton onClick={()=>setChangePage(true)}>{_signUpButton}</SignUpButton>
           <Dummy />
-          <SnsLogin>SNS Login</SnsLogin>
+          <SubTitle>SNS Login</SubTitle>
+
             <LogingWrap>
-              <GoogleButton
-                name="google"
-                clientId={process.env.GOOGLE_API_KEY}
-                onSuccess={res => responseSuccess(res, 'google')}
-                onFailure={responseFail}
-              />
-              <GoogleStyle
-              >{_googleAccount}</GoogleStyle>
+              <GoogleButton name="google" clientId={process.env.GOOGLE_API_KEY} onSuccess={(res) => responseSuccess(res, 'google')} onFailure={responseFail} />
+              <GoogleStyle>{_googleAccount}</GoogleStyle>
             </LogingWrap>
             {/* <LogingWrap>
             <FBLogin
@@ -164,20 +170,20 @@ export const SignIn = (props) => {
             />
             <KakaoStyle>{_kakaoAccount}</KakaoStyle>
             </LogingWrap> */}
-          <AgreeCheck>{_snsLoginDesc}</AgreeCheck>
-        </SignUpEtcBtn>
-      </LoginInner>
-    </LoginBox>
-      {_isShowing &&
+            <AgreeCheck>{_snsLoginDesc}</AgreeCheck>
+          </SignUpEtcBtn>
+        </LoginInner>
+      </LoginBox>
+      {_isShowing && (
         <Modal visible={Boolean(_isShowing)} closable={true} maskClosable={true} onClose={() => _toggle(false)}>
           <LoginInfoPopup handleModal={_toggle} />
         </Modal>
-    }
-   </>
+      )}
+    </>
   );
 };
 
-  /* 로그인 애니메이션 */
+/* 로그인 애니메이션 */
 
 const BtnAnimation = keyframes`
   0% {
@@ -229,17 +235,16 @@ const FormInner = styled.div`
   flex-flow: column;
   align-items: center;
   width: 100%;
-
-`
+`;
 
 //로그인 제목 타이틀
 const LoginHeader = styled.div`
   display: flex;
   flex-flow: row;
   align-items: center;
-  justify-content: center;
+  justify-content: ${props => props.styling ? 'flex-start' : 'center'};
   width: 100%;
-  margin-bottom: 22px;
+  margin: 0.2em 0;
 `;
 const LoginTitle = styled.h1`
   margin-right: 10px;
@@ -249,7 +254,7 @@ const LoginTitle = styled.h1`
   user-select: none;
 `;
 const LoginLogo = styled.svg`
-  background:url('/static/Logo.svg') no-repeat center center / contain;  
+  background: url('/static/Logo.svg') no-repeat center center / contain;
   width: 48px;
   height: 48px;
   margin-right: 8px;
@@ -257,7 +262,7 @@ const LoginLogo = styled.svg`
 `;
 
 const UserEmailInput = styled.input.attrs({
-  type: 'email'
+  type: 'email',
 })`
   width: 100%;
   height: 46px;
@@ -277,10 +282,34 @@ const UserEmailInput = styled.input.attrs({
   }
 `;
 const UserPwInput = styled(UserEmailInput).attrs({
-  type: 'password'
+  type: 'password',
 })`
   margin-bottom: 8px;
 `;
+
+// 뒤로가기
+const BackIconAnchor = styled.button`
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position: relative;
+  padding:18px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  &:hover {
+    background: ${(props) => props.theme.color.hoverColor};
+  }
+`;
+const PureBackIcon = styled.span`
+ display: flex;
+ width:0.9em;
+ height:0.9em;
+ border-top:3px solid ${(props) => props.theme.color.darkGray};
+ border-right:3px solid ${(props) => props.theme.color.darkGray};
+ -webkit-transform: rotate(225deg);
+ transform: rotate(225deg);
+ margin-left:0.3em;
+`
 // 로그인 찾기
 const LostLogin = styled.button.attrs({ type: 'button' })`
   position: absolute;
@@ -293,7 +322,7 @@ const LostLogin = styled.button.attrs({ type: 'button' })`
   cursor: pointer;
   color: ${(props) => props.theme.color.orangeColor};
   border-bottom: 2px solid ${(props) => props.theme.color.softOrangeColor};
-  user-select:none;
+  user-select: none;
 `;
 
 // 로그인 버튼
@@ -322,64 +351,63 @@ const LoginButton = styled.button.attrs((props) => ({
 `;
 // 로그인 공통 CSS
 const LoginBtn = css`
-display:flex !important;
-width:100% !important;
-height:100% !important;
-border-radius:25px !important;
-opacity:0 !important;
-cursor:pointer;
-z-index:999;
-`
+  display: flex !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 25px !important;
+  opacity: 0 !important;
+  cursor: pointer;
+  z-index: 999;
+`;
 
 //  구글 로그인
 const GoogleStyle = styled.span`
-position: absolute;
-top:50%;
-left:50%;
-transform:translate(-50%, -50%);
-display:flex;
-justify-content: center;
-align-items:center;
-width:100%;
-height:100%;
-font-size: ${(props) => props.theme.fontSize.font15};
-color: ${(props) => props.theme.color.darkGray};
-font-weight: ${(props) => props.theme.fontWeight.font500};
-background:${(props) => props.theme.color.whiteColor};
-box-shadow:${(props) => props.theme.boxshadow.popup};
-border-radius:25px;
-cursor:pointer;
-&::before {
-  content:'';
-  display:inline-block;
-  background:url('/static/google-icon.svg') no-repeat center center / contain;
-  width:1.4em;
-  height:1.4em;
-  margin-right:0.5em;
-}
-`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: ${(props) => props.theme.fontSize.font15};
+  color: ${(props) => props.theme.color.darkGray};
+  font-weight: ${(props) => props.theme.fontWeight.font500};
+  background: ${(props) => props.theme.color.whiteColor};
+  box-shadow: ${(props) => props.theme.boxshadow.popup};
+  border-radius: 25px;
+  cursor: pointer;
+  &::before {
+    content: '';
+    display: inline-block;
+    background: url('/static/google-icon.svg') no-repeat center center / contain;
+    width: 1.4em;
+    height: 1.4em;
+    margin-right: 0.5em;
+  }
+`;
 const GoogleButton = styled(GoogleLogin)`
-${LoginBtn};
-`
+  ${LoginBtn};
+`;
 // 페이스북 로그인
 //App.css에서 작업
 // 카카오 로그인
 const KakaoLog = styled(KakaoLogin)`
-${LoginBtn};
-`
+  ${LoginBtn};
+`;
 const KakaoStyle = styled(GoogleStyle)`
-font-size: ${(props) => props.theme.fontSize.font15};
-color: #3B1E1E;
-font-weight: ${(props) => props.theme.fontWeight.font700};
-background:#ffe812;
-&::before {
-  background:url('/static/kakao-icon.svg') no-repeat center center / contain;
-  width:1.4em;
-  height:1.4em;
-  margin-right:0.5em;
-}
-
-`
+  font-size: ${(props) => props.theme.fontSize.font15};
+  color: #3b1e1e;
+  font-weight: ${(props) => props.theme.fontWeight.font700};
+  background: #ffe812;
+  &::before {
+    background: url('/static/kakao-icon.svg') no-repeat center center / contain;
+    width: 1.4em;
+    height: 1.4em;
+    margin-right: 0.5em;
+  }
+`;
 
 // 경고 플레이스 홀더
 const PlaceHolderBox = styled.div`
@@ -427,28 +455,29 @@ const Dummy = styled.div`
   margin: 16px 0;
   border-bottom: 3px solid ${(props) => props.theme.color.hoverColor};
 `;
-const SnsLogin = styled.h2`
+const SubTitle = styled.span`
   text-align: center;
   font-weight: ${(props) => props.theme.fontWeight.font700};
   color: ${(props) => props.theme.color.placeHolderColor};
   font-size: ${(props) => props.theme.fontSize.font15};
-  margin-bottom:0.3em;
 `;
+
 const GoogleLog = styled.span`
-  display:flex;
-  justify-content:center;
+  display: flex;
+  justify-content: center;
   width: 100%;
   height: auto;
   margin: 8px 0;
-  cursor: pointer;`;
+  cursor: pointer;
+`;
 
 const LogingWrap = styled.div`
-position:relative;
-display:flex;
-width:100%;
-height:38px;
-margin:1em 0;
-`
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 38px;
+  margin: 1em 0;
+`;
 
 const AgreeCheck = styled.span`
   text-align: center;
@@ -458,4 +487,3 @@ const AgreeCheck = styled.span`
   color: ${(props) => props.theme.color.blackColor};
   font-size: ${(props) => props.theme.fontSize.font14};
 `;
-

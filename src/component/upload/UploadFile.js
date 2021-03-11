@@ -45,7 +45,9 @@ const UploadFile = () => {
     let files;
     if (e.type === 'change') {
       files = [...e.target.files];
-    } else {files = [...e.dataTransfer.files];}
+    } else {
+      files = [...e.dataTransfer.files];
+    }
 
     let urlList = [];
     let imgList = [];
@@ -180,7 +182,7 @@ const PreviewImg = styled.img`
   object-fit: contain;
   width: auto;
   height: auto;
-  max-width:100%;
+  max-width: 100%;
   -webkit-user-select: none;
   user-select: none;
 `;

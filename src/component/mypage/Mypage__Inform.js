@@ -5,14 +5,13 @@ import styled from 'styled-components';
 import MypageForm from './Mypage__Form';
 
 const MypageInform = () => {
-
-    return (
-      <Container>
-        {/* 푸시 설정 */}
-        <MypageForm type='push' />
-         {/* 일반 설정 */}
-        <MypageForm type='generalset' />
-      </Container>
+  return (
+    <Container>
+      {/* 푸시 설정 */}
+      <MypageForm type="push" />
+      {/* 일반 설정 */}
+      <MypageForm type="generalset" />
+    </Container>
   );
 };
 

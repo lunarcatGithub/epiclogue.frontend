@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components';
 import MyBoardFollowList from './MyBoard__Follow__List';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 
 // hooks&&reducer
 import useAxiosFetch from '@hooks/useAxiosFetch';
@@ -18,76 +18,74 @@ const MyBoardFollow = () => {
   const [useIdStore, setUseIdStore] = useState();
 
   // 팔로우 리스트 무한 스크롤
- const [items, setItems] = useState(5);
- const [sliceFollowing, setSliceFollowing] = useState();
- const [sliceFollower, setSliceFollower] = useState();
- const [page, scroll] = useScroll();
-  
+  const [items, setItems] = useState(5);
+  const [sliceFollowing, setSliceFollowing] = useState();
+  const [sliceFollower, setSliceFollower] = useState();
+  const [page, scroll] = useScroll();
+
   //fetch
   const [, followListApi, , followListFetch] = useAxiosFetch();
 
-  useEffect(()=> {
-
-    setItems( items => items + 10);
-    if(followButton === 'following'){
-      setSliceFollowing(followingList?.slice(0, items))
-      } else {
-        setSliceFollower(followerList?.slice(0, items))
-      }
-
-  },[page, followingList, followerList]);
+  useEffect(() => {
+    setItems((items) => items + 10);
+    if (followButton === 'following') {
+      setSliceFollowing(followingList?.slice(0, items));
+    } else {
+      setSliceFollower(followerList?.slice(0, items));
+    }
+  }, [page, followingList, followerList]);
 
   useEffect(() => {
-    setUseIdStore(followData?.screenId)
-   }, [followData])
+    setUseIdStore(followData?.screenId);
+  }, [followData]);
 
-   useEffect(() => {
-    useIdStore && followButton && followListFetch(`${process.env.API_URL}/interaction/follow?screenId=${useIdStore}&type=${followButton}`, 'get', null, null, null)
+  useEffect(() => {
+    useIdStore && followButton && followListFetch(`${process.env.API_URL}/interaction/follow?screenId=${useIdStore}&type=${followButton}`, 'get', null, null, null);
   }, [followButton, useIdStore]);
 
   useEffect(() => {
-    if(!followListApi) return
+    if (!followListApi) return;
     followButton === 'following' ? setFollowingList(followListApi?.data) : setFollowerList(followListApi?.data);
-  }, [followListApi])
+  }, [followListApi]);
 
   return (
-      <Layout>
-        <FollowsLayout>
-          <LayoutInner>
-            {/* 팔로우 헤더 상단 */}
-            <HeaderBox>
-              <TopHeaderBox>
-                {/* <Link to={`/myboard/${dataId}`}>
+    <Layout>
+      <FollowsLayout>
+        <LayoutInner>
+          {/* 팔로우 헤더 상단 */}
+          <HeaderBox>
+            <TopHeaderBox>
+              {/* <Link to={`/myboard/${dataId}`}>
                   <ArrowBtn />
                 </Link> */}
-                  <ArrowBtnwrap>
-                   <ArrowBtn onClick={() => router.back()} />
-                  </ArrowBtnwrap>
-                <UserPfBox>
-                  <UserNick>{followData?.nickname}</UserNick>
-                  <UserId>{followData?.screenId}</UserId>
-                </UserPfBox>
-              </TopHeaderBox>
-              <FollowTabBox>
-                <FollowingTab tabType={followButton} onClick={() => setFollowButton('following')}>
-                  Following
-                </FollowingTab>
-                <FollowerTab tabType={followButton} onClick={() => setFollowButton('follower')}>
-                  Follower
-                </FollowerTab>
-              </FollowTabBox>
-              {/* // 팔로우 헤더 상단 끝*/}
-            </HeaderBox>
-            {/* 팔로우 본문 */}
-            <ContentBox>
-              {followButton === 'following' && sliceFollowing?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)}
-              {followButton === 'follower' && sliceFollower?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower"/>)}
-              {/* // 팔로우 본문 끝 */}
-              <Observer {...scroll}/>
-            </ContentBox>
-          </LayoutInner>
-        </FollowsLayout>
-      </Layout>
+              <ArrowBtnwrap>
+                <ArrowBtn onClick={() => router.back()} />
+              </ArrowBtnwrap>
+              <UserPfBox>
+                <UserNick>{followData?.nickname}</UserNick>
+                <UserId>{followData?.screenId}</UserId>
+              </UserPfBox>
+            </TopHeaderBox>
+            <FollowTabBox>
+              <FollowingTab tabType={followButton} onClick={() => setFollowButton('following')}>
+                Following
+              </FollowingTab>
+              <FollowerTab tabType={followButton} onClick={() => setFollowButton('follower')}>
+                Follower
+              </FollowerTab>
+            </FollowTabBox>
+            {/* // 팔로우 헤더 상단 끝*/}
+          </HeaderBox>
+          {/* 팔로우 본문 */}
+          <ContentBox>
+            {followButton === 'following' && sliceFollowing?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)}
+            {followButton === 'follower' && sliceFollower?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower" />)}
+            {/* // 팔로우 본문 끝 */}
+            <Observer {...scroll} />
+          </ContentBox>
+        </LayoutInner>
+      </FollowsLayout>
+    </Layout>
   );
 };
 
@@ -134,8 +132,7 @@ const TopHeaderBox = styled.div`
   display: flex;
   padding: 14px 20px 0 20px;
 `;
-const ArrowBtnwrap = styled.div`
-`
+const ArrowBtnwrap = styled.div``;
 const ArrowBtn = styled.div`
   display: flex;
   position: relative;
@@ -179,7 +176,7 @@ const UserId = styled.span`
   color: ${(props) => props.theme.color.softBlackColor};
   font-size: ${(props) => props.theme.fontSize.font14};
   font-weight: ${(props) => props.theme.fontWeight.font300};
-  margin-top:4px;
+  margin-top: 4px;
 `;
 // 팔로잉 팔로워 선택 탭
 const FollowTabBox = styled.div`
@@ -224,9 +221,9 @@ const ContentBox = styled.div`
 `;
 
 const Observer = styled.span`
-display:block;
-width:100%;
-height:1;
-margin:1px 0;
-`
+  display: block;
+  width: 100%;
+  height: 1;
+  margin: 1px 0;
+`;
 export default MyBoardFollow;

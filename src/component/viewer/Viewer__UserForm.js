@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from 'react'
+import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
@@ -11,197 +11,185 @@ import { useModal } from '@hooks/useModal';
 import { useToggle } from '@hooks/useToggle';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { AppDataContext } from '@store/App_Store';
-import {useConvertTags} from '@hooks/useConvertTags';
+import { useConvertTags } from '@hooks/useConvertTags';
 import { useTimeCalculation } from '@hooks/useTimeCalculation';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 export default function ViewerUserForm(props) {
-    const {
-        type, 
-        externalSource, 
-        userLang, 
-        profile,
-        userData, 
-        boardUid, 
-        followOnLang,
-        followLang,
-        removedContents
-        } = props;
+  const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents } = props;
 
-    const {loginOn, setUnAuth} = useContext(AppDataContext);
+  const { loginOn, setUnAuth } = useContext(AppDataContext);
 
-    //fetch
-    const [followLoding, followApi, followError, followFetch] = useAxiosFetch();
+  //fetch
+  const [followLoding, followApi, followError, followFetch] = useAxiosFetch();
 
-    const [goURL] = useUrlMove();
-    const [kindContent, setKindContent] = useState();
-    const [screenId, setScreenId] = useState();
-    const [originUserData, setOriginUserData] = useState();
-    const [title, setTitle] = useState();
-    //popup
-    const [type_MoreMenu, setType_MoreMenu] = useState();
-    const [state_MoreMenu, toggle_Modal_MoreMenu] = useModal();
+  const [goURL] = useUrlMove();
+  const [kindContent, setKindContent] = useState();
+  const [screenId, setScreenId] = useState();
+  const [originUserData, setOriginUserData] = useState();
+  const [title, setTitle] = useState();
+  //popup
+  const [type_MoreMenu, setType_MoreMenu] = useState();
+  const [state_MoreMenu, toggle_Modal_MoreMenu] = useModal();
 
-    // follow
-    const [follow, toggleFollow] = useToggle();
-    const [followMe, setFollowMe] = useState()
-    const [indicateDate] = useTimeCalculation(userData?.writeDate);
-    const [converted, convert] = useConvertTags();
-    console.log(userData?.boardBody)
-    const changeHandler = () => {
-        const localScreenId = localStorage.getItem('userid')
-        switch (type) {
-            case 'NOSECOND':
-                setKindContent(<UserUploadInfoImg image={externalSource ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />)
-                setScreenId(userData?.writer?.screenId);
-                setFollowMe(localScreenId !== userData?.screenId);
-                toggleFollow(userData?.following);
-                setTitle(userData?.boardTitle);
-                convert(userData?.boardBody)
-                break;
+  // follow
+  const [follow, toggleFollow] = useToggle();
+  const [followMe, setFollowMe] = useState();
+  const [indicateDate] = useTimeCalculation(userData?.writeDate);
+  const [converted, convert] = useConvertTags();
+  console.log(userData?.boardBody);
+  const changeHandler = () => {
+    const localScreenId = localStorage.getItem('userid');
+    switch (type) {
+      case 'NOSECOND':
+        setKindContent(<UserUploadInfoImg image={externalSource ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />);
+        setScreenId(userData?.writer?.screenId);
+        setFollowMe(localScreenId !== userData?.screenId);
+        toggleFollow(userData?.following);
+        setTitle(userData?.boardTitle);
+        convert(userData?.boardBody);
+        break;
 
-            case 'SECOND':
-                setKindContent(<UserUploadInfoImg image={'/static/trans.svg'} />)
-                setScreenId(userData?.writer?.screenId)
-                setFollowMe(localScreenId !== userData?.screenId)
-                toggleFollow(userData?.following);
-                setTitle(userData?.boardTitle);
-                convert(userData?.boardBody)
+      case 'SECOND':
+        setKindContent(<UserUploadInfoImg image={'/static/trans.svg'} />);
+        setScreenId(userData?.writer?.screenId);
+        setFollowMe(localScreenId !== userData?.screenId);
+        toggleFollow(userData?.following);
+        setTitle(userData?.boardTitle);
+        convert(userData?.boardBody);
 
-            break;
+        break;
 
-            case 'ORIGIN':
-                setKindContent(<UserUploadInfoImg image={externalSource ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />)
-                setScreenId(userData?.originUserId?.screenId);
-                setOriginUserData(userData?.originBoardId);
-                setFollowMe(localScreenId !== userData?.originUserId?.screenId)
-                toggleFollow(userData?.originUserId?.following);
-                setTitle(userData?.originBoardId?.boardTitle)
-                convert(userData?.originBoardId?.boardBody)
-                break;
-            default:
-            break;
-        }
+      case 'ORIGIN':
+        setKindContent(<UserUploadInfoImg image={externalSource ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />);
+        setScreenId(userData?.originUserId?.screenId);
+        setOriginUserData(userData?.originBoardId);
+        setFollowMe(localScreenId !== userData?.originUserId?.screenId);
+        toggleFollow(userData?.originUserId?.following);
+        setTitle(userData?.originBoardId?.boardTitle);
+        convert(userData?.originBoardId?.boardBody);
+        break;
+      default:
+        break;
     }
+  };
 
-    const submitHandler = (e) => {
-        e.preventDefault();
-        if(!loginOn) return;
-        const URL = `${process.env.API_URL}/interaction/follow`;    
-        followFetch(URL, follow ? 'post' : 'delete', {targetUserId: screenId}, null, null)
-        toggleFollow()
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (!loginOn) return;
+    const URL = `${process.env.API_URL}/interaction/follow`;
+    followFetch(URL, follow ? 'post' : 'delete', { targetUserId: screenId }, null, null);
+    toggleFollow();
+  };
+
+  const checkMoreMenuType = () => {
+    // 비회원 유저
+    if (!loginOn) {
+      setUnAuth(true);
+      return;
     }
+    // 회원 유저
+    toggle_Modal_MoreMenu();
+    if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
+      setType_MoreMenu(<MyPopup type="_More" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+    } else {
+      setType_MoreMenu(<UserPopup handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+    }
+  };
 
-    const checkMoreMenuType = () => {
-        // 비회원 유저
-        if(!loginOn){
-            setUnAuth(true);
-            return;
-        }
-        // 회원 유저
-        toggle_Modal_MoreMenu();
-        if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
-            setType_MoreMenu(<MyPopup type="_More" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-        } else {
-            setType_MoreMenu(<UserPopup handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-        }
-    };
+  useEffect(() => {
+    changeHandler();
+  }, [type, externalSource, userData]);
 
-    useEffect(() => {
-        changeHandler()
-    }, [type, externalSource, userData])
-
-    return (
+  return (
     <>
-    <UserForm>
+      <UserForm>
         <UserProfileWrap>
-            {kindContent}
-            {
-                externalSource ? 
-                <SourceLink href={`${externalSource}`} target="_blank">{externalSource}</SourceLink>
-                :
-                <UserUploadInfo>{userLang}</UserUploadInfo>
-            }
+          {kindContent}
+          {externalSource ? (
+            <SourceLink href={`${externalSource}`} target="_blank">
+              {externalSource}
+            </SourceLink>
+          ) : (
+            <UserUploadInfo>{userLang}</UserUploadInfo>
+          )}
         </UserProfileWrap>
         <ProfileImgContent>
-            {/* 프로필 박스 */}
-        <ProfileImgBox>
+          {/* 프로필 박스 */}
+          <ProfileImgBox>
             <ProfileImg profile={profile} />
-        </ProfileImgBox>
-            {/* 유저 프로필 콘텐츠 박스 */}
-        <UserProfileContentsBox>
+          </ProfileImgBox>
+          {/* 유저 프로필 콘텐츠 박스 */}
+          <UserProfileContentsBox>
             {/* 유저 아이디 등 프로필 */}
             <UserProfileInfo>
-                {/* 유저 닉네임 팔로잉 */}
-            <UserNickInfo onClick={() => goURL({pathname:`/myboard/[id]?tab=all`, as:`/myboard/${screenId}`})}>
-                { type === 'ORIGIN' ? userData?.originUserId?.nickname : userData?.nickname }
-                </UserNickInfo>
-            {
-                followMe && loginOn && (
-                    <form action="" onSubmit={(e)=>submitHandler(e)}>
-                    <UserFollowTxt followData={follow}>
-                        {follow ? followOnLang : followLang}
-                    </UserFollowTxt>
-                    </form>
-                )
-            }
+              {/* 유저 닉네임 팔로잉 */}
+              <UserNickInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>
+                {type === 'ORIGIN' ? userData?.originUserId?.nickname : userData?.nickname}
+              </UserNickInfo>
+              {followMe && loginOn && (
+                <form action="" onSubmit={(e) => submitHandler(e)}>
+                  <UserFollowTxt followData={follow}>{follow ? followOnLang : followLang}</UserFollowTxt>
+                </form>
+              )}
             </UserProfileInfo>
             {/* 유저 아이디 */}
             <UserProfileId>
-                <UserIdInfo onClick={() => goURL({pathname:`/myboard/[id]?tab=all`, as:`/myboard/${screenId}`})}>{screenId}</UserIdInfo>
+              <UserIdInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>{screenId}</UserIdInfo>
             </UserProfileId>
             {/* 메뉴 더보기 */}
             <FdMoreMenuAnchor onClick={checkMoreMenuType}>
-                <MoreMenuDot />
+              <MoreMenuDot />
             </FdMoreMenuAnchor>
             {/* 콘텐츠 */}
             <OriginalContent>{title}</OriginalContent>
-                <TextContent>{converted}</TextContent>
-            <BottomWrap><PostedTime>Posted by {indicateDate}</PostedTime>{userData?.edited && <ModifyText>{_modified}</ModifyText>}</BottomWrap>
-            { originUserData &&
-                <ContentImgWrap styling={originUserData}>
-                {
-                    originUserData ? <ContentImgBox onClick={() => goURL({pathname:`/viewer/${originUserData._id}`})}>
-                        <ContentImg thumNail={originUserData.boardImg[0]} />
-                    </ContentImgBox>
-                    :
-                    <ContentImgBox>
-                        <NullContent>{removedContents}</NullContent>
-                    </ContentImgBox>
-                }
-                </ContentImgWrap>
-            }
-            </UserProfileContentsBox>
+            <TextContent>{converted}</TextContent>
+            <BottomWrap>
+              <PostedTime>Posted by {indicateDate}</PostedTime>
+              {userData?.edited && <ModifyText>{_modified}</ModifyText>}
+            </BottomWrap>
+            {originUserData && (
+              <ContentImgWrap styling={originUserData}>
+                {originUserData ? (
+                  <ContentImgBox onClick={() => goURL({ pathname: `/viewer/${originUserData._id}` })}>
+                    <ContentImg thumNail={originUserData.boardImg[0]} />
+                  </ContentImgBox>
+                ) : (
+                  <ContentImgBox>
+                    <NullContent>{removedContents}</NullContent>
+                  </ContentImgBox>
+                )}
+              </ContentImgWrap>
+            )}
+          </UserProfileContentsBox>
         </ProfileImgContent>
-    </UserForm>
-    {
-        state_MoreMenu && (
+      </UserForm>
+      {state_MoreMenu && (
         <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
-            {type_MoreMenu}
+          {type_MoreMenu}
         </Modal>
-        )
-    }
+      )}
     </>
-    )
+  );
 }
 
 //공통 스타일링
 const FdMoreMenuAnchor = styled.button.attrs({
-    type: 'button',
-  })`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    top: 24px;
-    right: 12px;
-    ${(props) => props.theme.ImgButtonHover};
-  `;
-  const MoreMenuDot = styled.div`
-    display: flex;
-    ${(props) => props.theme.moreMenu};
-  `;
+  type: 'button',
+})`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 24px;
+  right: 12px;
+  ${(props) => props.theme.ImgButtonHover};
+`;
+const MoreMenuDot = styled.div`
+  display: flex;
+  ${(props) => props.theme.moreMenu};
+`;
 
-  // 일반 스타일링
+// 일반 스타일링
 const UserForm = styled.div`
   position: relative;
   display: flex;
@@ -217,13 +205,13 @@ const UserForm = styled.div`
 const UserProfileWrap = styled.div`
   display: flex;
   align-items: center;
-  width:100%;
+  width: 100%;
   height: 100%;
   margin-top: 3px;
   user-select: none;
 `;
 const UserUploadInfoImg = styled.svg`
-  background: url(${props => props.image}) no-repeat center center / contain;
+  background: url(${(props) => props.image}) no-repeat center center / contain;
   margin-left: 1.6em;
   width: 1.2em;
   height: 1.2em;
@@ -239,7 +227,7 @@ const UserUploadInfo = styled.span`
   font-weight: ${(props) => props.theme.fontWeight.font100};
   font-size: ${(props) => props.theme.fontSize.font13};
   color: ${(props) => props.theme.color.softBlackColor};
-  max-width:25em;
+  max-width: 25em;
 `;
 // 외부 출처가 있을 경우
 const SourceLink = styled.a`
@@ -248,11 +236,10 @@ const SourceLink = styled.a`
   font-size: ${(props) => props.theme.fontSize.font14};
   color: ${(props) => props.theme.color.orangeColor};
   /* max-width:24em; */
-  padding-right:4em;
-  line-height:1.4em;
-  ${props => props.theme.textTwoLine};
-  cursor:pointer;
-
+  padding-right: 4em;
+  line-height: 1.4em;
+  ${(props) => props.theme.textTwoLine};
+  cursor: pointer;
 `;
 
 // 유저 프로필 && 콘텐츠
@@ -271,7 +258,7 @@ const ProfileImgBox = styled.div`
   overflow: hidden;
 `;
 const ProfileImg = styled.span`
-  background:${props => props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`}; 
+  background: ${(props) => (props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`)};
   width: 100%;
   height: 100%;
 `;
@@ -339,7 +326,6 @@ const OriginalContent = styled.span`
   color: ${(props) => props.theme.color.blackColor};
 `;
 const PostedTime = styled.span`
- 
   font-weight: ${(props) => props.theme.fontWeight.font100};
   font-size: ${(props) => props.theme.fontSize.font14};
   color: ${(props) => props.theme.color.softBlackColor};
@@ -356,8 +342,8 @@ const ContentImgBox = styled.div`
   overflow: hidden;
   border-radius: 12px;
   margin: 14px 26px 6px 0;
-  border: 3px solid ${props => props.styling ? props.theme.color.semiOrangeColor : props.theme.color.softGrayColor};
-  background:${props => props.styling ? '' : `${props => props.theme.color.hoverColor}`};
+  border: 3px solid ${(props) => (props.styling ? props.theme.color.semiOrangeColor : props.theme.color.softGrayColor)};
+  background: ${(props) => (props.styling ? '' : `${(props) => props.theme.color.hoverColor}`)};
   cursor: pointer;
 `;
 
@@ -369,39 +355,38 @@ const ContentImg = styled.span`
 `;
 const NullContent = styled.span`
   display: flex;
-  justify-content:center;
-  align-items:center;
+  justify-content: center;
+  align-items: center;
   background: ${(props) => props.theme.color.hoverColor};
   width: 100%;
   height: 100%;
   font-weight: ${(props) => props.theme.fontWeight.font700};
   font-size: ${(props) => props.theme.fontSize.font18};
   color: ${(props) => props.theme.color.darkGray};
-`
+`;
 
 const TextContent = styled.span`
-padding-top:0.5em;
-padding-right:3em;
-@media (max-width:900px){
-  padding-right:2em;
-}
+  padding-top: 0.5em;
+  padding-right: 3em;
+  @media (max-width: 900px) {
+    padding-right: 2em;
+  }
 `;
 
 // 수정 여부
 const BottomWrap = styled.div`
-display:flex;
-height:auto;
-align-items:center;
-flex-direction:row;
-margin-top: 8px;
-`
+  display: flex;
+  height: auto;
+  align-items: center;
+  flex-direction: row;
+  margin-top: 8px;
+`;
 const ModifyText = styled.span`
-margin-left:8px;
-padding:4px 8px;
-border-radius:25px;
-background: ${(props) => props.theme.color.orangeColor};
-font-weight: ${(props) => props.theme.fontWeight.font500};
-font-size: ${(props) => props.theme.fontSize.font13};
-color: ${(props) => props.theme.color.whiteColor};
-
-`
+  margin-left: 8px;
+  padding: 4px 8px;
+  border-radius: 25px;
+  background: ${(props) => props.theme.color.orangeColor};
+  font-weight: ${(props) => props.theme.fontWeight.font500};
+  font-size: ${(props) => props.theme.fontSize.font13};
+  color: ${(props) => props.theme.color.whiteColor};
+`;

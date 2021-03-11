@@ -5,11 +5,11 @@ import styled, { css, keyframes } from 'styled-components';
 
 const Progress = () => {
   return (
-      <Layout>
-          <Circle />
-          <CircleSmall />
-          <LogoRotate />
-      </Layout>
+    <Layout>
+      <Circle />
+      <CircleSmall />
+      <LogoRotate />
+    </Layout>
   );
 };
 
@@ -17,7 +17,7 @@ const Common = css`
   position: absolute;
   top: 50%;
   left: 50%;
-  @media (max-width:900px){
+  @media (max-width: 900px) {
     left: 40%;
   }
 `;
@@ -31,14 +31,13 @@ const ReverseRotate = keyframes`
 `;
 
 const Layout = styled.article`
-  position:relative;
+  position: relative;
   display: flex;
   width: 100%;
   height: auto;
   /* padding: 0.5em 0; */
   margin-top: 20px;
 `;
-
 
 const Circle = styled.div`
   ${Common};
@@ -62,7 +61,7 @@ const CircleSmall = styled.div`
   animation: ${ReverseRotate} 4s infinite linear;
 `;
 const LogoRotate = styled.svg`
-  background:url('/static/Logo.svg') no-repeat center center / contain;
+  background: url('/static/Logo.svg') no-repeat center center / contain;
   ${Common};
   margin-left: 21px;
   margin-top: 22px;
@@ -81,11 +80,11 @@ const InformTxt = styled.span`
   margin-top: 8px;
 `;
 
-const ProgressSmall = ({disabled}) => {
+const ProgressSmall = ({ disabled }) => {
   return (
-      <SmallLayout>
-        <SmallCircle disabled={disabled}/>
-      </SmallLayout>
+    <SmallLayout>
+      <SmallCircle disabled={disabled} />
+    </SmallLayout>
   );
 };
 
@@ -105,14 +104,10 @@ const SmallLayout = styled.article`
 const SmallCircle = styled.div`
   width: 30px;
   height: 30px;
-  border: 3px dotted ${props => props.disabled ? '#ffffff' : `rgba(241, 173, 57, 0.5)`};
+  border: 3px dotted ${(props) => (props.disabled ? '#ffffff' : `rgba(241, 173, 57, 0.5)`)};
   border-radius: 200px;
   -webkit-animation: ${Rotate} 3s infinite linear;
   animation: ${Rotate} 3s infinite linear;
 `;
-
-
-
-
 
 export { Progress, ProgressSmall };

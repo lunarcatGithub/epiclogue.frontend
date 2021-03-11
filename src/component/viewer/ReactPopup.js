@@ -1,10 +1,10 @@
-import React, { useEffect, useContext, useState } from "react";
-import styled, { css } from "styled-components";
+import React, { useEffect, useContext, useState } from 'react';
+import styled, { css } from 'styled-components';
 
 // 컴포넌트 import
-import { ReplyListContext } from "./Viewer";
-import { langReactPopup } from "@language/Lang.Viewer";
-import { LangCommon } from "@language/Lang.Common";
+import { ReplyListContext } from './Viewer';
+import { langReactPopup } from '@language/Lang.Viewer';
+import { LangCommon } from '@language/Lang.Common';
 
 // Hooks&&reducer
 import useAxiosFetch from '@hooks/useAxiosFetch';
@@ -19,35 +19,26 @@ const ReactPopup = () => {
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
-  const {
-    reactTxt,
-    reactShare,
-    reactLike,
-    reactBookmark,
-    reactFeedback,
-    noReact
-  } = langReactPopup;
+  const { reactTxt, reactShare, reactLike, reactBookmark, reactFeedback, noReact } = langReactPopup;
   const { closeBtn } = LangCommon;
 
   const _reactTxt = reactTxt[selectedLanguage] || reactTxt[defaultLanguage],
     _reactShare = reactShare[selectedLanguage] || reactShare[defaultLanguage],
     _reactLike = reactLike[selectedLanguage] || reactLike[defaultLanguage],
-    _reactBookmark =
-      reactBookmark[selectedLanguage] || reactBookmark[defaultLanguage],
-    _reactFeedback =
-      reactFeedback[selectedLanguage] || reactFeedback[defaultLanguage],
-      _noReact = noReact[selectedLanguage] || noReact[defaultLanguage],
+    _reactBookmark = reactBookmark[selectedLanguage] || reactBookmark[defaultLanguage],
+    _reactFeedback = reactFeedback[selectedLanguage] || reactFeedback[defaultLanguage],
+    _noReact = noReact[selectedLanguage] || noReact[defaultLanguage],
     _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage];
-  
-    const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
+
+  const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
 
   useEffect(() => {
-    initialFetch(`${process.env.API_URL}/boards/${boardUid}/react`, "get", null, null);
+    initialFetch(`${process.env.API_URL}/boards/${boardUid}/react`, 'get', null, null);
   }, []);
 
   useEffect(() => {
     initialApi && setReactData(initialApi?.data);
-  }, [initialApi])
+  }, [initialApi]);
 
   return (
     <PopupInner>
@@ -60,58 +51,41 @@ const ReactPopup = () => {
         </PopupTitleBox>
       </PopupTabTitle>
       <PopupTabBox onClick={(e) => e.stopPropagation()}>
-        {reactData.length !== 0 ? reactData.map((item, index) => {
-          return (
-            <PopupTab key={index}>
-              <UserProfileImgWrap>
-                <UserProfileImg
-                  profile={item?.user?.profile?.thumbnail}
-                />
-              </UserProfileImgWrap>
-              <RecreateImgBox>
-                {item.type === "secondary" && (
-                  <RecreateImg reactImg={"/static/globe-2.svg"} />
-                )}
-                {item.type === "like" && <LikeImg reactImg={"/static/heart-2.svg"} />}
-                {item.type === "bookmark" && (
-                  <BookmarkImg reactImg={"/static/bookmark-2.svg"} />
-                )}
-                {item.type === "comment" && (
-                  <FeedbackImg reactImg={"/static/comment-2.svg"} />
-                )}
-              </RecreateImgBox>
-              <UserProfile>
-                <TabUserNick>{item.user.nickname}</TabUserNick>
-                {item.type === "share" && (
-                  <UserStateRecre>{_reactShare}</UserStateRecre>
-                )}
-                {item.type === "like" && (
-                  <UserStateRecre>{_reactLike}</UserStateRecre>
-                )}
-                {item.type === "bookmark" && (
-                  <UserStateRecre>{_reactBookmark}</UserStateRecre>
-                )}
-                {item.type === "comment" && (
-                  <UserStateRecre>{_reactFeedback}</UserStateRecre>
-                )}
-                <StatedTime>{item.reactTime}</StatedTime>
-              </UserProfile>
-              <TabUserId>{item.user._id}</TabUserId>
-            </PopupTab>
-          );
-        })
-        :
-        <NoDataLayout>
-          {/* 데이터가 없을 경우 */}
-          <NoDataImg />
-          <NoDataTxt>{_noReact}</NoDataTxt>
-        </NoDataLayout>
-        }
+        {reactData.length !== 0 ? (
+          reactData.map((item, index) => {
+            return (
+              <PopupTab key={index}>
+                <UserProfileImgWrap>
+                  <UserProfileImg profile={item?.user?.profile?.thumbnail} />
+                </UserProfileImgWrap>
+                <RecreateImgBox>
+                  {item.type === 'secondary' && <RecreateImg reactImg={'/static/globe-2.svg'} />}
+                  {item.type === 'like' && <LikeImg reactImg={'/static/heart-2.svg'} />}
+                  {item.type === 'bookmark' && <BookmarkImg reactImg={'/static/bookmark-2.svg'} />}
+                  {item.type === 'comment' && <FeedbackImg reactImg={'/static/comment-2.svg'} />}
+                </RecreateImgBox>
+                <UserProfile>
+                  <TabUserNick>{item.user.nickname}</TabUserNick>
+                  {item.type === 'share' && <UserStateRecre>{_reactShare}</UserStateRecre>}
+                  {item.type === 'like' && <UserStateRecre>{_reactLike}</UserStateRecre>}
+                  {item.type === 'bookmark' && <UserStateRecre>{_reactBookmark}</UserStateRecre>}
+                  {item.type === 'comment' && <UserStateRecre>{_reactFeedback}</UserStateRecre>}
+                  <StatedTime>{item.reactTime}</StatedTime>
+                </UserProfile>
+                <TabUserId>{item.user._id}</TabUserId>
+              </PopupTab>
+            );
+          })
+        ) : (
+          <NoDataLayout>
+            {/* 데이터가 없을 경우 */}
+            <NoDataImg />
+            <NoDataTxt>{_noReact}</NoDataTxt>
+          </NoDataLayout>
+        )}
       </PopupTabBox>
       <PopupCloseBox>
-        <PopupClose onClick={() => toggle_Modal_React()}>
-          {_closeBtn}
-        </PopupClose>
+        <PopupClose onClick={() => toggle_Modal_React()}>{_closeBtn}</PopupClose>
       </PopupCloseBox>
     </PopupInner>
   );
@@ -130,7 +104,7 @@ const PositionCenter = css`
 const PopupCloseBox = styled.div`
   width: 100%;
 `;
-const PopupClose = styled.button.attrs({ type: "submit" })`
+const PopupClose = styled.button.attrs({ type: 'submit' })`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -182,7 +156,7 @@ const PopupTitleBox = styled.div`
   padding-left: 12px;
 `;
 const ReactIconImg = styled.svg`
-  background: url("/static/react.svg") no-repeat center center / contain;
+  background: url('/static/react.svg') no-repeat center center / contain;
   width: 18px;
   height: 20px;
   margin-top: 2px;
@@ -194,7 +168,7 @@ const PopupTitle = styled.span`
   font-weight: ${(props) => props.theme.fontWeight.font700};
 `;
 // 모바일 전용 닫기 버튼
-const PopupMbClose = styled.button.attrs({ type: "button" })`
+const PopupMbClose = styled.button.attrs({ type: 'button' })`
   position: absolute;
   top: 0;
   right: 10px;
@@ -248,7 +222,7 @@ const UserProfileImgWrap = styled.div`
   overflow: hidden;
 `;
 const UserProfileImg = styled.span`
-  background:${props => props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`}; 
+  background: ${(props) => (props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`)};
   width: 100%;
   height: 100%;
 `;
@@ -265,8 +239,7 @@ const RecreateImgBox = styled.div`
 `;
 
 const RecreateImg = styled.svg`
-  background: url(${(props) => props.reactImg}) no-repeat center center /
-    contain;
+  background: url(${(props) => props.reactImg}) no-repeat center center / contain;
   width: 20px;
   height: 19px;
 `;
@@ -329,31 +302,29 @@ const TabUserId = styled.span`
 `;
 // 데이터가 없을 경우
 const NoDataLayout = styled.div`
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-width: 100%;
-height:100%;
-`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
 const NoDataImg = styled.svg`
-display:block;
-background: url('/static/react_heart.svg') no-repeat center center / contain;
-width:100%;
-height:100%;
-margin:1.8em 0;
-`
+  display: block;
+  background: url('/static/react_heart.svg') no-repeat center center / contain;
+  width: 100%;
+  height: 100%;
+  margin: 1.8em 0;
+`;
 const NoDataTxt = styled.span`
   font-size: ${(props) => props.theme.fontSize.font26};
   color: ${(props) => props.theme.color.blackOpacity};
   font-weight: ${(props) => props.theme.fontWeight.font700};
-  opacity:.4;
-  margin-bottom:1.5em;
-  @media (max-width:900px) {
+  opacity: 0.4;
+  margin-bottom: 1.5em;
+  @media (max-width: 900px) {
     font-size: ${(props) => props.theme.fontSize.font20};
-
   }
-`
-
+`;
 
 export default ReactPopup;

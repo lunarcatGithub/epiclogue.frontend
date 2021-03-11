@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export const useConvertURL = () => {
   const [path, setPath] = useState();
@@ -7,11 +7,11 @@ export const useConvertURL = () => {
   const convertIamge = async (img) => {
     if (img) {
       const res = await fetch(img, {
-        mode: "cors",
-        cache: "no-cache",
-        headers:{
-          'Content-Type' : 'multipart/form-data'
-        }
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
       const blob = await res.blob();
       // let name = img.split("/");
@@ -22,10 +22,10 @@ export const useConvertURL = () => {
     }
   };
 
-  useEffect(()=>{
-    convertIamge()
-    return() => convertIamge()
-  },[path, file])
+  useEffect(() => {
+    convertIamge();
+    return () => convertIamge();
+  }, [path, file]);
 
   return [path, file, convertIamge];
 };

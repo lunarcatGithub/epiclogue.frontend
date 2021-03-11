@@ -1,31 +1,30 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 
 export default function useFetchData() {
+  const [loading, setLoding] = useState();
+  const [result, setResult] = useState();
+  const [error, setError] = useState();
 
-const [loading, setLoding] = useState();
-const [result, setResult] = useState();
-const [error, setError] = useState();
-
-const fetchHandler = async(url, type, importData = null, importBody = null) => {
+  const fetchHandler = async (url, type, importData = null, importBody = null) => {
     setLoding(true);
 
     await fetch(url, {
-    method: type,
-    credentials: 'include',
-    data:importData,
-    body:importBody
+      method: type,
+      credentials: 'include',
+      data: importData,
+      body: importBody,
     })
-    .then((res) => res.json())
-    .then( res => {
-    setResult(res)
-    })
-    .catch( err => {
-    setError(err)
-    });
-    setLoding(false)
-}
+      .then((res) => res.json())
+      .then((res) => {
+        setResult(res);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+    setLoding(false);
+  };
 
-return [loading, result, error, fetchHandler];
+  return [loading, result, error, fetchHandler];
 }
 
 // const isLogin = localStorage.getItem('token');

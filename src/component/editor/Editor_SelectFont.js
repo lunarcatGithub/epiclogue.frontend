@@ -3,122 +3,108 @@ import styled from 'styled-components';
 
 // 컴포넌트 import
 // import '../../App.css';
-import {initalFont} from './Editor_Font_Obj';
+import { initalFont } from './Editor_Font_Obj';
 
 // reducer && context
-import {EditorContext} from './Editor_Store';
+import { EditorContext } from './Editor_Store';
 
 export const SelectFont = () => {
   const [item, setItem] = useState(initalFont);
-  const [open, toggleOpen] = useState(false)
+  const [open, toggleOpen] = useState(false);
 
-  const { 
-    currentFont,
-    setCurrentFont
-} = useContext(EditorContext);
+  const { currentFont, setCurrentFont } = useContext(EditorContext);
 
   const fontChange = (e) => {
-    if(!e) return;
+    if (!e) return;
     new Promise((res, rej) => {
-      setCurrentFont(e.target.value)
-      res(false)
+      setCurrentFont(e.target.value);
+      res(false);
     })
-    .then(bool => {
-      toggleOpen(bool)
-    })
-    .catch((err)=>console.log(err))
-  }
+      .then((bool) => {
+        toggleOpen(bool);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
-      <Selectposition >
-        <TextFontBtn 
-        onClick={()=>toggleOpen(!open)}
-        styling={open}
-         >
-          {/* 선택바 */}
-          {currentFont}
-        </TextFontBtn>
+    <Selectposition>
+      <TextFontBtn onClick={() => toggleOpen(!open)} styling={open}>
+        {/* 선택바 */}
+        {currentFont}
+      </TextFontBtn>
 
-        {
-        open ? (
-          <SelectBox>
-            <OptionBox >
-              {
-              item.map((font, index) => {
-                return (
-                  <Option key={index}>
-                    <OptionTxt font={font.value}>{font.name}</OptionTxt>
-                    <OptionRadio
-                      value={font.value}
-                      name="font"
-                      onChange={fontChange}
-                    />
-                  </Option>
-                );
-              })
-            }
-            </OptionBox>
-          </SelectBox>
-        ) : null
-        }
-      </Selectposition>
+      {open ? (
+        <SelectBox>
+          <OptionBox>
+            {item.map((font, index) => {
+              return (
+                <Option key={index}>
+                  <OptionTxt font={font.value}>{font.name}</OptionTxt>
+                  <OptionRadio value={font.value} name="font" onChange={fontChange} />
+                </Option>
+              );
+            })}
+          </OptionBox>
+        </SelectBox>
+      ) : null}
+    </Selectposition>
   );
 };
 
-  /* 셀렉트 박스 디자인 영역 */
+/* 셀렉트 박스 디자인 영역 */
 
 //공통
 // 레이아웃
 const TextFontBtn = styled.button`
-position: relative;
-display: flex;
-align-items:center;
-padding-left:1em;
-padding-right:1em;
-width:12em;
-height:2.2em;
-border-radius: 6px;
-border: 1px solid ${props => props.styling ? props.theme.color.greenColor : props.theme.color.hoverColor};
-font-size: ${(props) => props.theme.fontSize.font14};
-color: ${(props) => props.theme.color.blackColor};
-font-weight: ${(props) => props.theme.fontWeight.font300};
-transition: all 0.2s ease;
-${props => props.theme.textOneLine};
-cursor: pointer;
-&::after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: ${props => props.styling ? 0.7 : 0.9}em;
-  right: 0.8em;
-  width: 0.4em;
-  height: 0.4em;
-  border-top: 1px solid ${props => props.styling ? props.theme.color.greenColor : props.theme.color.placeHolderColor};
-  border-right: 1px solid  ${props => props.styling ? props.theme.color.greenColor : props.theme.color.placeHolderColor};
-  transform: rotate(${props => props.styling ? `135deg` : `-45deg`});
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 1em;
+  padding-right: 1em;
+  width: 12em;
+  height: 2.2em;
+  border-radius: 6px;
+  border: 1px solid ${(props) => (props.styling ? props.theme.color.greenColor : props.theme.color.hoverColor)};
+  font-size: ${(props) => props.theme.fontSize.font14};
+  color: ${(props) => props.theme.color.blackColor};
+  font-weight: ${(props) => props.theme.fontWeight.font300};
   transition: all 0.2s ease;
-}
-@media (max-width:900px){
+  ${(props) => props.theme.textOneLine};
+  cursor: pointer;
   &::after {
-    transform: rotate(${props => props.styling ?  `-45deg` : `135deg`});
-    top: ${props => props.styling ? 0.9 : 0.7}em;
+    content: '';
+    display: block;
+    position: absolute;
+    top: ${(props) => (props.styling ? 0.7 : 0.9)}em;
+    right: 0.8em;
+    width: 0.4em;
+    height: 0.4em;
+    border-top: 1px solid ${(props) => (props.styling ? props.theme.color.greenColor : props.theme.color.placeHolderColor)};
+    border-right: 1px solid ${(props) => (props.styling ? props.theme.color.greenColor : props.theme.color.placeHolderColor)};
+    transform: rotate(${(props) => (props.styling ? `135deg` : `-45deg`)});
+    transition: all 0.2s ease;
   }
-}
-`
+  @media (max-width: 900px) {
+    &::after {
+      transform: rotate(${(props) => (props.styling ? `-45deg` : `135deg`)});
+      top: ${(props) => (props.styling ? 0.9 : 0.7)}em;
+    }
+  }
+`;
 const Selectposition = styled.div`
-position:relative;
-  display:flex;
+  position: relative;
+  display: flex;
 `;
 
 const SelectBox = styled.div`
-  position:absolute;
-  top:2.3em;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  width:13em;
-  height:15em;
-  overflow:hidden;
+  position: absolute;
+  top: 2.3em;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  width: 13em;
+  height: 15em;
+  overflow: hidden;
   @media (max-width: 900px) {
     /* width: 280px;
     height: auto;
@@ -127,7 +113,7 @@ const SelectBox = styled.div`
 `;
 const OptionBox = styled.div`
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   max-height: 18em;
@@ -137,8 +123,8 @@ const OptionBox = styled.div`
   overflow-x: scroll;
   overflow-x: hidden;
   border-radius: 8px;
-  user-select:none;
-  
+  user-select: none;
+
   &::-webkit-scrollbar {
     display: block;
   }
@@ -158,18 +144,18 @@ const OptionBox = styled.div`
   }
 `;
 const OptionRadio = styled.input.attrs({
-  type:'radio'
+  type: 'radio',
 })`
-display:none;
-`
+  display: none;
+`;
 const Option = styled.label`
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 0.6em 0.2em;
   margin-bottom: 2px;
   width: 100%;
-  
+
   background: ${(props) => props.theme.color.whiteColor};
   cursor: pointer;
   &:hover {
@@ -182,7 +168,5 @@ const OptionTxt = styled.span`
   font-family: ${(props) => props.font}, sans-serif;
   color: ${(props) => props.theme.color.blackColor};
   font-weight: ${(props) => props.theme.fontWeight.font300};
-  ${props => props.theme.textOneLine};
+  ${(props) => props.theme.textOneLine};
 `;
-
-

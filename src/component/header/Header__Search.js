@@ -2,8 +2,8 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 //컴포넌트 import
-import {LangHeaderSearch} from '@language/Lang.Header';
-import {LanguageContext} from '@store/App_Store';
+import { LangHeaderSearch } from '@language/Lang.Header';
+import { LanguageContext } from '@store/App_Store';
 
 //아이콘 import
 // import Xbtn from '../../img/X-mark.png';
@@ -11,90 +11,84 @@ import {LanguageContext} from '@store/App_Store';
 import { HeaderDataContext } from './Header';
 
 const SearchPopup = () => {
-  const {langState} = useContext(LanguageContext);
+  const { langState } = useContext(LanguageContext);
 
   const { searchBody, toggleSearchPop } = useContext(HeaderDataContext);
   //언어 변수
-  const {selectedLanguage, defaultLanguage} = langState;
-  const {
-    searchHd,
-    searchTags,
-    searchUsers
-    } = LangHeaderSearch;
-    const _searchHd = searchHd[selectedLanguage] || searchHd[defaultLanguage],
-          _searchTags = searchTags[selectedLanguage] || searchTags[defaultLanguage],
-          _searchUsers = searchUsers[selectedLanguage] || searchUsers[defaultLanguage];
-  
-      return (
-      <SearchModal onClick={() => toggleSearchPop()}>
-        <SearchBox>
-          <SearchInner>
-            <SearchTabHdBox>
-              <span>"</span>
+  const { selectedLanguage, defaultLanguage } = langState;
+  const { searchHd, searchTags, searchUsers } = LangHeaderSearch;
+  const _searchHd = searchHd[selectedLanguage] || searchHd[defaultLanguage],
+    _searchTags = searchTags[selectedLanguage] || searchTags[defaultLanguage],
+    _searchUsers = searchUsers[selectedLanguage] || searchUsers[defaultLanguage];
+
+  return (
+    <SearchModal onClick={() => toggleSearchPop()}>
+      <SearchBox>
+        <SearchInner>
+          <SearchTabHdBox>
+            <span>"</span>
             <SearchTabHd>{searchBody}</SearchTabHd>
             <span>"</span>
-           <SearchTxtTag>{_searchHd}</SearchTxtTag> 
+            <SearchTxtTag>{_searchHd}</SearchTxtTag>
+          </SearchTabHdBox>
+          <ClosedBox>
+            <ClosedBtn onClick={() => toggleSearchPop()} />
+          </ClosedBox>
+          <SearchResultInner>
+            {/* 일반 검색 결과 */}
+            <SearchWrap>
+              <TxtSearchBtn>테스트용</TxtSearchBtn>
+              <TxtSearchBtn>테스트용</TxtSearchBtn>
+              <TxtSearchBtn>테스트용</TxtSearchBtn>
+              <TxtSearchBtn>테스트용</TxtSearchBtn>
+            </SearchWrap>
+            {/* // 일반 검색 결과 끝 */}
 
-            </SearchTabHdBox>
-            <ClosedBox>
-              <ClosedBtn onClick={() => toggleSearchPop()}/>
-            </ClosedBox>
-            <SearchResultInner>
-              {/* 일반 검색 결과 */}
-              <SearchWrap>
-                <TxtSearchBtn>테스트용</TxtSearchBtn>
-                <TxtSearchBtn>테스트용</TxtSearchBtn>
-                <TxtSearchBtn>테스트용</TxtSearchBtn>
-                <TxtSearchBtn>테스트용</TxtSearchBtn>
-              </SearchWrap>
-              {/* // 일반 검색 결과 끝 */}
+            {/* 태그 검색 결과  */}
+            <SearchWrap>
+              <HeaderWrapContainer>
+                <HeaderImg />
+                <HeaderWrap>{_searchTags}</HeaderWrap>
+              </HeaderWrapContainer>
+              <TagSearchBtn>#Test</TagSearchBtn>
+              <TagSearchBtn>#Test</TagSearchBtn>
+            </SearchWrap>
 
-              {/* 태그 검색 결과  */}
-              <SearchWrap>
-                <HeaderWrapContainer>
-                  <HeaderImg />
-                  <HeaderWrap>{_searchTags}</HeaderWrap>
-                </HeaderWrapContainer>
-                <TagSearchBtn>#Test</TagSearchBtn>
-                <TagSearchBtn>#Test</TagSearchBtn>
-              </SearchWrap>
-
-              {/* // 태그 검색 결과 끝  */}
-              {/* 유저 검색 결과  */}
-              <SearchWrap>
-                <HeaderWrapContainer>
-                  <HeaderImg />
-                  <HeaderWrap>{_searchUsers}</HeaderWrap>
-                </HeaderWrapContainer>
-                <UserResultTab>
-                  <ImgBox>
-                    <UserPfImg />
-                  </ImgBox>
-                  <UserInformBox>
-                    <SearchUserNick>UserNickName</SearchUserNick>
-                    <SearchUserId>@UserId</SearchUserId>
-                  </UserInformBox>
-                </UserResultTab>
-                <UserResultTab>
-                  <ImgBox>
-                    <UserPfImg />
-                  </ImgBox>
-                  <UserInformBox>
-                    <SearchUserNick>UserNickName</SearchUserNick>
-                    <SearchUserId>@UserId</SearchUserId>
-                  </UserInformBox>
-                </UserResultTab>
-              </SearchWrap>
-              {/* // 유저 검색 결과 끝 */}
-            </SearchResultInner>
-          </SearchInner>
-        </SearchBox>
-      </SearchModal>
+            {/* // 태그 검색 결과 끝  */}
+            {/* 유저 검색 결과  */}
+            <SearchWrap>
+              <HeaderWrapContainer>
+                <HeaderImg />
+                <HeaderWrap>{_searchUsers}</HeaderWrap>
+              </HeaderWrapContainer>
+              <UserResultTab>
+                <ImgBox>
+                  <UserPfImg />
+                </ImgBox>
+                <UserInformBox>
+                  <SearchUserNick>UserNickName</SearchUserNick>
+                  <SearchUserId>@UserId</SearchUserId>
+                </UserInformBox>
+              </UserResultTab>
+              <UserResultTab>
+                <ImgBox>
+                  <UserPfImg />
+                </ImgBox>
+                <UserInformBox>
+                  <SearchUserNick>UserNickName</SearchUserNick>
+                  <SearchUserId>@UserId</SearchUserId>
+                </UserInformBox>
+              </UserResultTab>
+            </SearchWrap>
+            {/* // 유저 검색 결과 끝 */}
+          </SearchResultInner>
+        </SearchInner>
+      </SearchBox>
+    </SearchModal>
   );
 };
 
-
-  /* 검색창 팝업 스타일링 */
+/* 검색창 팝업 스타일링 */
 
 // 레이아웃
 const SearchModal = styled.div`
@@ -136,20 +130,19 @@ const SearchInner = styled.div`
 
 // 상단 영역
 const SearchTabHdBox = styled.button`
-position: relative;
-display:flex;
-min-width:0;
-height: auto;
-padding: 13px 20px;
-margin-bottom: 3px;
-cursor: pointer;
-background: ${(props) => props.theme.color.whiteColor};
-
-`
+  position: relative;
+  display: flex;
+  min-width: 0;
+  height: auto;
+  padding: 13px 20px;
+  margin-bottom: 3px;
+  cursor: pointer;
+  background: ${(props) => props.theme.color.whiteColor};
+`;
 
 const SearchTabHd = styled.span`
-  padding-right:3px;
-  ${props => props.theme.textOneLine};
+  padding-right: 3px;
+  ${(props) => props.theme.textOneLine};
 
   font-weight: ${(props) => props.theme.fontWeight.font500};
   font-size: ${(props) => props.theme.fontSize.font15};
@@ -157,13 +150,12 @@ const SearchTabHd = styled.span`
 `;
 
 const SearchTxtTag = styled.span`
-flex-shrink: 0;
-padding:0 50px 0 3px;
-font-weight: ${(props) => props.theme.fontWeight.font500};
+  flex-shrink: 0;
+  padding: 0 50px 0 3px;
+  font-weight: ${(props) => props.theme.fontWeight.font500};
   font-size: ${(props) => props.theme.fontSize.font15};
   color: ${(props) => props.theme.color.blackColor};
-
-`
+`;
 
 const HeaderWrapContainer = styled.button`
   display: flex;
@@ -184,19 +176,19 @@ const HeaderWrap = styled.span`
 
 // 닫기 버튼
 const ClosedBox = styled.button`
-position:absolute;
-display:flex;
-justify-content:center;
-align-items:center;
-top:1em;
-right: 1.5em;
-border-radius:50%;
-width:3em;
-height:3em;
-overflow:hidden;
-`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 1em;
+  right: 1.5em;
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+  overflow: hidden;
+`;
 const ClosedBtn = styled.button.attrs({ type: 'button' })`
-  ${props => props.theme.closeBtn};
+  ${(props) => props.theme.closeBtn};
   &:hover {
     background: ${(props) => props.theme.color.hoverColor};
   }

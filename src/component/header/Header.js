@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled, { css } from 'styled-components';
-import Link from 'next/link'
-import {useRouter} from 'next/router'
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 // 컴포넌트 import
 import HeaderPfPopup from './Header__Profile';
@@ -34,15 +34,7 @@ const Header = () => {
 
   //언어 변경
   const { langState, langPatch } = useContext(LanguageContext);
-  const { 
-    setSearchData, 
-    setClickedComic, 
-    setClickedIllust, 
-    clickedComic, clickedIllust, 
-    loginOn, 
-    setUnAuth, 
-    paramsData
-  } = useContext(AppDataContext);
+  const { setSearchData, setClickedComic, setClickedIllust, clickedComic, clickedIllust, loginOn, setUnAuth, paramsData } = useContext(AppDataContext);
 
   // 팝업용
   const [isOpen, toggleIsOpen] = useModal();
@@ -50,13 +42,13 @@ const Header = () => {
   const [category, toggleCategory] = useModal();
   const [isNotification, toggleNoti] = useModal();
 
-  const [searchBody, handleChange, ] = useChange();
+  const [searchBody, handleChange] = useChange();
 
   // 유저 프로필
   const [goURL] = useUrlMove();
 
   // 헤더 스크롤용
-  const show = AutoHiding()
+  const show = AutoHiding();
 
   // 알림
   const [read, setRead] = useState();
@@ -73,26 +65,30 @@ const Header = () => {
   const { selectedLanguage, defaultLanguage } = langState;
   const { followsButton, searchPlaceholder } = LangHeader;
   const _followsButton = followsButton[selectedLanguage] || followsButton[defaultLanguage],
-        _searchPlaceholder = searchPlaceholder[selectedLanguage] || searchPlaceholder[defaultLanguage],
-        _fbBtn = fbBtn[selectedLanguage] || fbBtn[defaultLanguage];
+    _searchPlaceholder = searchPlaceholder[selectedLanguage] || searchPlaceholder[defaultLanguage],
+    _fbBtn = fbBtn[selectedLanguage] || fbBtn[defaultLanguage];
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if(searchBody === ' ' || searchBody === undefined || searchBody === null) return;
-      setSearchData(searchBody);
-      
-      if(searchBody[0]?.match('@')){
-        goURL({pathname:`/search/users`, as:`/search/users/${searchBody}`, query:{type:'users', text:searchBody}});
-      }else {
-        goURL({pathname:`/search/${paramsData === undefined ? 'latest' : paramsData}`, as:`/search/${paramsData === undefined ? 'latest' : paramsData}/${searchBody}`, query:{type:'latest', text:searchBody}});
-      }
+    if (searchBody === ' ' || searchBody === undefined || searchBody === null) return;
+    setSearchData(searchBody);
+
+    if (searchBody[0]?.match('@')) {
+      goURL({ pathname: `/search/users`, as: `/search/users/${searchBody}`, query: { type: 'users', text: searchBody } });
+    } else {
+      goURL({
+        pathname: `/search/${paramsData === undefined ? 'latest' : paramsData}`,
+        as: `/search/${paramsData === undefined ? 'latest' : paramsData}/${searchBody}`,
+        query: { type: 'latest', text: searchBody },
+      });
+    }
   };
 
   useEffect(() => {
-    if(profileApi?.status === 401){
-      goURL({pathname:`/login`});
+    if (profileApi?.status === 401) {
+      goURL({ pathname: `/login` });
     }
-  }, [profileApi])
+  }, [profileApi]);
 
   // 헤더 코믹/일러스트 필터링
   const selectFilterComic = () => {
@@ -111,170 +107,163 @@ const Header = () => {
     }
   };
 
-    // 유저 알림 Read 여부
-    const readObserver = () => {
-      readApi && setRead(readApi.data.notiCount);
-      isNotification && setRead(0);
+  // 유저 알림 Read 여부
+  const readObserver = () => {
+    readApi && setRead(readApi.data.notiCount);
+    isNotification && setRead(0);
+  };
+
+  useEffect(() => {
+    if (!loginOn) return;
+    readFetch(`${process.env.API_URL}/notification/check`, 'get', null, null, null);
+  }, []);
+
+  useEffect(() => {
+    readObserver();
+  });
+
+  // 유저 프로필 API
+  useEffect(() => {
+    if (!loginOn) return;
+    profileFetch(`${process.env.API_URL}/user/editProfile`, 'get', null, null, null);
+  }, [loginOn]);
+
+  useEffect(() => {
+    if (profileApi) {
+      localStorage.setItem('language', profileApi.data.displayLanguage);
+      langPatch({ type: 'LANGUAGE_UPDATE', payload: profileApi.data.displayLanguage });
     }
+  }, [profileApi]);
 
-    useEffect(() => {
-      if(!loginOn) return;
-      readFetch(`${process.env.API_URL}/notification/check`, 'get', null, null, null);
-    },[pathname, read]);
-    
-    useEffect(()=>{
-      readObserver()
-    })
+  useEffect(() => {
+    ['/epiclogueadmin', '/welcome', '/login'].includes(pathname) || pathname.match('/editor/') || pathname.match('/findPass') ? setPreventHeader(false) : setPreventHeader(true);
+  }, [pathname]);
 
-    // 유저 프로필 API
-    useEffect(() => {
-      if(!loginOn) return;
-      profileFetch(`${process.env.API_URL}/user/editProfile`, 'get', null, null, null);
-    }, [loginOn]);
-    
-    useEffect(() => {
-      if(profileApi){
-        localStorage.setItem('language', profileApi.data.displayLanguage);
-        langPatch({type:'LANGUAGE_UPDATE', payload:profileApi.data.displayLanguage });
-      }
-    }, [profileApi])
+  return (
 
-    useEffect(() => {
-      [ '/epiclogueadmin', '/welcome' , '/login'].includes(pathname) ||
-      pathname.match('/editor/') ||
-      pathname.match('/findPass')
-      ? 
-      setPreventHeader(false) 
-      : 
-      setPreventHeader(true);
-    }, [pathname])
-
-    return (
     <HeaderDataContext.Provider value={{ searchBody, toggleSearchPop, toggleIsOpen, toggleNoti, profileApi, profileError }}>
       {/* 헤더 레이아웃 */}
-      { 
-        preventHeader &&
-      <>
-      <MainHeader id="header" >
-        <HeaderOutter show={show} pathname={pathname.match('/upload') && 'none'} >
-          <HeaderInner pathname={pathname.match('/viewer') && 'none' }>
-              <LogoWrap onClick={() => {
-                toggleSearchPop(false)
-                goURL({pathname:"/"})
-                }}>
-                <LogoImg />
-              </LogoWrap>
-            {/* form box 스타일링*/}
-            <FormBox id="searchForm" onSubmit={handleSearch} autoComplete="off">
-              <SearchWrap>
-                {/* 검색 input 영역 */}
-                <SerchBar name="searchBody" onChange={handleChange} placeholder={_searchPlaceholder} />
-                <SerchButtonA/>
-              </SearchWrap>
-            </FormBox>
-            {/* 코믹 / 일러스트 토글 버튼 */}
-            <CategoryWrap onClick={toggleCategory}>
-              <CategoryButton/>
-            </CategoryWrap>
-            <Dummy />
-            
-            {/* 팔로우 작품 및 프로필 버튼 영역 */}
-            { 
-              loginOn ?
-            <>
-              <ProfileWrap>
-                <FollowBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
-                  <ProfileFollow />
-                  <FollowTxt>{_followsButton}</FollowTxt>
-                </FollowBtn>
-              {/* </NavItem> */}
-              <HeaderPfPopupWrap>
-                {/* header profile */}
-              <HeaderPfPopup />
-              </HeaderPfPopupWrap>
-            </ProfileWrap>
-            <Dummy />
-            {/* 옵션 set 영역 */}
-              <OptionWrap>
-                <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
-              <OptionDm />
-              </OptionBtn>
-              {/* 알림 */}
-              <OptionBtn onClick={() => toggleNoti()} >
-                <OptionInfomation styling={isNotification} />
-                {read > 0 && <InformIconRing/> }
-              </OptionBtn>
-
-              {/* setting */}
-                <OptionBtn
-                onClick={()=> goURL({pathname:`/mypage/profile`})}
+      {preventHeader && (
+        <>
+          <MainHeader id="header">
+            <HeaderOutter show={show} pathname={pathname.match('/upload') && 'none'}>
+              <HeaderInner pathname={pathname.match('/viewer') && 'none'}>
+                <LogoWrap
+                  onClick={() => {
+                    toggleSearchPop(false);
+                    goURL({ pathname: '/' });
+                  }}
                 >
-                  <OptionSetting
-                  styling={['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)}
+                  <LogoImg />
+                </LogoWrap>
+                {/* form box 스타일링*/}
+                <FormBox id="searchForm" onSubmit={handleSearch} autoComplete="off">
+                  <SearchWrap>
+                    {/* 검색 input 영역 */}
+                    <SerchBar name="searchBody" onChange={handleChange} placeholder={_searchPlaceholder} />
+                    <SerchButtonA />
+                  </SearchWrap>
+                </FormBox>
+                {/* 코믹 / 일러스트 토글 버튼 */}
+                <CategoryWrap onClick={toggleCategory}>
+                  <CategoryButton />
+                </CategoryWrap>
+                <Dummy />
+
+                {/* 팔로우 작품 및 프로필 버튼 영역 */}
+                {loginOn ? (
+                  <>
+                    <ProfileWrap>
+                      <FollowBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+                        <ProfileFollow />
+                        <FollowTxt>{_followsButton}</FollowTxt>
+                      </FollowBtn>
+                      {/* </NavItem> */}
+                      <HeaderPfPopupWrap>
+                        {/* header profile */}
+                        <HeaderPfPopup />
+                      </HeaderPfPopupWrap>
+                    </ProfileWrap>
+                    <Dummy />
+                    {/* 옵션 set 영역 */}
+                    <OptionWrap>
+                      <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+                        <OptionDm />
+                      </OptionBtn>
+                      {/* 알림 */}
+                      <OptionBtn onClick={() => toggleNoti()}>
+                        <OptionInfomation styling={isNotification} />
+                        {read > 0 && <InformIconRing />}
+                      </OptionBtn>
+
+                      {/* setting */}
+                      <OptionBtn onClick={() => goURL({ pathname: `/mypage/profile` })}>
+                        <OptionSetting styling={['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)} />
+                      </OptionBtn>
+                    </OptionWrap>
+                  </>
+                ) : (
+                  <HeaderUnauth />
+                )}
+              </HeaderInner>
+              {/* 뷰어 모바일 전용 뒤로가기 헤더 탭*/}
+              <MbHeaderInner pathname={pathname.match('/viewer') ? 'flex' : 'none'}>
+                <MbHeader>
+                  <BackIcon onClick={() => router.back()} />
+                </MbHeader>
+              </MbHeaderInner>
+            </HeaderOutter>
+            {/*모바일 영역*/}
+            <MobileHeader show={show}>
+              <MobileHdInner>
+                {/* DM */}
+                <MbOptionWrap onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+                  <MbOptionDm />
+                </MbOptionWrap>
+                {/* Notification */}
+                <MbOptionWrap>
+                  <MbOptionInfo
+                    onClick={() => {
+                      if (!loginOn) {
+                        setUnAuth(true);
+                        return;
+                      }
+                      toggleNoti();
+                    }}
                   />
-                </OptionBtn>
-            </OptionWrap>
-            </>
-            : 
-            <HeaderUnauth/>
-            }
-          </HeaderInner>
-          {/* 뷰어 모바일 전용 뒤로가기 헤더 탭*/}
-            <MbHeaderInner pathname={pathname.match('/viewer') ? 'flex' : 'none'}>
-              <MbHeader><BackIcon onClick={()=>router.back()}/></MbHeader>
-            </MbHeaderInner>
-          </HeaderOutter>
-          {/*모바일 영역*/}
-          <MobileHeader show={show}>
-            <MobileHdInner>
-               {/* DM */}
-              <MbOptionWrap
-              onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}
-              >
-                <MbOptionDm />
-              </MbOptionWrap>
-              {/* Notification */}
-              <MbOptionWrap>
-                <MbOptionInfo
-                onClick={()=>{
-                  if(!loginOn){setUnAuth(true); return}
-                  toggleNoti()
-                  }} />
-                {read > 0 && <InformIconRing/> }
-              </MbOptionWrap>
-              {/* Upload */}
-              {
-              loginOn ?
-                  <MbOptionWrap onClick={()=> goURL({pathname:"/upload"})}>
+                  {read > 0 && <InformIconRing />}
+                </MbOptionWrap>
+                {/* Upload */}
+                {loginOn ? (
+                  <MbOptionWrap onClick={() => goURL({ pathname: '/upload' })}>
                     <MbOptionUpload />
                   </MbOptionWrap>
-              :
-              <MbOptionWrap onClick={()=>setUnAuth(true)}>
-                <MbOptionUpload />
-              </MbOptionWrap>
-              }
+                ) : (
+                  <MbOptionWrap onClick={() => setUnAuth(true)}>
+                    <MbOptionUpload />
+                  </MbOptionWrap>
+                )}
 
-               {/* category select */}
+                {/* category select */}
                 <MbOptionWrap>
                   <MbCategory onClick={toggleCategory} />
                 </MbOptionWrap>
 
                 {/* feedback */}
-                  <MbOptionWrap>
-                    <MbFeedback onClick={toggleIsOpen}/>
+                <MbOptionWrap>
+                  <MbFeedback onClick={toggleIsOpen} />
                 </MbOptionWrap>
-            </MobileHdInner>
-          </MobileHeader>
-        {/* // 모바일 영역 끝 */}
-      </MainHeader>
-        {/*관리자 피드백 버튼*/}
-        <AdminFeedbackBtn onClick={toggleIsOpen} pathname={pathname.length < 2 ? 'flex' : 'none'}>
-          <FeedbackTitle>{_fbBtn}</FeedbackTitle>
-        </AdminFeedbackBtn> 
-      </>
-      }
-      {
-      category ? (
+              </MobileHdInner>
+            </MobileHeader>
+            {/* // 모바일 영역 끝 */}
+          </MainHeader>
+          {/*관리자 피드백 버튼*/}
+          <AdminFeedbackBtn onClick={toggleIsOpen} pathname={pathname.length < 2 ? 'flex' : 'none'}>
+            <FeedbackTitle>{_fbBtn}</FeedbackTitle>
+          </AdminFeedbackBtn>
+        </>
+      )}
+      {category ? (
         <CategoryBox>
           <CategoryHeader>
             <HeaderTxt>Filter</HeaderTxt>
@@ -291,25 +280,20 @@ const Header = () => {
             </MbCategoryIllust>
           </CategoryInner>
         </CategoryBox>
-        )
-        :
-        null
-      }
+      ) : null}
 
-          {searchPopup ? <SearchPopup /> : ''}
-          {
-            isNotification && (
-              <Modal visible={isNotification} closable={true} maskClosable={true} onClose={() => toggleNoti(false)}>
-                <UserInform/>
-              </Modal>)
-          }
-          {
-            isOpen && (
-              <Modal visible={isOpen ? true : false} closable={true} maskClosable={true} onClose={() => toggleIsOpen(false)}>
-                <AdminFeedback toggleIsOpen={() => toggleIsOpen(false)} />
-              </Modal>)
-          }
-      </HeaderDataContext.Provider>
+      {searchPopup ? <SearchPopup /> : ''}
+      {isNotification && (
+        <Modal visible={isNotification} closable={true} maskClosable={true} onClose={() => toggleNoti(false)}>
+          <UserInform />
+        </Modal>
+      )}
+      {isOpen && (
+        <Modal visible={isOpen ? true : false} closable={true} maskClosable={true} onClose={() => toggleIsOpen(false)}>
+          <AdminFeedback toggleIsOpen={() => toggleIsOpen(false)} />
+        </Modal>
+      )}
+    </HeaderDataContext.Provider>
   );
 };
 /* 컴포넌트 스타일링 */
@@ -343,13 +327,13 @@ const Dummy = styled.div`
 
 // 헤더 부문
 const MainHeader = styled.div`
-  display:block;
+  display: block;
   width: 100%;
   height: 50px;
 `;
 
 const HeaderOutter = styled.div`
-  display:flex;
+  display: flex;
   position: fixed;
   top: 0;
   left: 0;
@@ -360,18 +344,18 @@ const HeaderOutter = styled.div`
   transition: all 0.2s 0.3s ease-in-out;
   z-index: 999;
   @media (max-width: 900px) {
-    display:${props => props.pathname};
+    display: ${(props) => props.pathname};
     top: ${(props) => (props.show ? 0 : -60)}px;
-  }`;
-  
+  }
+`;
+
 const HeaderInner = styled.div`
-  display:flex;
+  display: flex;
   width: 100%;
   height: 100%;
   align-items: center;
   @media (max-width: 900px) {
-    display:${props => props.pathname};
-
+    display: ${(props) => props.pathname};
   }
 `;
 
@@ -389,12 +373,11 @@ const LogoImg = styled.svg`
   width: 2.5em;
   height: 2.5em;
   user-select: none;
-  cursor:pointer;
+  cursor: pointer;
 `;
 
 // 검색부문
-const FormBox = styled.form.attrs({
-})`
+const FormBox = styled.form.attrs({})`
   width: 100%;
   box-sizing: border-box;
 `;
@@ -449,27 +432,27 @@ const SerchButtonA = styled.button.attrs({
 // 카테고리 버튼 분류 버튼
 const CategoryWrap = styled.div`
   display: flex;
-  justify-content:center;
-  align-items:center;
+  justify-content: center;
+  align-items: center;
   padding: 0.8em;
   /* margin-left: 0.3em; */
   margin: 0 0.1em 0 0.8em;
-  border-radius:50%;
-  cursor:pointer;
+  border-radius: 50%;
+  cursor: pointer;
 
-  &:hover{
-    background:${props => props.theme.color.hoverColor};
+  &:hover {
+    background: ${(props) => props.theme.color.hoverColor};
   }
-  @media (max-width:900px){
+  @media (max-width: 900px) {
     display: none;
   }
-`
+`;
 const CategoryButton = styled.button`
-background: url('/static/filter.svg') no-repeat center center / contain;
-width: 2em;
-height: 2em;
-cursor:pointer;
-`
+  background: url('/static/filter.svg') no-repeat center center / contain;
+  width: 2em;
+  height: 2em;
+  cursor: pointer;
+`;
 // 프로필 분류
 
 const ProfileWrap = styled.div`
@@ -530,7 +513,7 @@ const OptionWrap = styled.div`
   align-items: center;
   justify-content: space-around;
   width: 100%;
-  max-width:12em;
+  max-width: 12em;
   height: 46px;
   margin: 0 12px 0 6px;
   @media (max-width: 1080px) {
@@ -571,7 +554,7 @@ const OptionInfomation = styled.button`
   ${PositionCenter};
 `;
 const OptionSetting = styled.button`
-  background: url(${props => props.styling ? '/static/setOn.svg' : '/static/set.svg'}) no-repeat center / contain;
+  background: url(${(props) => (props.styling ? '/static/setOn.svg' : '/static/set.svg')}) no-repeat center / contain;
   width: 28px;
   height: 28px;
   cursor: pointer;
@@ -580,47 +563,47 @@ const OptionSetting = styled.button`
 
 // 알림오면 푸른 벨
 const InformIconRing = styled.span`
-position:absolute;
-bottom:-1px;
-left:50%;
-transform:translateX(-50%);
-width:8px;
-height:8px;
-border-radius:50%;
-background:${props => props.theme.color.skyColor};
-`
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: ${(props) => props.theme.color.skyColor};
+`;
 // 모바일 뷰어 헤더
 const MbHeaderInner = styled.div`
-  display:none;
+  display: none;
   @media (max-width: 900px) {
-  display:${props => props.pathname};
-  width:100%;
-  height:100%;
-  padding:0.5em 1em;
+    display: ${(props) => props.pathname};
+    width: 100%;
+    height: 100%;
+    padding: 0.5em 1em;
   }
-`
+`;
 const MbHeader = styled.div`
-display:flex;
-justify-content:flex-start;
-width:100%;
-height:100%;
-`
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+`;
 const BackIcon = styled.span`
   display: flex;
-  justify-content:center;
-  align-items:center;
-  padding:1em;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
   border-radius: 50%;
   &::after {
     content: '';
     display: inline-block;
     width: 1em;
     height: 1em;
-    border-top: 0.2em solid ${props => props.theme.color.popupColor};
-    border-right: 0.2em solid ${props => props.theme.color.popupColor};;
+    border-top: 0.2em solid ${(props) => props.theme.color.popupColor};
+    border-right: 0.2em solid ${(props) => props.theme.color.popupColor};
     transform: rotate(-135deg);
   }
-`
+`;
 
 // 모바일 전용 헤더
 const MobileHeader = styled.div`
@@ -637,10 +620,9 @@ const MobileHeader = styled.div`
   transition: all 0.2s 0.3s ease-in-out;
   z-index: 999;
   @media (max-width: 900px) {
-    display:block;
+    display: block;
     bottom: ${(props) => (props.show ? 15 : -60)}px;
   }
-
 `;
 
 const MobileHdInner = styled.div`
@@ -655,14 +637,14 @@ const MobileHdInner = styled.div`
 const MbOptionWrap = styled.div`
   position: relative;
   display: flex;
-  justify-content:center;
-  align-items:center;
+  justify-content: center;
+  align-items: center;
 `;
 
 const MbOptionDm = styled.button`
   display: flex;
-  justify-content:center;
-  align-items:center;
+  justify-content: center;
+  align-items: center;
   padding: 0.3em;
   &::before {
     content: '';
@@ -683,7 +665,6 @@ const MbOptionUpload = styled(MbOptionDm)`
     background: url('/static/upload-1.svg') no-repeat center center / contain;
     width: 2.2em;
     height: 2.2em;
-
   }
 `;
 
@@ -697,45 +678,41 @@ const MbFeedback = styled(MbOptionDm)`
     background: url('/static/feedback_0.svg') no-repeat center center / contain;
     width: 2.2em;
     height: 2.2em;
-
   }
 `;
 const MbCategory = styled(MbOptionDm)`
-padding: 0.3em 0.3em 0.1em 0.3em ;
+  padding: 0.3em 0.3em 0.1em 0.3em;
   &::before {
     background: url('/static/filter.svg') no-repeat center center / contain;
     width: 1.8em;
-  height: 1.8em;
-
+    height: 1.8em;
   }
 `;
 
 // NavLink 스타일 ****
-const NavItem = styled.span`
-  
-`;
+const NavItem = styled.span``;
 
 // 카테고리 영역
 const CategoryBox = styled.div`
   position: fixed;
   display: flex;
   flex-direction: column;
-  top:3.8em;
+  top: 3.8em;
   right: 20em;
   width: 28em;
-  border-radius:0.4em;
+  border-radius: 0.4em;
   overflow: hidden;
   z-index: 99999;
   background: ${(props) => props.theme.color.backgroundColor};
-  box-shadow:${(props) => props.theme.boxshadow.popup3};
-@media(max-width:900px){
-  top:initial;
-  bottom: 0;
-  left: 0;
-  right:initial;
-  width: 100%;
-  border-radius: 0.4em 0.4em 0 0;
-} 
+  box-shadow: ${(props) => props.theme.boxshadow.popup3};
+  @media (max-width: 900px) {
+    top: initial;
+    bottom: 0;
+    left: 0;
+    right: initial;
+    width: 100%;
+    border-radius: 0.4em 0.4em 0 0;
+  }
 `;
 const CategoryHeader = styled.div`
   display: flex;
@@ -756,7 +733,7 @@ const HeaderTxt = styled.span`
   font-size: ${(props) => props.theme.fontSize.font18};
   font-weight: ${(props) => props.theme.fontWeight.font700};
   color: ${(props) => props.theme.color.softBlackColor};
-  @media (max-width:900px){
+  @media (max-width: 900px) {
     font-size: ${(props) => props.theme.fontSize.font15};
   }
 `;
@@ -781,20 +758,20 @@ const MbCategoryIllust = styled(MbCategoryComic)`
 // 닫기 버튼
 
 const ClosedBox = styled.button`
-position:absolute;
-display:flex;
-justify-content:center;
-align-items:center;
-top:0.4em;
-right: 1.5em;
-border-radius:50%;
-width:3em;
-height:3em;
-overflow:hidden;
-`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0.4em;
+  right: 1.5em;
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+  overflow: hidden;
+`;
 
 const ClosedBtn = styled.span`
-  ${props => props.theme.closeBtn};
+  ${(props) => props.theme.closeBtn};
   &:hover {
     background: ${(props) => props.theme.color.hoverColor};
   }
@@ -804,20 +781,19 @@ const AdminFeedbackBtn = styled.div`
   position: fixed;
   bottom: 11em;
   right: 5.2em;
-  display: ${props => props.pathname};
+  display: ${(props) => props.pathname};
   justify-content: center;
   align-items: center;
   border-radius: 2em;
-  padding:0.8em 1.2em;
+  padding: 0.8em 1.2em;
   background: ${(props) => props.theme.color.skyColor};
   box-shadow: ${(props) => props.theme.boxshadow.popup};
   cursor: pointer;
   user-select: none;
-  z-index:9999;
+  z-index: 9999;
   @media (max-width: 900px) {
-    display:none;
-    }
-    
+    display: none;
+  }
 `;
 const FeedbackTitle = styled.span`
   color: ${(props) => props.theme.color.whiteColor};
@@ -827,6 +803,5 @@ const FeedbackTitle = styled.span`
     font-size: 14px;
   }
 `;
-
 
 export default Header;
