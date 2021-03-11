@@ -13,7 +13,7 @@ import { useModal } from '@hooks/useModal';
 import useForm from '@hooks/useForm';
 
 export const SignUp = (props) => {
-  const {setChangePage, backToLogin} = props;
+  const { setChangePage, backToLogin } = props;
   const router = useRouter();
   const { langState } = useContext(LanguageContext);
 
@@ -27,72 +27,56 @@ export const SignUp = (props) => {
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
-  const {
-    signUpTitle,
-    signUpEmail,
-    signUpPw,
-    signUpPwConfirm,
-    signUpNick,
-    signUpDesc,
-    agreeButton,
-    signUpButton,
-  } = langSignUp;
-  
-  const {
-    emailError,
-    noEmail,
-    dupliEmail,
-    pwError,
-    rePwError,
-    nickError,
-  } = signUpError;
+  const { signUpTitle, signUpEmail, signUpPw, signUpPwConfirm, signUpNick, signUpDesc, agreeButton, signUpButton } = langSignUp;
+
+  const { emailError, noEmail, dupliEmail, pwError, rePwError, nickError } = signUpError;
 
   const _signUpTitle = signUpTitle[selectedLanguage] || signUpTitle[defaultLanguage],
-        _signUpEmail = signUpEmail[selectedLanguage] || signUpEmail[defaultLanguage],
-        _signUpPw = signUpPw[selectedLanguage] || signUpPw[defaultLanguage],
-        _signUpPwConfirm = signUpPwConfirm[selectedLanguage] || signUpPwConfirm[defaultLanguage],
-        _signUpNick = signUpNick[selectedLanguage] || signUpNick[defaultLanguage],
-        _signUpDesc = signUpDesc[selectedLanguage] || signUpDesc[defaultLanguage],
-        _agreeButton = agreeButton[selectedLanguage] || agreeButton[defaultLanguage],
-        _signUpButton = signUpButton[selectedLanguage] || signUpButton[defaultLanguage],
-        _emailError = emailError[selectedLanguage] || emailError[defaultLanguage],
-        _noEmail = noEmail[selectedLanguage] || noEmail[defaultLanguage],
-        _dupliEmail = dupliEmail[selectedLanguage] || dupliEmail[defaultLanguage],
-        _pwError = pwError[selectedLanguage] || pwError[defaultLanguage],
-        _rePwError = rePwError[selectedLanguage] || rePwError[defaultLanguage],
-        _nickError = nickError[selectedLanguage] || nickError[defaultLanguage];
+    _signUpEmail = signUpEmail[selectedLanguage] || signUpEmail[defaultLanguage],
+    _signUpPw = signUpPw[selectedLanguage] || signUpPw[defaultLanguage],
+    _signUpPwConfirm = signUpPwConfirm[selectedLanguage] || signUpPwConfirm[defaultLanguage],
+    _signUpNick = signUpNick[selectedLanguage] || signUpNick[defaultLanguage],
+    _signUpDesc = signUpDesc[selectedLanguage] || signUpDesc[defaultLanguage],
+    _agreeButton = agreeButton[selectedLanguage] || agreeButton[defaultLanguage],
+    _signUpButton = signUpButton[selectedLanguage] || signUpButton[defaultLanguage],
+    _emailError = emailError[selectedLanguage] || emailError[defaultLanguage],
+    _noEmail = noEmail[selectedLanguage] || noEmail[defaultLanguage],
+    _dupliEmail = dupliEmail[selectedLanguage] || dupliEmail[defaultLanguage],
+    _pwError = pwError[selectedLanguage] || pwError[defaultLanguage],
+    _rePwError = rePwError[selectedLanguage] || rePwError[defaultLanguage],
+    _nickError = nickError[selectedLanguage] || nickError[defaultLanguage];
 
-    const [values, handleChange, handleSubmit, disabled, resData, errors] = useForm({
-    initialValues: { type: 'signUp', email: '', userPw: '', userPwRe: '', userNick: '', userLang:defaultLanguage},
+  const [values, handleChange, handleSubmit, disabled, resData, errors] = useForm({
+    initialValues: { type: 'signUp', email: '', userPw: '', userPwRe: '', userNick: '', userLang: defaultLanguage },
   });
 
   const handleCheckbox = (e) => {
     setChecked(e.target.checked);
   };
-  
+
   const validateHandler = () => {
-    if(errors){
+    if (errors) {
       // 이메일
-      if(errors.email === 'errorNoneEmail'){
-        setValiEmail(_noEmail)
-      } else if(errors.email === 'errorEmail'){
-        setValiEmail(_emailError)
-      } else if(errors.email === 'duplicate') {
-        setValiEmail(_dupliEmail)
+      if (errors.email === 'errorNoneEmail') {
+        setValiEmail(_noEmail);
+      } else if (errors.email === 'errorEmail') {
+        setValiEmail(_emailError);
+      } else if (errors.email === 'duplicate') {
+        setValiEmail(_dupliEmail);
       }
 
-      // 비밀번호 
-      if(errors.userPw === 'errorPW'){
-        setValiPw(_pwError)
-      } else if(errors.userPwRe === 'errorRePW'){
-        setValiRePw(_rePwError)
+      // 비밀번호
+      if (errors.userPw === 'errorPW') {
+        setValiPw(_pwError);
+      } else if (errors.userPwRe === 'errorRePW') {
+        setValiRePw(_rePwError);
       }
-       // 닉네임  
-      if(errors.userNick === 'errorNick'){
-        setValiNick(_nickError)
+      // 닉네임
+      if (errors.userNick === 'errorNick') {
+        setValiNick(_nickError);
       }
-    }   
-  }
+    }
+  };
 
   useEffect(() => {
     if (resData) {
@@ -102,20 +86,17 @@ export const SignUp = (props) => {
     }
   }, [resData]);
 
-  useEffect(()=> {
-    validateHandler()
-  },[errors])
-
+  useEffect(() => {
+    validateHandler();
+  }, [errors]);
 
   return (
     <SignUpBox>
       <SignUpBoxInner>
         <HeaderWrap>
-          <BackIconAnchor onClick={()=>
-            backToLogin ? router.back() : setChangePage(false)
-            }>
+          <BackIconAnchor onClick={() => (backToLogin ? router.back() : setChangePage(false))}>
             {/* <BackIcon src={require('../../img/arrow-left.png')} /> */}
-            <PureBackIcon/>
+            <PureBackIcon />
           </BackIconAnchor>
           <SignUpTitle>{_signUpTitle}</SignUpTitle>
         </HeaderWrap>
@@ -139,26 +120,21 @@ export const SignUp = (props) => {
           </PlaceHolderBox>
 
           {/* 닉네임 입력란 */}
-          <UserNickInput name="userNick" onChange={handleChange} placeholder={_signUpNick} maxLength={30}/>
-          <PlaceHolderBox >
+          <UserNickInput name="userNick" onChange={handleChange} placeholder={_signUpNick} maxLength={30} />
+          <PlaceHolderBox>
             <PlaceHolderTxt>{errors?.userNick && valiNick}</PlaceHolderTxt>
           </PlaceHolderBox>
-          <SignUpAgreeCheck >{_signUpDesc}</SignUpAgreeCheck>
+          <SignUpAgreeCheck>{_signUpDesc}</SignUpAgreeCheck>
           <BtnWrap>
             <AgreeCheckBox id="sign-agree" checked={checked} onChange={handleCheckbox} />
-             <AgreeCheckLabel agree={checked}>{_agreeButton}</AgreeCheckLabel>
+            <AgreeCheckLabel agree={checked}>{_agreeButton}</AgreeCheckLabel>
             <SignUpBtn agree={checked} disabled={disabled}>
               {disabled ? <ProgressSmall /> : _signUpButton}
             </SignUpBtn>
           </BtnWrap>
         </form>
       </SignUpBoxInner>
-      {isShowing ?
-      <SignUpComplete
-      email={values.email}
-      backToLogin={()=>setChangePage(false)} />
-      : ''
-      }
+      {isShowing ? <SignUpComplete email={values.email} backToLogin={() => setChangePage(false)} /> : ''}
     </SignUpBox>
   );
 };
@@ -186,14 +162,14 @@ const PlaceHolderTxt = styled.div`
 const SignUpBox = styled.div`
   display: flex;
   justify-content: center;
-  
+
   width: 100%;
   max-width: 480px;
   height: auto;
   background: ${(props) => props.theme.color.whiteColor};
   opacity: 0.95;
   @media (max-width: 900px) {
-    padding-top:20px;
+    padding-top: 20px;
     width: 100%;
     height: 100%;
   }
@@ -216,11 +192,11 @@ const HeaderWrap = styled.div`
   align-items: center;
 `;
 const BackIconAnchor = styled.button`
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  padding:18px 8px;
+  padding: 18px 8px;
   border-radius: 10px;
   cursor: pointer;
   &:hover {
@@ -228,15 +204,15 @@ const BackIconAnchor = styled.button`
   }
 `;
 const PureBackIcon = styled.span`
- display: flex;
- width:14px;
- height:14px;
- border-top:4px solid ${(props) => props.theme.color.darkGray};
- border-right:4px solid ${(props) => props.theme.color.darkGray};
- -webkit-transform: rotate(225deg);
- transform: rotate(225deg);
- margin-left:6px;
-`
+  display: flex;
+  width: 14px;
+  height: 14px;
+  border-top: 4px solid ${(props) => props.theme.color.darkGray};
+  border-right: 4px solid ${(props) => props.theme.color.darkGray};
+  -webkit-transform: rotate(225deg);
+  transform: rotate(225deg);
+  margin-left: 6px;
+`;
 
 const SignUpTitle = styled.h1`
   margin: 22px 6px;
@@ -287,7 +263,7 @@ const AgreeCheckBtn = styled.span`
   border-bottom: 1px solid ${(props) => props.theme.color.pinkColor};
   color: ${(props) => props.theme.color.pinkColor};
   margin: 2px 0;
-  cursor:pointer;
+  cursor: pointer;
 `;
 
 // 가입 동의 및 확인 버튼
@@ -352,6 +328,6 @@ const SignUpBtn = styled.button.attrs((props) => ({
   opacity: ${(props) => (props.agree ? 1 : 0.5)};
   transition: opacity 0.5s 0.2s ease-in-out;
   pointer-events: ${(props) => (props.agree ? 0 : 'none')};
-  
+
   cursor: pointer;
 `;

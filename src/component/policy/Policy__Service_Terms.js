@@ -1,4 +1,4 @@
-import React,{useContext} from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 import { LanguageContext } from '@store/App_Store';
@@ -21,7 +21,7 @@ import {
   advertisingPolicy,
   termsRevised,
   caseOfImmunity,
-  disputeOccurrence
+  disputeOccurrence,
 } from '@language/Policy/Lang.PolicyService';
 
 const ServicePolicy = () => {
@@ -50,81 +50,77 @@ const ServicePolicy = () => {
   const { reason19, definition19 } = disputeOccurrence;
 
   const _reason1 = reason1[selectedLanguage] || reason1[defaultLanguage],
-      _definition1 = definition1[selectedLanguage] || definition1[defaultLanguage],
-      _reason2 = reason2[selectedLanguage] || reason2[defaultLanguage],
-      _definition2 = definition2[selectedLanguage] || definition2[defaultLanguage],
-      _reason3 = reason3[selectedLanguage] || reason3[defaultLanguage],
-      _definition3 = definition3[selectedLanguage] || definition3[defaultLanguage],
-      _reason4 = reason4[selectedLanguage] || reason4[defaultLanguage],
-      _definition4 = definition4[selectedLanguage] || definition4[defaultLanguage],
-      _reason5 = reason5[selectedLanguage] || reason5[defaultLanguage],
-      _definition5 = definition5[selectedLanguage] || definition5[defaultLanguage],
-      _reason6 = reason6[selectedLanguage] || reason6[defaultLanguage],
-      _definition6 = definition6[selectedLanguage] || definition6[defaultLanguage],
-      _reason7 = reason7[selectedLanguage] || reason7[defaultLanguage],
-      _definition7 = definition7[selectedLanguage] || definition7[defaultLanguage],
-      _reason8 = reason8[selectedLanguage] || reason8[defaultLanguage],
-      _definition8 = definition8[selectedLanguage] || definition8[defaultLanguage],
-      _reason9 = reason9[selectedLanguage] || reason9[defaultLanguage],
-      _definition9 = definition9[selectedLanguage] || definition9[defaultLanguage],
-      _reason10 = reason10[selectedLanguage] || reason10[defaultLanguage],
-      _definition10 = definition10[selectedLanguage] || definition10[defaultLanguage],
-      _reason11 = reason11[selectedLanguage] || reason11[defaultLanguage],
-      _definition11 = definition11[selectedLanguage] || definition11[defaultLanguage],
-      _reason12 = reason12[selectedLanguage] || reason12[defaultLanguage],
-      _definition12 = definition12[selectedLanguage] || definition12[defaultLanguage],
-      _reason13 = reason13[selectedLanguage] || reason13[defaultLanguage],
-      _definition13 = definition13[selectedLanguage] || definition13[defaultLanguage],
-      _reason14 = reason14[selectedLanguage] || reason14[defaultLanguage],
-      _definition14 = definition14[selectedLanguage] || definition14[defaultLanguage],
-      _reason15 = reason15[selectedLanguage] || reason15[defaultLanguage],
-      _definition15 = definition15[selectedLanguage] || definition15[defaultLanguage],
-      _reason16 = reason16[selectedLanguage] || reason16[defaultLanguage],
-      _definition16 = definition16[selectedLanguage] || definition16[defaultLanguage],
-      _reason17 = reason17[selectedLanguage] || reason17[defaultLanguage],
-      _definition17 = definition17[selectedLanguage] || definition17[defaultLanguage],
-      _reason18 = reason18[selectedLanguage] || reason18[defaultLanguage],
-      _definition18 = definition18[selectedLanguage] || definition18[defaultLanguage],
-      _reason19 = reason19[selectedLanguage] || reason19[defaultLanguage],
-      _definition19 = definition19[selectedLanguage] || definition19[defaultLanguage];
+    _definition1 = definition1[selectedLanguage] || definition1[defaultLanguage],
+    _reason2 = reason2[selectedLanguage] || reason2[defaultLanguage],
+    _definition2 = definition2[selectedLanguage] || definition2[defaultLanguage],
+    _reason3 = reason3[selectedLanguage] || reason3[defaultLanguage],
+    _definition3 = definition3[selectedLanguage] || definition3[defaultLanguage],
+    _reason4 = reason4[selectedLanguage] || reason4[defaultLanguage],
+    _definition4 = definition4[selectedLanguage] || definition4[defaultLanguage],
+    _reason5 = reason5[selectedLanguage] || reason5[defaultLanguage],
+    _definition5 = definition5[selectedLanguage] || definition5[defaultLanguage],
+    _reason6 = reason6[selectedLanguage] || reason6[defaultLanguage],
+    _definition6 = definition6[selectedLanguage] || definition6[defaultLanguage],
+    _reason7 = reason7[selectedLanguage] || reason7[defaultLanguage],
+    _definition7 = definition7[selectedLanguage] || definition7[defaultLanguage],
+    _reason8 = reason8[selectedLanguage] || reason8[defaultLanguage],
+    _definition8 = definition8[selectedLanguage] || definition8[defaultLanguage],
+    _reason9 = reason9[selectedLanguage] || reason9[defaultLanguage],
+    _definition9 = definition9[selectedLanguage] || definition9[defaultLanguage],
+    _reason10 = reason10[selectedLanguage] || reason10[defaultLanguage],
+    _definition10 = definition10[selectedLanguage] || definition10[defaultLanguage],
+    _reason11 = reason11[selectedLanguage] || reason11[defaultLanguage],
+    _definition11 = definition11[selectedLanguage] || definition11[defaultLanguage],
+    _reason12 = reason12[selectedLanguage] || reason12[defaultLanguage],
+    _definition12 = definition12[selectedLanguage] || definition12[defaultLanguage],
+    _reason13 = reason13[selectedLanguage] || reason13[defaultLanguage],
+    _definition13 = definition13[selectedLanguage] || definition13[defaultLanguage],
+    _reason14 = reason14[selectedLanguage] || reason14[defaultLanguage],
+    _definition14 = definition14[selectedLanguage] || definition14[defaultLanguage],
+    _reason15 = reason15[selectedLanguage] || reason15[defaultLanguage],
+    _definition15 = definition15[selectedLanguage] || definition15[defaultLanguage],
+    _reason16 = reason16[selectedLanguage] || reason16[defaultLanguage],
+    _definition16 = definition16[selectedLanguage] || definition16[defaultLanguage],
+    _reason17 = reason17[selectedLanguage] || reason17[defaultLanguage],
+    _definition17 = definition17[selectedLanguage] || definition17[defaultLanguage],
+    _reason18 = reason18[selectedLanguage] || reason18[defaultLanguage],
+    _definition18 = definition18[selectedLanguage] || definition18[defaultLanguage],
+    _reason19 = reason19[selectedLanguage] || reason19[defaultLanguage],
+    _definition19 = definition19[selectedLanguage] || definition19[defaultLanguage];
 
-      const langArr = [
-        {a:_reason1, b: _definition1},
-        {a:_reason2, b:_definition2},
-        {a:_reason3, b:_definition3},
-        {a:_reason4, b:_definition4},
-        {a:_reason5, b:_definition5},
-        {a:_reason6, b:_definition6},
-        {a:_reason7, b:_definition7},
-        {a:_reason8, b:_definition8},
-        {a:_reason9, b:_definition9},
-        {a:_reason10, b:_definition10},
-        {a:_reason11, b:_definition11},
-        {a:_reason12, b:_definition12},
-        {a:_reason13, b:_definition13},
-        {a:_reason14, b:_definition14},
-        {a:_reason15, b:_definition15},
-        {a:_reason16, b:_definition16},
-        {a:_reason17, b:_definition17},
-        {a:_reason18, b:_definition18},
-        {a:_reason19, b:_definition19}
-        ]
+  const langArr = [
+    { a: _reason1, b: _definition1 },
+    { a: _reason2, b: _definition2 },
+    { a: _reason3, b: _definition3 },
+    { a: _reason4, b: _definition4 },
+    { a: _reason5, b: _definition5 },
+    { a: _reason6, b: _definition6 },
+    { a: _reason7, b: _definition7 },
+    { a: _reason8, b: _definition8 },
+    { a: _reason9, b: _definition9 },
+    { a: _reason10, b: _definition10 },
+    { a: _reason11, b: _definition11 },
+    { a: _reason12, b: _definition12 },
+    { a: _reason13, b: _definition13 },
+    { a: _reason14, b: _definition14 },
+    { a: _reason15, b: _definition15 },
+    { a: _reason16, b: _definition16 },
+    { a: _reason17, b: _definition17 },
+    { a: _reason18, b: _definition18 },
+    { a: _reason19, b: _definition19 },
+  ];
   return (
     <>
-    {
-      langArr.map((i, index) => {
-        return(
-        <CategoryWrap key={index}>
-        <CategoryTitleWrap>
-          <CategoryTitle>{i.a}</CategoryTitle>
-        </CategoryTitleWrap>
-        <CategoryTxtWrap>
-          {i.b}
-        </CategoryTxtWrap>
-      </CategoryWrap>
-      )
-      })
-      }
+      {langArr.map((i, index) => {
+        return (
+          <CategoryWrap key={index}>
+            <CategoryTitleWrap>
+              <CategoryTitle>{i.a}</CategoryTitle>
+            </CategoryTitleWrap>
+            <CategoryTxtWrap>{i.b}</CategoryTxtWrap>
+          </CategoryWrap>
+        );
+      })}
     </>
   );
 };

@@ -4,10 +4,9 @@ import styled from 'styled-components';
 import Portal from './Portal';
 
 function Modal({ className, onClose, maskClosable, closable, visible, children }) {
- 
   const onMaskClick = (e) => {
     if (e.target === e.currentTarget) {
-      onClose(!maskClosable)
+      onClose(!maskClosable);
     }
   };
 
@@ -27,23 +26,23 @@ function Modal({ className, onClose, maskClosable, closable, visible, children }
     //       {children}
     //     </ModalWrapper>
     // </Portal>
-      <>
-        <ModalOverlay visible={true} />
-          <ModalWrapper className={className} tabIndex={-1} visible={visible} onClick={maskClosable ? onMaskClick : null}>
-            {children}
-          </ModalWrapper>
-      </>
+    <>
+      <ModalOverlay visible={true} />
+      <ModalWrapper className={className} tabIndex={-1} visible={visible} onClick={maskClosable ? onMaskClick : null}>
+        {children}
+      </ModalWrapper>
+    </>
   );
 }
 
 Modal.defaultProps = {
   visible: false,
   closable: true,
-  maskClosable: true
+  maskClosable: true,
 };
 
 Modal.propTypes = {
-  visible: PropTypes.bool
+  visible: PropTypes.bool,
 };
 
 const ModalOverlay = styled.div`
@@ -65,8 +64,8 @@ const ModalOverlay = styled.div`
 const ModalWrapper = styled.section`
   display: ${(props) => (props.visible ? 'flex' : 'none')};
   position: fixed;
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
   justify-content: center;
   align-items: center;
   z-index: 100000;

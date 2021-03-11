@@ -6,43 +6,43 @@ import { ReplyListContext } from './Viewer';
 // 컴포넌트 import
 import theme from '../../theme/theme';
 import { LangCommon } from '@language/Lang.Common';
-import { langSharePopup}  from '@language/Lang.Viewer';
-import {LanguageContext} from '../../App';
+import { langSharePopup } from '@language/Lang.Viewer';
+import { LanguageContext } from '../../App';
 
 const SharePopup = () => {
   const { toggle_Modal_Share } = useContext(ReplyListContext);
-  const {langState, langPatch} = useContext(LanguageContext);
+  const { langState, langPatch } = useContext(LanguageContext);
 
   //언어 변수
-  const {selectedLanguage, defaultLanguage} = langState;
-  const {hareText, linkShare}  = langSharePopup;
-  const {closeBtn} = LangCommon;
+  const { selectedLanguage, defaultLanguage } = langState;
+  const { hareText, linkShare } = langSharePopup;
+  const { closeBtn } = LangCommon;
 
-   const _hareText = hareText[selectedLanguage] || hareText[defaultLanguage],
-          _linkShare = linkShare[selectedLanguage] || linkShare[defaultLanguage],
-         _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage];
+  const _hareText = hareText[selectedLanguage] || hareText[defaultLanguage],
+    _linkShare = linkShare[selectedLanguage] || linkShare[defaultLanguage],
+    _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage];
 
   return (
     <>
-        <PopupLayout onClick={() => toggle_Modal_Share()}></PopupLayout>
-        <SharePopupInner>
-          {/*공유하기 타이틀*/}
-          <ShareTitleBox>
-            <ShareIcon src={require('../../img/share-2.png')} />
-            <ShareTitle>{_hareText}</ShareTitle>
-          </ShareTitleBox>
-          {/*링크 공유학기 탭*/}
-          <LinkShareBox>
-            <LinkIcon src={require('../../img/link.png')} />
-            <LinkShareTitle>{_linkShare}</LinkShareTitle>
-          </LinkShareBox>
-          {/*Api 공유하기 탭*/}
-              <TwitterIcon src={require('../../img/twitter-logo.png')} />
-              <PinterestIcon src={require('../../img/Pinterest-logo.png')} />
-              <TumblrIcon src={require('../../img/tumblr-logo.png')} />
-          <PopupClose onClick={() => toggle_Modal_Share()}>{_closeBtn}</PopupClose>
-        </SharePopupInner>
-        </>
+      <PopupLayout onClick={() => toggle_Modal_Share()}></PopupLayout>
+      <SharePopupInner>
+        {/*공유하기 타이틀*/}
+        <ShareTitleBox>
+          <ShareIcon src={require('../../img/share-2.png')} />
+          <ShareTitle>{_hareText}</ShareTitle>
+        </ShareTitleBox>
+        {/*링크 공유학기 탭*/}
+        <LinkShareBox>
+          <LinkIcon src={require('../../img/link.png')} />
+          <LinkShareTitle>{_linkShare}</LinkShareTitle>
+        </LinkShareBox>
+        {/*Api 공유하기 탭*/}
+        <TwitterIcon src={require('../../img/twitter-logo.png')} />
+        <PinterestIcon src={require('../../img/Pinterest-logo.png')} />
+        <TumblrIcon src={require('../../img/tumblr-logo.png')} />
+        <PopupClose onClick={() => toggle_Modal_Share()}>{_closeBtn}</PopupClose>
+      </SharePopupInner>
+    </>
   );
 };
 

@@ -54,45 +54,42 @@ const useForm = ({ initialValues }) => {
 
   const handleSubmit = (e) => {
     setDisabled(true);
-    if(loginLoding || signUpLoding) return;
+    if (loginLoding || signUpLoding) return;
     e.preventDefault();
-    
-    if(values.userNick){
-      if(values.userNick === '' || values.userNick.length === 1){
+
+    if (values.userNick) {
+      if (values.userNick === '' || values.userNick.length === 1) {
         setDisabled(false);
-      } 
+      }
     }
 
-    if (values.type === 'signUp') { 
+    if (values.type === 'signUp') {
       signUpFetch(`${process.env.API_URL}/auth/join`, 'post', values, null);
-
-    } else if(values.type === 'signIn') {
-      loginFetch(`${process.env.API_URL}/auth/login`, 'post', values, null)
-  
+    } else if (values.type === 'signIn') {
+      loginFetch(`${process.env.API_URL}/auth/login`, 'post', values, null);
     }
     setDisabled(false);
   };
 
-useEffect(() => {
-  signUpApi && setResData(signUpApi)
-}, [signUpApi])
+  useEffect(() => {
+    signUpApi && setResData(signUpApi);
+  }, [signUpApi]);
 
-useEffect(() => {
-  loginApi && setResData(loginApi)
-}, [loginApi])
+  useEffect(() => {
+    loginApi && setResData(loginApi);
+  }, [loginApi]);
 
-useEffect(() => {
-  signUpError && setErrors(validate({values}, signUpError?.data))
+  useEffect(() => {
+    signUpError && setErrors(validate({ values }, signUpError?.data));
 
-  if(loginError?.status === 404) {
-    setErrors('leave');
-  } else if(loginError?.status === 400){
-    setErrors('incorrect')
-  } else {
-    return;
-  }
-  
-},[loginError, signUpError])
+    if (loginError?.status === 404) {
+      setErrors('leave');
+    } else if (loginError?.status === 400) {
+      setErrors('incorrect');
+    } else {
+      return;
+    }
+  }, [loginError, signUpError]);
   return [values, handleChange, handleSubmit, disabled, resData, errors];
 };
 

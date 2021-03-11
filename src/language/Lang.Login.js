@@ -1,6 +1,6 @@
-import React from "react";
-import Link from "next/link";
-import styled from "styled-components";
+import React from 'react';
+import Link from 'next/link';
+import styled from 'styled-components';
 
 const AgreeCheckBtn = styled.span`
   text-align: center;
@@ -8,18 +8,18 @@ const AgreeCheckBtn = styled.span`
   border-bottom: 1px solid ${(props) => props.theme.color.pinkColor};
   color: ${(props) => props.theme.color.pinkColor};
   margin: 2px 0;
-  cursor:pointer;
+  cursor: pointer;
 `;
 
 export const LangLogin = {
   idPlaceHolder: {
-    2: "Email or ID",
-    0: "이메일/아이디",
-    1: "登録メール / ID",
+    2: 'Email or ID',
+    0: '이메일/아이디',
+    1: '登録メール / ID',
   },
-  pwPlaceHolder: { 2: "Password", 0: "비밀번호", 1: "パスワード" },
-  loginButton: { 2: "LOGIN", 0: "로그인", 1: "ログイン" },
-  signUpButton: { 2: "SIGN UP", 0: "회원가입", 1: "会員登録" },
+  pwPlaceHolder: { 2: 'Password', 0: '비밀번호', 1: 'パスワード' },
+  loginButton: { 2: 'LOGIN', 0: '로그인', 1: 'ログイン' },
+  signUpButton: { 2: 'SIGN UP', 0: '회원가입', 1: '会員登録' },
   snsLoginDesc: {
     2: (
       <>
@@ -45,15 +45,15 @@ export const LangLogin = {
       <>
         SNS 로그인을 하시면
         <br />
-        <Link href="/policy/service" >
+        <Link href="/policy/service">
           <a target="_blank">
-           <AgreeCheckBtn>이용약관</AgreeCheckBtn>
+            <AgreeCheckBtn>이용약관</AgreeCheckBtn>
           </a>
         </Link>
         &nbsp;및&nbsp;
         <Link href="/policy/private">
           <a target="_blank">
-           <AgreeCheckBtn>개인정보 취급방침</AgreeCheckBtn>에
+            <AgreeCheckBtn>개인정보 취급방침</AgreeCheckBtn>에
           </a>
         </Link>
         <br />
@@ -81,24 +81,23 @@ export const LangLogin = {
     ),
   },
   loginFailHolder: {
-    2: "Check your login information again",
-    0: "로그인 정보를 다시 확인해주세요!",
-    1: "ログイン情報をもう一度確認してください",
+    2: 'Check your login information again',
+    0: '로그인 정보를 다시 확인해주세요!',
+    1: 'ログイン情報をもう一度確認してください',
   },
   leaveUser: {
-    2: "This member does not exist or has left",
-    0: "존재하지 않거나 탈퇴한 회원입니다",
-    1: "存在しないまたは脱退した会員です",
+    2: 'This member does not exist or has left',
+    0: '존재하지 않거나 탈퇴한 회원입니다',
+    1: '存在しないまたは脱退した会員です',
   },
   lostPassword: {
-    2: "Did you forget your login information?",
-    0: "로그인 정보를 잃어버리셨나요?",
-    1: "ログイン情報をお忘れですか？",
-  }
+    2: 'Did you forget your login information?',
+    0: '로그인 정보를 잃어버리셨나요?',
+    1: 'ログイン情報をお忘れですか？',
+  },
 };
 
 export const langSignInPopup = {
-
   lostTitle: {
     2: (
       <>
@@ -121,39 +120,39 @@ export const langSignInPopup = {
       </>
     ),
   },
-  inputEmail: { 2: "Email", 0: "이메일 입력", 1: "電子メール入力" },
-  sendButton: { 2: "SEND", 0: "발송하기", 1: "発送" },
+  inputEmail: { 2: 'Email', 0: '이메일 입력', 1: '電子メール入力' },
+  sendButton: { 2: 'SEND', 0: '발송하기', 1: '発送' },
 };
 
 export const langSignUp = {
   signUpTitle: {
-    2: "Signing up for membership🤩",
-    0: "회원가입 하기🤩",
-    1: "会員登録🤩",
+    2: 'Signing up for membership🤩',
+    0: '회원가입 하기🤩',
+    1: '会員登録🤩',
   },
   signUpEmail: {
-    2: "EMAIL(Send authentication mail)",
-    0: "이메일(인증메일 발송)",
-    1: "電子メール(認証メール送信)",
+    2: 'EMAIL(Send authentication mail)',
+    0: '이메일(인증메일 발송)',
+    1: '電子メール(認証メール送信)',
   },
-  signUpPw: { 2: "PASSWORD", 0: "비밀번호", 1: "パスワード" },
+  signUpPw: { 2: 'PASSWORD', 0: '비밀번호', 1: 'パスワード' },
   signUpPwConfirm: {
-    2: "CONFIRM PASSWORD",
-    0: "비밀번호 확인",
-    1: "パスワード確認",
+    2: 'CONFIRM PASSWORD',
+    0: '비밀번호 확인',
+    1: 'パスワード確認',
   },
-  signUpNick: { 2: "NICKNAME", 0: "닉네임", 1: "ニックネーム" },
+  signUpNick: { 2: 'NICKNAME', 0: '닉네임', 1: 'ニックネーム' },
   signUpDesc: {
     2: (
       <>
         I agree to the
         <Link href="/policy/service">
           <a target="_blank">
-             <AgreeCheckBtn>&nbsp;Terms&nbsp;</AgreeCheckBtn>
+            <AgreeCheckBtn>&nbsp;Terms&nbsp;</AgreeCheckBtn>
           </a>
         </Link>
         &nbsp;And&nbsp;
-        <Link href="/policy/private" >
+        <Link href="/policy/private">
           <a target="_blank">
             <AgreeCheckBtn>&nbsp;Privacy policy&nbsp;</AgreeCheckBtn>
           </a>
@@ -168,7 +167,7 @@ export const langSignUp = {
           </a>
         </Link>
         &nbsp;및&nbsp;
-        <Link href="/policy/private" >
+        <Link href="/policy/private">
           <a target="_blank">
             <AgreeCheckBtn>&nbsp;개인정보 취급방침&nbsp;</AgreeCheckBtn>에 동의
           </a>
@@ -192,14 +191,14 @@ export const langSignUp = {
       </>
     ),
   },
-  agreeButton: { 2: "AGREE", 0: "동의하기", 1: "同意します" },
-  signUpButton: { 2: "SIGNUP", 0: "가입완료", 1: "登録完了" },
+  agreeButton: { 2: 'AGREE', 0: '동의하기', 1: '同意します' },
+  signUpButton: { 2: 'SIGNUP', 0: '가입완료', 1: '登録完了' },
 };
 export const langSignUpComplete = {
   completeTitle: {
-    2: "✨Send authentication mail completed✨",
-    0: "✨인증메일 발송 완료✨",
-    1: "✨認証メール送信完了✨",
+    2: '✨Send authentication mail completed✨',
+    0: '✨인증메일 발송 완료✨',
+    1: '✨認証メール送信完了✨',
   },
   completeTxt: {
     2: (
@@ -226,95 +225,92 @@ export const langSignUpComplete = {
       </>
     ),
   },
-  backHome: { 2: "Go Back", 0: "처음으로", 1: "初めての移動" },
+  backHome: { 2: 'Go Back', 0: '처음으로', 1: '初めての移動' },
   mailConfirmBtn: {
-    2: "Check My Mail",
-    0: "메일 확인하기",
-    1: "メールを確認",
+    2: 'Check My Mail',
+    0: '메일 확인하기',
+    1: 'メールを確認',
   },
 };
 
 export const authPage = {
   authTitle: {
-    2: "Authentication completed!",
-    0: "인증이 완료되었습니다!",
-    1: "認証が完了しました!",
+    2: 'Authentication completed!',
+    0: '인증이 완료되었습니다!',
+    1: '認証が完了しました!',
   },
   authSubTitle: {
-    2: "Teleporting to the Login Page",
-    0: "로그인 화면으로 텔레포트 중",
-    1: "ログインページでテレポート中",
+    2: 'Teleporting to the Login Page',
+    0: '로그인 화면으로 텔레포트 중',
+    1: 'ログインページでテレポート中',
   },
   authFailTitle: {
-    2: "Something is wrong with the authentication..😥",
-    0: "인증에 실패했습니다..😥",
-    1: "認証に失敗しました..😥",
+    2: 'Something is wrong with the authentication..😥',
+    0: '인증에 실패했습니다..😥',
+    1: '認証に失敗しました..😥',
   },
   authFailSub: {
-    2: "Please contact the Admin",
-    0: "관리자에게 문의해주세요",
-    1: "管理者にお問い合わせください",
+    2: 'Please contact the Admin',
+    0: '관리자에게 문의해주세요',
+    1: '管理者にお問い合わせください',
   },
-  contact: { 2: "contact", 0: "문의하기", 1: "問い合わせる" },
+  contact: { 2: 'contact', 0: '문의하기', 1: '問い合わせる' },
 };
 
 export const signUpError = {
-
   emailError: {
-    2: "Email format is invali",
-    0: "이메일 형식이 유효하지 않습니다",
-    1: "電子メール形式が無効です",
+    2: 'Email format is invali',
+    0: '이메일 형식이 유효하지 않습니다',
+    1: '電子メール形式が無効です',
   },
   noEmail: {
-    2: "Please enter your e-mail",
-    0: "이메일을 입력해주세요",
-    1: "メールアドレスを入力してください",
+    2: 'Please enter your e-mail',
+    0: '이메일을 입력해주세요',
+    1: 'メールアドレスを入力してください',
   },
   dupliEmail: {
-    2: "This email is already registered.",
-    0: "이미 가입되어 있는 이메일 입니다",
-    1: "登録済みのメールアドレスです",
+    2: 'This email is already registered.',
+    0: '이미 가입되어 있는 이메일 입니다',
+    1: '登録済みのメールアドレスです',
   },
 
   pwError: {
-    2: "Enter at least 8 characters, including numbers and special characters",
-    0: "숫자와 특수문자 포함 8자 이상 입력해주세요",
-    1: "数字と特殊文字を含めて8文字以上入力してください",
+    2: 'Enter at least 8 characters, including numbers and special characters',
+    0: '숫자와 특수문자 포함 8자 이상 입력해주세요',
+    1: '数字と特殊文字を含めて8文字以上入力してください',
   },
   rePwError: {
-    2: "Please check again if the password is correct",
-    0: "비밀번호가 정확한지 다시 확인해주세요",
-    1: "パスワードが正しいかもう一度確認してください",
+    2: 'Please check again if the password is correct',
+    0: '비밀번호가 정확한지 다시 확인해주세요',
+    1: 'パスワードが正しいかもう一度確認してください',
   },
 
   nickError: {
-    2: "Please fill it out in 2 ~ 30 characters",
-    0: "2 ~ 30자 내외로 작성해주세요",
-    1: "2 ~ 30文字以内に作成してください",
-  }
-}
+    2: 'Please fill it out in 2 ~ 30 characters',
+    0: '2 ~ 30자 내외로 작성해주세요',
+    1: '2 ~ 30文字以内に作成してください',
+  },
+};
 
 export const socialLogin = {
-
   googleAccount: {
-    2: "Login with Google",
-    0: "Google 계정으로 로그인",
-    1: "Googleアカウントでログイン",
+    2: 'Login with Google',
+    0: 'Google 계정으로 로그인',
+    1: 'Googleアカウントでログイン',
   },
   facebookAccount: {
-    2: "Login with Facebook",
-    0: "Facebook 계정으로 로그인",
-    1: "Facebookアカウントでログイン",
+    2: 'Login with Facebook',
+    0: 'Facebook 계정으로 로그인',
+    1: 'Facebookアカウントでログイン',
   },
   kakaoAccount: {
-    2: "Login with Kakao",
-    0: "Kakao 계정으로 로그인",
-    1: "Kakaoアカウントでログイン",
+    2: 'Login with Kakao',
+    0: 'Kakao 계정으로 로그인',
+    1: 'Kakaoアカウントでログイン',
   },
   loginErr: {
-    2: "Login canceled",
-    0: "로그인이 취소되었습니다",
-    1: "ログインがキャンセルされました",
+    2: 'Login canceled',
+    0: '로그인이 취소되었습니다',
+    1: 'ログインがキャンセルされました',
   },
-
-}
+};

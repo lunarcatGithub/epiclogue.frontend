@@ -1,4 +1,4 @@
-import MyBoard from '@component/myBoard/MyBoard';
+import MyBoard from '@component/MyBoard/MyBoard';
 import axios from 'axios'
 
 export default function Myboard({boardItem, id, error}) {

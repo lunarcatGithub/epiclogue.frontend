@@ -15,51 +15,50 @@ const SearchResult = () => {
   const { setParamsData, paramsData } = useContext(AppDataContext);
   const { langState } = useContext(LanguageContext);
   const router = useRouter();
-  const {text, type} = router.query;
+  const { text, type } = router.query;
   const [goURL] = useUrlMove();
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
   const { popularTab, latestTab, userTab } = LangSearchResult;
   const _popularTab = popularTab[selectedLanguage] || popularTab[defaultLanguage],
-        _latestTab = latestTab[selectedLanguage] || latestTab[defaultLanguage],
-        _userTab = userTab[selectedLanguage] || userTab[defaultLanguage];
+    _latestTab = latestTab[selectedLanguage] || latestTab[defaultLanguage],
+    _userTab = userTab[selectedLanguage] || userTab[defaultLanguage];
 
-        // 헤더 스크롤용
-  const show = AutoHiding()
+  // 헤더 스크롤용
+  const show = AutoHiding();
 
   const navArr = [
-    {data:'trend', lang:_popularTab},
-    {data:'latest', lang:_latestTab},
-    {data:'users', lang:_userTab}
-  ]
+    { data: 'trend', lang: _popularTab },
+    { data: 'latest', lang: _latestTab },
+    { data: 'users', lang: _userTab },
+  ];
 
   return (
-      <BodyLayout >
-        <ContentInner show={show}>
-          <MypageTabBox>
-            {
-              navArr.map((nav, i) => (
-                <NavItems key={i} styling={nav.data === type} onClick={()=>goURL({pathname:`/search/${nav.data}`, as:`/search/${nav.data}/${text}`, query:{type, text}})}>
-                  <SearchTab styling={nav.data === type} onClick={()=>setParamsData(nav.data)}>{nav.lang}</SearchTab>
-                </NavItems>
-              ))
-            }
-          </MypageTabBox>
-        </ContentInner>
-        <BookmarkContents>
+    <BodyLayout>
+      <ContentInner show={show}>
+        <MypageTabBox>
+          {navArr.map((nav, i) => (
+            <NavItems key={i} styling={nav.data === type} onClick={() => goURL({ pathname: `/search/${nav.data}`, as: `/search/${nav.data}/${text}`, query: { type, text } })}>
+              <SearchTab styling={nav.data === type} onClick={() => setParamsData(nav.data)}>
+                {nav.lang}
+              </SearchTab>
+            </NavItems>
+          ))}
+        </MypageTabBox>
+      </ContentInner>
+      <BookmarkContents>
         <Contents searchType={paramsData || type} type="SEARCH" />
-        </BookmarkContents>
-      </BodyLayout>
+      </BookmarkContents>
+    </BodyLayout>
   );
 };
-  /* 마이페이지 스타일링 */
+/* 마이페이지 스타일링 */
 // 전체 레이아웃
 const BodyLayout = styled.div`
   display: flex;
   width: 100%;
   background: ${(props) => props.theme.color.backgroundColor};
-
 `;
 
 const ContentInner = styled.div`
@@ -71,11 +70,11 @@ const ContentInner = styled.div`
   height: 56px;
   background: #fff;
   margin-top: 16px;
-  z-index:9;
-  box-shadow:${(props) => props.theme.boxshadow.nav};
-  transition:all .2s .3s ease-in-out;
-  @media (max-width:900px){
-    top: ${props => props.show ? 54 : 0}px;
+  z-index: 9;
+  box-shadow: ${(props) => props.theme.boxshadow.nav};
+  transition: all 0.2s 0.3s ease-in-out;
+  @media (max-width: 900px) {
+    top: ${(props) => (props.show ? 54 : 0)}px;
     margin-top: 0;
     height: 46px;
   }
@@ -88,13 +87,13 @@ const MypageTabBox = styled.section`
 `;
 // NavLink 스타일 ****
 const SearchTab = styled.button`
-width:100%;
-height:100%;
-font-weight:${props => props.styling ? props.theme.fontWeight.font700 : props.theme.fontWeight.font500};
-color: ${props => props.styling ? props.theme.color.darkOrange : props.theme.color.softBlackColor};
-font-size: ${(props) => props.theme.fontSize.font15};
-cursor: pointer;
-`
+  width: 100%;
+  height: 100%;
+  font-weight: ${(props) => (props.styling ? props.theme.fontWeight.font700 : props.theme.fontWeight.font500)};
+  color: ${(props) => (props.styling ? props.theme.color.darkOrange : props.theme.color.softBlackColor)};
+  font-size: ${(props) => props.theme.fontSize.font15};
+  cursor: pointer;
+`;
 
 const NavItems = styled.span`
   display: flex;
@@ -102,17 +101,14 @@ const NavItems = styled.span`
   max-width: 8em;
   height: 100%;
   transition: all 0.05s ease-in-out;
-  background:${props => props.styling && props.theme.color.microOrangeColor};
-  border-bottom:${props => props.styling && `2px solid ${props.theme.color.darkOrange}`};
+  background: ${(props) => props.styling && props.theme.color.microOrangeColor};
+  border-bottom: ${(props) => props.styling && `2px solid ${props.theme.color.darkOrange}`};
 
   &:active {
     background: ${(props) => props.theme.color.darkGray};
     opacity: 0.5;
   }
-  
-
 `;
-
 
 // 콘텐츠 영역
 const BookmarkContents = styled.section`
@@ -120,6 +116,5 @@ const BookmarkContents = styled.section`
   width: 100%;
   margin-top: 68px;
 `;
-
 
 export default SearchResult;

@@ -11,15 +11,12 @@ import Modal from '@utils/Modal';
 import { LanguageContext } from '@store/App_Store';
 import { useModal } from '@hooks/useModal';
 
-
 const UserPopup = (props) => {
   const { langState } = useContext(LanguageContext);
-
 
   const { handleModal_Menu } = props;
 
   const [handleReport, setHandleReport] = useModal();
-
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
@@ -28,11 +25,11 @@ const UserPopup = (props) => {
   const { closeBtn } = LangCommon;
 
   const _userOptions = userOptions[selectedLanguage] || userOptions[defaultLanguage],
-        _sendDm = sendDm[selectedLanguage] || sendDm[defaultLanguage],
-        _reportUser = reportUser[selectedLanguage] || reportUser[defaultLanguage],
-        _muteUser = muteUser[selectedLanguage] || muteUser[defaultLanguage],
-        _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage],
-        _moreContents = moreContents[selectedLanguage] || closeBtn[defaultLanguage];
+    _sendDm = sendDm[selectedLanguage] || sendDm[defaultLanguage],
+    _reportUser = reportUser[selectedLanguage] || reportUser[defaultLanguage],
+    _muteUser = muteUser[selectedLanguage] || muteUser[defaultLanguage],
+    _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage],
+    _moreContents = moreContents[selectedLanguage] || closeBtn[defaultLanguage];
 
   return (
     <>

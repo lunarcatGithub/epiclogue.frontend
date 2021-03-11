@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import styled from 'styled-components';
-import {useRouter} from 'next/router'
+import { useRouter } from 'next/router';
 
 // 컴포넌트 import
 import FB from './Feedback';
@@ -15,9 +15,9 @@ import { LangCommon } from '@language/Lang.Common';
 import { langMetaViewer } from '@language/Lang.Meta';
 import { Meta } from '@utils/MetaTags';
 import Modal from '@utils/Modal';
-import ConfirmPopup from '@utils/ConfirmPopup'; 
+import ConfirmPopup from '@utils/ConfirmPopup';
 import Contents from '../content/Contents';
-import ViewerUserForm from './Viewer__UserForm'
+import ViewerUserForm from './Viewer__UserForm';
 
 // Hooks&&reducer
 import { useModal } from '@hooks/useModal';
@@ -26,13 +26,13 @@ import { useTimeCalculation } from '@hooks/useTimeCalculation';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { useConvertURL } from '@hooks/useConvertURL';
 import usePublic from '@hooks/usePublic';
-import {useConvertTags} from '@hooks/useConvertTags';
+import { useConvertTags } from '@hooks/useConvertTags';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store';
 
 export const ReplyListContext = React.createContext();
 
-const Viewer = ({boardItem, nonError}) => {
+const Viewer = ({ boardItem, nonError }) => {
   const router = useRouter();
   const boardUid = router?.query?.id;
 
@@ -40,7 +40,7 @@ const Viewer = ({boardItem, nonError}) => {
   const [profileURL, , convertProfileIamge] = useConvertURL();
   const [O_profileURL, , convertO_ProfileIamge] = useConvertURL();
   const { langState } = useContext(LanguageContext);
-  const {loginOn, setUnAuth} = useContext(AppDataContext);
+  const { loginOn, setUnAuth } = useContext(AppDataContext);
 
   const [goURL] = useUrlMove();
   const [goUploadUpdate] = useUrlMove();
@@ -53,7 +53,6 @@ const Viewer = ({boardItem, nonError}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [getIndicateDate, setGetIndicateDate] = useState();
   const [_heartCount, setHeartCount] = useState();
-
 
   const [bookmark, toggleBookmark] = useToggle();
   const [like, toggleLike] = useToggle();
@@ -69,7 +68,7 @@ const Viewer = ({boardItem, nonError}) => {
 
   const [originId, setOriginId] = useState();
   const [secondAllow, setSecondAllow] = useState();
-  
+
   // 외부 출처
   const [externalSource, setExternalSource] = useState();
 
@@ -85,14 +84,14 @@ const Viewer = ({boardItem, nonError}) => {
   const [eventCtrl, setEventCtrl] = useState(true);
 
   // 공개 비공개 여부
-  // const sessionId = localStorage.getItem('userid') 
-  const sessionId = boardUid
-  const _writer = data.screenId
-  const pub = data.pub
-  const _public = usePublic({pub, _writer, sessionId});
+  // const sessionId = localStorage.getItem('userid')
+  const sessionId = boardUid;
+  const _writer = data.screenId;
+  const pub = data.pub;
+  const _public = usePublic({ pub, _writer, sessionId });
 
   // 작품이 삭제되거나 없을 경우
-  const [noContents, setNoContents] = useState(false)
+  const [noContents, setNoContents] = useState(false);
 
   // 태그 및 하이퍼링크 convert
   const [converted, convert] = useConvertTags();
@@ -102,7 +101,7 @@ const Viewer = ({boardItem, nonError}) => {
   // const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
 
   // ref
-const feedbackRef = useRef();
+  const feedbackRef = useRef();
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
@@ -164,20 +163,20 @@ const feedbackRef = useRef();
 
   const sumitHandler = (e, type, targetType) => {
     e.preventDefault();
-    if(!loginOn) return;
-    
+    if (!loginOn) return;
+
     const URL = `${process.env.API_URL}/interaction/${type}`;
 
-    if(type === 'like'){
-      likeFetch( URL, like ? 'post' : 'delete', {targetInfo: boardUid, targetType}, null)
-    } else if(type === 'bookmark') {
-      bookmarkFetch( URL, bookmark ? 'post' : 'delete', {boardId: boardUid}, null)
+    if (type === 'like') {
+      likeFetch(URL, like ? 'post' : 'delete', { targetInfo: boardUid, targetType }, null);
+    } else if (type === 'bookmark') {
+      bookmarkFetch(URL, bookmark ? 'post' : 'delete', { boardId: boardUid }, null);
     }
-  }
+  };
 
-  useEffect(()=> {
+  useEffect(() => {
     likeApi && setHeartCount(likeApi?.data.heartCount);
-  }, [likeApi])
+  }, [likeApi]);
 
   // const checkO_MoreMenuType = () => {
   //   toggle_O_Modal_MoreMenu();
@@ -205,22 +204,22 @@ const feedbackRef = useRef();
       const writer = initialData.data.writer;
       const {
         boardTitle,
-        boardBody, 
-        pub, 
-        writeDate, 
-        category, 
-        heartCount, 
-        originBoardId, 
-        originUserId, 
-        reactCount, 
-        uid, 
-        tags, 
-        boardImg, 
-        bookmarked, 
-        edited, 
+        boardBody,
+        pub,
+        writeDate,
+        category,
+        heartCount,
+        originBoardId,
+        originUserId,
+        reactCount,
+        uid,
+        tags,
+        boardImg,
+        bookmarked,
+        edited,
         liked,
         allowSecondaryCreation,
-        sourceUrl
+        sourceUrl,
       } = boardData;
       const { screenId, nickname, _id, following, profile } = writer;
 
@@ -241,16 +240,16 @@ const feedbackRef = useRef();
         following,
         writer,
         edited,
-        allowSecondaryCreation
+        allowSecondaryCreation,
       });
 
-      if(originUserId){
-        setOriginId(originUserId._id)
+      if (originUserId) {
+        setOriginId(originUserId._id);
       }
       //tag && email convert
       // setBody(boardBody);
-      convert(boardBody)
-      
+      convert(boardBody);
+
       // useProfile
       convertProfileIamge(profile?.origin);
       toggleBookmark(!loginOn ? false : bookmarked);
@@ -278,11 +277,11 @@ const feedbackRef = useRef();
         window.location.href = '/login';
       }
     }
-  }, [boardItem])
+  }, [boardItem]);
 
   useEffect(() => {
     nonError === 404 && setNoContents(true);
-  }, [nonError])
+  }, [nonError]);
 
   // 공유하기 클립보드
   const clipboardShare = () => {
@@ -326,7 +325,7 @@ const feedbackRef = useRef();
         setReFbUid,
         checkFbLength,
         data,
-        boardImg
+        boardImg,
       }}
     >
       <Meta meta={metaData} />
@@ -334,24 +333,23 @@ const feedbackRef = useRef();
       <ViewerPortWrap>
         <ContentsAllView>
           <ViewerPort>
-            {
-            _public === 'none' ? null : boardImg.map((item, index) => {
-              return <ViewImg key={index} src={item} category={data.category}/>;
-            })
-            }
+            {_public === 'none'
+              ? null
+              : boardImg.map((item, index) => {
+                  return <ViewImg key={index} src={item} category={data.category} />;
+                })}
           </ViewerPort>
         </ContentsAllView>
         {/* 코멘트 시작 부분*/}
         <UserCommentWrap>
           <UserComment>
             {/* 원작 유저 */}
-            {
-            checkOrigin ? 
+            {checkOrigin ? (
               <>
                 {/* 원작자 */}
                 <ViewerUserForm
-                  type='ORIGIN' 
-                  externalSource={externalSource} 
+                  type="ORIGIN"
+                  externalSource={externalSource}
                   userLang={_originalUser}
                   followLang={_followBtn}
                   followOnLang={_followingBtn}
@@ -361,43 +359,34 @@ const feedbackRef = useRef();
                   boardUid={boardUid}
                 />
                 {/* 2차 창작자 */}
-                <ViewerUserForm
-                  type='SECOND'
-                  userLang={_recreateUser}
-                  followLang={_followBtn}
-                  followOnLang={_followingBtn}
-                  profile={profileURL}
-                  userData={data}
-                  boardUid={boardUid}
-                />
+                <ViewerUserForm type="SECOND" userLang={_recreateUser} followLang={_followBtn} followOnLang={_followingBtn} profile={profileURL} userData={data} boardUid={boardUid} />
               </>
-            : 
-            <ViewerUserForm
-              type='NOSECOND'
-              externalSource={externalSource} 
-              userLang={_originalUser}
-              followLang={_followBtn}
-              followOnLang={_followingBtn}
-              profile={profileURL}
-              userData={data}
-              boardUid={boardUid}
-            />
-            }
+            ) : (
+              <ViewerUserForm
+                type="NOSECOND"
+                externalSource={externalSource}
+                userLang={_originalUser}
+                followLang={_followBtn}
+                followOnLang={_followingBtn}
+                profile={profileURL}
+                userData={data}
+                boardUid={boardUid}
+              />
+            )}
 
             {/* 모바일용 뷰어 */}
-            <MobileViewerPort>
-              {
-                _public === 'none' ? null : boardImg.map((item, index) => (
-                  <ViewImg key={index} src={boardImg[index]} />
-                ))
-              }
-            </MobileViewerPort>
+            <MobileViewerPort>{_public === 'none' ? null : boardImg.map((item, index) => <ViewImg key={index} src={boardImg[index]} />)}</MobileViewerPort>
             {/* 반응 탭 */}
             <ReactTab>
-              <ReactInfoWrap onClick={() => {
-                if(!loginOn){setUnAuth(true); return}
-                toggle_Modal_React()
-                }}>
+              <ReactInfoWrap
+                onClick={() => {
+                  if (!loginOn) {
+                    setUnAuth(true);
+                    return;
+                  }
+                  toggle_Modal_React();
+                }}
+              >
                 <ReactImg />
                 <ReactTitle>
                   {data.reactCount}
@@ -405,30 +394,30 @@ const feedbackRef = useRef();
                 </ReactTitle>
               </ReactInfoWrap>
               <ReactSelector>
-                <form 
-                onSubmit={(e)=> sumitHandler(e, 'bookmark')}
-                  >
-                  <BtnBox onClick={() => {
-                      if(!loginOn){
-                        setUnAuth(true)
-                        return
-                      }else {
-                        toggleBookmark()
+                <form onSubmit={(e) => sumitHandler(e, 'bookmark')}>
+                  <BtnBox
+                    onClick={() => {
+                      if (!loginOn) {
+                        setUnAuth(true);
+                        return;
+                      } else {
+                        toggleBookmark();
                       }
-                    }}>
+                    }}
+                  >
                     <BookmarkBtn bookmark={bookmark} />
                   </BtnBox>
                 </form>
-                <form 
-                  action="" 
-                  onSubmit={(e)=> sumitHandler(e, 'like', 'Board')}>
-                  <BtnBox onClick={() => {
-                      if(!loginOn){
-                        setUnAuth(true)
-                      }else {
-                        toggleLike()
+                <form action="" onSubmit={(e) => sumitHandler(e, 'like', 'Board')}>
+                  <BtnBox
+                    onClick={() => {
+                      if (!loginOn) {
+                        setUnAuth(true);
+                      } else {
+                        toggleLike();
                       }
-                    }}>
+                    }}
+                  >
                     <LikeBtn heart={like} />
                     <ReactScore>{_heartCount}</ReactScore>
                   </BtnBox>
@@ -438,17 +427,18 @@ const feedbackRef = useRef();
                   <ShareBtn share={state_Share} />
                 </BtnBox>
                 <BtnBox>
-                  <GlobeBtn 
-                  globe={globe} 
-                  onClick={() => {
-                      if(!loginOn){
-                        setUnAuth(true)
-                      } else if(data.originUserId && !data.originBoardId){
-                        setOriginDeleted(true)
-                      } else{
-                        secondAllow === 0 ? setAllowSecondary(true) : toggle_Modal_Trans()
+                  <GlobeBtn
+                    globe={globe}
+                    onClick={() => {
+                      if (!loginOn) {
+                        setUnAuth(true);
+                      } else if (data.originUserId && !data.originBoardId) {
+                        setOriginDeleted(true);
+                      } else {
+                        secondAllow === 0 ? setAllowSecondary(true) : toggle_Modal_Trans();
                       }
-                    }} />
+                    }}
+                  />
                 </BtnBox>
               </ReactSelector>
             </ReactTab>
@@ -465,16 +455,17 @@ const feedbackRef = useRef();
             {/* 피드백 영역 */}
             {renderList &&
               !isLoading &&
-              renderList.slice(0, prevFb).map(item => {
-                return <FB type="Fb" key={item._id} data={item} counting={renderList.length}/>;
+              renderList.slice(0, prevFb).map((item) => {
+                return <FB type="Fb" key={item._id} data={item} counting={renderList.length} />;
               })}
-            <MoreFb 
-            checkEvent={eventCtrl} 
-            fbLoading={fbLoading} 
-            onClick={()=>{
-              addList()
-              fbTxt === _firstFeedback && feedbackRef.current.focus()
-              }}>
+            <MoreFb
+              checkEvent={eventCtrl}
+              fbLoading={fbLoading}
+              onClick={() => {
+                addList();
+                fbTxt === _firstFeedback && feedbackRef.current.focus();
+              }}
+            >
               <MoreFbTxt>{fbLoading ? <ProgressSmall /> : fbTxt}</MoreFbTxt>
             </MoreFb>
           </UserComment>
@@ -482,7 +473,7 @@ const feedbackRef = useRef();
       </ViewerPortWrap>
       <MoreContents>
         <MoreContentsTxt>{_moreContents}</MoreContentsTxt>
-        <Contents boardId={data._id} type="MAIN"/>
+        <Contents boardId={data._id} type="MAIN" />
       </MoreContents>
       {/*Modal*/}
       {/* {state_O_MoreMenu && (
@@ -502,30 +493,29 @@ const feedbackRef = useRef();
         </Modal>
       )}
       {/* 비공개 작품일 경우 */}
-      {_public === 'none' && 
-        <Modal visible={true} onClose={() => toggle_Modal_Trans(false)} >
-          <ConfirmPopup  setAccessConfirm={goURL} type={'GOBACK'}/>
+      {_public === 'none' && (
+        <Modal visible={true} onClose={() => toggle_Modal_Trans(false)}>
+          <ConfirmPopup setAccessConfirm={goURL} type={'GOBACK'} />
         </Modal>
-      }
+      )}
       {/* 삭제or없는 콘텐츠 일 경우*/}
-      {noContents &&
-      <Modal visible={true} onClose={() => toggle_Modal_Trans(false)} >
-        <ConfirmPopup  setAccessConfirm={goURL} type={'REMOVE'}/>
-      </Modal>
-      }
+      {noContents && (
+        <Modal visible={true} onClose={() => toggle_Modal_Trans(false)}>
+          <ConfirmPopup setAccessConfirm={goURL} type={'REMOVE'} />
+        </Modal>
+      )}
       {/* 2차 창작이 금지된 경우 */}
-      {allowSecondary &&
-      <Modal visible={allowSecondary} onClose={() => setAllowSecondary(false)} >
-        <ConfirmPopup handleModal={() => setAllowSecondary(false)} type={'TRANS'}/>
-      </Modal>
-      }
+      {allowSecondary && (
+        <Modal visible={allowSecondary} onClose={() => setAllowSecondary(false)}>
+          <ConfirmPopup handleModal={() => setAllowSecondary(false)} type={'TRANS'} />
+        </Modal>
+      )}
       {/* 2차 창작하려는데 원작글이 삭제된 경우 */}
-      {originDeleted &&
-      <Modal visible={originDeleted} onClose={() => setOriginDeleted(false)} >
-        <ConfirmPopup handleModal={() => setOriginDeleted(false)} type={'REMOVEORIGIN'}/>
-      </Modal>
-      }
-
+      {originDeleted && (
+        <Modal visible={originDeleted} onClose={() => setOriginDeleted(false)}>
+          <ConfirmPopup handleModal={() => setOriginDeleted(false)} type={'REMOVEORIGIN'} />
+        </Modal>
+      )}
     </ReplyListContext.Provider>
   );
 };
@@ -541,7 +531,7 @@ const ViewerPortWrap = styled.section`
   }
 `;
 
-  /* 뷰어 & 작가작품 모음 FLEX */
+/* 뷰어 & 작가작품 모음 FLEX */
 
 const ContentsAllView = styled.div`
   display: flex;
@@ -550,7 +540,7 @@ const ContentsAllView = styled.div`
   width: 70%;
   margin-right: 10px;
   background: ${(props) => props.theme.color.whiteColor};
-  user-select:none;
+  user-select: none;
   @media (max-width: 900px) {
     display: none;
   }
@@ -570,9 +560,9 @@ const ViewerPort = styled.div`
 `;
 const ViewImg = styled.img`
   object-fit: contain;
-  width:100%;
+  width: 100%;
   height: auto;
-  max-width:${props => props.category === '0' ? '100%': '48em'};
+  max-width: ${(props) => (props.category === '0' ? '100%' : '48em')};
   @media (max-width: 900px) {
     width: 100%;
     height: auto;

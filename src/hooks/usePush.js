@@ -5,7 +5,7 @@ export const usePush = () => {
 
   const pushType = (type) => {
     if (type === 'error') {
-        return ''
+      return '';
     } else {
     }
   };

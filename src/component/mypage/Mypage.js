@@ -1,6 +1,6 @@
-import React,{useContext} from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 
 // 컴포넌트 import
 import MypageProfile from './Mypage__Profile';
@@ -9,100 +9,90 @@ import MypageGeneral from './Mypage__General';
 import { LangMypage } from '@language/Lang.Mypage';
 
 // Hooks&&reducer import
-import {LanguageContext, AppDataContext} from '@store/App_Store';
+import { LanguageContext, AppDataContext } from '@store/App_Store';
 import { useUrlMove } from '@hooks/useUrlMove';
 
 export const MypageContext = React.createContext();
 
 const Mypage = () => {
- const {langState} = useContext(LanguageContext);
- const {loginOn} = useContext(AppDataContext);
- const router = useRouter();
- const { tab } = router.query;
- const [goURL] = useUrlMove();
+  const { langState } = useContext(LanguageContext);
+  const { loginOn } = useContext(AppDataContext);
+  const router = useRouter();
+  const { tab } = router.query;
+  const [goURL] = useUrlMove();
 
- //언어 변수
-  const {selectedLanguage, defaultLanguage} = langState;
+  //언어 변수
+  const { selectedLanguage, defaultLanguage } = langState;
 
-  const { 
-    settingProfile,
-    profileTab,
-    pushSetTab,
-    generalSetTab
-   } = LangMypage;
+  const { settingProfile, profileTab, pushSetTab, generalSetTab } = LangMypage;
 
-   const _settingProfile = settingProfile[selectedLanguage] || settingProfile[defaultLanguage],
-        _profileTab = profileTab[selectedLanguage] || profileTab[defaultLanguage],
-        _pushSetTab = pushSetTab[selectedLanguage] || pushSetTab[defaultLanguage],
-        _generalSetTab = generalSetTab[selectedLanguage] || generalSetTab[defaultLanguage];
+  const _settingProfile = settingProfile[selectedLanguage] || settingProfile[defaultLanguage],
+    _profileTab = profileTab[selectedLanguage] || profileTab[defaultLanguage],
+    _pushSetTab = pushSetTab[selectedLanguage] || pushSetTab[defaultLanguage],
+    _generalSetTab = generalSetTab[selectedLanguage] || generalSetTab[defaultLanguage];
 
   const list = [
-    { id: 1, title: 'profile', contents: <MypageProfile/> },
-    { id: 2, title: 'inform', contents: <MypageInform/> },
-    { id: 3, title: 'setting', contents: <MypageGeneral/> },
+    { id: 1, title: 'profile', contents: <MypageProfile /> },
+    { id: 2, title: 'inform', contents: <MypageInform /> },
+    { id: 3, title: 'setting', contents: <MypageGeneral /> },
   ];
   // 현재 언어 설정
   const LanguageList = [
-    {id:1, title:'한국어', value:'korean', state:0},
-    {id:2, title:'日本語', value:'japnese', state:1},
-    {id:3, title:'English', value:'english', state:2},
+    { id: 1, title: '한국어', value: 'korean', state: 0 },
+    { id: 2, title: '日本語', value: 'japnese', state: 1 },
+    { id: 3, title: 'English', value: 'english', state: 2 },
     // {id:4, title:'中国-简体', value:'simpleChinese', state:'zh-cn'},
     // {id:5, title:'中国-繁體', value:'traditionChinese', state:'zh'},
-]
+  ];
   // 언어 변경
-  const countryArray = {0:'한국어(Korean)', 1:'日本語(Japanese)', 2:'English'}
+  const countryArray = { 0: '한국어(Korean)', 1: '日本語(Japanese)', 2: 'English' };
   // 관심 언어 설정
   const interestedList = [
-    {id:1, title:'한국어', value:'korean', tagId:"korean"},
-    {id:2, title:'日本語', value:'japanese', tagId:"japanese"},
-    {id:3, title:'English', value:'english', tagId:"english"},
+    { id: 1, title: '한국어', value: 'korean', tagId: 'korean' },
+    { id: 2, title: '日本語', value: 'japanese', tagId: 'japanese' },
+    { id: 3, title: 'English', value: 'english', tagId: 'english' },
     // {id:4, title:'中国-简体', value:'simpleChinese', tagId:"simpleChinese"},
     // {id:5, title:'中国-繁體', value:'traditionChinese', tagId:"traditionChinese"},
-  ]
-  
+  ];
+
   const navArr = [
-    {name:'profile', lang:_profileTab},
-    {name:'inform', lang:_pushSetTab},
-    {name:'setting', lang:_generalSetTab}    
-  ]
+    { name: 'profile', lang: _profileTab },
+    { name: 'inform', lang: _pushSetTab },
+    { name: 'setting', lang: _generalSetTab },
+  ];
 
   return (
-    <MypageContext.Provider value={{LanguageList, countryArray, interestedList}}>
+    <MypageContext.Provider value={{ LanguageList, countryArray, interestedList }}>
       <Container>
         <ProfileLayout>
           <ProfileInner>
             <TopMenuTitleBox>
               <TopMenuTitle>{loginOn ? _settingProfile : _generalSetTab}</TopMenuTitle>
             </TopMenuTitleBox>
-            {
-              loginOn ? 
+            {loginOn ? (
               <TabMenuWrap>
-                {
-                  navArr.map((tab, i)=>(
-                  <NavItem key={i} onClick={()=> goURL({pathname:`/mypage/${tab.name}`})} >
-                    <TabSelect styling={ router.asPath.match(tab.name) }> {tab.lang} </TabSelect>
+                {navArr.map((tab, i) => (
+                  <NavItem key={i} onClick={() => goURL({ pathname: `/mypage/${tab.name}` })}>
+                    <TabSelect styling={router.asPath.match(tab.name)}> {tab.lang} </TabSelect>
                   </NavItem>
-                  ))
-                }
+                ))}
               </TabMenuWrap>
-              : null
-            }
-            {
-              loginOn ? list.map(({id, title, contents}) => {
-                if(tab === title) return <div key={id}>{contents}</div>
+            ) : null}
+            {loginOn ? (
+              list.map(({ id, title, contents }) => {
+                if (tab === title) return <div key={id}>{contents}</div>;
               })
-              :
+            ) : (
               <MypageGeneral />
-            }
+            )}
           </ProfileInner>
         </ProfileLayout>
       </Container>
-      </MypageContext.Provider>
+    </MypageContext.Provider>
   );
 };
 
-
-  /* 프로필 디자인 컴포넌트 */
+/* 프로필 디자인 컴포넌트 */
 
 // 애니메이션 영역
 //공통
@@ -154,8 +144,8 @@ const TabSelect = styled.button`
   margin-top: 6px;
   width: 100%;
   white-space: nowrap;
-  color:  ${(props) => props.styling ? props.theme.color.orangeColor : props.theme.color.softBlackColor};
-  border-bottom: 3px solid ${(props) => props.styling ? props.theme.color.softOrangeColor : props.theme.color.softGrayColor};
+  color: ${(props) => (props.styling ? props.theme.color.orangeColor : props.theme.color.softBlackColor)};
+  border-bottom: 3px solid ${(props) => (props.styling ? props.theme.color.softOrangeColor : props.theme.color.softGrayColor)};
   font-size: ${(props) => props.theme.fontSize.font15};
   font-weight: ${(props) => props.theme.fontWeight.font700};
   transition: all 0.2s ease-out;

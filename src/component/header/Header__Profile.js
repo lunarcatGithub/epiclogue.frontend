@@ -1,13 +1,13 @@
-import React, { useContext, useEffect } from "react";
-import styled from "styled-components";
+import React, { useContext, useEffect } from 'react';
+import styled from 'styled-components';
 
 // 컴포넌트 import
-import {LangHeaderProfile} from "@language/Lang.Header";
-import {LanguageContext, AlertContext, AppDataContext} from '@store/App_Store';
+import { LangHeaderProfile } from '@language/Lang.Header';
+import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store';
 
 // Hook & Context
-import { useToggle } from "@hooks/useToggle";
-import { HeaderDataContext } from "./Header";
+import { useToggle } from '@hooks/useToggle';
+import { HeaderDataContext } from './Header';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { useConvertURL } from '@hooks/useConvertURL';
 
@@ -29,95 +29,77 @@ const HeaderPfPopup = () => {
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
-  const {
-    profileSet,
-    goToBookMark,
-    policyInform,
-    changeAccount,
-    logOutTab,
-    sessionExpire
-  } = LangHeaderProfile;
-  const _profileSet =
-      profileSet[selectedLanguage] || profileSet[defaultLanguage],
-    _goToBookMark =
-      goToBookMark[selectedLanguage] || goToBookMark[defaultLanguage],
-    _policyInform =
-      policyInform[selectedLanguage] || policyInform[defaultLanguage],
-    _changeAccount =
-      changeAccount[selectedLanguage] || changeAccount[defaultLanguage],
+  const { profileSet, goToBookMark, policyInform, changeAccount, logOutTab, sessionExpire } = LangHeaderProfile;
+  const _profileSet = profileSet[selectedLanguage] || profileSet[defaultLanguage],
+    _goToBookMark = goToBookMark[selectedLanguage] || goToBookMark[defaultLanguage],
+    _policyInform = policyInform[selectedLanguage] || policyInform[defaultLanguage],
+    _changeAccount = changeAccount[selectedLanguage] || changeAccount[defaultLanguage],
     _logOutTab = logOutTab[selectedLanguage] || logOutTab[defaultLanguage],
     _sessionExpire = sessionExpire[selectedLanguage] || sessionExpire[defaultLanguage];
 
   const logout = () => {
-    localStorage.removeItem("loginOn");
-    localStorage.removeItem("userNick");
-    localStorage.removeItem("userid");
-    setLoginOn(false)
+    localStorage.removeItem('loginOn');
+    localStorage.removeItem('userNick');
+    localStorage.removeItem('userid');
+    setLoginOn(false);
     setIsOpen();
-    goURL({pathname:'/login'})
+    goURL({ pathname: '/login' });
   };
 
   useEffect(() => {
-    if(profileError?.status === 401) {
-        alert(_sessionExpire)
-        logout()
-      
+    if (profileError?.status === 401) {
+      alert(_sessionExpire);
+      logout();
     }
-  }, [profileError]) 
+  }, [profileError]);
 
   useEffect(() => {
     toggleSearchPop(false);
-    convertProfileIamge(profileApi?.data?.profile?.thumbnail)
+    convertProfileIamge(profileApi?.data?.profile?.thumbnail);
   }, [profileApi]);
 
   const navTabArr = [
-    {method:()=>[ setIsOpen(), goURL({pathname:`/mypage/profile`})], title:_profileSet, icon:'/static/header/profileIcon.svg'},
-    {method:()=>[ setIsOpen(), goURL({pathname:`/myboard/${profileApi?.data?.screenId}/bookmarks`})], title:_goToBookMark, icon:'/static/header/headerBookMark.svg'},    
-    {method:()=>[ setIsOpen(), goURL({pathname:`/policy/service`})], title:_policyInform, icon:'/static/header/policyIcon.svg'},    
-    {method:()=> alertPatch({ type: "NOT_SERVICE", payload: true }), title:_changeAccount, icon:'/static/header/switchIcon.svg'},    
-    {method:()=> logout(), title:_logOutTab, icon:'/static/header/logoutIcon.svg'}
+    { method: () => [setIsOpen(), goURL({ pathname: `/mypage/profile` })], title: _profileSet, icon: '/static/header/profileIcon.svg' },
+    { method: () => [setIsOpen(), goURL({ pathname: `/myboard/${profileApi?.data?.screenId}/bookmarks` })], title: _goToBookMark, icon: '/static/header/headerBookMark.svg' },
+    { method: () => [setIsOpen(), goURL({ pathname: `/policy/service` })], title: _policyInform, icon: '/static/header/policyIcon.svg' },
+    { method: () => alertPatch({ type: 'NOT_SERVICE', payload: true }), title: _changeAccount, icon: '/static/header/switchIcon.svg' },
+    { method: () => logout(), title: _logOutTab, icon: '/static/header/logoutIcon.svg' },
   ];
 
   return (
     <>
       <ProfileImgBox onClick={() => setIsOpen()}>
-        <ProfileImgInner
-          profile={profileURL}
-        />
+        <ProfileImgInner profile={profileURL} />
       </ProfileImgBox>
-      {
-      isOpen && (
+      {isOpen && (
         <PopupLayout id="closemodal" onClick={() => setIsOpen()}>
           <PopUpInner show={show}>
             {/* 유저 프로필 팝업의 헤더 부분 */}
             <PopupAnchorHd>
-                <TabWrap onClick={() => goURL({pathname:`/myboard/${profileApi.data.screenId}`})}>
-                  <ProfileImgBox>
-                    <ProfileImgInner profile={profileApi?.data?.profile?.thumbnail} />
-                  </ProfileImgBox>
-                  <TabIdWrap>
-                    <ProfileNick>{profileApi?.data?.nickname}</ProfileNick>
-                    <ProfileId>{profileApi?.data?.screenId}</ProfileId>
-                  </TabIdWrap>
-                </TabWrap>
-                <ClosedBox>
-                  <ClosedBtn onClick={() => setIsOpen()} />
-                </ClosedBox>
+              <TabWrap onClick={() => goURL({ pathname: `/myboard/${profileApi.data.screenId}` })}>
+                <ProfileImgBox>
+                  <ProfileImgInner profile={profileApi?.data?.profile?.thumbnail} />
+                </ProfileImgBox>
+                <TabIdWrap>
+                  <ProfileNick>{profileApi?.data?.nickname}</ProfileNick>
+                  <ProfileId>{profileApi?.data?.screenId}</ProfileId>
+                </TabIdWrap>
+              </TabWrap>
+              <ClosedBox>
+                <ClosedBtn onClick={() => setIsOpen()} />
+              </ClosedBox>
             </PopupAnchorHd>
             {/* // 유저 프로필 팝업의 헤더 부분 끝 */}
 
             {/* 프로필 설정 */}
-            {
-              navTabArr.map((navTab, index) => (
-                <PopupAnchor key={index}>
-                  <TabWrap
-                    onClick={navTab.method}>
+            {navTabArr.map((navTab, index) => (
+              <PopupAnchor key={index}>
+                <TabWrap onClick={navTab.method}>
                   <IconImg icon={navTab.icon} />
                   <ProfileTextTab>{navTab.title}</ProfileTextTab>
-                  </TabWrap>
-                </PopupAnchor>
-              ))
-            }
+                </TabWrap>
+              </PopupAnchor>
+            ))}
           </PopUpInner>
         </PopupLayout>
       )}
@@ -152,9 +134,9 @@ const PopUpInner = styled.div`
   background: #f7f7f7;
   box-shadow: ${(props) => props.theme.boxshadow.popup};
   outline: none;
-  transition:all .2s .3s ease-in-out;
+  transition: all 0.2s 0.3s ease-in-out;
   @media (max-width: 900px) {
-    top: ${props => props.show ? 55 : 0}px;
+    top: ${(props) => (props.show ? 55 : 0)}px;
     right: 0;
     width: 100%;
     border-radius: 0 0 8px 8px;
@@ -177,7 +159,7 @@ const TabWrap = styled.div`
   min-width: 0;
   align-items: center;
   padding: 7px 10px;
-  cursor:pointer;
+  cursor: pointer;
 `;
 
 // 프로필 버튼
@@ -195,7 +177,7 @@ const ProfileImgBox = styled.div`
 `;
 
 const ProfileImgInner = styled.span`
-  background:${props => props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`}; 
+  background: ${(props) => (props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`)};
   width: 100%;
   height: 100%;
 `;
@@ -212,20 +194,20 @@ const TabIdWrap = styled.div`
 // 닫기 버튼
 
 const ClosedBox = styled.button`
-position:absolute;
-display:flex;
-justify-content:center;
-align-items:center;
-top:1em;
-right: 1.5em;
-border-radius:50%;
-width:3em;
-height:3em;
-overflow:hidden;
-`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 1em;
+  right: 1.5em;
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+  overflow: hidden;
+`;
 
 const ClosedBtn = styled.span`
-  ${props => props.theme.closeBtn};
+  ${(props) => props.theme.closeBtn};
   &:hover {
     background: ${(props) => props.theme.color.hoverColor};
   }
@@ -256,7 +238,7 @@ const PopupAnchor = styled(PopupAnchorHd)`
 `;
 
 const IconImg = styled.svg`
-  background: url(${props => props.icon}) no-repeat center center / contain;
+  background: url(${(props) => props.icon}) no-repeat center center / contain;
   margin: 0.2em 0.8em;
   width: 1.5em;
   height: 1.5em;

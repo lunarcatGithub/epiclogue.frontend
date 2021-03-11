@@ -11,9 +11,7 @@ export default function InfinityScroll() {
   const [preUrl, setPreUrl] = useState('');
   const [coverUrl, setCoverUrl] = useState('');
 
-  const API = () => {
-
-  };
+  const API = () => {};
   const pageHeight = useCallback(() => {
     let scrollHT = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
     let scrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop);

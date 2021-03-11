@@ -1,15 +1,8 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 import { LanguageContext } from '@store/App_Store';
-import { 
-      copyrightGuide, 
-      reasonCollection,
-      collectionItem,
-      consentStatus,
-      informModification,
-    } from '@language/Policy/Lang.PolicyCopyright';
-
+import { copyrightGuide, reasonCollection, collectionItem, consentStatus, informModification } from '@language/Policy/Lang.PolicyCopyright';
 
 const Copyright = () => {
   const { langState } = useContext(LanguageContext);
@@ -23,41 +16,36 @@ const Copyright = () => {
   const { reason5, definition5 } = informModification;
 
   const _reason1 = reason1[selectedLanguage] || reason1[defaultLanguage],
-      _definition1 = definition1[selectedLanguage] || definition1[defaultLanguage],
-      _reason2 = reason2[selectedLanguage] || reason2[defaultLanguage],
-      _definition2 = definition2[selectedLanguage] || definition2[defaultLanguage],
-      _reason3 = reason3[selectedLanguage] || reason3[defaultLanguage],
-      _definition3 = definition3[selectedLanguage] || definition3[defaultLanguage],
-      _reason4 = reason4[selectedLanguage] || reason4[defaultLanguage],
-      _definition4 = definition4[selectedLanguage] || definition4[defaultLanguage],
-      _reason5 = reason5[selectedLanguage] || reason5[defaultLanguage],
-      _definition5 = definition5[selectedLanguage] || definition5[defaultLanguage];
+    _definition1 = definition1[selectedLanguage] || definition1[defaultLanguage],
+    _reason2 = reason2[selectedLanguage] || reason2[defaultLanguage],
+    _definition2 = definition2[selectedLanguage] || definition2[defaultLanguage],
+    _reason3 = reason3[selectedLanguage] || reason3[defaultLanguage],
+    _definition3 = definition3[selectedLanguage] || definition3[defaultLanguage],
+    _reason4 = reason4[selectedLanguage] || reason4[defaultLanguage],
+    _definition4 = definition4[selectedLanguage] || definition4[defaultLanguage],
+    _reason5 = reason5[selectedLanguage] || reason5[defaultLanguage],
+    _definition5 = definition5[selectedLanguage] || definition5[defaultLanguage];
 
-      const langArr = [
-        {a:_reason1, b: _definition1},
-        {a:_reason2, b:_definition2},
-        {a:_reason3, b:_definition3},
-        {a:_reason4, b:_definition4},
-        {a:_reason5, b:_definition5}
-      ]
-
+  const langArr = [
+    { a: _reason1, b: _definition1 },
+    { a: _reason2, b: _definition2 },
+    { a: _reason3, b: _definition3 },
+    { a: _reason4, b: _definition4 },
+    { a: _reason5, b: _definition5 },
+  ];
 
   return (
     <>
-      {
-      langArr.map((i, index) => {
-        return(
-        <CategoryWrap key={index}>
-        <CategoryTitleWrap>
-          <CategoryTitle>{i.a}</CategoryTitle>
-        </CategoryTitleWrap>
-        <CategoryTxtWrap>
-          {i.b}
-        </CategoryTxtWrap>
-      </CategoryWrap>
-      )
-      })
-      }  
+      {langArr.map((i, index) => {
+        return (
+          <CategoryWrap key={index}>
+            <CategoryTitleWrap>
+              <CategoryTitle>{i.a}</CategoryTitle>
+            </CategoryTitleWrap>
+            <CategoryTxtWrap>{i.b}</CategoryTxtWrap>
+          </CategoryWrap>
+        );
+      })}
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React,{useContext} from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
@@ -18,9 +18,9 @@ export const SignUpComplete = (props) => {
   const { selectedLanguage, defaultLanguage } = langState;
   const { completeTitle, completeTxt, backHome, mailConfirmBtn } = langSignUpComplete;
   const _completeTitle = completeTitle[selectedLanguage] || completeTitle[defaultLanguage],
-        _completeTxt = completeTxt[selectedLanguage] || completeTxt[defaultLanguage],
-        _backHome = backHome[selectedLanguage] || backHome[defaultLanguage],
-        _mailConfirmBtn = mailConfirmBtn[selectedLanguage] || mailConfirmBtn[defaultLanguage];
+    _completeTxt = completeTxt[selectedLanguage] || completeTxt[defaultLanguage],
+    _backHome = backHome[selectedLanguage] || backHome[defaultLanguage],
+    _mailConfirmBtn = mailConfirmBtn[selectedLanguage] || mailConfirmBtn[defaultLanguage];
 
   return (
     <>
@@ -40,9 +40,7 @@ export const SignUpComplete = (props) => {
   );
 };
 
-
-  /* 회원가입 완료창 */
-
+/* 회원가입 완료창 */
 
 // 레이아웃
 const SignUpModal = styled.div`

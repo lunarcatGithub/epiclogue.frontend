@@ -1,66 +1,51 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
-// 컴포넌트 import 
+// 컴포넌트 import
 import { LangPush } from '@language/Lang.Common';
 import { LangMypageGene, LangMypageInform } from '@language/Lang.Mypage';
 
 // hooks&&reducer
-import {MypageContext} from './Mypage';
+import { MypageContext } from './Mypage';
 
 import { LanguageContext } from '@store/App_Store';
 
 export default function MypageForm(props) {
-  const {type, formDatas} = props;
+  const { type, formDatas } = props;
 
   // contextAPI
   const { LanguageList, interestedList } = useContext(MypageContext);
-  const {langState, langPatch} = useContext(LanguageContext);
+  const { langState, langPatch } = useContext(LanguageContext);
 
-  const {selectedLanguage, defaultLanguage} = langState;
+  const { selectedLanguage, defaultLanguage } = langState;
   const [toggleSet, setToggleSet] = useState(false);
   const [selectData, setSelectData] = useState(selectedLanguage);
   // const [currentData, setCurrentData] = useState();
-  
+
   // 언어 변수 설정
   const [langTitle, setLangTitle] = useState();
   const [langSubtitle, setLangSubtitle] = useState();
   const [langBtn, setLangBtn] = useState();
 
-// 언어 변수
-const {
-  notServicePush
-} = LangPush;
+  // 언어 변수
+  const { notServicePush } = LangPush;
 
-const { 
-  contrySetting,
-  viewLanguage,
-  InterestLanguage,
-  InterestLangDesc,
-  muteSetting,
-  muteSetDesc,
-  changeBtn
-} = LangMypageGene;
+  const { contrySetting, viewLanguage, InterestLanguage, InterestLangDesc, muteSetting, muteSetDesc, changeBtn } = LangMypageGene;
 
-const {
-  pushSetting,
-  pushSetDesc,
-  generalSetting,
-  generalSetDesc,
-} = LangMypageInform;
+  const { pushSetting, pushSetDesc, generalSetting, generalSetDesc } = LangMypageInform;
 
- const _contrySetting = contrySetting[selectedLanguage] || contrySetting[defaultLanguage],
-      _viewLanguage = viewLanguage[selectedLanguage] || viewLanguage[defaultLanguage],
-      _InterestLanguage = InterestLanguage[selectedLanguage] || InterestLanguage[defaultLanguage],
-      _InterestLangDesc = InterestLangDesc[selectedLanguage] || InterestLangDesc[defaultLanguage],
-      _muteSetting = muteSetting[selectedLanguage] || muteSetting[defaultLanguage],
-      _muteSetDesc = muteSetDesc[selectedLanguage] || muteSetDesc[defaultLanguage],
-      _changeBtn = changeBtn[selectedLanguage] || changeBtn[defaultLanguage],
-      _notServicePush = notServicePush[selectedLanguage] || notServicePush[defaultLanguage],
-      _pushSetting = pushSetting[selectedLanguage] || pushSetting[defaultLanguage],
-      _pushSetDesc = pushSetDesc[selectedLanguage] || pushSetDesc[defaultLanguage],
-      _generalSetting = generalSetting[selectedLanguage] || generalSetting[defaultLanguage],
-      _generalSetDesc = generalSetDesc[selectedLanguage] || generalSetDesc[defaultLanguage];  
-  
+  const _contrySetting = contrySetting[selectedLanguage] || contrySetting[defaultLanguage],
+    _viewLanguage = viewLanguage[selectedLanguage] || viewLanguage[defaultLanguage],
+    _InterestLanguage = InterestLanguage[selectedLanguage] || InterestLanguage[defaultLanguage],
+    _InterestLangDesc = InterestLangDesc[selectedLanguage] || InterestLangDesc[defaultLanguage],
+    _muteSetting = muteSetting[selectedLanguage] || muteSetting[defaultLanguage],
+    _muteSetDesc = muteSetDesc[selectedLanguage] || muteSetDesc[defaultLanguage],
+    _changeBtn = changeBtn[selectedLanguage] || changeBtn[defaultLanguage],
+    _notServicePush = notServicePush[selectedLanguage] || notServicePush[defaultLanguage],
+    _pushSetting = pushSetting[selectedLanguage] || pushSetting[defaultLanguage],
+    _pushSetDesc = pushSetDesc[selectedLanguage] || pushSetDesc[defaultLanguage],
+    _generalSetting = generalSetting[selectedLanguage] || generalSetting[defaultLanguage],
+    _generalSetDesc = generalSetDesc[selectedLanguage] || generalSetDesc[defaultLanguage];
+
   const dataOnChangeHandler = (e) => {
     setSelectData(Number(e.target.value));
     // for(const [key, value] of Object.entries(countryArray)){
@@ -68,122 +53,108 @@ const {
     //     setCurrentData(value);
     //   }
     // }
-  }
+  };
 
-  const sendDataHandler = (e) =>{
-    if(type === 'language'){
-    localStorage.setItem('language', selectData);
-    langPatch({type:'LANGUAGE_UPDATE', payload:selectData });
-    formDatas.submit(e, 'language', selectData)
-  }
-  setToggleSet(false)
-  }
+  const sendDataHandler = (e) => {
+    if (type === 'language') {
+      localStorage.setItem('language', selectData);
+      langPatch({ type: 'LANGUAGE_UPDATE', payload: selectData });
+      formDatas.submit(e, 'language', selectData);
+    }
+    setToggleSet(false);
+  };
 
   const langHandler = () => {
-  switch (type) {
-  case 'language':
-      setLangTitle(_viewLanguage);
-      setLangSubtitle(LanguageList[selectData].title);
-      setLangBtn(_changeBtn);
-    break;
-    case 'interest':
-      setLangTitle(_InterestLanguage);
-      setLangSubtitle(_InterestLangDesc);
-      setLangBtn(_changeBtn);
-    break;
-    case 'mute':
-      setLangTitle(_muteSetting);
-      setLangSubtitle(_muteSetDesc);
-      setLangBtn(_changeBtn);
-    break;
-    case 'push':
-      setLangTitle(_pushSetting);
-      setLangSubtitle(_pushSetDesc);
-      setLangBtn(_changeBtn);
-    break;
-    case 'generalset':
-      setLangTitle(_generalSetting);
-      setLangSubtitle(_generalSetDesc);
-      setLangBtn(_changeBtn);
-    break;
-  default:
-    break;
-}
-  }
-  
-  useEffect(()=> {
-    langHandler();
-   },[selectedLanguage, defaultLanguage])
- 
-  return (
-      <ContentsBox>
-          {/* 내 언어 설정 */}
-          <IdContentInnerBox styling={toggleSet}>
-            <TitleWrap onClick={() => setToggleSet(!toggleSet)}>
-              <ContentsTitle>{langTitle}</ContentsTitle>
-              <ContentsScript>{langSubtitle}</ContentsScript>
-            </TitleWrap>
+    switch (type) {
+      case 'language':
+        setLangTitle(_viewLanguage);
+        setLangSubtitle(LanguageList[selectData].title);
+        setLangBtn(_changeBtn);
+        break;
+      case 'interest':
+        setLangTitle(_InterestLanguage);
+        setLangSubtitle(_InterestLangDesc);
+        setLangBtn(_changeBtn);
+        break;
+      case 'mute':
+        setLangTitle(_muteSetting);
+        setLangSubtitle(_muteSetDesc);
+        setLangBtn(_changeBtn);
+        break;
+      case 'push':
+        setLangTitle(_pushSetting);
+        setLangSubtitle(_pushSetDesc);
+        setLangBtn(_changeBtn);
+        break;
+      case 'generalset':
+        setLangTitle(_generalSetting);
+        setLangSubtitle(_generalSetDesc);
+        setLangBtn(_changeBtn);
+        break;
+      default:
+        break;
+    }
+  };
 
-            {
-            toggleSet && (
-              <HiddenBox>
-                <div> 
-                  <HiddenInner >
-                  {
-                  type === 'language' && LanguageList?.map ( list => (
-                  <ListTxtBox key={list.id}>
-                    <TextList>{list.title}</TextList>
-                    <ListTxtRadio
-                    readOnly
-                    id={list.id}
-                    name="userLanguage"
-                    value={list.state}
-                    checked={selectData === list.state}
-                    onChange={dataOnChangeHandler}
-                    /> 
-                    <ListRadioCustom />
-                  </ListTxtBox>
-                  )
-                )}
-                {
-                type === 'interest' && interestedList?.map ( list => (
-                  <ListCheckLabel key={list.id}>
+  useEffect(() => {
+    langHandler();
+  }, [selectedLanguage, defaultLanguage]);
+
+  return (
+    <ContentsBox>
+      {/* 내 언어 설정 */}
+      <IdContentInnerBox styling={toggleSet}>
+        <TitleWrap onClick={() => setToggleSet(!toggleSet)}>
+          <ContentsTitle>{langTitle}</ContentsTitle>
+          <ContentsScript>{langSubtitle}</ContentsScript>
+        </TitleWrap>
+
+        {toggleSet && (
+          <HiddenBox>
+            <div>
+              <HiddenInner>
+                {type === 'language' &&
+                  LanguageList?.map((list) => (
+                    <ListTxtBox key={list.id}>
+                      <TextList>{list.title}</TextList>
+                      <ListTxtRadio readOnly id={list.id} name="userLanguage" value={list.state} checked={selectData === list.state} onChange={dataOnChangeHandler} />
+                      <ListRadioCustom />
+                    </ListTxtBox>
+                  ))}
+                {type === 'interest' &&
+                  interestedList?.map((list) => (
+                    <ListCheckLabel key={list.id}>
                       <TextList>{list.title}</TextList>
                       <ListCheck id={list.tagId} value={list.value} />
                       <ListCheckCustom />
                     </ListCheckLabel>
-                  )
-                )}
-                {
-                type === 'mute' || type === 'push' || type === 'generalset' ?
-                <HiddenBox>
-                 <ServiceNotYet>{_notServicePush}</ServiceNotYet>
-                </HiddenBox>
-                : null
-                }
-                </HiddenInner>
-                {
-                type === 'mute' || type === 'push' || type === 'generalset' ? null :
+                  ))}
+                {type === 'mute' || type === 'push' || type === 'generalset' ? (
+                  <HiddenBox>
+                    <ServiceNotYet>{_notServicePush}</ServiceNotYet>
+                  </HiddenBox>
+                ) : null}
+              </HiddenInner>
+              {type === 'mute' || type === 'push' || type === 'generalset' ? null : (
                 <BtnWrap>
-                  <PwChangeBtn onClick={sendDataHandler} >{langBtn}</PwChangeBtn>
+                  <PwChangeBtn onClick={sendDataHandler}>{langBtn}</PwChangeBtn>
                 </BtnWrap>
-                }
-                  </div>
-              </HiddenBox>
-            )}
-            
-          </IdContentInnerBox>
-          {/* // 내 언어 설정 끝 */}
-        </ContentsBox>  )
+              )}
+            </div>
+          </HiddenBox>
+        )}
+      </IdContentInnerBox>
+      {/* // 내 언어 설정 끝 */}
+    </ContentsBox>
+  );
 }
-
 
 //공통
 const ServiceNotYet = styled.span`
   font-size: ${(props) => props.theme.fontSize.font15};
   font-weight: ${(props) => props.theme.fontWeight.font500};
   color: ${(props) => props.theme.color.pinkColor};
-`
+`;
 
 // 레이아웃
 const Container = styled.section`

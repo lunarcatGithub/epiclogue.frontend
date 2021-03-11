@@ -13,17 +13,17 @@ import ConfirmPopup from '@utils/ConfirmPopup';
 // hooks&reducer
 import AutoHiding from '@utils/autoHiding';
 import { useToggle } from '@hooks/useToggle';
-import {useConvertTags} from '@hooks/useConvertTags';
+import { useConvertTags } from '@hooks/useConvertTags';
 import { useModal } from '@hooks/useModal';
 import { useUrlMove } from '@hooks/useUrlMove';
-import {useDate} from '@hooks/useDate';
+import { useDate } from '@hooks/useDate';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { LanguageContext, AppDataContext } from '@store/App_Store';
 import useDebounce from '@hooks/useDebounce';
 
 // 아이콘 import
 
-export default function MyBoard({boardItem, userId, nonError}) {
+export default function MyBoard({ boardItem, userId, nonError }) {
   const [goURL] = useUrlMove();
   const router = useRouter();
 
@@ -36,14 +36,14 @@ export default function MyBoard({boardItem, userId, nonError}) {
   const [userScreenId, setUserScreenId] = useState();
 
   // debounce 처리
-  const followDebounce = useDebounce(follow ,2000);
+  const followDebounce = useDebounce(follow, 2000);
 
   useEffect(() => {
     setUserScreenId(followData?.screenId);
-  }, [followData])
+  }, [followData]);
 
   // 헤더 스크롤용
-  const show = AutoHiding()
+  const show = AutoHiding();
 
   // 태그 및 하이퍼링크 convert
   const [converted, convert] = useConvertTags();
@@ -51,7 +51,7 @@ export default function MyBoard({boardItem, userId, nonError}) {
   // confirm popup
   const [state_Confirm, toggle_Modal_Confirm] = useModal();
   // 날짜
-  const [setGetDate, setCountryDivided, countryResult] = useDate()
+  const [setGetDate, setCountryDivided, countryResult] = useDate();
 
   //tab
   const [isTab, setIsTab] = useState('all');
@@ -63,66 +63,66 @@ export default function MyBoard({boardItem, userId, nonError}) {
 
   const metaBoardTitle = langMetaBoard();
   const _signDate = signDate[selectedLanguage] || signDate[defaultLanguage],
-        _noIntro = noIntro[selectedLanguage] || noIntro[defaultLanguage],
-        _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
-        _followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage],
-        _allTabs = allTabs[selectedLanguage] || allTabs[defaultLanguage],
-        _contentsTabs = contentsTabs[selectedLanguage] || contentsTabs[defaultLanguage],
-        _bookMarkTabs = bookMarkTabs[selectedLanguage] || bookMarkTabs[defaultLanguage],
-        _secondary = secondary[selectedLanguage] || secondary[defaultLanguage];
+    _noIntro = noIntro[selectedLanguage] || noIntro[defaultLanguage],
+    _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
+    _followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage],
+    _allTabs = allTabs[selectedLanguage] || allTabs[defaultLanguage],
+    _contentsTabs = contentsTabs[selectedLanguage] || contentsTabs[defaultLanguage],
+    _bookMarkTabs = bookMarkTabs[selectedLanguage] || bookMarkTabs[defaultLanguage],
+    _secondary = secondary[selectedLanguage] || secondary[defaultLanguage];
 
-    //fetch
-    const [, , , followFetch] = useAxiosFetch();
-    const [boardLoding, boardApi, boardError, boardFetch] = useAxiosFetch();
-    const [boardDataLoding, boardDataApi, boardDataError, boardDataFetch] = useAxiosFetch();
+  //fetch
+  const [, , , followFetch] = useAxiosFetch();
+  const [boardLoding, boardApi, boardError, boardFetch] = useAxiosFetch();
+  const [boardDataLoding, boardDataApi, boardDataError, boardDataFetch] = useAxiosFetch();
 
-    const submitHandler = () => {
-      if(!loginOn) return;
-      toggleFollow();
+  const submitHandler = () => {
+    if (!loginOn) return;
+    toggleFollow();
+  };
+
+  useEffect(() => {
+    if (followDebounce === null || followDebounce === undefined) return;
+    followFetch(`${process.env.API_URL}/interaction/follow`, followDebounce ? 'post' : 'delete', { targetUserId: boardItem?.data?._id });
+  }, [followDebounce]);
+
+  const moveFollowList = (type) => {
+    if (!loginOn) {
+      setUnAuth(true);
+      return;
     }
+    setFollowButton(type);
+    goURL({ pathname: '/follows' });
+  };
 
-    useEffect(() => {
-      if(followDebounce === null || followDebounce === undefined) return;
-      followFetch(`${process.env.API_URL}/interaction/follow`, followDebounce ? 'post' : 'delete',  { targetUserId: boardItem?.data?._id })
-    
-    }, [followDebounce])
-
-    const moveFollowList = (type) => {
-      if(!loginOn){ setUnAuth(true); return; }
-      setFollowButton(type)
-      goURL({ pathname: '/follows' });
-      
-    }
-    
-  useEffect(()=>{
+  useEffect(() => {
     setFollowData(boardItem?.data);
-    setCountryDivided(selectedLanguage || defaultLanguage)
+    setCountryDivided(selectedLanguage || defaultLanguage);
     convert(boardItem?.data?.intro);
     setGetDate(boardItem?.data.joinDate);
     setDate(countryResult);
     toggleFollow(boardItem?.data?.isFollowing);
-    localStorage.getItem('userid') === boardItem?.data?.screenId && setCheckMe(true)
-  },[boardItem, countryResult]);
+    localStorage.getItem('userid') === boardItem?.data?.screenId && setCheckMe(true);
+  }, [boardItem, countryResult]);
 
   useEffect(() => {
     userScreenId && boardDataFetch(`${process.env.API_URL}/myboard/${userScreenId}/${isTab}`, 'get', null);
   }, [isTab, userScreenId]);
 
-
   useEffect(() => {
-    setMyboardData(boardDataApi?.data)
+    setMyboardData(boardDataApi?.data);
   }, [boardDataApi]);
 
   useEffect(() => {
-    nonError === 404 && toggle_Modal_Confirm(true)
+    nonError === 404 && toggle_Modal_Confirm(true);
   }, [nonError]);
 
   const navTabArr = [
-    {link:'all', title:_allTabs},
-    {link:'originals', title:_contentsTabs},
-    {link:'secondaryWorks', title:_secondary},
-    {link:'bookmarks', title:_bookMarkTabs}
-  ]
+    { link: 'all', title: _allTabs },
+    { link: 'originals', title: _contentsTabs },
+    { link: 'secondaryWorks', title: _secondary },
+    { link: 'bookmarks', title: _bookMarkTabs },
+  ];
 
   return (
     <>
@@ -152,38 +152,37 @@ export default function MyBoard({boardItem, userId, nonError}) {
               </UserIntroduceBox>
               {/* 팔로우 버튼 시작 */}
               <FollowsBox>
-                  <FollowButton
-                    type='following'
-                    onClick={()=> moveFollowList('following')}
-                  >
-                    {_followingBtn}
-                    <FollowScore>{followData?.followingCount}</FollowScore>
-                  </FollowButton>
+                <FollowButton type="following" onClick={() => moveFollowList('following')}>
+                  {_followingBtn}
+                  <FollowScore>{followData?.followingCount}</FollowScore>
+                </FollowButton>
 
-                  <FollowButton
-                    onClick={()=> moveFollowList('follower')}
-                  >
-                    {_followBtn}
-                    <FollowScore>{followData?.followerCount}</FollowScore>
-                  </FollowButton>
-                {!checkMe &&
+                <FollowButton onClick={() => moveFollowList('follower')}>
+                  {_followBtn}
+                  <FollowScore>{followData?.followerCount}</FollowScore>
+                </FollowButton>
+                {!checkMe && (
                   <ButtonWrap>
                     {/* <FollowAddButton data={String(follow)} onClick={toggleFollow}>
                       {follow ? _followingBtn : _followBtn}
                     </FollowAddButton> */}
-                    <FollowAddButton 
-                    styling={follow} 
-                    onClick={()=> {
-                      if(!loginOn) { setUnAuth(true); return; }
-                      submitHandler()
-                    }}>
+                    <FollowAddButton
+                      styling={follow}
+                      onClick={() => {
+                        if (!loginOn) {
+                          setUnAuth(true);
+                          return;
+                        }
+                        submitHandler();
+                      }}
+                    >
                       {follow ? _followingBtn : _followBtn}
                     </FollowAddButton>
                     {/* <MoreMenuBtn>
                       <MoreMenu />
                     </MoreMenuBtn> */}
                   </ButtonWrap>
-                }
+                )}
               </FollowsBox>
               {/*// 레이아웃 상단 유저정보 레이아웃 끝 */}
             </UserInformBox>
@@ -191,25 +190,24 @@ export default function MyBoard({boardItem, userId, nonError}) {
           {/* 네비게이션 시작 */}
           <NavBar show={show}>
             <NavBarInner>
-              {
-              navTabArr.map((nav, index) => (
-                <NavItem 
-                key={index}
-                styling={isTab === nav.link}
-                onClick={()=> {
-                  setIsTab(nav.link)
-                  goURL({
-                  pathname:`/myboard/${followData?.screenId}`, 
-                  as:`/myboard/${followData?.screenId}`,
-                  query:{
-                    tab:nav.link
-                  }
-                  })
-                }} >
+              {navTabArr.map((nav, index) => (
+                <NavItem
+                  key={index}
+                  styling={isTab === nav.link}
+                  onClick={() => {
+                    setIsTab(nav.link);
+                    goURL({
+                      pathname: `/myboard/${followData?.screenId}`,
+                      as: `/myboard/${followData?.screenId}`,
+                      query: {
+                        tab: nav.link,
+                      },
+                    });
+                  }}
+                >
                   <NavAllButton>{nav.title}</NavAllButton>
                 </NavItem>
-              ))
-              }
+              ))}
             </NavBarInner>
           </NavBar>
           {/* 작품 콘텐츠 시작 */}
@@ -220,15 +218,14 @@ export default function MyBoard({boardItem, userId, nonError}) {
           </ContentsBox>
         </LayoutInner>
       </Layout>
-      {
-      state_Confirm &&
+      {state_Confirm && (
         <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
-          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={goURL} type={'REMOVE_USER'}/>
+          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={goURL} type={'REMOVE_USER'} />
         </Modal>
-      }
+      )}
     </>
   );
-};
+}
 
 // 전체 레이아웃
 const Layout = styled.div`
@@ -293,7 +290,7 @@ const UserPfImgBox = styled.div`
 `;
 
 const UserPfImg = styled.span`
-  background:${props => props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`}; 
+  background: ${(props) => (props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`)};
   width: 100%;
   height: 100%;
   user-select: none;
@@ -380,12 +377,12 @@ const FollowButton = styled.button`
   font-size: ${(props) => props.theme.fontSize.font15};
   color: ${(props) => props.theme.color.whiteColor};
   font-weight: ${(props) => props.theme.fontWeight.font300};
-  margin-right:${props => props.type === 'following' ? `1.3em` : 0};
+  margin-right: ${(props) => (props.type === 'following' ? `1.3em` : 0)};
   white-space: nowrap;
   cursor: pointer;
   &::before {
     content: '';
-    display: ${props => props.type === 'following' ? `inline-block` : `none`};
+    display: ${(props) => (props.type === 'following' ? `inline-block` : `none`)};
     position: absolute;
     top: 9px;
     right: -12px;
@@ -398,7 +395,7 @@ const FollowButton = styled.button`
 `;
 
 const ButtonWrap = styled.div`
-  position:relative;
+  position: relative;
   display: flex;
   width: 100%;
   margin-left: 16px;
@@ -429,7 +426,7 @@ const FollowAddButton = styled.button`
   font-weight: ${(props) => (props.styling ? props.theme.fontWeight.font500 : props.theme.fontWeight.font300)};
   padding: 0.3em 0.8em;
   border: 1px solid ${(props) => (props.styling ? props.theme.color.darkOrange : props.theme.color.whiteColor)};
-  background: ${(props) => props.styling ? props.theme.color.darkOrange : null};
+  background: ${(props) => (props.styling ? props.theme.color.darkOrange : null)};
   border-radius: 25px;
   cursor: pointer;
   margin-right: 1em;
@@ -440,7 +437,7 @@ const MoreMenuBtn = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding:0.8em;
+  padding: 0.8em;
   border: 1px solid ${(props) => props.theme.color.softGrayColor};
   border-radius: 50%;
   cursor: pointer;
@@ -485,11 +482,11 @@ const NavBar = styled.div`
   width: 100%;
   height: 2.8em;
   background: ${(props) => props.theme.color.darkBlackOpacity};
-  z-index:1;
-  transition:all .2s .3s ease-in-out;
+  z-index: 1;
+  transition: all 0.2s 0.3s ease-in-out;
 
-  @media (max-width:900px){
-    top: ${props => props.show ? 53 : 0}px;
+  @media (max-width: 900px) {
+    top: ${(props) => (props.show ? 53 : 0)}px;
   }
 `;
 const NavBarInner = styled.div`
@@ -521,10 +518,10 @@ const NavItem = styled.button`
   height: 100%;
   cursor: pointer;
   transition: all 0.05s ease-in-out;
-  background:${props => props.styling && props.theme.color.darkGray};
+  background: ${(props) => props.styling && props.theme.color.darkGray};
 
   &:active {
-    background: ${props => props.theme.color.darkGray};
+    background: ${(props) => props.theme.color.darkGray};
     opacity: 0.5;
   }
 `;
@@ -534,13 +531,11 @@ const NavItem = styled.button`
 const ContentsBox = styled.div`
   display: flex;
   width: 100%;
-  height: ${props => props.myboardData < 20 ? `100vh` : `100%`};
+  height: ${(props) => (props.myboardData < 20 ? `100vh` : `100%`)};
   background: ${(props) => props.theme.color.backgroundColor};
-
 `;
 const ContentsInner = styled.div`
-width: 100%;
-height: 100%;
-background: ${(props) => props.theme.color.backgroundColor};
+  width: 100%;
+  height: 100%;
+  background: ${(props) => props.theme.color.backgroundColor};
 `;
-

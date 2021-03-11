@@ -94,16 +94,14 @@ const Slider = (props) => {
       </SliderLayout>
       <MobileLayout>
         <MobileLayoutInner>
-          {
-          imgData
+          {imgData
             ? imgData.map((i, key) => (
                 <ImgDummy key={i.key} styling={imgData}>
                   <Img src={i.url} draggable="false" />
                   <ImgDelete onClick={() => removeImage(i.key)} />
                 </ImgDummy>
               ))
-            : null
-            }
+            : null}
         </MobileLayoutInner>
       </MobileLayout>
     </>
@@ -157,8 +155,7 @@ const ImgBox = styled.div`
   width: auto;
   background: ${(props) => props.theme.color.whiteColor};
   transition: ${(props) => (props.event ? null : 'all 0.3s ease')};
-  user-select:none;
-
+  user-select: none;
 `;
 const ImgDummy = styled.div`
   position: relative;
@@ -179,13 +176,13 @@ const Img = styled.img`
   object-fit: cover;
   width: 100%;
   height: auto;
-  user-select:none;
+  user-select: none;
 `;
 // 이미지 삭제
 const ImgDelete = styled.button`
-  display:flex; 
-  justify-content:center;
-  align-items:center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   top: 8px;
   right: 8px;
