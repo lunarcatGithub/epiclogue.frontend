@@ -71,7 +71,6 @@ const Header = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if(!loginOn) return;
     if (searchBody === ' ' || searchBody === undefined || searchBody === null) return;
     setSearchData(searchBody);
 
@@ -117,12 +116,12 @@ const Header = () => {
 
   useEffect(() => {
     if (!loginOn) return;
-    readFetch(`${process.env.API_URL}/notification/check`, 'get', null, null, null);
+    // readFetch(`${process.env.API_URL}/notification/check`, 'get', null, null, null);
   }, []);
 
   useEffect(() => {
     readObserver();
-  });
+  },[]);
 
   // 유저 프로필 API
   useEffect(() => {
