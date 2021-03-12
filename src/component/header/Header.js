@@ -29,6 +29,7 @@ const Header = () => {
   const router = useRouter();
 
   const pathname = router.asPath;
+
   // 경고용 푸시
   const { alertPatch } = useContext(AlertContext);
 
@@ -70,6 +71,7 @@ const Header = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    if(!loginOn) return;
     if (searchBody === ' ' || searchBody === undefined || searchBody === null) return;
     setSearchData(searchBody);
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
 
 // 컴포넌트 import
 import { LangMyBoard } from '@language/Lang.Myboard';
@@ -25,7 +24,6 @@ import useDebounce from '@hooks/useDebounce';
 
 export default function MyBoard({ boardItem, userId, nonError }) {
   const [goURL] = useUrlMove();
-  const router = useRouter();
 
   const { langState } = useContext(LanguageContext);
   const { setMyboardData, loginOn, setUnAuth, followData, setFollowData, setFollowButton } = useContext(AppDataContext);
@@ -100,7 +98,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     setCountryDivided(selectedLanguage || defaultLanguage);
     convert(boardItem?.data?.intro);
     setGetDate(boardItem?.data.joinDate);
-    setDate(countryResult);
+    setDate(boardDataLoding ? '00-00-00' : countryResult);
     toggleFollow(boardItem?.data?.isFollowing);
     localStorage.getItem('userid') === boardItem?.data?.screenId && setCheckMe(true);
   }, [boardItem, countryResult]);
@@ -143,7 +141,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
               <UserIdCreateDateBox>
                 <UserIdTag>{followData?.screenId}</UserIdTag>
                 <CreateIdDate>
-                  {_signDate} {!boardDataLoding && date}
+                  {_signDate} {date}
                 </CreateIdDate>
               </UserIdCreateDateBox>
               {/* 유저 소개 시작 */}

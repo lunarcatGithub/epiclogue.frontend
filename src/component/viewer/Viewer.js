@@ -42,7 +42,8 @@ const Viewer = ({ boardItem, nonError }) => {
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
   const [goURL] = useUrlMove();
-
+  const [goUploadUpdate] = useUrlMove();
+  
   const [replyList, setReplyList] = useState([]);
   const [renderList, setRenderList] = useState([]);
   const [boardImg, setBoardImg] = useState([]);

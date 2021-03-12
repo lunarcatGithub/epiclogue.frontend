@@ -114,7 +114,7 @@ export default function ViewerUserForm(props) {
               {
                 followMe && loginOn && (
                   <form action="" onSubmit={(e) => submitHandler(e)}>
-                    <UserFollowTxt followData={follow}>{follow ? followOnLang : followLang}</UserFollowTxt>
+                    <UserFollowTxt styling={follow}>{follow ? followOnLang : followLang}</UserFollowTxt>
                   </form>
                 )
               }
@@ -232,8 +232,8 @@ const ProfileImgBox = styled.div`
   display: flex;
   min-width: 42px;
   min-height: 42px;
-  max-width: 42px;
-  max-height: 42px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   margin: 4px 10px;
   overflow: hidden;
@@ -269,7 +269,7 @@ const UserNickInfo = styled.span`
   line-height: 19px;
   ${(props) => props.theme.textTwoLine};
   font-weight: ${(props) => props.theme.fontWeight.font700};
-  margin-right: 8px;
+  margin-right: 0.6em;
   font-size: ${(props) => props.theme.fontSize.font15};
   color: ${(props) => props.theme.color.blackColor};
   cursor: pointer;
@@ -280,12 +280,12 @@ const UserFollowTxt = styled.button.attrs({
   type: 'submit',
 })`
   white-space: nowrap;
-  margin-right: 58px;
+  margin-right: 4em;;
   font-weight: ${(props) => props.theme.fontWeight.font700};
   font-size: ${(props) => props.theme.fontSize.font15};
+  color:${props => props.styling ? props.theme.color.orangeColor : props.theme.color.popupColor};
+  transition: color .2s ease;
   cursor: pointer;
-
-  /* animation: ${(props) => (props.followData ? Following : UnFollowing)} 0.3s ease forwards; */
 `;
 
 // 유저 아이디
@@ -301,7 +301,7 @@ const UserIdInfo = styled.span`
 `;
 
 const OriginalContent = styled.span`
-  margin-top: 10px;
+  margin-top: 0.6em;
   font-weight: ${(props) => props.theme.fontWeight.font700};
   font-size: ${(props) => props.theme.fontSize.font15};
   color: ${(props) => props.theme.color.blackColor};
@@ -360,7 +360,7 @@ const BottomWrap = styled.div`
   height: auto;
   align-items: center;
   flex-direction: row;
-  margin-top: 8px;
+  margin: 1em 0 0.5em 0;
 `;
 const ModifyText = styled.span`
   margin-left: 8px;

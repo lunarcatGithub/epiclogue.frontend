@@ -55,6 +55,7 @@ const MyPopup = (props) => {
   useEffect(() => {
     // * 삭제 확인 이후 로직 실행
     if (accessConfirm) {
+      console.log('ad')
       if (ReFbUid) {
         deleteFbRe();
       } else if (props.type === '_More') {
