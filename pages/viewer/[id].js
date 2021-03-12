@@ -23,5 +23,5 @@ ViewerPage.getInitialProps = async(context)=> {
             boardItem: res?.data,
             id: id,
             error,
-          }
+      }
 }

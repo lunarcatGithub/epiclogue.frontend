@@ -2,13 +2,13 @@ import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 
 // Hooks&&reducer
-import { useModal } from '@hooks/useModal';
 import { useToggle } from '@hooks/useToggle';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { AppDataContext } from '@store/App_Store';
 import { useConvertTags } from '@hooks/useConvertTags';
 import { useTimeCalculation } from '@hooks/useTimeCalculation';
 import useAxiosFetch from '@hooks/useAxiosFetch';
+import useDebounce from '@hooks/useDebounce';
 
 export default function ViewerUserForm(props) {
   const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents, checkMoreMenuType } = props;
@@ -23,13 +23,16 @@ export default function ViewerUserForm(props) {
   const [screenId, setScreenId] = useState();
   const [originUserData, setOriginUserData] = useState();
   const [title, setTitle] = useState();
+  const [user_id, setUser_id] = useState();
 
   // follow
   const [follow, toggleFollow] = useToggle();
   const [followMe, setFollowMe] = useState();
   const [indicateDate] = useTimeCalculation(userData?.writeDate);
   const [converted, convert] = useConvertTags();
-  
+  // debounce 처리
+  const [followDebounce, getValue] = useDebounce();
+  console.log(userData)
   const changeHandler = () => {
     const localScreenId = localStorage.getItem('userid');
 
@@ -38,18 +41,20 @@ export default function ViewerUserForm(props) {
         setKindContent(<UserUploadInfoImg image={externalSource ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />);
         setScreenId(userData?.writer?.screenId);
         setFollowMe(localScreenId !== userData?.screenId);
-        toggleFollow(userData?.following);
+        toggleFollow(userData?.writer?.following);
         setTitle(userData?.boardTitle);
         convert(userData?.boardBody);
+        setUser_id(userData?._id)
         break;
 
       case 'SECOND':
         setKindContent(<UserUploadInfoImg image={'/static/trans.svg'} />);
         setScreenId(userData?.writer?.screenId);
         setFollowMe(localScreenId !== userData?.screenId);
-        toggleFollow(userData?.following);
+        toggleFollow(userData?.writer?.following);
         setTitle(userData?.boardTitle);
         convert(userData?.boardBody);
+        setUser_id(userData?._id)
 
         break;
 
@@ -61,20 +66,24 @@ export default function ViewerUserForm(props) {
         toggleFollow(userData?.originUserId?.following);
         setTitle(userData?.originBoardId?.boardTitle);
         convert(userData?.originBoardId?.boardBody);
+        setUser_id(userData?.originUserId?._id)
+
         break;
       default:
         break;
     }
   };
-
-  const submitHandler = (e) => {
-    e.preventDefault();
+  console.log(follow)
+  const submitHandler = () => {
     if (!loginOn) return;
     const URL = `${process.env.API_URL}/interaction/follow`;
-    followFetch(URL, follow ? 'post' : 'delete', { targetUserId: screenId }, null, null);
-    toggleFollow();
+    followFetch(URL, followDebounce ? 'delete' : 'post' , { targetUserId: user_id });
   };
 
+  useEffect(() => {
+    if (!loginOn) return;
+    getValue(follow)
+  }, [follow])
 
   useEffect(() => {
     changeHandler();
@@ -108,9 +117,14 @@ export default function ViewerUserForm(props) {
               </UserNickInfo>
               {
                 followMe && loginOn && (
-                  <form action="" onSubmit={(e) => submitHandler(e)}>
-                    <UserFollowTxt styling={follow}>{follow ? followOnLang : followLang}</UserFollowTxt>
-                  </form>
+                    <UserFollowTxt
+                      styling={follow}
+                      onClick={()=>{
+                        if (!loginOn) { setUnAuth(true); return; }
+                            toggleFollow();
+                            submitHandler();
+                      }}
+                    >{follow ? followOnLang : followLang}</UserFollowTxt>
                 )
               }
             </UserProfileInfo>
@@ -126,20 +140,22 @@ export default function ViewerUserForm(props) {
             <OriginalContent>{title}</OriginalContent>
             <TextContent>{converted}</TextContent>
             <BottomWrap>
-              <PostedTime>Posted by {indicateDate}</PostedTime>
-              {userData?.edited && <ModifyText>{_modified}</ModifyText>}
+              { type !== 'ORIGIN' && <PostedTime>Posted by {indicateDate}</PostedTime> }
+              {userData?.edited && <ModifyText>{'_modified'}</ModifyText>}
             </BottomWrap>
             {originUserData && (
               <ContentImgWrap styling={originUserData}>
-                {originUserData ? (
-                  <ContentImgBox onClick={() => goURL({ pathname: `/viewer/${originUserData._id}` })}>
-                    <ContentImg thumNail={originUserData.boardImg[0]} />
-                  </ContentImgBox>
-                ) : (
-                  <ContentImgBox>
-                    <NullContent>{removedContents}</NullContent>
-                  </ContentImgBox>
-                )}
+                {
+                  originUserData ? (
+                    <ContentImgBox onClick={() => goURL({ pathname: `/viewer/${originUserData._id}` })}>
+                      <ContentImg thumNail={originUserData.boardImg[0]} />
+                    </ContentImgBox>
+                  ) : (
+                    <ContentImgBox>
+                      <NullContent>{removedContents}</NullContent>
+                    </ContentImgBox>
+                  )
+                }
               </ContentImgWrap>
             )}
           </UserProfileContentsBox>
@@ -317,7 +333,7 @@ const ContentImgBox = styled.div`
   height: 140px;
   overflow: hidden;
   border-radius: 12px;
-  margin: 14px 26px 6px 0;
+  margin: 0 26px 6px 0;
   border: 3px solid ${(props) => (props.styling ? props.theme.color.semiOrangeColor : props.theme.color.softGrayColor)};
   background: ${(props) => (props.styling ? '' : `${(props) => props.theme.color.hoverColor}`)};
   cursor: pointer;
@@ -355,7 +371,7 @@ const BottomWrap = styled.div`
   height: auto;
   align-items: center;
   flex-direction: row;
-  margin: 1em 0 0.5em 0;
+  margin: 0.8em 0 0.5em 0;
 `;
 const ModifyText = styled.span`
   margin-left: 8px;

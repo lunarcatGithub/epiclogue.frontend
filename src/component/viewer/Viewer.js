@@ -33,7 +33,7 @@ export const ReplyListContext = React.createContext();
 const Viewer = ({ boardItem, nonError }) => {
   const router = useRouter();
   const boardUid = router?.query?.id;
-
+  
   const { alertPatch } = useContext(AlertContext);
   const [profileURL, , convertProfileIamge] = useConvertURL();
   const [O_profileURL, , convertO_ProfileIamge] = useConvertURL();
@@ -169,9 +169,11 @@ const Viewer = ({ boardItem, nonError }) => {
     const URL = `${process.env.API_URL}/interaction/${type}`;
 
     if (type === 'like') {
-      likeFetch(URL, like ? 'post' : 'delete', { targetInfo: boardUid, targetType }, null);
+      likeFetch(URL, like ? 'delete' :'post' , { targetInfo: boardUid, targetType }, null);
+      toggleLike();
     } else if (type === 'bookmark') {
-      bookmarkFetch(URL, bookmark ? 'post' : 'delete', { boardId: boardUid }, null);
+      bookmarkFetch(URL, bookmark ? 'delete' :'post' , { boardId: boardUid }, null);
+      toggleBookmark();
     }
   };
 
@@ -240,6 +242,7 @@ const Viewer = ({ boardItem, nonError }) => {
         sourceUrl,
       } = boardData;
       const { screenId, nickname, _id, following, profile } = writer;
+      console.log(boardData)
 
       setData({
         boardTitle,
@@ -430,12 +433,7 @@ const Viewer = ({ boardItem, nonError }) => {
                 <form onSubmit={(e) => sumitHandler(e, 'bookmark')}>
                   <BtnBox
                     onClick={() => {
-                      if (!loginOn) {
-                        setUnAuth(true);
-                        return;
-                      } else {
-                        toggleBookmark();
-                      }
+                      if (!loginOn) { setUnAuth(true); return; }
                     }}
                   >
                     <BookmarkBtn bookmark={bookmark} />
@@ -443,13 +441,7 @@ const Viewer = ({ boardItem, nonError }) => {
                 </form>
                 <form action="" onSubmit={(e) => sumitHandler(e, 'like', 'Board')}>
                   <BtnBox
-                    onClick={() => {
-                      if (!loginOn) {
-                        setUnAuth(true);
-                      } else {
-                        toggleLike();
-                      }
-                    }}
+                    onClick={() => { if (!loginOn) { setUnAuth(true); return; } }}
                   >
                     <LikeBtn heart={like} />
                     <ReactScore>{_heartCount}</ReactScore>
@@ -744,7 +736,7 @@ const BookmarkBtn = styled.button.attrs({ type: 'submit' })`
 `;
 const LikeBtn = styled(BookmarkBtn)`
   &::before {
-    background: url(${(props) => (props.heart ? `/static/heart-1.svg` : `/static/heart-2.svg`)}) no-repeat center / contain;
+    background: url(${(props) => (props.heart ? `/static/heart-2.svg` : `/static/heart-1.svg`)}) no-repeat center / contain;
   }
   &:active {
     &:after {
