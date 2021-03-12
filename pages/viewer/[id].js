@@ -10,7 +10,11 @@ ViewerPage.getInitialProps = async(context)=> {
       let res = null
       const id = context.query.id
       const url = `${process.env.API_URL}/boards/${id}`
-      res = await axios.get(url).catch(res => {
+      res = await axios({
+        url,
+        method:'get',
+        withCredentials: true
+      }).catch(res => {
           if(res.response?.status === 404) error = 404
           return res.response
       })
