@@ -16,7 +16,7 @@ Myboard.getInitialProps = async(context)=> {
     })
 
   return {
-      boardItem: res.data,
+      boardItem: res?.data,
       id: id,
       error,
     }
