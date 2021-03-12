@@ -44,7 +44,7 @@ export const SignIn = (props) => {
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
-  const { idPlaceHolder, pwPlaceHolder, loginButton, signUpButton, snsLoginDesc, loginFailHolder, leaveUser, lostPassword } = LangLogin;
+  const { idPlaceHolder, pwPlaceHolder, loginButton, signUpButton, snsLoginDesc, loginFailHolder, leaveUser, lostPassword, backLogin} = LangLogin;
   const { googleAccount, facebookAccount, kakaoAccount, loginErr } = socialLogin;
   const _idPlaceHolder = idPlaceHolder[selectedLanguage] || idPlaceHolder[defaultLanguage],
     _pwPlaceHolder = pwPlaceHolder[selectedLanguage] || pwPlaceHolder[defaultLanguage],
@@ -57,7 +57,8 @@ export const SignIn = (props) => {
     _kakaoAccount = kakaoAccount[selectedLanguage] || kakaoAccount[defaultLanguage],
     _loginErr = loginErr[selectedLanguage] || loginErr[defaultLanguage],
     _leaveUser = leaveUser[selectedLanguage] || leaveUser[defaultLanguage],
-    _lostPassword = lostPassword[selectedLanguage] || lostPassword[defaultLanguage];
+    _lostPassword = lostPassword[selectedLanguage] || lostPassword[defaultLanguage],
+    _backLogin = backLogin[selectedLanguage] || backLogin[defaultLanguage];
 
   // sns 로그인 통신
   const responseSuccess = (res, type) => {
@@ -116,7 +117,7 @@ export const SignIn = (props) => {
             <BackIconAnchor onClick={()=>router.back()}>
               <PureBackIcon/>
               </BackIconAnchor>
-              <SubTitle>메인으로 돌아가기</SubTitle></>
+              <SubTitle>{_backLogin}</SubTitle></>
             :
             <>
             <LoginLogo />
@@ -458,7 +459,7 @@ const Dummy = styled.div`
 const SubTitle = styled.span`
   text-align: center;
   font-weight: ${(props) => props.theme.fontWeight.font700};
-  color: ${(props) => props.theme.color.placeHolderColor};
+  color: ${(props) => props.theme.color.blackOpacity};
   font-size: ${(props) => props.theme.fontSize.font15};
 `;
 

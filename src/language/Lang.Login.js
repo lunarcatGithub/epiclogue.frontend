@@ -20,6 +20,11 @@ export const LangLogin = {
   pwPlaceHolder: { 2: 'Password', 0: '비밀번호', 1: 'パスワード' },
   loginButton: { 2: 'LOGIN', 0: '로그인', 1: 'ログイン' },
   signUpButton: { 2: 'SIGN UP', 0: '회원가입', 1: '会員登録' },
+  backLogin: {
+    2: 'Go back',
+    0: '뒤로가기',
+    1: '後ろ向き',
+  },
   snsLoginDesc: {
     2: (
       <>
@@ -312,5 +317,5 @@ export const socialLogin = {
     2: 'Login canceled',
     0: '로그인이 취소되었습니다',
     1: 'ログインがキャンセルされました',
-  },
+  }
 };

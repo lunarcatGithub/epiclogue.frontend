@@ -1,11 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 
-// 컴포넌트 import
-import Modal from '@utils/Modal';
-import MyPopup from './MyMoreMenuPopup';
-import UserPopup from './UserMoreMenuPopUp';
-
 // Hooks&&reducer
 import { useModal } from '@hooks/useModal';
 import { useToggle } from '@hooks/useToggle';
@@ -16,7 +11,7 @@ import { useTimeCalculation } from '@hooks/useTimeCalculation';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 export default function ViewerUserForm(props) {
-  const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents } = props;
+  const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents, checkMoreMenuType } = props;
 
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
@@ -28,18 +23,16 @@ export default function ViewerUserForm(props) {
   const [screenId, setScreenId] = useState();
   const [originUserData, setOriginUserData] = useState();
   const [title, setTitle] = useState();
-  //popup
-  const [type_MoreMenu, setType_MoreMenu] = useState();
-  const [state_MoreMenu, toggle_Modal_MoreMenu] = useModal();
 
   // follow
   const [follow, toggleFollow] = useToggle();
   const [followMe, setFollowMe] = useState();
   const [indicateDate] = useTimeCalculation(userData?.writeDate);
   const [converted, convert] = useConvertTags();
-  console.log(userData?.boardBody);
+  
   const changeHandler = () => {
     const localScreenId = localStorage.getItem('userid');
+
     switch (type) {
       case 'NOSECOND':
         setKindContent(<UserUploadInfoImg image={externalSource ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />);
@@ -82,20 +75,6 @@ export default function ViewerUserForm(props) {
     toggleFollow();
   };
 
-  const checkMoreMenuType = () => {
-    // 비회원 유저
-    if (!loginOn) {
-      setUnAuth(true);
-      return;
-    }
-    // 회원 유저
-    toggle_Modal_MoreMenu();
-    if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
-      setType_MoreMenu(<MyPopup type="_More" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-    } else {
-      setType_MoreMenu(<UserPopup handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-    }
-  };
 
   useEffect(() => {
     changeHandler();
@@ -127,11 +106,13 @@ export default function ViewerUserForm(props) {
               <UserNickInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>
                 {type === 'ORIGIN' ? userData?.originUserId?.nickname : userData?.nickname}
               </UserNickInfo>
-              {followMe && loginOn && (
-                <form action="" onSubmit={(e) => submitHandler(e)}>
-                  <UserFollowTxt followData={follow}>{follow ? followOnLang : followLang}</UserFollowTxt>
-                </form>
-              )}
+              {
+                followMe && loginOn && (
+                  <form action="" onSubmit={(e) => submitHandler(e)}>
+                    <UserFollowTxt styling={follow}>{follow ? followOnLang : followLang}</UserFollowTxt>
+                  </form>
+                )
+              }
             </UserProfileInfo>
             {/* 유저 아이디 */}
             <UserProfileId>
@@ -164,11 +145,6 @@ export default function ViewerUserForm(props) {
           </UserProfileContentsBox>
         </ProfileImgContent>
       </UserForm>
-      {state_MoreMenu && (
-        <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
-          {type_MoreMenu}
-        </Modal>
-      )}
     </>
   );
 }
@@ -251,8 +227,8 @@ const ProfileImgBox = styled.div`
   display: flex;
   min-width: 42px;
   min-height: 42px;
-  max-width: 42px;
-  max-height: 42px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   margin: 4px 10px;
   overflow: hidden;
@@ -288,7 +264,7 @@ const UserNickInfo = styled.span`
   line-height: 19px;
   ${(props) => props.theme.textTwoLine};
   font-weight: ${(props) => props.theme.fontWeight.font700};
-  margin-right: 8px;
+  margin-right: 0.6em;
   font-size: ${(props) => props.theme.fontSize.font15};
   color: ${(props) => props.theme.color.blackColor};
   cursor: pointer;
@@ -299,12 +275,12 @@ const UserFollowTxt = styled.button.attrs({
   type: 'submit',
 })`
   white-space: nowrap;
-  margin-right: 58px;
+  margin-right: 4em;;
   font-weight: ${(props) => props.theme.fontWeight.font700};
   font-size: ${(props) => props.theme.fontSize.font15};
+  color:${props => props.styling ? props.theme.color.orangeColor : props.theme.color.popupColor};
+  transition: color .2s ease;
   cursor: pointer;
-
-  /* animation: ${(props) => (props.followData ? Following : UnFollowing)} 0.3s ease forwards; */
 `;
 
 // 유저 아이디
@@ -320,7 +296,7 @@ const UserIdInfo = styled.span`
 `;
 
 const OriginalContent = styled.span`
-  margin-top: 10px;
+  margin-top: 0.6em;
   font-weight: ${(props) => props.theme.fontWeight.font700};
   font-size: ${(props) => props.theme.fontSize.font15};
   color: ${(props) => props.theme.color.blackColor};
@@ -379,7 +355,7 @@ const BottomWrap = styled.div`
   height: auto;
   align-items: center;
   flex-direction: row;
-  margin-top: 8px;
+  margin: 1em 0 0.5em 0;
 `;
 const ModifyText = styled.span`
   margin-left: 8px;

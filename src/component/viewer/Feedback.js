@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import Link from 'next/link';
 
 // 컴포넌트 import
-import MyPopup from './MyMoreMenuPopup';
-import UserPopup from './UserMoreMenuPopUp';
+import MorePopup from './MoreMenuPopup';
 import { LanguageContext, AppDataContext } from '@store/App_Store';
 import { LangCommon } from '@language/Lang.Common';
 import ReFeedback from './Feedback__ReFb';
@@ -149,9 +147,9 @@ const FB = (props) => {
   useEffect(() => {
     // 일반 회원 팝업
     if (localStorage.getItem('userid') === writer.screenId) {
-      setTypeMenu(<MyPopup type="Fb_More" conFirmType="COMMANT" onUpdate={setClickedUpdate} _id={_id} handleModal_Menu={() => handleModal_Menu(false)} />);
+      setTypeMenu(<MorePopup type="myFbMore" conFirmType="COMMANT" onUpdate={setClickedUpdate} _id={_id} handleModal_Menu={() => handleModal_Menu(false)} />);
     } else {
-      setTypeMenu(<UserPopup handleModal_Menu={() => handleModal_Menu(false)} />);
+      setTypeMenu(<MorePopup type="userMore" handleModal_Menu={() => handleModal_Menu(false)} />);
     }
     if (props.type === 'ReFb') {
       setReFbUid(props.data._id);

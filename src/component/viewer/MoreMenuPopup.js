@@ -4,9 +4,10 @@ import styled, { css } from 'styled-components';
 // 컴포넌트 import
 import { ReplyListContext } from './Viewer';
 import { LangCommon } from '@language/Lang.Common';
-import { langMymoreMenu } from '@language/Lang.Viewer';
+import { langMymoreMenu, langUsermoreMenu } from '@language/Lang.Viewer';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
+import ReportsPopup from './ReportsPopup';
 
 // Hooks&&reducer import
 import { useUrlMove } from '@hooks/useUrlMove';
@@ -14,9 +15,10 @@ import { useModal } from '@hooks/useModal';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { LanguageContext } from '@store/App_Store';
 
-const MyPopup = (props) => {
+const MorePopup = (props) => {
   const { langState } = useContext(LanguageContext);
-  const { handleModal_Menu } = props;
+  const {_id, conFirmType, type, handleModal_Menu} = props
+
   const [accessConfirm, setAccessConfirm] = useState(false);
   // fetch
   const [removeBoardLoding, removeBoardApi, removeBoardError, removeBoardFetch] = useAxiosFetch();
@@ -27,25 +29,29 @@ const MyPopup = (props) => {
   const { selectedLanguage, defaultLanguage } = langState;
   const { closeBtn } = LangCommon;
   const { myOptions, modifyContent, deleteContent } = langMymoreMenu;
+  const { userOptions, sendDm, reportUser, muteUser, moreContents } = langUsermoreMenu;
 
   const _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage],
     _myOptions = myOptions[selectedLanguage] || myOptions[defaultLanguage],
     // _modifyContent = modifyContent[selectedLanguage] || modifyContent[defaultLanguage],
-    _deleteContent = deleteContent[selectedLanguage] || deleteContent[defaultLanguage];
+    _deleteContent = deleteContent[selectedLanguage] || deleteContent[defaultLanguage],
+    _userOptions = userOptions[selectedLanguage] || userOptions[defaultLanguage],
+    _reportUser = reportUser[selectedLanguage] || reportUser[defaultLanguage];
 
   const [goURL] = useUrlMove();
   const [state_Confirm, toggle_Modal_Confirm] = useModal();
+  const [handleReport, setHandleReport] = useModal();
 
   const { boardUid, replyList, renderList, setReplyList, setRenderList, setFbReList, fbReList, ReFbUid } = useContext(ReplyListContext);
-  let FbUid = props._id;
-  const type = props.conFirmType;
+
+  // const type = props.conFirmType;
 
   const deleteFb = () => {
-    removeFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${FbUid}`, 'delete', null, null, null);
+    removeFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${_id}`, 'delete', null, null, null);
   };
 
   const deleteFbRe = () => {
-    removeReFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${FbUid}/reply/${ReFbUid}`, 'delete', null, null);
+    removeReFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`, 'delete', null, null);
   };
 
   const removeBoardHandler = () => {
@@ -57,7 +63,7 @@ const MyPopup = (props) => {
     if (accessConfirm) {
       if (ReFbUid) {
         deleteFbRe();
-      } else if (props.type === '_More') {
+      } else if (type === 'myMore') {
         removeBoardHandler();
       } else {
         deleteFb();
@@ -86,28 +92,43 @@ const MyPopup = (props) => {
   return (
     <>
       <MyPopupInner>
-        <MyTitleBox>{_myOptions}</MyTitleBox>
-        <MyTabBox>
-          {
-            //  props.type === '_More' &&
-            //  <MyTab
-            //     onClick={(e) => {
-            //       props.onUpdate();
-            //       handleModal_Menu();
-            //     }}
-            //   >
-            //     {_modifyContent}
-            //   </MyTab>
-          }
-          <MyTab onClick={(e) => toggle_Modal_Confirm()}>{_deleteContent}</MyTab>
-        </MyTabBox>
+        <MyTitleBox>{type === 'myMore' || type === 'myFbMore' ? _myOptions : _userOptions}</MyTitleBox>
+        {
+          type === 'myMore' || type === 'myFbMore' ? <MyTabBox>
+            {
+              //  props.type === '_More' &&
+              //  <MyTab
+              //     onClick={(e) => {
+              //       props.onUpdate();
+              //       handleModal_Menu();
+              //     }}
+              //   >
+              //     {_modifyContent}
+              //   </MyTab>
+            }
+            <MyTab onClick={() => toggle_Modal_Confirm()}>{_deleteContent}</MyTab>
+          </MyTabBox>
+          :
+          <MyTabBox>
+            <MyTab onClick={() => setHandleReport()}>{_reportUser}</MyTab>
+          </MyTabBox>
+        }
         <PopupClose onClick={() => handleModal_Menu()}>{_closeBtn}</PopupClose>
       </MyPopupInner>
-      {state_Confirm && (
-        <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
-          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={setAccessConfirm} type={type} />
-        </Modal>
-      )}
+      {
+        state_Confirm && (
+          <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
+            <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={setAccessConfirm} type={conFirmType} />
+          </Modal>
+        )
+      }
+      {
+        handleReport && (
+          <Modal visible={handleReport} closable={true} maskClosable={true} onClose={() => setHandleReport(false)}>
+            <ReportsPopup closeModal={() => setHandleReport(false)} />
+          </Modal>
+        )
+      }
     </>
   );
 };
@@ -165,7 +186,7 @@ const MyTitleBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-left: 26px;
+  /* padding-left: 26px; */
   width: 100%;
   height: 42px;
   margin-bottom: 3px;
@@ -193,4 +214,4 @@ const MyTab = styled.button.attrs({
   background: ${(props) => props.theme.color.whiteColor};
 `;
 
-export default MyPopup;
+export default MorePopup;
