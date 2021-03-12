@@ -22,7 +22,6 @@ import ViewerUserForm from './Viewer__UserForm';
 // Hooks&&reducer
 import { useModal } from '@hooks/useModal';
 import { useToggle } from '@hooks/useToggle';
-import { useTimeCalculation } from '@hooks/useTimeCalculation';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { useConvertURL } from '@hooks/useConvertURL';
 import usePublic from '@hooks/usePublic';
@@ -43,7 +42,6 @@ const Viewer = ({ boardItem, nonError }) => {
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
   const [goURL] = useUrlMove();
-  const [goUploadUpdate] = useUrlMove();
 
   const [replyList, setReplyList] = useState([]);
   const [renderList, setRenderList] = useState([]);
@@ -57,7 +55,10 @@ const Viewer = ({ boardItem, nonError }) => {
   const [bookmark, toggleBookmark] = useToggle();
   const [like, toggleLike] = useToggle();
   const [globe, toggleGloobe] = useToggle();
+  const [screenId, setScreenId] = useState();
 
+  // 모달 팝업 컨트롤
+  const [type_MoreMenu, setType_MoreMenu] = useState();
   const [state_O_MoreMenu, toggle_O_Modal_MoreMenu] = useModal();
   const [state_MoreMenu, toggle_Modal_MoreMenu] = useModal();
   const [state_React, toggle_Modal_React] = useModal();
@@ -187,6 +188,23 @@ const Viewer = ({ boardItem, nonError }) => {
   //   }
   // };
 
+    // 회원 유저
+    const checkMoreMenuType = () => {
+      // 비회원 유저
+      if (!loginOn) {
+        setUnAuth(true);
+        return;
+      }
+      // 회원 유저
+      toggle_Modal_MoreMenu();
+      if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
+        setType_MoreMenu(<MyPopup type="_More" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+      } else {
+        setType_MoreMenu(<UserPopup handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+      }
+    };
+  
+
   useEffect(() => {
     addList();
   }, []);
@@ -256,7 +274,7 @@ const Viewer = ({ boardItem, nonError }) => {
       toggleLike(!loginOn ? false : liked);
       setReplyList(replyList);
       setRenderList(replyList);
-
+      setScreenId(screenId)
       setBoardImg(boardImg);
       setHeartCount(heartCount);
       setIsLoading(false);
@@ -333,46 +351,61 @@ const Viewer = ({ boardItem, nonError }) => {
       <ViewerPortWrap>
         <ContentsAllView>
           <ViewerPort>
-            {_public === 'none'
-              ? null
-              : boardImg.map((item, index) => {
-                  return <ViewImg key={index} src={item} category={data.category} />;
-                })}
+            {
+              _public === 'none'
+                ? null
+                : boardImg.map((item, index) => (
+                    <ViewImg key={index} src={item} category={data.category} />
+              ))
+            }
           </ViewerPort>
         </ContentsAllView>
         {/* 코멘트 시작 부분*/}
         <UserCommentWrap>
           <UserComment>
             {/* 원작 유저 */}
-            {checkOrigin ? (
-              <>
-                {/* 원작자 */}
+            {
+              checkOrigin ? (
+                <>
+                  {/* 원작자 */}
+                  <ViewerUserForm
+                    type="ORIGIN"
+                    externalSource={externalSource}
+                    userLang={_originalUser}
+                    followLang={_followBtn}
+                    followOnLang={_followingBtn}
+                    removedContents={_removedContents}
+                    profile={O_profileURL}
+                    userData={data}
+                    boardUid={boardUid}
+                    checkMoreMenuType={checkMoreMenuType}
+                  />
+                  {/* 2차 창작자 */}
+                  <ViewerUserForm 
+                    type="SECOND" 
+                    userLang={_recreateUser} 
+                    followLang={_followBtn} 
+                    followOnLang={_followingBtn} 
+                    profile={profileURL} 
+                    userData={data} 
+                    boardUid={boardUid}
+                    checkMoreMenuType={checkMoreMenuType}
+                  />
+                </>
+              ) : (
                 <ViewerUserForm
-                  type="ORIGIN"
+                  type="NOSECOND"
                   externalSource={externalSource}
                   userLang={_originalUser}
                   followLang={_followBtn}
                   followOnLang={_followingBtn}
-                  removedContents={_removedContents}
-                  profile={O_profileURL}
+                  profile={profileURL}
                   userData={data}
                   boardUid={boardUid}
+                  checkMoreMenuType={checkMoreMenuType}
                 />
-                {/* 2차 창작자 */}
-                <ViewerUserForm type="SECOND" userLang={_recreateUser} followLang={_followBtn} followOnLang={_followingBtn} profile={profileURL} userData={data} boardUid={boardUid} />
-              </>
-            ) : (
-              <ViewerUserForm
-                type="NOSECOND"
-                externalSource={externalSource}
-                userLang={_originalUser}
-                followLang={_followBtn}
-                followOnLang={_followingBtn}
-                profile={profileURL}
-                userData={data}
-                boardUid={boardUid}
-              />
-            )}
+              )
+            }
 
             {/* 모바일용 뷰어 */}
             <MobileViewerPort>{_public === 'none' ? null : boardImg.map((item, index) => <ViewImg key={index} src={boardImg[index]} />)}</MobileViewerPort>
@@ -482,11 +515,20 @@ const Viewer = ({ boardItem, nonError }) => {
         </Modal>
       )}
       */}
-      {state_React && (
-        <Modal visible={state_React} closable={true} maskClosable={true} onClose={() => toggle_Modal_React(false)}>
-          <ReactPopup />
-        </Modal>
-      )}
+       {
+        state_MoreMenu && (
+          <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
+            {type_MoreMenu}
+          </Modal>
+        )
+      }
+      {
+        state_React && (
+          <Modal visible={state_React} closable={true} maskClosable={true} onClose={() => toggle_Modal_React(false)}>
+            <ReactPopup />
+          </Modal>
+        )
+      }
       {state_Trans && (
         <Modal visible={state_Trans} closable={true} maskClosable={true} onClose={() => toggle_Modal_Trans(false)}>
           <TranslatePopup writer={data.writer} />

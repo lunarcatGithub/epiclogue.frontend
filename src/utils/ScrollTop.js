@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { withRouter } from 'next/router';
 
 const ScrollTop = (props) => {
-  console.log(props);
   useEffect(() => {
     if (props?.history?.action === 'POP') {
       return;

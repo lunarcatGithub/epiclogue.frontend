@@ -4,14 +4,14 @@ import Link from 'next/link';
 
 export const useConvertTags = () => {
   const [converted, setConverted] = useState([]);
-  const regURL = new RegExp('([-/.a-zA-Z0-9_~#%$?&=:200-377()]+)', 'gi');
-  const regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+  const regURL = new RegExp(/([a-z0-9\w]+\.*)+[a-z0-9]{2,4}/gi);
+  const regURLHttp = new RegExp(/(http(s)?:\/\/)([a-z0-9\w]+\.*)+[a-z0-9]{2,4}/gi);
+  const regExp = new RegExp(/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i);
 
   const convert = (props) => {
     if (!props) return;
     const arr = [];
     let splitBody;
-    console.log(props);
 
     if (props.match(' ')) {
       splitBody = props.split(' ');
@@ -21,9 +21,6 @@ export const useConvertTags = () => {
       splitBody = [props];
     }
 
-    console.log(splitBody);
-    // arr.push(props.map(i => i.replace('\n', `,<br/>,`)));
-    // splitBody.replace('\n', `<br/>`)
     splitBody?.map((str, index) => {
       if (str[0] === '#') {
         arr.push(
@@ -58,24 +55,24 @@ export const useConvertTags = () => {
             <LinkStyle>{str}</LinkStyle>
           </Link>
         );
-      } else if (str.toString().match(regExp)) {
+      } else if (str.toString().match(regExp) || str.toString().match(regURL) || str.toString().match(regURLHttp)) {
         // 사이트 주소
         arr.push(
-          <LinkStyle href={`https://${str}`} target="_blank" key={index}>
+          <LinkStyle key={index} href={`https://${str}`} target="_blank">
             {str}
           </LinkStyle>
         );
-      }
+      } 
       // else if(str.toString().match(regURL)){
       //   // 이메일 주소
       //   arr.push(
-      //     <ExternalLink href={`https://${str}`} target="_blank" key={index}>
+      //     <LinkStyle key={index} href={`https://${str}`} target="_blank">
       //       {str}
-      //     </ExternalLink>
+      //     </LinkStyle>
       //   );
       // }
       else if (str === '<br/>') {
-        arr.push(<br />);
+        arr.push(<br key={index} />);
       } else {
         arr.push(<TextChild key={index}>{str}</TextChild>);
       }

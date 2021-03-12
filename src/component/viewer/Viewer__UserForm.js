@@ -16,7 +16,7 @@ import { useTimeCalculation } from '@hooks/useTimeCalculation';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 export default function ViewerUserForm(props) {
-  const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents } = props;
+  const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents, checkMoreMenuType } = props;
 
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
@@ -28,18 +28,16 @@ export default function ViewerUserForm(props) {
   const [screenId, setScreenId] = useState();
   const [originUserData, setOriginUserData] = useState();
   const [title, setTitle] = useState();
-  //popup
-  const [type_MoreMenu, setType_MoreMenu] = useState();
-  const [state_MoreMenu, toggle_Modal_MoreMenu] = useModal();
 
   // follow
   const [follow, toggleFollow] = useToggle();
   const [followMe, setFollowMe] = useState();
   const [indicateDate] = useTimeCalculation(userData?.writeDate);
   const [converted, convert] = useConvertTags();
-  console.log(userData?.boardBody);
+  
   const changeHandler = () => {
     const localScreenId = localStorage.getItem('userid');
+
     switch (type) {
       case 'NOSECOND':
         setKindContent(<UserUploadInfoImg image={externalSource ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />);
@@ -82,20 +80,6 @@ export default function ViewerUserForm(props) {
     toggleFollow();
   };
 
-  const checkMoreMenuType = () => {
-    // 비회원 유저
-    if (!loginOn) {
-      setUnAuth(true);
-      return;
-    }
-    // 회원 유저
-    toggle_Modal_MoreMenu();
-    if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
-      setType_MoreMenu(<MyPopup type="_More" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-    } else {
-      setType_MoreMenu(<UserPopup handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-    }
-  };
 
   useEffect(() => {
     changeHandler();
@@ -127,11 +111,13 @@ export default function ViewerUserForm(props) {
               <UserNickInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>
                 {type === 'ORIGIN' ? userData?.originUserId?.nickname : userData?.nickname}
               </UserNickInfo>
-              {followMe && loginOn && (
-                <form action="" onSubmit={(e) => submitHandler(e)}>
-                  <UserFollowTxt followData={follow}>{follow ? followOnLang : followLang}</UserFollowTxt>
-                </form>
-              )}
+              {
+                followMe && loginOn && (
+                  <form action="" onSubmit={(e) => submitHandler(e)}>
+                    <UserFollowTxt followData={follow}>{follow ? followOnLang : followLang}</UserFollowTxt>
+                  </form>
+                )
+              }
             </UserProfileInfo>
             {/* 유저 아이디 */}
             <UserProfileId>
@@ -164,11 +150,6 @@ export default function ViewerUserForm(props) {
           </UserProfileContentsBox>
         </ProfileImgContent>
       </UserForm>
-      {state_MoreMenu && (
-        <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
-          {type_MoreMenu}
-        </Modal>
-      )}
     </>
   );
 }

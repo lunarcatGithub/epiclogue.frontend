@@ -12,7 +12,7 @@ Myboard.getInitialProps = async(context)=> {
     const url = `${process.env.API_URL}/myboard/${id}`
     res = await axios.get(url).catch(res => {
         error = 404
-        return res.response
+        return res?.response
     })
 
   return {

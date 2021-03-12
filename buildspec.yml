@@ -1,6 +1,9 @@
-version: 1.0
+version: 0.2
+
 phases:
   pre_build:
+    runtime-versions:
+      nodejs: 14
     commands:
       - echo 'Install npm dependencies...'
       - npm install
@@ -16,14 +19,15 @@ phases:
       - echo 'Export completed!'
 
 artifacts:
-    - public/**/*
-    - styles/**/*
-    - static/**/*
-    - src/**/*
-    - scripts/**/*
-    - node_modules/**/*
-    - .next/**/*
-    - out/**/*
+  files:
+    - public//*
+    - styles//*
+    - static//*
+    - src//*
+    - scripts//*
+    - node_modules//*
+    - .next//*
+    - out//*
     - package.json
     - appspec.yml
     - buildspec.yml

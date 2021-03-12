@@ -11,8 +11,8 @@ import ContentsUserForm from './Contents__UserForm';
 import { AppDataContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
-let renderCount = 30;
-let initialCount = 30;
+let renderCount = 35;
+let initialCount = 35;
 
 const Contents = (props) => {
   const { type, searchType, boardItem } = props;
@@ -104,7 +104,6 @@ const Contents = (props) => {
       if (i.pub === 1) {
         arr.push(i);
       } else if (i.pub === 0) {
-        console.log(i.writer.screenId);
         if (i.writer.screenId === localStorage.getItem('userid')) {
           arr.push(i);
         } else {
