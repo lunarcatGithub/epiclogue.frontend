@@ -21,6 +21,8 @@ phases:
 artifacts:
   files:
     - out/**/*
+    - script/**/*
+    - appspec.yml
 
 cache:
   paths:
