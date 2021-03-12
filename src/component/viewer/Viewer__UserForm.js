@@ -1,11 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 
-// 컴포넌트 import
-import Modal from '@utils/Modal';
-import MyPopup from './MyMoreMenuPopup';
-import UserPopup from './UserMoreMenuPopUp';
-
 // Hooks&&reducer
 import { useModal } from '@hooks/useModal';
 import { useToggle } from '@hooks/useToggle';

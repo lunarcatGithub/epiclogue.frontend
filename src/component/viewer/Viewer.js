@@ -6,8 +6,7 @@ import { useRouter } from 'next/router';
 import FB from './Feedback';
 import WriteFbForm from './Viewer__WriteFbForm';
 import ReactPopup from './ReactPopup';
-import MyPopup from './MyMoreMenuPopup';
-import UserPopup from './UserMoreMenuPopUp';
+import MorePopup from './MoreMenuPopup';
 import TranslatePopup from './TranslatePopup';
 import { ProgressSmall } from '@utils/LoadingProgress';
 import { langViewer, langViewerUser } from '@language/Lang.Viewer';
@@ -183,9 +182,9 @@ const Viewer = ({ boardItem, nonError }) => {
   // const checkO_MoreMenuType = () => {
   //   toggle_O_Modal_MoreMenu();
   //   if (data.originBoardId.screenId === localStorage.getItem('userid')) {
-  //     setType_O_MoreMenu(<MyPopup type="O_More"  handleModal_Menu={() => toggle_O_Modal_MoreMenu(false)} />);
+  //     setType_O_MoreMenu(<MorePopup type="O_More"  handleModal_Menu={() => toggle_O_Modal_MoreMenu(false)} />);
   //   } else {
-  //     setType_O_MoreMenu(<UserPopup handleModal_Menu={() => toggle_O_Modal_MoreMenu(false)} />);
+  //     setType_O_MoreMenu(<MorePopup handleModal_Menu={() => toggle_O_Modal_MoreMenu(false)} />);
   //   }
   // };
 
@@ -199,9 +198,9 @@ const Viewer = ({ boardItem, nonError }) => {
       // 회원 유저
       toggle_Modal_MoreMenu();
       if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
-        setType_MoreMenu(<MyPopup type="_More" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+        setType_MoreMenu(<MorePopup type="myMore" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
       } else {
-        setType_MoreMenu(<UserPopup handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+        setType_MoreMenu(<MorePopup type="userMore" handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
       }
     };
   
