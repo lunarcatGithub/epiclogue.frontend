@@ -20,15 +20,8 @@ phases:
 
 artifacts:
   files:
-    - public/**/*
-    - styles/**/*
-    - static/**/*
-    - src/**/*
-    - scripts/**/*
-    - node_modules/**/*
-    - .next/**/*
     - out/**/*
-    - package.json
-    - appspec.yml
-    - buildspec.yml
-    - yarn.lock
+
+cache:
+  paths:
+    - 'node_modules/**/*'
