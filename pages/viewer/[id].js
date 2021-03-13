@@ -13,6 +13,7 @@ ViewerPage.getInitialProps = async(context)=> {
         url,
         method:'get',
         withCredentials: true
+
       }).catch(res => {
           if(res.response?.status === 404) error = 404
           return res.response
