@@ -31,6 +31,8 @@ import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store'
 export const ReplyListContext = React.createContext();
 
 const Viewer = ({ boardItem, nonError }) => {
+  console.log('front', boardItem)
+
   const router = useRouter();
   const boardUid = router?.query?.id;
   
@@ -96,6 +98,7 @@ const Viewer = ({ boardItem, nonError }) => {
 
   // 태그 및 하이퍼링크 convert
   const [converted, convert] = useConvertTags();
+
   // 토글 submit 전용
   const [likeLoding, likeApi, likeError, likeFetch] = useAxiosFetch();
   const [bookmarkLoding, bookmarkApi, bookmarkError, bookmarkFetch] = useAxiosFetch();
@@ -242,7 +245,6 @@ const Viewer = ({ boardItem, nonError }) => {
         sourceUrl,
       } = boardData;
       const { screenId, nickname, _id, following, profile } = writer;
-      console.log(boardData)
 
       setData({
         boardTitle,
@@ -321,8 +323,8 @@ const Viewer = ({ boardItem, nonError }) => {
 
   // Meta 전용
   const metaData = {
-    title: `${data.nickname}${metaViewerTitle}${data.boardTitle}`,
-    description: data.boardBody,
+    title: `${data?.nickname}${metaViewerTitle}${data?.boardTitle}`,
+    description: data?.boardBody,
     image: boardImg[0],
     canonical: `viewer/${boardUid}`,
   };
@@ -358,7 +360,7 @@ const Viewer = ({ boardItem, nonError }) => {
               _public === 'none'
                 ? null
                 : boardImg.map((item, index) => (
-                    <ViewImg key={index} src={item} category={data.category} />
+                <ViewImg key={index} src={item} category={data.category} />
               ))
             }
           </ViewerPort>
@@ -507,7 +509,7 @@ const Viewer = ({ boardItem, nonError }) => {
         </Modal>
       )}
       */}
-       {
+      {
         state_MoreMenu && (
           <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
             {type_MoreMenu}
@@ -521,35 +523,45 @@ const Viewer = ({ boardItem, nonError }) => {
           </Modal>
         )
       }
-      {state_Trans && (
-        <Modal visible={state_Trans} closable={true} maskClosable={true} onClose={() => toggle_Modal_Trans(false)}>
-          <TranslatePopup writer={data.writer} />
-        </Modal>
-      )}
+      {
+        state_Trans && (
+          <Modal visible={state_Trans} closable={true} maskClosable={true} onClose={() => toggle_Modal_Trans(false)}>
+            <TranslatePopup writer={data.writer} />
+          </Modal>
+        )
+      }
       {/* 비공개 작품일 경우 */}
-      {_public === 'none' && (
-        <Modal visible={true} onClose={() => toggle_Modal_Trans(false)}>
-          <ConfirmPopup setAccessConfirm={goURL} type={'GOBACK'} />
-        </Modal>
-      )}
+      {
+        _public === 'none' && (
+          <Modal visible={true} onClose={() => toggle_Modal_Trans(false)}>
+            <ConfirmPopup setAccessConfirm={goURL} type={'GOBACK'} />
+          </Modal>
+        )
+      }
       {/* 삭제or없는 콘텐츠 일 경우*/}
-      {noContents && (
-        <Modal visible={true} onClose={() => toggle_Modal_Trans(false)}>
-          <ConfirmPopup setAccessConfirm={goURL} type={'REMOVE'} />
-        </Modal>
-      )}
+      {
+        noContents && (
+          <Modal visible={true} onClose={() => toggle_Modal_Trans(false)}>
+            <ConfirmPopup setAccessConfirm={goURL} type={'REMOVE'} />
+          </Modal>
+        )
+      }
       {/* 2차 창작이 금지된 경우 */}
-      {allowSecondary && (
-        <Modal visible={allowSecondary} onClose={() => setAllowSecondary(false)}>
-          <ConfirmPopup handleModal={() => setAllowSecondary(false)} type={'TRANS'} />
-        </Modal>
-      )}
+      {
+        allowSecondary && (
+          <Modal visible={allowSecondary} onClose={() => setAllowSecondary(false)}>
+            <ConfirmPopup handleModal={() => setAllowSecondary(false)} type={'TRANS'} />
+          </Modal>
+        )
+      }
       {/* 2차 창작하려는데 원작글이 삭제된 경우 */}
-      {originDeleted && (
-        <Modal visible={originDeleted} onClose={() => setOriginDeleted(false)}>
-          <ConfirmPopup handleModal={() => setOriginDeleted(false)} type={'REMOVEORIGIN'} />
-        </Modal>
-      )}
+      {
+        originDeleted && (
+          <Modal visible={originDeleted} onClose={() => setOriginDeleted(false)}>
+            <ConfirmPopup handleModal={() => setOriginDeleted(false)} type={'REMOVEORIGIN'} />
+          </Modal>
+        )
+      }
     </ReplyListContext.Provider>
   );
 };

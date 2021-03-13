@@ -1,7 +1,6 @@
 import Viewer from '@component/viewer/Viewer';
 import axios from 'axios';
 export default function ViewerPage({boardItem, id, error}) {
-
   return <Viewer boardItem={boardItem} userId={id} nonError={error} />;
 }
 
@@ -18,7 +17,6 @@ ViewerPage.getInitialProps = async(context)=> {
           if(res.response?.status === 404) error = 404
           return res.response
       })
-
       return {
             boardItem: res?.data,
             id: id,

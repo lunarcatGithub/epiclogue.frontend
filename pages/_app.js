@@ -2,7 +2,6 @@ import { ThemeProvider } from 'styled-components';
 import theme from '../styles/theme';
 import { GlobalStyles } from '../styles/GlobalStyles';
 import Header from '@component/header/Header';
-import ScrollTop from '@utils/ScrollTop';
 import '../styles/App.css';
 import { InteractTab } from '@utils/Push__Interaction';
 

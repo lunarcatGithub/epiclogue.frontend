@@ -32,7 +32,6 @@ export default function ViewerUserForm(props) {
   const [converted, convert] = useConvertTags();
   // debounce 처리
   const [followDebounce, getValue] = useDebounce();
-  console.log(userData)
   const changeHandler = () => {
     const localScreenId = localStorage.getItem('userid');
 
@@ -73,11 +72,10 @@ export default function ViewerUserForm(props) {
         break;
     }
   };
-  console.log(follow)
   const submitHandler = () => {
     if (!loginOn) return;
     const URL = `${process.env.API_URL}/interaction/follow`;
-    followFetch(URL, followDebounce ? 'delete' : 'post' , { targetUserId: user_id });
+    followFetch(URL, followDebounce ? 'delete' : 'post', { targetUserId: user_id });
   };
 
   useEffect(() => {

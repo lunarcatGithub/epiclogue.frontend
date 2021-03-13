@@ -27,7 +27,6 @@ export const HeaderDataContext = React.createContext();
 
 const Header = () => {
   const router = useRouter();
-
   const pathname = router.asPath;
 
   // 경고용 푸시
@@ -110,18 +109,18 @@ const Header = () => {
 
   // 유저 알림 Read 여부
   const readObserver = () => {
-    readApi && setRead(readApi.data.notiCount);
+    readApi && setRead(readApi?.data?.notiCount);
     isNotification && setRead(0);
   };
-
+  console.log(readApi)
   useEffect(() => {
     if (!loginOn) return;
-    // readFetch(`${process.env.API_URL}/notification/check`, 'get', null, null, null);
-  }, []);
+    readFetch(`${process.env.API_URL}/notification/check`, 'get', null, null, null);
+  }, [pathname]);
 
   useEffect(() => {
     readObserver();
-  },[]);
+  },[readApi]);
 
   // 유저 프로필 API
   useEffect(() => {
