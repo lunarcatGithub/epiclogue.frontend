@@ -95,15 +95,17 @@ const UploadCategory = (props) => {
         res(adjustedData);
       })
         .then((adjustedData) => {
+          // 작업된 에디터 파일과 작업 되지 않은 이미지를 병합
           let merged = mergyImage(adjustedData);
           return merged;
         })
         .then((merged) => {
+          // url을 file로 convert하는 작업
           let converted = urlToFileConvert(merged);
           return converted;
         })
         .then((converted) => {
-          // 에디터에서 받아온 이미지
+          // 에디터에서 받아온 이미지 최종 업로더에 전달
           handleSubmit(converted);
         });
     } else {
@@ -200,7 +202,7 @@ const UploadCategory = (props) => {
       alertPatch({ type: 'UPLOADED_FAIL', payload: true });
     } else {
       setDisabled(false);
-      // goViewer(`/main`);
+      // goViewer(`/`);
       return;
     }
   }, [uploadApi]);

@@ -24,6 +24,7 @@ export const EditorStore = () => {
   const [selectPage, setSelectPage] = useState(null);
   const [canvasData, setCanvasData] = useState([{ id: 0, cnavasJSON: null }]);
   const [finishCanvas, setFinishCanvas] = useState();
+
   // 아웃라인 컴포넌트
   const [textOutline, toggleTextOutline] = useToggle(false);
   const [outlineWidth, setOutlineWidth] = useState(0);
@@ -64,7 +65,6 @@ export const EditorStore = () => {
         id: index + i,
         canvas: _uploadData[i],
       };
-
       Urls.push(urlData);
     }
 

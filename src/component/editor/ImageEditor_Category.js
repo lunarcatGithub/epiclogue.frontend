@@ -39,10 +39,9 @@ export const ImageEditorCategory = () => {
   const urlToFileConvert = async (arr) => {
     return await Promise.all(
       arr.map(async (data, i) => {
-        const response = await fetch(data.canvas);
+        const response = await fetch(data.canvas.src ? data.canvas.src : data.canvas);
         const blob = await response.blob();
         const file = new File([blob], `worked${i}.jpg`, { type: blob.type });
-
         return { id: i, img: file };
       })
     ).then((res) => {
