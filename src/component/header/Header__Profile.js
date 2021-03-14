@@ -52,7 +52,7 @@ const HeaderPfPopup = () => {
       logout();
     }
   }, [profileError]);
-
+  console.log(profileError)
   useEffect(() => {
     toggleSearchPop(false);
     convertProfileIamge(profileApi?.data?.profile?.thumbnail);

@@ -109,13 +109,13 @@ const Header = () => {
 
   // 유저 알림 Read 여부
   const readObserver = () => {
-    readApi?.data?.notiCount !==0 && setRead(readApi?.data?.notiCount);
+    setRead(readApi?.data?.notiCount);
   };
-
+  console.log(readApi)
   useEffect(() => {
     if (!loginOn) return;
     readFetch(`${process.env.API_URL}/notification/check`, 'get', null, null, null);
-  }, [pathname]);
+  }, [pathname, read]);
 
   useEffect(() => {
     readObserver();
@@ -135,7 +135,7 @@ const Header = () => {
   }, [profileApi]);
 
   useEffect(() => {
-    ['/epiclogueadmin', '/welcome', '/login'].includes(pathname) || pathname.match('/editor/') || pathname.match('/findPass') ? setPreventHeader(false) : setPreventHeader(true);
+    ['/epiclogueadmin', '/welcome', '/login/'].includes(pathname) || pathname.match('/editor/') || pathname.match('/findPass') ? setPreventHeader(false) : setPreventHeader(true);
   }, [pathname]);
 
   return (
@@ -168,7 +168,6 @@ const Header = () => {
                   <CategoryButton />
                 </CategoryWrap>
                 <Dummy />
-
                 {/* 팔로우 작품 및 프로필 버튼 영역 */}
                 {
                   loginOn ? (

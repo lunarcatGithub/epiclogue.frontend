@@ -55,7 +55,7 @@ export const useConvertTags = () => {
             <LinkStyle>{str}</LinkStyle>
           </Link>
         );
-      } else if (str.toString().match(regExp) || str.toString().match(regURL) || str.toString().match(regURLHttp)) {
+      } else if (str.toString().match(regExp) ||  str.toString().match(regURLHttp)) {
         // 사이트 주소
         arr.push(
           <LinkStyle key={index} href={`https://${str}`} target="_blank">

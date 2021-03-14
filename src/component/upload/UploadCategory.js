@@ -277,7 +277,7 @@ const UploadCategory = (props) => {
           <SubmitBox>
             <ArrowBtn
               onClick={() => {
-                router.pathname.match('/editor') ? categoryToggle(false) : history.goBack();
+                router.pathname.match('/editor') ? categoryToggle(false) : router.back();
               }}
             />
             <AlertText>
