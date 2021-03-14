@@ -320,7 +320,7 @@ const Viewer = ({ boardItem, nonError }) => {
     // 성공 푸시탭
     alertPatch({ type: 'SHARE', payload: true });
   };
-
+  console.log(boardUid)
   // Meta 전용
   const metaData = {
     title: `${data?.nickname}${metaViewerTitle}${data?.boardTitle}`,

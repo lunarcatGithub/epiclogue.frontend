@@ -5,6 +5,7 @@ export default function ViewerPage({boardItem, id, error}) {
 }
 
 ViewerPage.getInitialProps = async(context)=> {
+      console.log('view',context)
       let error = null
       let res = null
       const id = context.query.id
