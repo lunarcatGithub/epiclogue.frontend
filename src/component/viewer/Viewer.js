@@ -31,7 +31,6 @@ import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store'
 export const ReplyListContext = React.createContext();
 
 const Viewer = ({ boardItem, nonError }) => {
-  console.log('front', boardItem)
 
   const router = useRouter();
   const boardUid = router?.query?.id;
@@ -320,7 +319,7 @@ const Viewer = ({ boardItem, nonError }) => {
     // 성공 푸시탭
     alertPatch({ type: 'SHARE', payload: true });
   };
-  console.log(boardUid)
+
   // Meta 전용
   const metaData = {
     title: `${data?.nickname}${metaViewerTitle}${data?.boardTitle}`,

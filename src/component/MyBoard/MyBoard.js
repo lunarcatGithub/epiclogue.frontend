@@ -24,7 +24,6 @@ import useDebounce from '@hooks/useDebounce';
 
 export default function MyBoard({ boardItem, userId, nonError }) {
   const [goURL] = useUrlMove();
-
   const { langState } = useContext(LanguageContext);
   const { setMyboardData, loginOn, setUnAuth, followData, setFollowData, setFollowButton } = useContext(AppDataContext);
   const [follow, toggleFollow] = useToggle();
@@ -76,7 +75,6 @@ export default function MyBoard({ boardItem, userId, nonError }) {
 
   const submitHandler = () => {
     if (!loginOn) return;
-  
     getValue(follow)
     followFetch(`${process.env.API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: boardItem?.data?._id });
   };

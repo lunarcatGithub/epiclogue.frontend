@@ -16,7 +16,6 @@ export default function useFetchData() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res)
         setResult(res);
       })
       .catch((err) => {

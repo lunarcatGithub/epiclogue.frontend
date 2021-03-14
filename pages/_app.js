@@ -23,19 +23,10 @@ function MyApp({ Component, pageProps }) {
   );
 }
 MyApp.getInitialProps = async context => {
-  // const { ctx, Component } = context; // next에서 넣어주는 context
-  // console.log('ctx', ctx)
-  // let pageProps = {};
-  // if (Component.getInitialProps) { 
-  //   // Component (pages 폴더에 있는 컴포넌트)에 getInitialProps가 있다면 return 값을 pageProps에 넣음.
-  //   pageProps = await Component.getInitialProps(ctx?.query?.id); // ctx를 컴포넌트에 넘겨준다.
-  // }
-  // return { pageProps };
 
   const { ctx, Component } = context; // next에서 넣어주는 context
   let pageProps = {};
   const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
-  console.log('cookie', cookie)
   // SSR 환경일 때만 서버사이드에서 쿠키를 넣어주고, 클라이언트 환경일 때는 넣지 않음
   // 클라이언트 환경 - ctx.req.headers.cookie = undefined
   if (ctx.isServer && cookie) { 

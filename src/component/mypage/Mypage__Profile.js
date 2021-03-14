@@ -162,9 +162,9 @@ const MypageProfile = () => {
       // profileData.append('userCountry', userCountry);
       profileData.append('userIntro', userIntro);
 
-      for (let [key, value] of profileData.entries()) {
-        console.log(key, value);
-      }
+      // for (let [key, value] of profileData.entries()) {
+      //   console.log(key, value);
+      // }
 
       myProfileFetch(`${process.env.API_URL}/user/editProfile`, 'post', null, profileData);
     }
