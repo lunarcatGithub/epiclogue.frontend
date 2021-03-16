@@ -3,6 +3,7 @@ let SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 module.exports = {
     // 환경변수 사용 할 수 있게
   trailingSlash: true,
+  useFileSystemPublicRoutes: false,
   env: {
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
     KAKAO_API_KEY: process.env.KAKAO_API_KEY,
@@ -15,7 +16,7 @@ module.exports = {
       {
         source: '/main',
         destination: '/',
-        permanent: true,
+        permanent: false,
       },
     ]
   },

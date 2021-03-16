@@ -42,7 +42,6 @@ const Contents = (props) => {
   const [searchLoding, searchApi, searchError, searchFetch] = useAxiosFetch();
   const [userLoding, userApi, userError, userFetch] = useAxiosFetch();
   const [page, setPage] = useState(1);
-
   // devide type
   const devideTypeHandler = () => {
     setInitialLoading(true);

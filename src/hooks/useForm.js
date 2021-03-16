@@ -44,7 +44,6 @@ const useForm = ({ initialValues }) => {
   }, [loginApi]);
 
   useEffect(() => {
-    console.log(signUpError?.data)
     signUpError && setErrors(validate({ values }, signUpError?.data));
 
     if (loginError?.status === 404) {

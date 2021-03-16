@@ -111,7 +111,7 @@ const Header = () => {
   const readObserver = () => {
     setRead(readApi?.data?.notiCount);
   };
-  console.log(readApi)
+
   useEffect(() => {
     if (!loginOn) return;
     readFetch(`${process.env.API_URL}/notification/check`, 'get', null, null, null);
