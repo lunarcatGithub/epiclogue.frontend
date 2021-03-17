@@ -23,6 +23,7 @@ import useDebounce from '@hooks/useDebounce';
 // 아이콘 import
 
 export default function MyBoard({ boardItem, userId, nonError }) {
+  console.log(boardItem)
   const [goURL] = useUrlMove();
   const { langState } = useContext(LanguageContext);
   const { setMyboardData, loginOn, setUnAuth, followData, setFollowData, setFollowButton } = useContext(AppDataContext);

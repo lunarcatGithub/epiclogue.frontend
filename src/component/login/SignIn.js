@@ -20,6 +20,7 @@ import { LanguageContext, AppDataContext } from '@store/App_Store';
 import { useModal } from '@hooks/useModal';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useForm from '@hooks/useForm';
+import {useCookie} from '@hooks/useCookie';
 
 export const SignIn = (props) => {
 
@@ -31,8 +32,15 @@ export const SignIn = (props) => {
   const [errorTitle, setErrorTitle] = useState()
   const [ goURL ] = useUrlMove();
   const [_isShowing, _toggle] = useModal();
+  const [userData, setUserData] = useState({});
+
   // router 변경에 의한 로그인 화면 변화
   const [isBack, setIsBack] = useState(false);
+
+  //cookie
+  const [, cookieHandle] = useCookie()
+  const [cookieValue, getCookie] = useCookie()
+  const [testValue, getTestCookie] = useCookie()
 
   useEffect(() => {
     setIsBack(main ? main : false)
@@ -94,13 +102,18 @@ export const SignIn = (props) => {
   useEffect(() => {
     const mergyData = resData || snsLoginListApi;
     if (mergyData?.result === 'ok') {
-      setLoginOn(true);
-      localStorage.setItem('loginOn', true);
-      localStorage.setItem('userNick', mergyData?.nick);
-      localStorage.setItem('userid', mergyData?.screenId);
-      goURL({ pathname: '/' });
+      cookieHandle('CREATE', 'test', 'login', 1);
+      getTestCookie('GET', 'test')
+      getCookie('GET', 'access_token');
+      if(cookieValue || testValue) {
+        setLoginOn(true);
+        localStorage.setItem('loginOn', true);
+        localStorage.setItem('userNick', mergyData?.nick);
+        localStorage.setItem('userid', mergyData?.screenId);
+        goURL({ pathname: '/' });
+      }
     }
-  }, [resData, snsLoginListApi]);
+  }, [resData, snsLoginListApi, cookieValue, testValue]);
 
   useEffect(() => {
     errors && errorHandle();
@@ -121,7 +134,7 @@ export const SignIn = (props) => {
             :
             <>
             <LoginLogo />
-            <LoginTitle>"Welcome to EpicLogue"</LoginTitle>
+            <LoginTitle>{"Welcome to EpicLogue"}</LoginTitle>
             </>
             
           }

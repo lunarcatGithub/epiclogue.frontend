@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 export default function useAxiosFetch() {
@@ -13,11 +13,13 @@ export default function useAxiosFetch() {
       url,
       method: type,
       withCredentials: true,
+      crossDomain: true,
       data,
       body,
       params,
     })
       .then((res) => {
+        // console.log(res)
         setResult(res?.data);
       })
       .catch((err) => {

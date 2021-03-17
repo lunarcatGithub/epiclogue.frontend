@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "nodemon server.js",
-    "dev": "nodemon server.js",
+    "start": "next start",
+    "dev": "next dev",
     "build": "next build",
     "export": "next export",
     "lint": "eslint \"src/**/*.js\" --fix",
@@ -13,11 +13,11 @@
   "dependencies": {
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
-    "create-next-app": "^10.0.5",
+    "create-next-app": "10.0.8",
     "emailjs-com": "^2.6.4",
     "express": "^4.17.1",
     "fabric": "^4.3.1",
-    "next": "10.0.4",
+    "next": "10.0.7",
     "next-server": "^9.0.5",
     "nodemon": "^2.0.7",
     "query-string": "^6.14.1",
@@ -50,5 +50,9 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "homepage": "https://www.epiclogue.com"
+  "homepage": "https://www.epiclogue.com",
+  "main": "index.js",
+  "repository": "https://github.com/lunarcatGithub/epiclogue.frontend.git",
+  "author": "klimes888 <klimes888@gmail.com>",
+  "license": "MIT"
 }

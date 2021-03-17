@@ -4,7 +4,7 @@ export default function validate({ values }, dupli) {
   let pattern2 = /[a-zA-Z]/; // 영문
   let pattern3 = /[~!@#$%^&*()_+|<>?:{}`]/; // 특수문자
   const { email, userPw, userPwRe, userNick } = values;
-  console.log(dupli)
+
   if (!email) {
     errors.email = 'errorNoneEmail';
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {

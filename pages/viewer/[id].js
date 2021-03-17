@@ -1,15 +1,19 @@
 import Viewer from '@component/viewer/Viewer';
 import axios from 'axios';
-export default function ViewerPage({boardItem, id, error}) {
-    return <Viewer boardItem={boardItem} userId={id} nonError={error} />
+
+export default function ViewerPage(props) {
+  const {boardItem, id, error, token} = props
+
+  return <Viewer boardItem={boardItem} userId={id} nonError={error} />
 }
 
-ViewerPage.getInitialProps = async({query, req})=> {
+export async function getServerSideProps(context) {
+  const {query, req} = context
+
+  const id = req?.params?.id || query?.id
       let error = null
       let res = null
-      const {id} = req?.params || query
       const url = `${process.env.API_URL}/boards/${id}`
-      console.log(req?.headers?.cookie)
       res = await axios({
         url,
         method:'get',
@@ -18,18 +22,47 @@ ViewerPage.getInitialProps = async({query, req})=> {
       })
       .catch(res => {
           if(res.response?.status === 404) error = 404
-          return res.response
       });
-      
+      console.log('cookie', req?.headers?.cookie)
+
       return {
+        props : {
             boardItem: res?.data,
-            id,
+            id: id,
             error,
-      }
+            token:req?.headers?.cookie || null
+      }}
 }
 
-// import Viewer from '@component/viewer/Viewer';
-// import axios from 'axios';
+// ** ▼▼ getInitialProps ▼▼ **
+
+
+// ViewerPage.getInitialProps = async({query, req})=> {
+//       let error = null
+//       let res = null
+//       const cookie = typeof window !== 'undefined' && document.cookie
+//       console.log(cookie)
+//       const {id} = req?.params || query
+//       const url = `${process.env.API_URL}/boards/${id}`
+//       res = await axios({
+//         url,
+//         method:'get',
+//         headers: req?.headers?.cookie ? { cookie: req.headers.cookie } : cookie,
+//         withCredentials: true,
+//       })
+//       .catch(res => {
+//           if(res.response?.status === 404) error = 404
+//           return res.response
+//       });
+      
+//       return {
+//             boardItem: res?.data,
+//             id,
+//             error,
+//       }
+// }
+
+// ** ▼▼ static ▼▼ **
 // import { useRouter } from 'next/router';
 
 // export default function ViewerPage(props) {
@@ -44,8 +77,8 @@ ViewerPage.getInitialProps = async({query, req})=> {
 //   return <Viewer boardItem={boardItem} userId={id} nonError={error} />
 // }
 
-// export const getStaticPaths = async (context) => {
-  
+// export const getStaticPaths = async (props) => {
+//   console.log('props', props)
 //   const res = await axios.get(`${process.env.API_URL}/boards`)
 //   const data = res?.data?.data
 
@@ -56,6 +89,7 @@ ViewerPage.getInitialProps = async({query, req})=> {
 // }
 
 // export async function getStaticProps(context) {
+//   console.log('context', context)
 //   const id = context.params.id;
 //       let error = null
 //       let res = null
