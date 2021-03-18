@@ -18,11 +18,13 @@ module.exports = {
       '/follows': {page: '/follows'},
       }
       const res = await axios.get(`${process.env.API_URL}/boards`)
-      const data = res?.data?.data
-      data.map(show => {
-        paths[`/viewer/${show._id}`] = {page: '/viewer/[id]', query: {id: show._id}},
-        paths[`/myboard/${show.writer.screenId}`] = {page: '/myboard/[id]', query: {id: show.writer.screenId}}; 
-      });
+      if (res.data) {
+        const data = res.data.data
+        data.map(show => {
+          paths[`/viewer/${show._id}`] = {page: '/viewer/[id]', query: {id: show._id}},
+          paths[`/myboard/${show.writer.screenId}`] = {page: '/myboard/[id]', query: {id: show.writer.screenId}}; 
+        });
+      }
       return paths
   },
   async redirects() {
