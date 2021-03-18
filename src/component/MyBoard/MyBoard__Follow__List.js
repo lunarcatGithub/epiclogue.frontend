@@ -12,7 +12,6 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import useDebounce from '@hooks/useDebounce';
 
 const MyBoardFollowList = (props) => {
-
   const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
   const [follow, toggleFollow] = useToggle();
@@ -23,8 +22,8 @@ const MyBoardFollowList = (props) => {
   const [followDebounce, getValue] = useDebounce();
 
   const followSubmit = () => {
-    getValue(follow)
-    followListFetch(`${process.env.API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: userData?._id });
+    getValue(follow);
+    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: userData?._id });
   };
 
   useEffect(() => {
@@ -55,15 +54,15 @@ const MyBoardFollowList = (props) => {
 
       {userData?.screenId !== localStorage.getItem('userid') ? (
         <FollowBox>
-            <FollowBtn 
-              onClick={() => {
+          <FollowBtn
+            onClick={() => {
               toggleFollow();
               followSubmit();
-              }} 
-              styling={follow}
-              >
-              {follow ? _followingBtn : _followBtn}
-            </FollowBtn>
+            }}
+            styling={follow}
+          >
+            {follow ? _followingBtn : _followBtn}
+          </FollowBtn>
         </FollowBox>
       ) : null}
     </ContentInner>

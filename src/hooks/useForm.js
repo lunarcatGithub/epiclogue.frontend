@@ -28,9 +28,9 @@ const useForm = ({ initialValues }) => {
     }
 
     if (values.type === 'signUp') {
-      signUpFetch(`${process.env.API_URL}/auth/join`, 'post', values, null);
+      signUpFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/join`, 'post', values, null);
     } else if (values.type === 'signIn') {
-      loginFetch(`${process.env.API_URL}/auth/login`, 'post', values, null);
+      loginFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, 'post', values, null);
     }
     setDisabled(false);
   };

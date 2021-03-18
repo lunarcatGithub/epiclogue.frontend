@@ -5,8 +5,8 @@ networks:
     driver: bridge
 
 services:
-  next-server:
-    container_name: next-server
+  server:
+    container_name: server
     build:
       context: ./docker/nextjs
       dockerfile: Dockerfile
@@ -27,6 +27,7 @@ services:
     volumes: 
       - ./epiclogue.ssl/cert:/ssl
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/log:/var/log/nginx
     ports:
       - 443:443
       - 80:80

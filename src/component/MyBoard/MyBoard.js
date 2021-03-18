@@ -23,7 +23,6 @@ import useDebounce from '@hooks/useDebounce';
 // 아이콘 import
 
 export default function MyBoard({ boardItem, userId, nonError }) {
-  console.log(boardItem)
   const [goURL] = useUrlMove();
   const { langState } = useContext(LanguageContext);
   const { setMyboardData, loginOn, setUnAuth, followData, setFollowData, setFollowButton } = useContext(AppDataContext);
@@ -76,14 +75,14 @@ export default function MyBoard({ boardItem, userId, nonError }) {
 
   const submitHandler = () => {
     if (!loginOn) return;
-    getValue(follow)
-    followFetch(`${process.env.API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: boardItem?.data?._id });
+    getValue(follow);
+    followFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: boardItem?.data?._id });
   };
 
   useEffect(() => {
     if (!loginOn) return;
-    getValue(follow)
-  }, [follow])
+    getValue(follow);
+  }, [follow]);
 
   const moveFollowList = (type) => {
     if (!loginOn) {
@@ -105,7 +104,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   }, [boardItem, countryResult]);
 
   useEffect(() => {
-    userScreenId && boardDataFetch(`${process.env.API_URL}/myboard/${userScreenId}/${isTab}`, 'get', null);
+    userScreenId && boardDataFetch(`${process.env.NEXT_PUBLIC_API_URL}/myboard/${userScreenId}/${isTab}`, 'get', null);
   }, [isTab, userScreenId]);
 
   useEffect(() => {
@@ -160,28 +159,29 @@ export default function MyBoard({ boardItem, userId, nonError }) {
                   {_followBtn}
                   <FollowScore>{followData?.followerCount}</FollowScore>
                 </FollowButton>
-                {
-                  !checkMe && (
-                    <ButtonWrap>
-                      {/* <FollowAddButton data={String(follow)} onClick={toggleFollow}>
+                {!checkMe && (
+                  <ButtonWrap>
+                    {/* <FollowAddButton data={String(follow)} onClick={toggleFollow}>
                         {follow ? _followingBtn : _followBtn}
                       </FollowAddButton> */}
-                      <FollowAddButton
-                        styling={follow}
-                        onClick={() => {
-                          if (!loginOn) { setUnAuth(true); return; }
-                          toggleFollow();
-                          submitHandler();
-                        }}
-                      >
-                        {follow ? _followingBtn : _followBtn}
-                      </FollowAddButton>
-                      {/* <MoreMenuBtn>
+                    <FollowAddButton
+                      styling={follow}
+                      onClick={() => {
+                        if (!loginOn) {
+                          setUnAuth(true);
+                          return;
+                        }
+                        toggleFollow();
+                        submitHandler();
+                      }}
+                    >
+                      {follow ? _followingBtn : _followBtn}
+                    </FollowAddButton>
+                    {/* <MoreMenuBtn>
                         <MoreMenu />
                       </MoreMenuBtn> */}
-                    </ButtonWrap>
-                  )
-                }
+                  </ButtonWrap>
+                )}
               </FollowsBox>
               {/*// 레이아웃 상단 유저정보 레이아웃 끝 */}
             </UserInformBox>

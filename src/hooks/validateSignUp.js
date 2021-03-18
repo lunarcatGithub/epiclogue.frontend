@@ -12,7 +12,7 @@ export default function validate({ values }, dupli) {
   } else {
     errors.email = 'duplicate';
   }
-  
+
   if (!pattern1.test(userPw) || !pattern2.test(userPw) || !pattern3.test(userPw) || userPw.length < 8) {
     errors.userPw = 'errorPW';
   } else {

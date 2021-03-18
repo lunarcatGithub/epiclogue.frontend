@@ -29,7 +29,7 @@ export function Auth() {
 
   useEffect(() => {
     const query = qs.parse(window.location.search);
-    authFetch(`${process.env.API_URL}/auth/mailAuth`, 'get', null, null, { email: query.email, token: query.token });
+    authFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/mailAuth`, 'get', null, null, { email: query.email, token: query.token });
   }, []);
 
   useEffect(() => {

@@ -43,7 +43,7 @@ export default function ViewerUserForm(props) {
         toggleFollow(userData?.writer?.following);
         setTitle(userData?.boardTitle);
         convert(userData?.boardBody);
-        setUser_id(userData?._id)
+        setUser_id(userData?._id);
         break;
 
       case 'SECOND':
@@ -53,7 +53,7 @@ export default function ViewerUserForm(props) {
         toggleFollow(userData?.writer?.following);
         setTitle(userData?.boardTitle);
         convert(userData?.boardBody);
-        setUser_id(userData?._id)
+        setUser_id(userData?._id);
 
         break;
 
@@ -65,7 +65,7 @@ export default function ViewerUserForm(props) {
         toggleFollow(userData?.originUserId?.following);
         setTitle(userData?.originBoardId?.boardTitle);
         convert(userData?.originBoardId?.boardBody);
-        setUser_id(userData?.originUserId?._id)
+        setUser_id(userData?.originUserId?._id);
 
         break;
       default:
@@ -74,14 +74,14 @@ export default function ViewerUserForm(props) {
   };
   const submitHandler = () => {
     if (!loginOn) return;
-    const URL = `${process.env.API_URL}/interaction/follow`;
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`;
     followFetch(URL, followDebounce ? 'delete' : 'post', { targetUserId: user_id });
   };
 
   useEffect(() => {
     if (!loginOn) return;
-    getValue(follow)
-  }, [follow])
+    getValue(follow);
+  }, [follow]);
 
   useEffect(() => {
     changeHandler();
@@ -113,18 +113,21 @@ export default function ViewerUserForm(props) {
               <UserNickInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>
                 {type === 'ORIGIN' ? userData?.originUserId?.nickname : userData?.nickname}
               </UserNickInfo>
-              {
-                followMe && loginOn && (
-                    <UserFollowTxt
-                      styling={follow}
-                      onClick={()=>{
-                        if (!loginOn) { setUnAuth(true); return; }
-                            toggleFollow();
-                            submitHandler();
-                      }}
-                    >{follow ? followOnLang : followLang}</UserFollowTxt>
-                )
-              }
+              {followMe && loginOn && (
+                <UserFollowTxt
+                  styling={follow}
+                  onClick={() => {
+                    if (!loginOn) {
+                      setUnAuth(true);
+                      return;
+                    }
+                    toggleFollow();
+                    submitHandler();
+                  }}
+                >
+                  {follow ? followOnLang : followLang}
+                </UserFollowTxt>
+              )}
             </UserProfileInfo>
             {/* 유저 아이디 */}
             <UserProfileId>
@@ -138,22 +141,20 @@ export default function ViewerUserForm(props) {
             <OriginalContent>{title}</OriginalContent>
             <TextContent>{converted}</TextContent>
             <BottomWrap>
-              { type !== 'ORIGIN' && <PostedTime>Posted by {indicateDate}</PostedTime> }
+              {type !== 'ORIGIN' && <PostedTime>Posted by {indicateDate}</PostedTime>}
               {userData?.edited && <ModifyText>{'_modified'}</ModifyText>}
             </BottomWrap>
             {originUserData && (
               <ContentImgWrap styling={originUserData}>
-                {
-                  originUserData ? (
-                    <ContentImgBox onClick={() => goURL({ pathname: `/viewer/${originUserData._id}` })}>
-                      <ContentImg thumNail={originUserData.boardImg[0]} />
-                    </ContentImgBox>
-                  ) : (
-                    <ContentImgBox>
-                      <NullContent>{removedContents}</NullContent>
-                    </ContentImgBox>
-                  )
-                }
+                {originUserData ? (
+                  <ContentImgBox onClick={() => goURL({ pathname: `/viewer/${originUserData._id}` })}>
+                    <ContentImg thumNail={originUserData.boardImg[0]} />
+                  </ContentImgBox>
+                ) : (
+                  <ContentImgBox>
+                    <NullContent>{removedContents}</NullContent>
+                  </ContentImgBox>
+                )}
               </ContentImgWrap>
             )}
           </UserProfileContentsBox>
@@ -289,11 +290,11 @@ const UserFollowTxt = styled.button.attrs({
   type: 'submit',
 })`
   white-space: nowrap;
-  margin-right: 4em;;
+  margin-right: 4em;
   font-weight: ${(props) => props.theme.fontWeight.font700};
   font-size: ${(props) => props.theme.fontSize.font15};
-  color:${props => props.styling ? props.theme.color.orangeColor : props.theme.color.popupColor};
-  transition: color .2s ease;
+  color: ${(props) => (props.styling ? props.theme.color.orangeColor : props.theme.color.popupColor)};
+  transition: color 0.2s ease;
   cursor: pointer;
 `;
 

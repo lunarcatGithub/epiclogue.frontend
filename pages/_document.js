@@ -24,7 +24,7 @@ export default class MyDocument extends Document {
     const { htmlAttributes, bodyAttributes, ...helmet } = this.props.helmet; // helmet으로 부터 받아온다.
     const htmlAttrs = htmlAttributes.toComponent();
     const bodyAttrs = bodyAttributes.toComponent();
-    
+
     return (
       //html이랑 head, body 부분에 각각 props들을 넣어준다
       <Html {...htmlAttrs}>
