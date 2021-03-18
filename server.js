@@ -14,7 +14,6 @@ app.prepare().then(() => {
   })
 
   server.get('/viewer/:id', (req, res) => {
-    console.log(req.query)
     return app.render(req, res, '/viewer/:id', req.query)
   })
 

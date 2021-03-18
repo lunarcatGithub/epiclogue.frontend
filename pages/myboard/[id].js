@@ -12,7 +12,7 @@ export async function getServerSideProps({query, req}) {
     res = await axios({
       url,
       method:'get',
-      headers: req?.headers?.cookie ? { cookie: req.headers.cookie } : undefined,
+      headers: req?.headers?.cookie ? { cookie: encodeURIComponent(req.headers.cookie) } : undefined,
       withCredentials: true,
     })
     .catch(res => {

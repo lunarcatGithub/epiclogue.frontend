@@ -42,7 +42,7 @@ const Contents = (props) => {
   const [searchLoding, searchApi, searchError, searchFetch] = useAxiosFetch();
   const [userLoding, userApi, userError, userFetch] = useAxiosFetch();
   const [page, setPage] = useState(1);
-  console.log(initialApi)
+
   // devide type
   const devideTypeHandler = () => {
     setInitialLoading(true);
@@ -95,7 +95,7 @@ const Contents = (props) => {
   useEffect(() => {
     devideTypeHandler();
     return () => devideTypeHandler();
-  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi]);
+  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType]);
 
   // pub 여부에 따른 필터링
   const dataFilter = (data = null) => {
@@ -121,11 +121,11 @@ const Contents = (props) => {
     setHasMore(true);
 
     if (clickedComic && !clickedIllust) {
-      comicFetch(`${process.env.API_URL}/boards?type=Comic`, 'get', null, null, null);
+      comicFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Comic`, 'get', null, null, null);
     } else if (!clickedComic && clickedIllust) {
-      illustFetch(`${process.env.API_URL}/boards?type=Illust`, 'get', null, null, null);
+      illustFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Illust`, 'get', null, null, null);
     } else if (clickedComic && clickedIllust) {
-      initialFetch(`${process.env.API_URL}/boards`, 'get', null, null, null);
+      initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, null);
     }
   }, [clickedComic, clickedIllust]);
 
@@ -150,16 +150,16 @@ const Contents = (props) => {
       }
       const result = fixedEncodeURIComponent(encodedUrl);
       if (url.match('/search/trend') && type === 'SEARCH' && searchType === 'trend') {
-        searchFetch(`${process.env.API_URL}/search?type=Board&q=${null}`, 'get', null, null, null);
+        searchFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&q=${null}`, 'get', null, null, null);
       } else if (url.match('/search/latest') && type === 'SEARCH' && searchType === 'latest') {
-        searchFetch(`${process.env.API_URL}/search?type=Board&q=${result}`, 'get', null, null, null);
+        searchFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&q=${result}`, 'get', null, null, null);
       } else if (url.match('/search/users') && type === 'SEARCH' && searchType === 'users') {
-        userFetch(`${process.env.API_URL}/search?type=User&q=${result}`, 'get', null, null, null);
+        userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=User&q=${result}`, 'get', null, null, null);
       }
       setInitialLoading(false);
     }
-  }, [searchType, resultKeyword, searchData]);
-
+  }, [searchType, resultKeyword, searchData, router.asPath]);
+  
   // 데이터 메인 스크롤 시키기
 
   const renderDataScroll = useCallback(() => {

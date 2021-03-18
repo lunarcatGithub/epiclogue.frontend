@@ -166,7 +166,7 @@ const MypageProfile = () => {
       //   console.log(key, value);
       // }
 
-      myProfileFetch(`${process.env.API_URL}/user/editProfile`, 'post', null, profileData);
+      myProfileFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, profileData);
     }
   };
 
@@ -185,7 +185,7 @@ const MypageProfile = () => {
     setValidationError('');
     setPwNotMatch('');
     setNoPassword('');
-    pwFetch(`${process.env.API_URL}/user/changePass`, 'patch', { userPw, userPwNew, userPwNewRe }, null);
+    pwFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/changePass`, 'patch', { userPw, userPwNew, userPwNewRe }, null);
   };
 
   useEffect(() => {
@@ -220,7 +220,7 @@ const MypageProfile = () => {
       return;
     }
     const profileData = imageDataAppend(e, type);
-    imageFetch(`${process.env.API_URL}/user/editProfile`, 'post', null, profileData, null);
+    imageFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, profileData, null);
   };
 
   const toggleTab = (id, nick, pw, out) => {
@@ -248,7 +248,7 @@ const MypageProfile = () => {
 
   const deleteUser = () => {
     setValidationError('');
-    leaveFetch(`${process.env.API_URL}/user`, 'delete', { userPw: userPw }, null);
+    leaveFetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, 'delete', { userPw: userPw }, null);
   };
 
   useEffect(() => {
@@ -271,7 +271,7 @@ const MypageProfile = () => {
   }, [accessConfirm]);
 
   useEffect(() => {
-    initialFetch(`${process.env.API_URL}/user/editProfile`, 'get', null, null);
+    initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'get', null, null);
   }, []);
 
   useEffect(() => {

@@ -33,18 +33,25 @@ const SearchResult = () => {
     { data: 'latest', lang: _latestTab },
     { data: 'users', lang: _userTab },
   ];
-
+  console.log(router.query)
   return (
     <BodyLayout>
       <ContentInner show={show}>
         <MypageTabBox>
-          {navArr.map((nav, i) => (
-            <NavItems key={i} styling={nav.data === type} onClick={() => goURL({ pathname: `/search/${nav.data}`, as: `/search/${nav.data}/${text}`, query: { type, text } })}>
-              <SearchTab styling={nav.data === type} onClick={() => setParamsData(nav.data)}>
-                {nav.lang}
-              </SearchTab>
-            </NavItems>
-          ))}
+          {
+            navArr.map( (nav, i) => (
+              <NavItems 
+                key={i} styling={nav.data === type} 
+                onClick={() => goURL({ pathname: `/search/[type]`, as: `/search/${nav.data}/${text}`, query: { type:nav.data, text } })}
+              >
+                <SearchTab 
+                  styling={nav.data === type} 
+                  onClick={() => setParamsData(nav.data)}
+                >
+                  {nav.lang}
+                </SearchTab>
+              </NavItems> ) )
+          }
         </MypageTabBox>
       </ContentInner>
       <BookmarkContents>

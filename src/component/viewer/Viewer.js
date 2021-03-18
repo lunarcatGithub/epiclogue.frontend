@@ -168,7 +168,7 @@ const Viewer = ({ boardItem, nonError }) => {
     e.preventDefault();
     if (!loginOn) return;
 
-    const URL = `${process.env.API_URL}/interaction/${type}`;
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/${type}`;
 
     if (type === 'like') {
       likeFetch(URL, like ? 'delete' :'post' , { targetInfo: boardUid, targetType }, null);

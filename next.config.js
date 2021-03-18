@@ -4,27 +4,13 @@ let axios = require('axios');
 module.exports = {
     // 환경변수 사용 할 수 있게
   trailingSlash: true,
-  useFileSystemPublicRoutes: false,
-  env: {
-    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
-    KAKAO_API_KEY: process.env.KAKAO_API_KEY,
-    FACEBOOK_API_KEY: process.env.FACEBOOK_API_KEY,
-    API_URL: process.env.API_URL,
-  },
-  exportPathMap: async function () {
-    const paths = {
-      '/': {page: '/'},
-      '/login': {page: '/login'},
-      '/follows': {page: '/follows'},
-      }
-      const res = await axios.get(`${process.env.API_URL}/boards`)
-      const data = res?.data?.data
-      data.map(show => {
-        paths[`/viewer/${show._id}`] = {page: '/viewer/[id]', query: {id: show._id}},
-        paths[`/myboard/${show.writer.screenId}`] = {page: '/myboard/[id]', query: {id: show.writer.screenId}}; 
-      });
-      return paths
-  },
+  // useFileSystemPublicRoutes: false,
+  // env: {
+  //   GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+  //   KAKAO_API_KEY: process.env.KAKAO_API_KEY,
+  //   FACEBOOK_API_KEY: process.env.FACEBOOK_API_KEY,
+  //   API_URL: process.env.API_URL,
+  // },
   async redirects() {
       // 없는 페이지로 이동할 경우 redirect
     return [

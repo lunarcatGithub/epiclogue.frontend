@@ -74,7 +74,7 @@ export default function ViewerUserForm(props) {
   };
   const submitHandler = () => {
     if (!loginOn) return;
-    const URL = `${process.env.API_URL}/interaction/follow`;
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`;
     followFetch(URL, followDebounce ? 'delete' : 'post', { targetUserId: user_id });
   };
 

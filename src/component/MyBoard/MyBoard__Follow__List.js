@@ -24,7 +24,7 @@ const MyBoardFollowList = (props) => {
 
   const followSubmit = () => {
     getValue(follow)
-    followListFetch(`${process.env.API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: userData?._id });
+    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: userData?._id });
   };
 
   useEffect(() => {

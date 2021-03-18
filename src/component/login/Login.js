@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -6,19 +6,24 @@ import { useRouter } from 'next/router';
 import { SignUp } from './SignUp';
 import { SignIn } from './SignIn';
 
+//hooks && reduce
+import { AppDataContext } from '@store/App_Store';
+
 // 이미지 import
 
 // Hooks import
 import { useUrlMove } from '@hooks/useUrlMove';
 
 const LoginLayOut = () => {
+  const { loginOn } = useContext(AppDataContext);
+
   const router = useRouter();
   const {sign} = router?.query
   const [changePage, setChangePage] = useState(sign || false);
   const [goURL] = useUrlMove();
 
   useEffect(() => {
-    if (localStorage.getItem('loginOn')) {
+    if (loginOn) {
       goURL({ pathname: '/' });
     }
   }, []);

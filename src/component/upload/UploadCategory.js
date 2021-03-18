@@ -180,9 +180,9 @@ const UploadCategory = (props) => {
       if (modifyContent) {
         // uploadFetch(`${process.env.API_URL}/boards/${modifyContent}/edit`, 'post', null, _uploadData);
       } else if (originData?.length !== 0) {
-        uploadFetch(`${process.env.API_URL}/boards/sec`, 'post', null, _uploadData);
+        uploadFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/sec`, 'post', null, _uploadData);
       } else {
-        uploadFetch(`${process.env.API_URL}/boards`, 'post', null, _uploadData);
+        uploadFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'post', null, _uploadData);
       }
       setDisabled(false);
     }

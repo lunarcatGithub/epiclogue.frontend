@@ -47,15 +47,15 @@ const MorePopup = (props) => {
   // const type = props.conFirmType;
 
   const deleteFb = () => {
-    removeFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${_id}`, 'delete', null, null, null);
+    removeFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}`, 'delete', null, null, null);
   };
 
   const deleteFbRe = () => {
-    removeReFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`, 'delete', null, null);
+    removeReFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`, 'delete', null, null);
   };
 
   const removeBoardHandler = () => {
-    removeBoardFetch(`${process.env.API_URL}/boards/${boardUid}`, 'delete', null, null, null);
+    removeBoardFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}`, 'delete', null, null, null);
   };
 
   useEffect(() => {

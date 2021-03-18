@@ -40,7 +40,7 @@ const MyBoardFollow = () => {
   }, [followData]);
 
   useEffect(() => {
-    useIdStore && followButton && followListFetch(`${process.env.API_URL}/interaction/follow?screenId=${useIdStore}&type=${followButton}`, 'get', null, null, null);
+    useIdStore && followButton && followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow?screenId=${useIdStore}&type=${followButton}`, 'get', null, null, null);
   }, [followButton, useIdStore]);
 
   useEffect(() => {

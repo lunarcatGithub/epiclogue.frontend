@@ -2,35 +2,33 @@ import Viewer from '@component/viewer/Viewer';
 import axios from 'axios';
 
 export default function ViewerPage(props) {
-  const {boardItem, id, error, token} = props
-
-  return <Viewer boardItem={boardItem} userId={id} nonError={error} />
+  const {boardItem, id, error} = props
+  return <>{ boardItem ? <Viewer boardItem={boardItem} userId={id} nonError={error} /> : <div>loding...</div>}</>
 }
 
 export async function getServerSideProps(context) {
-  const {query, req} = context
+  const {query, req, params} = context
 
-  const id = req?.params?.id || query?.id
+  const id = params?.id || query?.id;
+
       let error = null
       let res = null
       const url = `${process.env.API_URL}/boards/${id}`
       res = await axios({
         url,
         method:'get',
-        headers: req?.headers?.cookie ? { cookie: req.headers.cookie } : undefined,
+        headers: req?.headers?.cookie ? { cookie: encodeURIComponent(req.headers.cookie) } : undefined,
         withCredentials: true,
       })
       .catch(res => {
           if(res.response?.status === 404) error = 404
       });
-      console.log('cookie', req?.headers?.cookie)
 
       return {
         props : {
             boardItem: res?.data,
             id: id,
             error,
-            token:req?.headers?.cookie || null
       }}
 }
 
