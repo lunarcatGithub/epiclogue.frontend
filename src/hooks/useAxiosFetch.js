@@ -23,7 +23,7 @@ export default function useAxiosFetch() {
         setResult(res?.data);
       })
       .catch((err) => {
-        console.log(err.response);
+        // console.log(err.response);
         setError(err.response);
       });
     setLoding(false);

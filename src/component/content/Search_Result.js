@@ -33,7 +33,7 @@ const SearchResult = () => {
     { data: 'latest', lang: _latestTab },
     { data: 'users', lang: _userTab },
   ];
-  console.log(router.query)
+
   return (
     <BodyLayout>
       <ContentInner show={show}>

@@ -30,9 +30,12 @@ const MypageGeneral = () => {
       formData.append('userDisplayLang', data);
       langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
     } else if (type === 'interest') {
-      console.log('hehe')
+      let listArr = [];
+      data.forEach( list => {
+        if(list.isChecked) listArr.push(list.value)
+      });
+      console.log(listArr)
     }
-    
   };
 
   return (

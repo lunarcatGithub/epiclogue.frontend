@@ -55,7 +55,6 @@ export const SignUp = (props) => {
   };
 
   const validateHandler = () => {
-    console.log(errors)
     if (errors) {
       // 이메일
       if (errors.email === 'errorNoneEmail') {

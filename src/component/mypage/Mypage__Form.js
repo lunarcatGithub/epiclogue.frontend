@@ -19,6 +19,11 @@ export default function MypageForm(props) {
   const { selectedLanguage, defaultLanguage } = langState;
   const [toggleSet, setToggleSet] = useState(false);
   const [selectData, setSelectData] = useState(selectedLanguage);
+  const [selectMultiple, setSelectMultiple] = useState([
+    { id: 1, title: '한국어', value: 0, isChecked:false },
+    { id: 2, title: '日本語', value: 1, isChecked:false },
+    { id: 3, title: 'English', value: 2, isChecked:false },
+  ]);
   // const [currentData, setCurrentData] = useState();
 
   // 언어 변수 설정
@@ -46,14 +51,19 @@ export default function MypageForm(props) {
     _generalSetting = generalSetting[selectedLanguage] || generalSetting[defaultLanguage],
     _generalSetDesc = generalSetDesc[selectedLanguage] || generalSetDesc[defaultLanguage];
 
-  const dataOnChangeHandler = (e) => {
-    setSelectData(Number(e.target.value));
-    // for(const [key, value] of Object.entries(countryArray)){
-    //   if(e.target.value === key){
-    //     setCurrentData(value);
-    //   }
-    // }
-  };
+  const dataOnChangeHandler = (e) => setSelectData(Number(e.target.value));
+  
+
+  const dataOnClickHandler = (e) => {
+    let selectArr = selectMultiple
+      selectArr.forEach( list => { 
+          if(list.value === Number(e.target.value)){
+          list.isChecked = e.target.checked;
+        }
+      })
+      setSelectMultiple(selectArr)
+  } 
+
 
   const sendDataHandler = (e) => {
     if (type === 'language') {
@@ -61,7 +71,7 @@ export default function MypageForm(props) {
       langPatch({ type: 'LANGUAGE_UPDATE', payload: selectData });
       formDatas.submit(e, 'language', selectData);
     } else if(type === 'interest') {
-      formDatas.submit(e, 'language', selectData);
+      formDatas.submit(e, 'interest', selectMultiple);
     }
     setToggleSet(false);
   };
@@ -81,7 +91,7 @@ export default function MypageForm(props) {
       case 'mute':
         setLangTitle(_muteSetting);
         setLangSubtitle(_muteSetDesc);
-        setLangBtn(_changeBtn);
+        setLangBtn(_changeBtn); 0
         break;
       case 'push':
         setLangTitle(_pushSetting);
@@ -115,33 +125,47 @@ export default function MypageForm(props) {
           <HiddenBox>
             <div>
               <HiddenInner>
-                {type === 'language' &&
+                {
+                  type === 'language' &&
                   LanguageList?.map((list) => (
                     <ListTxtBox key={list.id}>
                       <TextList>{list.title}</TextList>
-                      <ListTxtRadio readOnly id={list.id} name="userLanguage" value={list.state} checked={selectData === list.state} onChange={dataOnChangeHandler} />
+                      <ListTxtRadio 
+                        readOnly 
+                        id={list.id} 
+                        name="userLanguage" 
+                        value={list.state} 
+                        checked={selectData === list.state} 
+                        onChange={(e)=>dataOnChangeHandler(e, 'LANGUAGE')} 
+                      />
                       <ListRadioCustom />
-                    </ListTxtBox>
-                  ))}
-                {type === 'interest' &&
-                  interestedList?.map((list) => (
+                    </ListTxtBox> ))
+                }
+                {
+                  type === 'interest' &&
+                  selectMultiple?.map((list) => (
                     <ListCheckLabel key={list.id}>
                       <TextList>{list.title}</TextList>
-                      <ListCheck id={list.tagId} value={list.value} />
+                      <ListCheck 
+                        {...list}
+                        onClick={(e)=>dataOnClickHandler(e)} 
+                      />
                       <ListCheckCustom />
-                    </ListCheckLabel>
-                  ))}
-                {type === 'mute' || type === 'push' || type === 'generalset' ? (
+                    </ListCheckLabel> ))
+                }
+                {
+                  type === 'mute' || type === 'push' || type === 'generalset' ? (
                   <HiddenBox>
                     <ServiceNotYet>{_notServicePush}</ServiceNotYet>
-                  </HiddenBox>
-                ) : null}
+                  </HiddenBox> ) : null
+                }
               </HiddenInner>
-              {type === 'mute' || type === 'push' || type === 'generalset' ? null : (
-                <BtnWrap>
-                  <PwChangeBtn onClick={sendDataHandler}>{langBtn}</PwChangeBtn>
-                </BtnWrap>
-              )}
+              {
+                type === 'mute' || type === 'push' || type === 'generalset' ? null : (
+                  <BtnWrap>
+                    <PwChangeBtn onClick={sendDataHandler}>{langBtn}</PwChangeBtn>
+                  </BtnWrap> )
+              }
             </div>
           </HiddenBox>
         )}
@@ -156,13 +180,6 @@ const ServiceNotYet = styled.span`
   font-size: ${(props) => props.theme.fontSize.font15};
   font-weight: ${(props) => props.theme.fontWeight.font500};
   color: ${(props) => props.theme.color.pinkColor};
-`;
-
-// 레이아웃
-const Container = styled.section`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
 `;
 
 const ContentsBox = styled.div`
