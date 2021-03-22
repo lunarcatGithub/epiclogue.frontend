@@ -1,18 +1,72 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
 // 컴포넌트 import
-import { useChange } from '@hooks/useChange';
 
 const Report = () => {
-  const [name, handleChangeName] = useChange();
-  const [company, handleChangeCompany] = useChange();
-  const [contact, handleChangeContact] = useChange();
-  const [email, handleChangeEmail] = useChange();
-  const [country, handleChangeCountry] = useChange();
-  const [checkContent, handleChangeContent] = useChange();
   const router = useRouter();
+
+  const [userData, setUserData] = useState({
+    name:'', company:'', contact:'', email:'', country:'',
+  })
+
+  const [originData, setOrignData] = useState([]);
+  //침해받은 저작물
+  const [infringement, setInfringement] = useState()
+  const [originSite, setOriginSite] = useState(2);
+  const [originForm, setOriginForm] = useState();
+  const [descript, setDescript] = useState('');
+  const [agreeCheck, setAgreeCheck] = useState([
+    {id:'private', title:'상기 내용에 대한 정보제공(개인정보, 신고내용)을 동의합니다.', isChecked:false},
+    {id:'swear', title:'본인은 위증을 하지 않았고, 확실한 저작권자이며 상기의 내용은 모두 진실임을 동의합니다.', isChecked:false}])
+  const [signitrue, setSignitrue] = useState();
+
+
+  const handleChangeValue =(e, type)=> {
+    const {value} = e.target
+    let arr = []
+    if(type === 'origin'){
+      arr.push([...originData, value])
+      setOrignData(arr)
+    } else if(type === 'checkBox'){
+      let selectArr = agreeCheck
+      selectArr.forEach( list => { 
+          if(list.id === e.target.id){
+          list.isChecked = e.target.checked;
+        }
+      })
+      setAgreeCheck(selectArr)
+    } else {
+      setUserData({...userData, [type]:value});
+    }
+  } 
+
+  const reportSubmit = (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    // formData.append()
+    if(agreeCheck[0].isChecked === false && agreeCheck[1].isChecked === false){
+      alert('상기의 내용에 동의하지 않으면 신고하실 수 없습니다')
+    }
+    alert('아직 개발중입니다. 피드백을 통해 발송해주세요')
+  }
+
+  const informArr = [
+    {id:0, title:'이름', name:'name'},
+    {id:1, title:'회사명', name:'company'},
+    {id:2, title:'연락처', name: 'contact'},
+    {id:3, title:'이메일', name: 'email'},
+    {id:4, title:'국가', name: 'country'},
+  ]
+
+  useEffect(() => {
+    let form = [];
+    for(let i=0; i <= originSite; i++ ){
+      form.push(<TxtInput placeholder={'ex) http://'} onChange={(e)=>handleChangeValue(e, 'origin')} />)
+    }
+    setOriginForm(form)
+  }, [])
 
   return (
     <Layout>
@@ -20,7 +74,7 @@ const Report = () => {
         <Header>
           <ArrowBtn onClick={() => router.back()} />
         </Header>
-        <ReportBox action="" method="">
+        <ReportBox onSubmit={(e)=>reportSubmit(e)}>
           {/* 저작권 신고 상단 파트 */}
           <ReportTop>
             <ReportTitle>저작권 신고</ReportTitle>
@@ -28,26 +82,13 @@ const Report = () => {
             <Dummy />
 
             <ReportSubTitle> 신고자의 정보</ReportSubTitle>
-            <InputWrap>
-              <ReportTxt>이름</ReportTxt>
-              <TxtInput name={name} onChange={handleChangeName} />
-            </InputWrap>
-            <InputWrap>
-              <ReportTxt>회사명</ReportTxt>
-              <TxtInput name={company} onChange={handleChangeCompany} />
-            </InputWrap>
-            <InputWrap>
-              <ReportTxt>연락처</ReportTxt>
-              <TxtInput name={contact} onChange={handleChangeContact} />
-            </InputWrap>
-            <InputWrap>
-              <ReportTxt>이메일</ReportTxt>
-              <TxtInput name={email} onChange={handleChangeEmail} />
-            </InputWrap>
-            <InputWrap>
-              <ReportTxt>국가</ReportTxt>
-              <TxtInput name={country} onChange={handleChangeCountry} />
-            </InputWrap>
+            {
+              informArr.map( ({id, title, name}) => (
+                <InputWrap key={id}>
+                  <ReportTxt>{title}</ReportTxt>
+                  <TxtInput name={name} onChange={(e)=> { handleChangeValue(e, name); }} />
+                </InputWrap> ))
+            }
 
             {/* // 저작권 신고 상단 파트 끝 */}
           </ReportTop>
@@ -56,17 +97,17 @@ const Report = () => {
           <ReportMiddle>
             <InputWrap>
               <ReportSubTitle>침해받은 저작물 확인</ReportSubTitle>
-              <TxtInput name={checkContent} onChange={handleChangeContent} />
+              <TxtInput value={infringement} onChange={(e)=> setInfringement(e.target.value)} />
             </InputWrap>
             <InputWrap>
               <ReportTxt>회원님의 콘텐츠 원본이 있는 사이트를 아래에 작성해 주세요</ReportTxt>
-              <TxtInput placeholder={'ex) http://'} />
-              <TxtInput placeholder={'ex) http://'} />
-              <TxtInput placeholder={'ex) http://'} />
+              {
+                originForm
+              }
             </InputWrap>
             <InputWrap>
               <ReportTxt>기타 원작임을 알 수 있는 내용을 자세하게 작성해주세요</ReportTxt>
-              <TextDescript />
+              <TextDescript value={descript} onChange={(e) => setDescript(e.target.value)} />
             </InputWrap>
             {/* // 침해받은 저작물 중간 파트 끝 */}
           </ReportMiddle>
@@ -77,23 +118,21 @@ const Report = () => {
               <ReportSubTitle>저작물 위반에 대한 처리 방침</ReportSubTitle>
               <ReportTxt>저희 에픽로그는 신고가 접수되면 해당 게시물을 일시적으로 블라인드 처리합니다. 이후 신고가 사실일 경우 불법 저작물은 삭제됩니다.</ReportTxt>
 
-              <ReportTxt>단, 법적 소송 혹은 법률적인 제재가 필요한 경우에 대비하여 저작물은 3개월 동안 보관합니다.</ReportTxt>
               {/* // 처리방침 및 발송 마지막 파트 끝 */}
             </InputWrap>
             <InputWrap>
               <ReportSubTitle>상기 내용에 대한 동의</ReportSubTitle>
-              <AgreeBoxWrap>
-                <PvAgreeBox id="private" />
-                <PvAgreeBoxLabel>상기 내용에 대한 정보제공(개인정보, 신고내용)을 동의합니다.</PvAgreeBoxLabel>
-              </AgreeBoxWrap>
-              <AgreeBoxWrap>
-                <PvAgreeBox id="swear" />
-                <SrAgreeBoxLabel>본인은 위증을 하지 않았고, 확실한 저작권자이며 상기의 내용은 모두 진실임을 동의합니다.</SrAgreeBoxLabel>
-              </AgreeBoxWrap>
+              {
+                agreeCheck?.map(({id, title}) => (
+                  <AgreeBoxWrap key={id}>
+                  <PvAgreeBox id={id} onChange={e => handleChangeValue(e, 'checkBox')} />
+                  <PvAgreeBoxLabel htmlFor={id}>{title}</PvAgreeBoxLabel>
+                </AgreeBoxWrap> ))
+              }
             </InputWrap>
             <InputWrap>
               <ReportSubTitle>본인의 성명을 작성해주세요. 전자서명으로 대체합니다.</ReportSubTitle>
-              <TxtInput />
+              <TxtInput value={signitrue} onChange={(e)=> setSignitrue(e.target.value)} />
             </InputWrap>
             <ReConfirm>* 제출하기 전 본인은 에픽로그 저작권 정책에 동의했음을 다시 한번 확인합니다 </ReConfirm>
             <SubmitBtn>제출하기</SubmitBtn>
@@ -156,6 +195,7 @@ const Layout = styled.div`
 `;
 const LayoutInner = styled.div`
   width: calc(100% - 65%);
+  min-width:480px;
   height: 100%;
   background: ${(props) => props.theme.color.whiteColor};
 
@@ -243,9 +283,7 @@ const PvAgreeBox = styled.input.attrs({
 })`
   margin-right: 10px;
 `;
-const PvAgreeBoxLabel = styled.label.attrs({
-  htmlFor: 'private',
-})``;
+const PvAgreeBoxLabel = styled.label``;
 
 const SrAgreeBoxLabel = styled.label.attrs({
   htmlFor: 'swear',
