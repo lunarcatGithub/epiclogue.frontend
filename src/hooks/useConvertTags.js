@@ -55,14 +55,14 @@ export const useConvertTags = () => {
             <LinkStyle>{str}</LinkStyle>
           </Link>
         );
-      } else if (str.toString().match(regExp) ||  str.toString().match(regURLHttp)) {
+      } else if (str.toString().match(regExp) || str.toString().match(regURLHttp)) {
         // 사이트 주소
         arr.push(
           <LinkStyle key={index} href={`https://${str}`} target="_blank">
             {str}
           </LinkStyle>
         );
-      } 
+      }
       // else if(str.toString().match(regURL)){
       //   // 이메일 주소
       //   arr.push(

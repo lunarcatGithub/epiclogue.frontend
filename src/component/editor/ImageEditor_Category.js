@@ -33,7 +33,7 @@ export const ImageEditorCategory = () => {
     return await Promise.all(await converted.concat(await imageSample.filter((urls) => converted.every((conv) => conv.id !== urls.id)))).then((converted) => {
       converted.sort((b, a) => b.id - a.id);
       return converted;
-    }); 
+    });
   };
   // 조절 된 캔버스를 file 형태로 전송
   const urlToFileConvert = async (arr) => {

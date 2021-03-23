@@ -31,10 +31,9 @@ import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store'
 export const ReplyListContext = React.createContext();
 
 const Viewer = ({ boardItem, nonError }) => {
-
   const router = useRouter();
   const boardUid = router?.query?.id;
-  
+
   const { alertPatch } = useContext(AlertContext);
   const [profileURL, , convertProfileIamge] = useConvertURL();
   const [O_profileURL, , convertO_ProfileIamge] = useConvertURL();
@@ -43,7 +42,7 @@ const Viewer = ({ boardItem, nonError }) => {
 
   const [goURL] = useUrlMove();
   const [goUploadUpdate] = useUrlMove();
-  
+
   const [replyList, setReplyList] = useState([]);
   const [renderList, setRenderList] = useState([]);
   const [boardImg, setBoardImg] = useState([]);
@@ -171,10 +170,10 @@ const Viewer = ({ boardItem, nonError }) => {
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/${type}`;
 
     if (type === 'like') {
-      likeFetch(URL, like ? 'delete' :'post' , { targetInfo: boardUid, targetType }, null);
+      likeFetch(URL, like ? 'delete' : 'post', { targetInfo: boardUid, targetType }, null);
       toggleLike();
     } else if (type === 'bookmark') {
-      bookmarkFetch(URL, bookmark ? 'delete' :'post' , { boardId: boardUid }, null);
+      bookmarkFetch(URL, bookmark ? 'delete' : 'post', { boardId: boardUid }, null);
       toggleBookmark();
     }
   };
@@ -192,22 +191,21 @@ const Viewer = ({ boardItem, nonError }) => {
   //   }
   // };
 
+  // 회원 유저
+  const checkMoreMenuType = () => {
+    // 비회원 유저
+    if (!loginOn) {
+      setUnAuth(true);
+      return;
+    }
     // 회원 유저
-    const checkMoreMenuType = () => {
-      // 비회원 유저
-      if (!loginOn) {
-        setUnAuth(true);
-        return;
-      }
-      // 회원 유저
-      toggle_Modal_MoreMenu();
-      if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
-        setType_MoreMenu(<MorePopup type="myMore" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-      } else {
-        setType_MoreMenu(<MorePopup type="userMore" handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-      }
-    };
-  
+    toggle_Modal_MoreMenu();
+    if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
+      setType_MoreMenu(<MorePopup type="myMore" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+    } else {
+      setType_MoreMenu(<MorePopup type="userMore" handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+    }
+  };
 
   useEffect(() => {
     addList();
@@ -278,7 +276,7 @@ const Viewer = ({ boardItem, nonError }) => {
       toggleLike(!loginOn ? false : liked);
       setReplyList(replyList);
       setRenderList(replyList);
-      setScreenId(screenId)
+      setScreenId(screenId);
       setBoardImg(boardImg);
       setHeartCount(heartCount);
       setIsLoading(false);
@@ -354,53 +352,31 @@ const Viewer = ({ boardItem, nonError }) => {
       {/* 작품 뷰어 부분*/}
       <ViewerPortWrap>
         <ContentsAllView>
-          <ViewerPort>
-            {
-              _public === 'none'
-                ? null
-                : boardImg.map((item, index) => (
-                <ViewImg key={index} src={item} category={data.category} />
-              ))
-            }
-          </ViewerPort>
+          <ViewerPort>{_public === 'none' ? null : boardImg.map((item, index) => <ViewImg key={index} src={item} category={data.category} />)}</ViewerPort>
         </ContentsAllView>
         {/* 코멘트 시작 부분*/}
         <UserCommentWrap>
           <UserComment>
             {/* 원작 유저 */}
-            {
-              checkOrigin ? (
-                <>
-                  {/* 원작자 */}
-                  <ViewerUserForm
-                    type="ORIGIN"
-                    externalSource={externalSource}
-                    userLang={_originalUser}
-                    followLang={_followBtn}
-                    followOnLang={_followingBtn}
-                    removedContents={_removedContents}
-                    profile={O_profileURL}
-                    userData={data}
-                    boardUid={boardUid}
-                    checkMoreMenuType={checkMoreMenuType}
-                  />
-                  {/* 2차 창작자 */}
-                  <ViewerUserForm 
-                    type="SECOND" 
-                    userLang={_recreateUser} 
-                    followLang={_followBtn} 
-                    followOnLang={_followingBtn} 
-                    profile={profileURL} 
-                    userData={data} 
-                    boardUid={boardUid}
-                    checkMoreMenuType={checkMoreMenuType}
-                  />
-                </>
-              ) : (
+            {checkOrigin ? (
+              <>
+                {/* 원작자 */}
                 <ViewerUserForm
-                  type="NOSECOND"
+                  type="ORIGIN"
                   externalSource={externalSource}
                   userLang={_originalUser}
+                  followLang={_followBtn}
+                  followOnLang={_followingBtn}
+                  removedContents={_removedContents}
+                  profile={O_profileURL}
+                  userData={data}
+                  boardUid={boardUid}
+                  checkMoreMenuType={checkMoreMenuType}
+                />
+                {/* 2차 창작자 */}
+                <ViewerUserForm
+                  type="SECOND"
+                  userLang={_recreateUser}
                   followLang={_followBtn}
                   followOnLang={_followingBtn}
                   profile={profileURL}
@@ -408,8 +384,20 @@ const Viewer = ({ boardItem, nonError }) => {
                   boardUid={boardUid}
                   checkMoreMenuType={checkMoreMenuType}
                 />
-              )
-            }
+              </>
+            ) : (
+              <ViewerUserForm
+                type="NOSECOND"
+                externalSource={externalSource}
+                userLang={_originalUser}
+                followLang={_followBtn}
+                followOnLang={_followingBtn}
+                profile={profileURL}
+                userData={data}
+                boardUid={boardUid}
+                checkMoreMenuType={checkMoreMenuType}
+              />
+            )}
 
             {/* 모바일용 뷰어 */}
             <MobileViewerPort>{_public === 'none' ? null : boardImg.map((item, index) => <ViewImg key={index} src={boardImg[index]} />)}</MobileViewerPort>
@@ -434,7 +422,10 @@ const Viewer = ({ boardItem, nonError }) => {
                 <form onSubmit={(e) => sumitHandler(e, 'bookmark')}>
                   <BtnBox
                     onClick={() => {
-                      if (!loginOn) { setUnAuth(true); return; }
+                      if (!loginOn) {
+                        setUnAuth(true);
+                        return;
+                      }
                     }}
                   >
                     <BookmarkBtn bookmark={bookmark} />
@@ -442,7 +433,12 @@ const Viewer = ({ boardItem, nonError }) => {
                 </form>
                 <form action="" onSubmit={(e) => sumitHandler(e, 'like', 'Board')}>
                   <BtnBox
-                    onClick={() => { if (!loginOn) { setUnAuth(true); return; } }}
+                    onClick={() => {
+                      if (!loginOn) {
+                        setUnAuth(true);
+                        return;
+                      }
+                    }}
                   >
                     <LikeBtn heart={like} />
                     <ReactScore>{_heartCount}</ReactScore>
@@ -508,59 +504,45 @@ const Viewer = ({ boardItem, nonError }) => {
         </Modal>
       )}
       */}
-      {
-        state_MoreMenu && (
-          <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
-            {type_MoreMenu}
-          </Modal>
-        )
-      }
-      {
-        state_React && (
-          <Modal visible={state_React} closable={true} maskClosable={true} onClose={() => toggle_Modal_React(false)}>
-            <ReactPopup />
-          </Modal>
-        )
-      }
-      {
-        state_Trans && (
-          <Modal visible={state_Trans} closable={true} maskClosable={true} onClose={() => toggle_Modal_Trans(false)}>
-            <TranslatePopup writer={data.writer} />
-          </Modal>
-        )
-      }
+      {state_MoreMenu && (
+        <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
+          {type_MoreMenu}
+        </Modal>
+      )}
+      {state_React && (
+        <Modal visible={state_React} closable={true} maskClosable={true} onClose={() => toggle_Modal_React(false)}>
+          <ReactPopup />
+        </Modal>
+      )}
+      {state_Trans && (
+        <Modal visible={state_Trans} closable={true} maskClosable={true} onClose={() => toggle_Modal_Trans(false)}>
+          <TranslatePopup writer={data.writer} />
+        </Modal>
+      )}
       {/* 비공개 작품일 경우 */}
-      {
-        _public === 'none' && (
-          <Modal visible={true} onClose={() => toggle_Modal_Trans(false)}>
-            <ConfirmPopup setAccessConfirm={goURL} type={'GOBACK'} />
-          </Modal>
-        )
-      }
+      {_public === 'none' && (
+        <Modal visible={true} onClose={() => toggle_Modal_Trans(false)}>
+          <ConfirmPopup setAccessConfirm={goURL} type={'GOBACK'} />
+        </Modal>
+      )}
       {/* 삭제or없는 콘텐츠 일 경우*/}
-      {
-        noContents && (
-          <Modal visible={true} onClose={() => toggle_Modal_Trans(false)}>
-            <ConfirmPopup setAccessConfirm={goURL} type={'REMOVE'} />
-          </Modal>
-        )
-      }
+      {noContents && (
+        <Modal visible={true} onClose={() => toggle_Modal_Trans(false)}>
+          <ConfirmPopup setAccessConfirm={goURL} type={'REMOVE'} />
+        </Modal>
+      )}
       {/* 2차 창작이 금지된 경우 */}
-      {
-        allowSecondary && (
-          <Modal visible={allowSecondary} onClose={() => setAllowSecondary(false)}>
-            <ConfirmPopup handleModal={() => setAllowSecondary(false)} type={'TRANS'} />
-          </Modal>
-        )
-      }
+      {allowSecondary && (
+        <Modal visible={allowSecondary} onClose={() => setAllowSecondary(false)}>
+          <ConfirmPopup handleModal={() => setAllowSecondary(false)} type={'TRANS'} />
+        </Modal>
+      )}
       {/* 2차 창작하려는데 원작글이 삭제된 경우 */}
-      {
-        originDeleted && (
-          <Modal visible={originDeleted} onClose={() => setOriginDeleted(false)}>
-            <ConfirmPopup handleModal={() => setOriginDeleted(false)} type={'REMOVEORIGIN'} />
-          </Modal>
-        )
-      }
+      {originDeleted && (
+        <Modal visible={originDeleted} onClose={() => setOriginDeleted(false)}>
+          <ConfirmPopup handleModal={() => setOriginDeleted(false)} type={'REMOVEORIGIN'} />
+        </Modal>
+      )}
     </ReplyListContext.Provider>
   );
 };

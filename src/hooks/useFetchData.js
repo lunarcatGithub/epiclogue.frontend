@@ -19,6 +19,7 @@ export default function useFetchData() {
         setResult(res);
       })
       .catch((err) => {
+        console.log(err);
         setError(err);
       });
     setLoding(false);

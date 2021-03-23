@@ -1,5 +1,5 @@
-
 export default function Error({ statusCode }) {
+  console.log('statusCode', statusCode);
 
   return <div>{statusCode ? 'server error' : 'client error'}</div>;
 }

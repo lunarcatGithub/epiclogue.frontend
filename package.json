@@ -8,6 +8,7 @@
     "build": "next build",
     "export": "next export",
     "lint": "eslint \"src/**/*.js\" --fix",
+    "docker": "yarn && yarn build && yarn start",
     "format": "prettier \"src/**/*.js\" \"pages/**/*.js\" --write"
   },
   "dependencies": {

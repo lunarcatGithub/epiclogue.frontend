@@ -26,15 +26,11 @@ const MypageGeneral = () => {
     e.preventDefault();
     if (!loginOn) return;
     let formData = new FormData();
-    if(type === 'language'){
+    if (type === 'language') {
       formData.append('userDisplayLang', data);
       langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
     } else if (type === 'interest') {
-      let listArr = [];
-      data.forEach( list => {
-        if(list.isChecked) listArr.push(list.value)
-      });
-      console.log(listArr)
+      console.log('hehe');
     }
   };
 

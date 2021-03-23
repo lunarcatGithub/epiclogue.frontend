@@ -18,7 +18,7 @@ const LoginLayOut = () => {
   const { loginOn } = useContext(AppDataContext);
 
   const router = useRouter();
-  const {sign} = router?.query
+  const { sign } = router?.query;
   const [changePage, setChangePage] = useState(sign || false);
   const [goURL] = useUrlMove();
 

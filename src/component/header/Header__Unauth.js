@@ -10,15 +10,15 @@ export default function HeaderUnauth() {
 
   return (
     <>
-        <LayoutInner>
-            <LoginBtn onClick={()=>goURL({pathname:'/login', as:'/login', query:{main:true}})}>Login</LoginBtn>
-            <SignUpBtn onClick={()=>goURL({pathname:'/login', as:'/login', query:{sign:true}})}>Sign up</SignUpBtn>
-            <Link href={`/mypage/setting`}>
-              <NavItem  >
-                  <OptionSetting />
-              </NavItem>
-            </Link>
-        </LayoutInner>
+      <LayoutInner>
+        <LoginBtn onClick={() => goURL({ pathname: '/login', as: '/login', query: { main: true } })}>Login</LoginBtn>
+        <SignUpBtn onClick={() => goURL({ pathname: '/login', as: '/login', query: { sign: true } })}>Sign up</SignUpBtn>
+        <Link href={`/mypage/setting`}>
+          <NavItem>
+            <OptionSetting />
+          </NavItem>
+        </Link>
+      </LayoutInner>
     </>
   );
 }
