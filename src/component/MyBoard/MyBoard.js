@@ -19,6 +19,7 @@ import { useDate } from '@hooks/useDate';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { LanguageContext, AppDataContext } from '@store/App_Store';
 import useDebounce from '@hooks/useDebounce';
+import { Meta } from '@utils/MetaTags';
 
 // 아이콘 import
 
@@ -122,8 +123,16 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     { link: 'bookmarks', title: _bookMarkTabs },
   ];
 
+  const metaData = {
+    title: `${boardItem?.data?.nickname}`,
+    description: `${boardItem?.data?.intro}`,
+    image: `${boardItem?.data?.profile?.thumbnail}`,
+    canonical: `myboard/${boardItem?.data?._id}`,
+  };
+
   return (
     <>
+      <Meta meta={metaData} />
       <Layout>
         <LayoutInner>
           <BackgroundBox>
