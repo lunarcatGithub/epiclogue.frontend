@@ -83,7 +83,7 @@ const Report = () => {
 
             <ReportSubTitle> 신고자의 정보</ReportSubTitle>
             {
-              informArr.map( ({id, title, name}) => (
+              informArr.map(({id, title, name}) => (
                 <InputWrap key={id}>
                   <ReportTxt>{title}</ReportTxt>
                   <TxtInput name={name} onChange={(e)=> { handleChangeValue(e, name); }} />
@@ -284,10 +284,6 @@ const PvAgreeBox = styled.input.attrs({
   margin-right: 10px;
 `;
 const PvAgreeBoxLabel = styled.label``;
-
-const SrAgreeBoxLabel = styled.label.attrs({
-  htmlFor: 'swear',
-})``;
 
 const ReConfirm = styled.span`
   font-size: ${(props) => props.theme.fontSize.font13};
