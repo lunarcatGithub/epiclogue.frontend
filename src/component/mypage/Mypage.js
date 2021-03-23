@@ -69,22 +69,26 @@ const Mypage = () => {
             <TopMenuTitleBox>
               <TopMenuTitle>{loginOn ? _settingProfile : _generalSetTab}</TopMenuTitle>
             </TopMenuTitleBox>
-            {loginOn ? (
-              <TabMenuWrap>
-                {navArr.map((tab, i) => (
-                  <NavItem key={i} onClick={() => goURL({ pathname: `/mypage/${tab.name}` })}>
-                    <TabSelect styling={router.asPath.match(tab.name)}> {tab.lang} </TabSelect>
-                  </NavItem>
-                ))}
-              </TabMenuWrap>
-            ) : null}
-            {loginOn ? (
-              list.map(({ id, title, contents }) => {
-                if (tab === title) return <div key={id}>{contents}</div>;
-              })
-            ) : (
-              <MypageGeneral />
-            )}
+            {
+              loginOn ? (
+                <TabMenuWrap>
+                  {navArr.map((tab, i) => (
+                    <NavItem key={i} onClick={() => goURL({ pathname: `/mypage/${tab.name}` })}>
+                      <TabSelect styling={router.asPath.match(tab.name)}> {tab.lang} </TabSelect>
+                    </NavItem>
+                  ))}
+                </TabMenuWrap>
+              ) : null
+            }
+            {
+              loginOn ? (
+                list.map(({ id, title, contents }) => {
+                  if (tab === title) return contents
+                })
+              ) : (
+                <MypageGeneral />
+              )
+            }
           </ProfileInner>
         </ProfileLayout>
       </Container>

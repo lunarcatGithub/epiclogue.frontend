@@ -4,29 +4,47 @@ import { GlobalStyles } from '../styles/GlobalStyles';
 import Header from '@component/header/Header';
 import '../styles/App.css';
 import { InteractTab } from '@utils/Push__Interaction';
-import App from 'next/app';
 import Helmet from 'react-helmet';
-import Router from 'next/router';
-import Axios from 'axios';
+import {useRouter} from 'next/router';
+import styled from "styled-components";
+import GNB from '@Component/GNB/Gnb';
+import { Nav } from '@Component/NAV/Nav';
 
 // hooks & reducer
 import { ContextStore } from '@store/App_Store';
-
-Router.events.on('routeChangeStart', (url) => console.log(url));
-Router.events.on('routeChangeComplete', () => console.log('routeChangeComplete'));
-Router.events.on('routeChangeError', () => console.log('routeChangeError'));
+import { AdminContextStore } from '@Component/Store/Admin_Context'
+// Router.events.on('routeChangeStart', (url) => console.log(url));
+// Router.events.on('routeChangeComplete', () => console.log('routeChangeComplete'));
+// Router.events.on('routeChangeError', () => console.log('routeChangeError'));
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter()
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <ContextStore>
-        <Helmet />
-        <Header />
-        {/* <ScrollTop/> */}
-        <Component {...pageProps} />
-        <InteractTab />
-      </ContextStore>
+        {
+          !router.pathname.match('/epicadmin/') ?
+            <ContextStore>
+              <Helmet/>
+              <Header />
+              <Component {...pageProps} />
+              <InteractTab />
+            </ContextStore>
+          :
+          <AdminContextStore>
+            <Layout>
+              <GNB/>
+              <LayoutDivision>
+                <Nav/>
+                <LayoutInner>
+                  <Component {...pageProps} />
+                </LayoutInner>
+            </LayoutDivision>
+          </Layout> 
+          </AdminContextStore>
+        }
+
     </ThemeProvider>
   );
 }
@@ -49,4 +67,35 @@ function MyApp({ Component, pageProps }) {
 //   return { ...appProps }
 // }
 
-export default MyApp;
+
+// 스타일 영역
+// 공통
+// 레이아웃
+const Layout = styled.div`
+display:flex;
+flex-direction:column;
+width:100%;
+height:100%;
+`
+const LayoutDivision = styled.section`
+display:flex;
+width:100%;
+`
+const LayoutInner = styled.div`
+display:flex;
+flex-direction:column;
+width:100%;
+height:100%;
+/* padding:30px; */
+margin:0 1.5em;
+
+@media (max-width:480px) {
+    padding:8px;
+    margin:0;
+
+}
+`
+
+export default MyApp; 
+
+

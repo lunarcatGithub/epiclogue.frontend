@@ -8,8 +8,9 @@ import { ServerStyleSheet } from 'styled-components';
 
 export default class MyDocument extends Document {
   static getInitialProps(context) {
+    if(!context) return;
     const sheet = new ServerStyleSheet(); // 서버사이드 렌더링 할 수 있게함.
-    const page = context.renderPage((App) => (props) =>
+    const page = context?.renderPage((App) => (props) =>
       sheet.collectStyles(
         <>
           <GlobalStyles />
