@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import MyBoardFollowList from './MyBoard__Follow__List';
 import { useRouter } from 'next/router';
@@ -8,14 +8,13 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
 import { AppDataContext } from '@store/App_Store';
 
-const MyBoardFollow = () => {
+const MyBoardFollow = ({route}) => {
   const router = useRouter();
 
   const { followData, followButton, setFollowButton } = useContext(AppDataContext);
 
   const [followingList, setFollowingList] = useState([]);
   const [followerList, setFollowerList] = useState([]);
-  const [useIdStore, setUseIdStore] = useState();
 
   // 팔로우 리스트 무한 스크롤
   const [items, setItems] = useState(5);
@@ -35,13 +34,10 @@ const MyBoardFollow = () => {
     }
   }, [page, followingList, followerList]);
 
-  useEffect(() => {
-    setUseIdStore(followData?.screenId);
-  }, [followData]);
 
   useEffect(() => {
-    useIdStore && followButton && followListFetch(`${process.env.API_URL}/interaction/follow?screenId=${useIdStore}&type=${followButton}`, 'get', null, null, null);
-  }, [followButton, useIdStore]);
+    route && followButton && followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow?screenId=${route}&type=${followButton}`, 'get', null, null, null);
+  }, [followButton, route]);
 
   useEffect(() => {
     if (!followListApi) return;

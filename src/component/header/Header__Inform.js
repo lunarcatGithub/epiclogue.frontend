@@ -57,13 +57,13 @@ const UserInform = () => {
   // 유저 알림 API
   useEffect(() => {
     if (!loginOn) return;
-    notiFetch(`${process.env.API_URL}/notification`, 'get', null, null, null);
+    notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, null);
   }, []);
 
   // 읽음 처리용
   useEffect(() => {
     if (!loginOn) return;
-    infromFetch(`${process.env.API_URL}/notification/all`, 'patch', null);
+    infromFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification/all`, 'patch', null);
   }, []);
 
   return (

@@ -36,9 +36,9 @@ const WriteFbForm = (props) => {
       return alertPatch({ type: 'FEEDBACK_TWO', payload: true });
     } else {
       if (props.type === 'Fb') {
-        feedbackFetch(`${process.env.API_URL}/boards/${boardUid}/feedback`, 'post', { feedbackBody }, null);
+        feedbackFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback`, 'post', { feedbackBody }, null);
       } else if (props.type === 'ReFb') {
-        reFeedbackFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${fbUid}/reply`, 'post', { replyBody: feedbackBody }, null);
+        reFeedbackFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${fbUid}/reply`, 'post', { replyBody: feedbackBody }, null);
       }
     }
   };

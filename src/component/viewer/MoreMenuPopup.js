@@ -17,7 +17,7 @@ import { LanguageContext } from '@store/App_Store';
 
 const MorePopup = (props) => {
   const { langState } = useContext(LanguageContext);
-  const {_id, conFirmType, type, handleModal_Menu} = props
+  const { _id, conFirmType, type, handleModal_Menu } = props;
 
   const [accessConfirm, setAccessConfirm] = useState(false);
   // fetch
@@ -47,15 +47,15 @@ const MorePopup = (props) => {
   // const type = props.conFirmType;
 
   const deleteFb = () => {
-    removeFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${_id}`, 'delete', null, null, null);
+    removeFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}`, 'delete', null, null, null);
   };
 
   const deleteFbRe = () => {
-    removeReFbFetch(`${process.env.API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`, 'delete', null, null);
+    removeReFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`, 'delete', null, null);
   };
 
   const removeBoardHandler = () => {
-    removeBoardFetch(`${process.env.API_URL}/boards/${boardUid}`, 'delete', null, null, null);
+    removeBoardFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}`, 'delete', null, null, null);
   };
 
   useEffect(() => {
@@ -93,8 +93,8 @@ const MorePopup = (props) => {
     <>
       <MyPopupInner>
         <MyTitleBox>{type === 'myMore' || type === 'myFbMore' ? _myOptions : _userOptions}</MyTitleBox>
-        {
-          type === 'myMore' || type === 'myFbMore' ? <MyTabBox>
+        {type === 'myMore' || type === 'myFbMore' ? (
+          <MyTabBox>
             {
               //  props.type === '_More' &&
               //  <MyTab
@@ -108,27 +108,23 @@ const MorePopup = (props) => {
             }
             <MyTab onClick={() => toggle_Modal_Confirm()}>{_deleteContent}</MyTab>
           </MyTabBox>
-          :
+        ) : (
           <MyTabBox>
             <MyTab onClick={() => setHandleReport()}>{_reportUser}</MyTab>
           </MyTabBox>
-        }
+        )}
         <PopupClose onClick={() => handleModal_Menu()}>{_closeBtn}</PopupClose>
       </MyPopupInner>
-      {
-        state_Confirm && (
-          <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
-            <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={setAccessConfirm} type={conFirmType} />
-          </Modal>
-        )
-      }
-      {
-        handleReport && (
-          <Modal visible={handleReport} closable={true} maskClosable={true} onClose={() => setHandleReport(false)}>
-            <ReportsPopup closeModal={() => setHandleReport(false)} />
-          </Modal>
-        )
-      }
+      {state_Confirm && (
+        <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
+          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={setAccessConfirm} type={conFirmType} />
+        </Modal>
+      )}
+      {handleReport && (
+        <Modal visible={handleReport} closable={true} maskClosable={true} onClose={() => setHandleReport(false)}>
+          <ReportsPopup closeModal={() => setHandleReport(false)} />
+        </Modal>
+      )}
     </>
   );
 };

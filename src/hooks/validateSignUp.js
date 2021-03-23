@@ -9,17 +9,9 @@ export default function validate({ values }, dupli) {
     errors.email = 'errorNoneEmail';
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
     errors.email = 'errorEmail';
-  } else if (dupli.message === '중복된 이메일입니다. 다른 이메일로 가입해주세요.') {
+  } else {
     errors.email = 'duplicate';
   }
-
-  //   if(email){
-  //     if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)){
-  //       errors.email = 'errorEmail';
-  //   } else if(!email){
-  //     errors.email = 'errorNoneEmail';
-  //   }
-  // }
 
   if (!pattern1.test(userPw) || !pattern2.test(userPw) || !pattern3.test(userPw) || userPw.length < 8) {
     errors.userPw = 'errorPW';

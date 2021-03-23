@@ -24,6 +24,7 @@ export const Meta = ({ meta }) => {
   const type = isMobile ? 'mobile' : 'website';
   const width = (meta.image && (meta.width || 1200)) || undefined;
   const height = (meta.image && (meta.height || 627)) || undefined;
+
   return (
     <Helmet titleTemplate="%s">
       <html lang={lang} />
@@ -32,7 +33,6 @@ export const Meta = ({ meta }) => {
       <link rel="canonical" href={`https://www.epiclogue.com/${canonical}`} />
       <link rel="image_src" href={image} />
       <meta itemProp="image" content={image} />
-
       <meta property="og:site_name" content="Epic_Logue!" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
@@ -43,7 +43,6 @@ export const Meta = ({ meta }) => {
       <meta property="og:image:width" content={width} />
       <meta property="og:image:height" content={height} />
       <meta property="fb:pages" content="Epic_Logue!" />
-
       {/* change type of twitter if there is no image? */}
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:title" content={title} />

@@ -6,7 +6,7 @@ export const LangHeader = {
   },
   searchPlaceholder: {
     2: 'What do you want to find?',
-    0: '무엇을 찾고 싶은가요?',
+    0: '무엇을 찾고있나요?',
     1: '何を探したいですか?',
   },
 };

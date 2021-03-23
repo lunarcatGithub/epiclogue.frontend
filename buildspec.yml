@@ -2,7 +2,6 @@ version: 0.2
 
 phases:
   install:
-
     runtime-versions:
       nodejs: 14
     commands:
@@ -13,17 +12,10 @@ phases:
       - echo 'Build started...'
       - npm run build
       - echo 'Build completed!'
-  post_build:
-    commands:
-      - echo 'Export started...'
-      - npm run export
-      - echo 'Export completed!'
 
 artifacts:
   files:
-    - out/**/*
-    - scripts/**/*
-    - appspec.yml
+    - '**/*'
 
 cache:
   paths:

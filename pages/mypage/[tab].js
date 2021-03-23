@@ -1,5 +1,6 @@
 import Mypage from '@component/mypage/Mypage';
 
-export default function MypagePage({ tab }) {
+export default function MypagePage(context) {
+
   return <Mypage />;
 }

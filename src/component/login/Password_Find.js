@@ -16,7 +16,7 @@ export function FindPass() {
 
   useEffect(() => {
     let query = qs.parse(window.location.search);
-    accessConfirm && findPassFetch(`${process.env.API_URL}/auth/findPass`, 'get,', null, null, { email: query.email, token: query.token });
+    accessConfirm && findPassFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/findPass`, 'get,', null, null, { email: query.email, token: query.token });
   }, []);
 
   useEffect(() => {

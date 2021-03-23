@@ -19,7 +19,8 @@
                     "@hooks": "./src/hooks",
                     "@store": "./src/store",
                     "@reducer": "./src/reducer",
-                    "@language": "./src/language"
+                    "@language": "./src/language",
+                    "@Component": "./src/Admin/Components"
                 }
             }
         ],
