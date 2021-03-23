@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
@@ -11,6 +11,8 @@ import useAxiosFetch from '@hooks/useFetchData';
 const MypageGeneral = () => {
   const { loginOn } = useContext(AppDataContext);
   const [formData, setFormData] = useState();
+  const [isLogin, setIsLogin] = useState();
+
   // fetch
   const [langLoding, langApi, langError, langFetch] = useAxiosFetch();
 
@@ -37,21 +39,25 @@ const MypageGeneral = () => {
     }
   };
 
+  useEffect(()=> {
+    loginOn && setIsLogin(loginOn)
+  },[loginOn])
+
   return (
-    <Container>
+    <>
       {/* 일반 언어 설정 */}
       <MypageForm type="language" formDatas={{ formData, setFormData, submit }} />
       {/* 관심 언어 설정 */}
       <MypageForm type="interest" formDatas={{ formData, setFormData, submit }} />
       {/* 뮤트 설정 */}
-      {loginOn && <MypageForm type="mute" />}
-    </Container>
+      {isLogin && <MypageForm type="mute" />}
+    </>
   );
 };
 
 //공통
 // 레이아웃
-const Container = styled.section`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;

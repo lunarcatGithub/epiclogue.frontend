@@ -59,7 +59,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const { signDate, noIntro, allTabs, contentsTabs, bookMarkTabs, secondary } = LangMyBoard;
   const { followBtn, followingBtn } = LangCommon;
 
-  const metaBoardTitle = langMetaBoard();
+  const {metaBoardTitle, boardDescFirst, boardDescSecond} = langMetaBoard();
   const _signDate = signDate[selectedLanguage] || signDate[defaultLanguage],
     _noIntro = noIntro[selectedLanguage] || noIntro[defaultLanguage],
     _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
@@ -122,10 +122,9 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     { link: 'secondaryWorks', title: _secondary },
     { link: 'bookmarks', title: _bookMarkTabs },
   ];
-
   const metaData = {
-    title: `${boardItem?.data?.nickname}`,
-    description: `${boardItem?.data?.intro}`,
+    title: `${boardItem?.data?.nickname}${metaBoardTitle}`,
+    description: `${boardItem?.data?.intro} || ${boardDescFirst}${boardItem?.data?.nickname}${boardDescSecond}`,
     image: `${boardItem?.data?.profile?.thumbnail}`,
     canonical: `myboard/${boardItem?.data?._id}`,
   };

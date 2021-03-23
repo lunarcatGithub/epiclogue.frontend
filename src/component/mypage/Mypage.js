@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState} from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -20,6 +20,7 @@ const Mypage = () => {
   const router = useRouter();
   const { tab } = router.query;
   const [goURL] = useUrlMove();
+  const [isLogin, setIsLogin] = useState();
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
@@ -61,16 +62,20 @@ const Mypage = () => {
     { name: 'setting', lang: _generalSetTab },
   ];
 
+  useEffect(()=> {
+    loginOn && setIsLogin(loginOn)
+  },[loginOn])
+
   return (
     <MypageContext.Provider value={{ LanguageList, countryArray, interestedList }}>
       <Container>
         <ProfileLayout>
           <ProfileInner>
             <TopMenuTitleBox>
-              <TopMenuTitle>{loginOn ? _settingProfile : _generalSetTab}</TopMenuTitle>
+              <TopMenuTitle>{isLogin ? _settingProfile : _generalSetTab}</TopMenuTitle>
             </TopMenuTitleBox>
             {
-              loginOn ? (
+              isLogin ? (
                 <TabMenuWrap>
                   {navArr.map((tab, i) => (
                     <NavItem key={i} onClick={() => goURL({ pathname: `/mypage/${tab.name}` })}>
@@ -81,9 +86,9 @@ const Mypage = () => {
               ) : null
             }
             {
-              loginOn ? (
+              isLogin ? (
                 list.map(({ id, title, contents }) => {
-                  if (tab === title) return contents
+                  if (tab === title) return <div key={id}>{contents}</div>
                 })
               ) : (
                 <MypageGeneral />
@@ -102,7 +107,7 @@ const Mypage = () => {
 //공통
 
 // 프로필 레이아웃
-const Container = styled.section`
+const Container = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
