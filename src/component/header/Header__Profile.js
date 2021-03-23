@@ -10,7 +10,7 @@ import { useToggle } from '@hooks/useToggle';
 import { HeaderDataContext } from './Header';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { useConvertURL } from '@hooks/useConvertURL';
-import {useCookie} from '@hooks/useCookie';
+import { useCookie } from '@hooks/useCookie';
 
 // 이미지 import
 // import Xbtn from "../../img/X-mark.png";
@@ -21,9 +21,9 @@ const HeaderPfPopup = () => {
   const [goURL] = useUrlMove();
   const [profileURL, , convertProfileIamge] = useConvertURL();
   //cookie
-  const [, cookieHandle] = useCookie()
-  const [cookieValue, getCookie] = useCookie()
-  const [testCookieValue, getTestCookie] = useCookie()
+  const [, cookieHandle] = useCookie();
+  const [cookieValue, getCookie] = useCookie();
+  const [testCookieValue, getTestCookie] = useCookie();
 
   const { alertState, alertPatch } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
@@ -43,11 +43,11 @@ const HeaderPfPopup = () => {
     _sessionExpire = sessionExpire[selectedLanguage] || sessionExpire[defaultLanguage];
 
   const logout = () => {
-    cookieHandle('DELETE', 'access_token')
+    cookieHandle('DELETE', 'access_token');
     cookieHandle('DELETE', 'test');
     getCookie('GET', 'test');
     getTestCookie('GET', 'access_token');
-    if(!cookieValue || !testCookieValue){
+    if (!cookieValue || !testCookieValue) {
       localStorage.removeItem('loginOn');
       localStorage.removeItem('userNick');
       localStorage.removeItem('userid');

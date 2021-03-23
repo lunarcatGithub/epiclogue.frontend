@@ -70,8 +70,8 @@ export default function MypageForm(props) {
       localStorage.setItem('language', selectData);
       langPatch({ type: 'LANGUAGE_UPDATE', payload: selectData });
       formDatas.submit(e, 'language', selectData);
-    } else if(type === 'interest') {
-      formDatas.submit(e, 'interest', selectMultiple);
+    } else if (type === 'interest') {
+      formDatas.submit(e, 'language', selectData);
     }
     setToggleSet(false);
   };

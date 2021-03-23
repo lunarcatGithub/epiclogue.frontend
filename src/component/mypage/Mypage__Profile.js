@@ -366,13 +366,11 @@ const MypageProfile = () => {
                   <HiddenInput id="screenId" name="screenId" onChange={handleScreenId} />
                   <HiddenBtn disabled={screenId ? false : true}>{_changeSmallBtn}</HiddenBtn>
                 </SendForm>
-                {
-                  validationError && (
-                    <ErrorTextWrap>
-                      <ErrorText>{validationError}</ErrorText>
-                    </ErrorTextWrap>
-                  )
-                }
+                {validationError && (
+                  <ErrorTextWrap>
+                    <ErrorText>{validationError}</ErrorText>
+                  </ErrorTextWrap>
+                )}
               </HiddenBox>
             ) : null}
           </IdContentInnerBox>
@@ -392,36 +390,30 @@ const MypageProfile = () => {
                   <InputWrap>
                     <InputText htmlFor="userPw">{_originPw}</InputText>
                     <HiddenPwInput name="userPw" onChange={handleUserPw} />
-                    {
-                      noPassword && (
-                        <ErrorTextWrap>
-                          <ErrorText>{noPassword}</ErrorText>
-                        </ErrorTextWrap>
-                      )
-                    }
+                    {noPassword && (
+                      <ErrorTextWrap>
+                        <ErrorText>{noPassword}</ErrorText>
+                      </ErrorTextWrap>
+                    )}
                   </InputWrap>
                   <InputWrap>
                     <InputText htmlFor="userPwNew">{_newPassword}</InputText>
                     <HiddenPwInput name="userPwNew" onChange={handleuserPwNew} />
-                    {
-                      validationError && (
-                        <ErrorTextWrap>
-                          <ErrorText>{validationError}</ErrorText>
-                        </ErrorTextWrap>
-                      )
-                    }
+                    {validationError && (
+                      <ErrorTextWrap>
+                        <ErrorText>{validationError}</ErrorText>
+                      </ErrorTextWrap>
+                    )}
                   </InputWrap>
                   <InputWrap>
                     <InputText htmlFor="userPwNewRe">{_confirmPw}</InputText>
                     <HiddenPwInput name="userPwNewRe" onChange={handleUserPwNewRe} />
                   </InputWrap>
-                  {
-                    pwNotMatch && (
-                      <ErrorTextWrap>
-                        <ErrorText>{pwNotMatch}</ErrorText>
-                      </ErrorTextWrap>
-                    )
-                  }
+                  {pwNotMatch && (
+                    <ErrorTextWrap>
+                      <ErrorText>{pwNotMatch}</ErrorText>
+                    </ErrorTextWrap>
+                  )}
                   <BtnWrap>
                     {/* {validationError && (
                         <ErrorTextWrap>
@@ -445,46 +437,42 @@ const MypageProfile = () => {
             <TitleWrap id="outTab" onClick={() => toggleTab(0, 0, 0, 4)}>
               <ContentsTitle>{_widthDrawl}</ContentsTitle>
             </TitleWrap>
-            {
-              outTab === 4 ? (
-                <HiddenBox>
-                  <SendForm action="" method="post">
-                    <InputWrap>
-                      <InputText htmlFor="userPw">{_confirmPw}</InputText>
+            {outTab === 4 ? (
+              <HiddenBox>
+                <SendForm action="" method="post">
+                  <InputWrap>
+                    <InputText htmlFor="userPw">{_confirmPw}</InputText>
 
-                      <HiddenPwInput name="userPw" onChange={handleUserPw} />
-                    </InputWrap>
-                    <ErrorTextWrap>
-                      <ErrorText>{_widthDrawlAlert}</ErrorText>
-                    </ErrorTextWrap>
+                    <HiddenPwInput name="userPw" onChange={handleUserPw} />
+                  </InputWrap>
+                  <ErrorTextWrap>
+                    <ErrorText>{_widthDrawlAlert}</ErrorText>
+                  </ErrorTextWrap>
 
-                    <BtnWrap postion={validationError}>
-                      {validationError && (
-                        <ErrorTextWrap>
-                          <ErrorText>{validationError}</ErrorText>
-                        </ErrorTextWrap>
-                      )}
+                  <BtnWrap postion={validationError}>
+                    {validationError && (
+                      <ErrorTextWrap>
+                        <ErrorText>{validationError}</ErrorText>
+                      </ErrorTextWrap>
+                    )}
 
-                      <ChangeBtn styling={outTab} onClick={deleteConfirm}>
-                        {_widthDrawlBtn}
-                      </ChangeBtn>
-                    </BtnWrap>
-                  </SendForm>
-                </HiddenBox>
-              ) : null
-            }
+                    <ChangeBtn styling={outTab} onClick={deleteConfirm}>
+                      {_widthDrawlBtn}
+                    </ChangeBtn>
+                  </BtnWrap>
+                </SendForm>
+              </HiddenBox>
+            ) : null}
           </OutContentInnerBox>
         </ContentsBox>
         {/* // 회원탈퇴 끝 */}
       </ProfileWrap>
       {/* confirm popup */}
-      {
-        state_Confirm && (
-          <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
-            <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={setAccessConfirm} type={'INACTIVE'} />
-          </Modal>
-        )
-      }
+      {state_Confirm && (
+        <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
+          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={setAccessConfirm} type={'INACTIVE'} />
+        </Modal>
+      )}
     </Container>
   );
 };

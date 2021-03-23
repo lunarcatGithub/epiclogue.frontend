@@ -159,7 +159,7 @@ const Contents = (props) => {
       setInitialLoading(false);
     }
   }, [searchType, resultKeyword, searchData, router.asPath]);
-  
+
   // 데이터 메인 스크롤 시키기
 
   const renderDataScroll = useCallback(() => {

@@ -317,5 +317,5 @@ export const socialLogin = {
     2: 'Login canceled',
     0: '로그인이 취소되었습니다',
     1: 'ログインがキャンセルされました',
-  }
+  },
 };

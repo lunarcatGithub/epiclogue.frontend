@@ -67,7 +67,7 @@ const Header = () => {
     _searchPlaceholder = searchPlaceholder[selectedLanguage] || searchPlaceholder[defaultLanguage],
     _fbBtn = fbBtn[selectedLanguage] || fbBtn[defaultLanguage];
 
-    const handleSearch = (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     if (searchBody === ' ' || searchBody === undefined || searchBody === null) return;
     setSearchData(searchBody);
@@ -138,7 +138,6 @@ const Header = () => {
   }, [pathname]);
 
   return (
-
     <HeaderDataContext.Provider value={{ searchBody, toggleSearchPop, toggleIsOpen, toggleNoti, profileApi, profileError }}>
       {/* 헤더 레이아웃 */}
       {preventHeader && (
@@ -168,46 +167,45 @@ const Header = () => {
                 </CategoryWrap>
                 <Dummy />
                 {/* 팔로우 작품 및 프로필 버튼 영역 */}
-                {
-                  loginOn ? (
-                    <>
-                      <ProfileWrap>
-                        <FollowBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
-                          <ProfileFollow />
-                          <FollowTxt>{_followsButton}</FollowTxt>
-                        </FollowBtn>
-                        {/* </NavItem> */}
-                        <HeaderPfPopupWrap>
-                          {/* header profile */}
-                          <HeaderPfPopup />
-                        </HeaderPfPopupWrap>
-                      </ProfileWrap>
-                      <Dummy />
-                      {/* 옵션 set 영역 */}
-                      <OptionWrap>
-                        <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
-                          <OptionDm />
-                        </OptionBtn>
-                        {/* 알림 */}
-                        <OptionBtn
-                          onClick={() => {
-                          toggleNoti()
-                          setRead(0)
-                          }}>
-                          <OptionInfomation styling={isNotification} />
-                          {read > 0 && <InformIconRing />}
-                        </OptionBtn>
+                {loginOn ? (
+                  <>
+                    <ProfileWrap>
+                      <FollowBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+                        <ProfileFollow />
+                        <FollowTxt>{_followsButton}</FollowTxt>
+                      </FollowBtn>
+                      {/* </NavItem> */}
+                      <HeaderPfPopupWrap>
+                        {/* header profile */}
+                        <HeaderPfPopup />
+                      </HeaderPfPopupWrap>
+                    </ProfileWrap>
+                    <Dummy />
+                    {/* 옵션 set 영역 */}
+                    <OptionWrap>
+                      <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+                        <OptionDm />
+                      </OptionBtn>
+                      {/* 알림 */}
+                      <OptionBtn
+                        onClick={() => {
+                          toggleNoti();
+                          setRead(0);
+                        }}
+                      >
+                        <OptionInfomation styling={isNotification} />
+                        {read > 0 && <InformIconRing />}
+                      </OptionBtn>
 
-                        {/* setting */}
-                        <OptionBtn onClick={() => goURL({ pathname: `/mypage/profile` })}>
-                          <OptionSetting styling={['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)} />
-                        </OptionBtn>
-                      </OptionWrap>
-                    </>
-                  ) : (
-                    <HeaderUnauth />
-                  )
-                }
+                      {/* setting */}
+                      <OptionBtn onClick={() => goURL({ pathname: `/mypage/profile` })}>
+                        <OptionSetting styling={['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)} />
+                      </OptionBtn>
+                    </OptionWrap>
+                  </>
+                ) : (
+                  <HeaderUnauth />
+                )}
               </HeaderInner>
               {/* 뷰어 모바일 전용 뒤로가기 헤더 탭*/}
               <MbHeaderInner pathname={pathname.match('/viewer') ? 'flex' : 'none'}>
@@ -237,17 +235,15 @@ const Header = () => {
                   {read > 0 && <InformIconRing />}
                 </MbOptionWrap>
                 {/* Upload */}
-                {
-                  loginOn ? (
-                    <MbOptionWrap onClick={() => goURL({ pathname: '/upload' })}>
-                      <MbOptionUpload />
-                    </MbOptionWrap>
-                  ) : (
-                    <MbOptionWrap onClick={() => setUnAuth(true)}>
-                      <MbOptionUpload />
-                    </MbOptionWrap>
-                  )
-                }
+                {loginOn ? (
+                  <MbOptionWrap onClick={() => goURL({ pathname: '/upload' })}>
+                    <MbOptionUpload />
+                  </MbOptionWrap>
+                ) : (
+                  <MbOptionWrap onClick={() => setUnAuth(true)}>
+                    <MbOptionUpload />
+                  </MbOptionWrap>
+                )}
 
                 {/* category select */}
                 <MbOptionWrap>
@@ -288,20 +284,16 @@ const Header = () => {
       ) : null}
 
       {searchPopup ? <SearchPopup /> : ''}
-      {
-        isNotification && (
-          <Modal visible={isNotification} closable={true} maskClosable={true} onClose={() => toggleNoti(false)}>
-            <UserInform />
-          </Modal>
-        )
-      }
-      {
-        isOpen && (
-          <Modal visible={isOpen ? true : false} closable={true} maskClosable={true} onClose={() => toggleIsOpen(false)}>
-            <AdminFeedback toggleIsOpen={() => toggleIsOpen(false)} />
-          </Modal>
-        )
-      }
+      {isNotification && (
+        <Modal visible={isNotification} closable={true} maskClosable={true} onClose={() => toggleNoti(false)}>
+          <UserInform />
+        </Modal>
+      )}
+      {isOpen && (
+        <Modal visible={isOpen ? true : false} closable={true} maskClosable={true} onClose={() => toggleIsOpen(false)}>
+          <AdminFeedback toggleIsOpen={() => toggleIsOpen(false)} />
+        </Modal>
+      )}
     </HeaderDataContext.Provider>
   );
 };

@@ -12,7 +12,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 const ReFeedback = (props) => {
   const { fbReList, setFbReList, boardUid, fbUid } = useContext(ReplyListContext);
   const { data, onClose } = props;
-ClosedBox
+  ClosedBox;
   const [replyLoding, replyApi, replyError, replyFetch] = useAxiosFetch();
 
   useEffect(() => {
@@ -24,39 +24,29 @@ ClosedBox
   }, [replyApi]);
 
   return (
-      <FeedbackLayout>
-        <FBheader>
-          <FBheaderInner>
-            <ClosedBox>
-              <ClosedBtn onClick={onClose} />
-            </ClosedBox>
-          </FBheaderInner>
-        </FBheader>
+    <FeedbackLayout>
+      <FBheader>
+        <FBheaderInner>
+          <ClosedBox>
+            <ClosedBtn onClick={onClose} />
+          </ClosedBox>
+        </FBheaderInner>
+      </FBheader>
 
-        {/* 원 댓글  */}
-        <OriginUserBox>
-          <OriginFeedback>
-            <FB type="popupFb" key={data?._id} data={data} />
-          </OriginFeedback>
-        </OriginUserBox>
-        {/* 대댓글  */}
-        <FBcontent>
-          <FeedbackInner>
-            {
-              !replyLoding && fbReList ? (
-                fbReList.map( item => (
-                  <FB type="ReFb" key={item._id} data={item} counting={fbReList.length} />
-                ))
-              ) : (
-                <ProgressSmall />
-              )
-            }
-          </FeedbackInner>
-        </FBcontent>
-        <FBform>
-          <WriteFbForm type="ReFb" setFbReList={setFbReList} />
-        </FBform>
-      </FeedbackLayout>
+      {/* 원 댓글  */}
+      <OriginUserBox>
+        <OriginFeedback>
+          <FB type="popupFb" key={data?._id} data={data} />
+        </OriginFeedback>
+      </OriginUserBox>
+      {/* 대댓글  */}
+      <FBcontent>
+        <FeedbackInner>{!replyLoding && fbReList ? fbReList.map((item) => <FB type="ReFb" key={item._id} data={item} counting={fbReList.length} />) : <ProgressSmall />}</FeedbackInner>
+      </FBcontent>
+      <FBform>
+        <WriteFbForm type="ReFb" setFbReList={setFbReList} />
+      </FBform>
+    </FeedbackLayout>
   );
 };
 

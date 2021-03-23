@@ -26,10 +26,10 @@ const Main = ({ boardItem }) => {
       <Meta meta={metaData} />
       <Layout>
         <Contents type="MAIN" boardItem={boardItem} />
-          {/*업로드 버튼*/}
-          <UploadButton onClick={() => goURL({ pathname: '/upload' })}>
-            <UploadSvg />
-          </UploadButton>
+        {/*업로드 버튼*/}
+        <UploadButton onClick={() => goURL({ pathname: '/upload' })}>
+          <UploadSvg />
+        </UploadButton>
       </Layout>
     </>
   );

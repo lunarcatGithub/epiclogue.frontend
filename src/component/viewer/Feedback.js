@@ -124,15 +124,13 @@ const FB = (props) => {
           <UserLink onClick={() => goURL({ pathname: `/myboard/${writer.screenId}` })}>
             <FeedbackNickInfo>{writer.nickname}</FeedbackNickInfo>
           </UserLink>
-          {
-            writer.following !== 'me' && loginOn && (
-              <form action="" method="post" onSubmit={(e) => submitHandler(e, 'follow')}>
-                <FeedbackFollowTxt clickState={follow} onClick={() => toggle_follow()}>
-                  {follow ? _followingBtn : _followBtn}
-                </FeedbackFollowTxt>
-              </form>
-            )
-          }
+          {writer.following !== 'me' && loginOn && (
+            <form action="" method="post" onSubmit={(e) => submitHandler(e, 'follow')}>
+              <FeedbackFollowTxt clickState={follow} onClick={() => toggle_follow()}>
+                {follow ? _followingBtn : _followBtn}
+              </FeedbackFollowTxt>
+            </form>
+          )}
         </FeedbackProfile>
         <FeedbackProfile>
           <UserLink onClick={() => goURL({ pathname: `/myboard/${writer.screenId}` })}>
@@ -140,22 +138,20 @@ const FB = (props) => {
           </UserLink>
         </FeedbackProfile>
       </FeedbackProfileWrap>
-      {
-        props.type !== 'popupFb' && <FdMoreMenuAnchor
-          onClick={
-              () => {
-              if (!loginOn) {
-                setUnAuth(true);
-                return;
-              } else {
-                handleModal_Menu();
-              }
+      {props.type !== 'popupFb' && (
+        <FdMoreMenuAnchor
+          onClick={() => {
+            if (!loginOn) {
+              setUnAuth(true);
+              return;
+            } else {
+              handleModal_Menu();
             }
-          }
+          }}
         >
           <MoreMenuDot />
         </FdMoreMenuAnchor>
-      }
+      )}
       {clickedUpdate && (
         <FeedbackContentBox>
           <FeedbackContentInner>
@@ -167,7 +163,7 @@ const FB = (props) => {
         </FeedbackContentBox>
       )}
       <FeedbackBtnWrap>
-        <form onSubmit={(e) => submitHandler(e, 'like') }>
+        <form onSubmit={(e) => submitHandler(e, 'like')}>
           {/* 피드백 좋아요 버튼 */}
           <ReactBtnWrap
             onClick={() => {
@@ -183,45 +179,37 @@ const FB = (props) => {
             <LikeFbScore>{_heartCount && _heartCount}</LikeFbScore>
           </ReactBtnWrap>
         </form>
-        {
-          props.type === 'ReFb' && (
-            <ReactBtnWrap >
-              <ReReFbBtn />
-            </ReactBtnWrap>
-          )
-        }
-        {
-          props.type === 'Fb' && (
-            <ReactBtnWrap>
-              {/* 피드백 버튼 */}
-              <ReFbBtn
-                comment={comment}
-                onClick={() => {
-                  toggle_comment(false);
-                  comment ? setFbUid(undefined) : setFbUid(_id);
-                  handleModal_ReFb(true);
-                }}
-              />
-            </ReactBtnWrap>
-          )
-        }
+        {props.type === 'ReFb' && (
+          <ReactBtnWrap>
+            <ReReFbBtn />
+          </ReactBtnWrap>
+        )}
+        {props.type === 'Fb' && (
+          <ReactBtnWrap>
+            {/* 피드백 버튼 */}
+            <ReFbBtn
+              comment={comment}
+              onClick={() => {
+                toggle_comment(false);
+                comment ? setFbUid(undefined) : setFbUid(_id);
+                handleModal_ReFb(true);
+              }}
+            />
+          </ReactBtnWrap>
+        )}
       </FeedbackBtnWrap>
 
       {/* Modal */}
-      {
-        isShowing_ReFb && (
-          <Modal visible={isShowing_ReFb} closable={true} maskClosable={true} onClose={() => handleModal_ReFb(false)}>
-            <ReFeedback data={props.data} onClose={() => handleModal_ReFb(false)} type="ReFb" />
-          </Modal>
-        )
-      }
-      {
-        isShowing_Menu && (
-          <Modal visible={isShowing_Menu} closable={true} maskClosable={true} onClose={() => handleModal_Menu(false)}>
-            {typeMenu}
-          </Modal>
-        )
-      }
+      {isShowing_ReFb && (
+        <Modal visible={isShowing_ReFb} closable={true} maskClosable={true} onClose={() => handleModal_ReFb(false)}>
+          <ReFeedback data={props.data} onClose={() => handleModal_ReFb(false)} type="ReFb" />
+        </Modal>
+      )}
+      {isShowing_Menu && (
+        <Modal visible={isShowing_Menu} closable={true} maskClosable={true} onClose={() => handleModal_Menu(false)}>
+          {typeMenu}
+        </Modal>
+      )}
     </FeedbackUserWrap>
   );
 };
