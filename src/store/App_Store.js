@@ -8,9 +8,10 @@ import UnauthLogin from '@utils/UnauthLogin';
 
 // Utils
 import Modal from '@utils/Modal';
+// hooks
+import { useUrlMove } from '@hooks/useUrlMove';
 
 // create context
-const Context = createContext({});
 const AppDataContext = createContext({});
 const LanguageContext = createContext({});
 const AlertContext = createContext({});
@@ -24,6 +25,7 @@ const combineReducers = (...reducers) => (state, action) => {
 // context provider
 const ContextStore = ({ children }) => {
   // app all method
+  const [goURL] = useUrlMove();
   const [langState, langPatch] = useReducer(combineReducers(languageReducer), langInit);
   const [alertState, alertPatch] = useReducer(combineReducers(alertReducer), initialAlert);
 
@@ -44,12 +46,12 @@ const ContextStore = ({ children }) => {
   const [unAuth, setUnAuth] = useState(false);
 
   // router
-  const location = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     if (!loginOn) {
-      if (location.pathname.match('/upload') || location.pathname.match('/follow') || location.pathname.match('/editor')) {
-        document.location.href = '/login';
+      if (router.pathname.match('/upload') || router.pathname.match('/follow') || router.pathname.match('/editor')) {
+        goURL({ pathname: '/login' });
         return;
       } else {
         return;
@@ -57,7 +59,7 @@ const ContextStore = ({ children }) => {
     } else {
       return;
     }
-  }, []);
+  }, [router.pathname]);
 
   return (
     <AppDataContext.Provider

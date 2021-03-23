@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled, { css } from 'styled-components';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 // 컴포넌트 import
@@ -27,7 +26,6 @@ export const HeaderDataContext = React.createContext();
 
 const Header = () => {
   const router = useRouter();
-
   const pathname = router.asPath;
 
   // 경고용 푸시
@@ -75,10 +73,10 @@ const Header = () => {
     setSearchData(searchBody);
 
     if (searchBody[0]?.match('@')) {
-      goURL({ pathname: `/search/users`, as: `/search/users/${searchBody}`, query: { type: 'users', text: searchBody } });
+      goURL({ pathname: `/search/[type]`, as: `/search/users/${searchBody}`, query: { type: 'users', text: searchBody } });
     } else {
       goURL({
-        pathname: `/search/${paramsData === undefined ? 'latest' : paramsData}`,
+        pathname: `/search/[type]`,
         as: `/search/${paramsData === undefined ? 'latest' : paramsData}/${searchBody}`,
         query: { type: 'latest', text: searchBody },
       });
@@ -110,23 +108,22 @@ const Header = () => {
 
   // 유저 알림 Read 여부
   const readObserver = () => {
-    readApi && setRead(readApi.data.notiCount);
-    isNotification && setRead(0);
+    setRead(readApi?.data?.notiCount);
   };
 
   useEffect(() => {
     if (!loginOn) return;
-    // readFetch(`${process.env.API_URL}/notification/check`, 'get', null, null, null);
-  }, []);
+    readFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification/check`, 'get', null, null, null);
+  }, [pathname, read]);
 
   useEffect(() => {
     readObserver();
-  },[]);
+  });
 
   // 유저 프로필 API
   useEffect(() => {
     if (!loginOn) return;
-    profileFetch(`${process.env.API_URL}/user/editProfile`, 'get', null, null, null);
+    profileFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'get', null, null, null);
   }, [loginOn]);
 
   useEffect(() => {
@@ -137,11 +134,10 @@ const Header = () => {
   }, [profileApi]);
 
   useEffect(() => {
-    ['/epiclogueadmin', '/welcome', '/login'].includes(pathname) || pathname.match('/editor/') || pathname.match('/findPass') ? setPreventHeader(false) : setPreventHeader(true);
+    ['/epiclogueadmin', '/welcome', '/login', '/login/'].includes(pathname) || pathname.match('/editor/') || pathname.match('/findPass') ? setPreventHeader(false) : setPreventHeader(true);
   }, [pathname]);
 
   return (
-
     <HeaderDataContext.Provider value={{ searchBody, toggleSearchPop, toggleIsOpen, toggleNoti, profileApi, profileError }}>
       {/* 헤더 레이아웃 */}
       {preventHeader && (
@@ -170,7 +166,6 @@ const Header = () => {
                   <CategoryButton />
                 </CategoryWrap>
                 <Dummy />
-
                 {/* 팔로우 작품 및 프로필 버튼 영역 */}
                 {loginOn ? (
                   <>
@@ -192,7 +187,12 @@ const Header = () => {
                         <OptionDm />
                       </OptionBtn>
                       {/* 알림 */}
-                      <OptionBtn onClick={() => toggleNoti()}>
+                      <OptionBtn
+                        onClick={() => {
+                          toggleNoti();
+                          setRead(0);
+                        }}
+                      >
                         <OptionInfomation styling={isNotification} />
                         {read > 0 && <InformIconRing />}
                       </OptionBtn>

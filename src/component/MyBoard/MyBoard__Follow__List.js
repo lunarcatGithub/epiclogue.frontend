@@ -9,18 +9,21 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { LangCommon } from '@language/Lang.Common';
 import { LanguageContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
+import useDebounce from '@hooks/useDebounce';
 
 const MyBoardFollowList = (props) => {
   const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
-  const [_follow, toggleFollow] = useToggle();
+  const [follow, toggleFollow] = useToggle();
   const [userData, setUserData] = useState();
   //fetch
   const [followListLoding, followListApi, followListError, followListFetch] = useAxiosFetch();
+  // debounce 처리
+  const [followDebounce, getValue] = useDebounce();
 
-  const followSubmit = (e) => {
-    e.preventDefault();
-    followListFetch(`${process.env.API_URL}/interaction/follow`, _follow ? 'post' : 'delete', { targetUserId: userData?._id }, null, null);
+  const followSubmit = () => {
+    getValue(follow);
+    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: userData?._id });
   };
 
   useEffect(() => {
@@ -28,7 +31,7 @@ const MyBoardFollowList = (props) => {
   }, [props]);
 
   useEffect(() => {
-    toggleFollow(props.data.following);
+    toggleFollow(props?.data?.following);
   }, []);
 
   //언어 변수
@@ -51,11 +54,15 @@ const MyBoardFollowList = (props) => {
 
       {userData?.screenId !== localStorage.getItem('userid') ? (
         <FollowBox>
-          <form action="" method="post" onSubmit={followSubmit}>
-            <FollowBtn onClick={() => toggleFollow()} styling={_follow}>
-              {_follow ? _followingBtn : _followBtn}
-            </FollowBtn>
-          </form>
+          <FollowBtn
+            onClick={() => {
+              toggleFollow();
+              followSubmit();
+            }}
+            styling={follow}
+          >
+            {follow ? _followingBtn : _followBtn}
+          </FollowBtn>
         </FollowBox>
       ) : null}
     </ContentInner>

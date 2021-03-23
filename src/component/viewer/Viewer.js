@@ -42,7 +42,7 @@ const Viewer = ({ boardItem, nonError }) => {
 
   const [goURL] = useUrlMove();
   const [goUploadUpdate] = useUrlMove();
-  
+
   const [replyList, setReplyList] = useState([]);
   const [renderList, setRenderList] = useState([]);
   const [boardImg, setBoardImg] = useState([]);
@@ -96,6 +96,7 @@ const Viewer = ({ boardItem, nonError }) => {
 
   // 태그 및 하이퍼링크 convert
   const [converted, convert] = useConvertTags();
+
   // 토글 submit 전용
   const [likeLoding, likeApi, likeError, likeFetch] = useAxiosFetch();
   const [bookmarkLoding, bookmarkApi, bookmarkError, bookmarkFetch] = useAxiosFetch();
@@ -166,12 +167,14 @@ const Viewer = ({ boardItem, nonError }) => {
     e.preventDefault();
     if (!loginOn) return;
 
-    const URL = `${process.env.API_URL}/interaction/${type}`;
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/${type}`;
 
     if (type === 'like') {
-      likeFetch(URL, like ? 'post' : 'delete', { targetInfo: boardUid, targetType }, null);
+      likeFetch(URL, like ? 'delete' : 'post', { targetInfo: boardUid, targetType }, null);
+      toggleLike();
     } else if (type === 'bookmark') {
-      bookmarkFetch(URL, bookmark ? 'post' : 'delete', { boardId: boardUid }, null);
+      bookmarkFetch(URL, bookmark ? 'delete' : 'post', { boardId: boardUid }, null);
+      toggleBookmark();
     }
   };
 
@@ -188,22 +191,21 @@ const Viewer = ({ boardItem, nonError }) => {
   //   }
   // };
 
+  // 회원 유저
+  const checkMoreMenuType = () => {
+    // 비회원 유저
+    if (!loginOn) {
+      setUnAuth(true);
+      return;
+    }
     // 회원 유저
-    const checkMoreMenuType = () => {
-      // 비회원 유저
-      if (!loginOn) {
-        setUnAuth(true);
-        return;
-      }
-      // 회원 유저
-      toggle_Modal_MoreMenu();
-      if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
-        setType_MoreMenu(<MorePopup type="myMore" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-      } else {
-        setType_MoreMenu(<MorePopup type="userMore" handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
-      }
-    };
-  
+    toggle_Modal_MoreMenu();
+    if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
+      setType_MoreMenu(<MorePopup type="myMore" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+    } else {
+      setType_MoreMenu(<MorePopup type="userMore" handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+    }
+  };
 
   useEffect(() => {
     addList();
@@ -240,7 +242,7 @@ const Viewer = ({ boardItem, nonError }) => {
         sourceUrl,
       } = boardData;
       const { screenId, nickname, _id, following, profile } = writer;
-
+      console.log(boardData)
       setData({
         boardTitle,
         boardBody,
@@ -274,7 +276,7 @@ const Viewer = ({ boardItem, nonError }) => {
       toggleLike(!loginOn ? false : liked);
       setReplyList(replyList);
       setRenderList(replyList);
-      setScreenId(screenId)
+      setScreenId(screenId);
       setBoardImg(boardImg);
       setHeartCount(heartCount);
       setIsLoading(false);
@@ -318,8 +320,8 @@ const Viewer = ({ boardItem, nonError }) => {
 
   // Meta 전용
   const metaData = {
-    title: `${data.nickname}${metaViewerTitle}${data.boardTitle}`,
-    description: data.boardBody,
+    title: `${data?.nickname}${metaViewerTitle}${data?.boardTitle}`,
+    description: data?.boardBody,
     image: boardImg[0],
     canonical: `viewer/${boardUid}`,
   };
@@ -350,53 +352,31 @@ const Viewer = ({ boardItem, nonError }) => {
       {/* 작품 뷰어 부분*/}
       <ViewerPortWrap>
         <ContentsAllView>
-          <ViewerPort>
-            {
-              _public === 'none'
-                ? null
-                : boardImg.map((item, index) => (
-                    <ViewImg key={index} src={item} category={data.category} />
-              ))
-            }
-          </ViewerPort>
+          <ViewerPort>{_public === 'none' ? null : boardImg.map((item, index) => <ViewImg key={index} src={item} category={data.category} />)}</ViewerPort>
         </ContentsAllView>
         {/* 코멘트 시작 부분*/}
         <UserCommentWrap>
           <UserComment>
             {/* 원작 유저 */}
-            {
-              checkOrigin ? (
-                <>
-                  {/* 원작자 */}
-                  <ViewerUserForm
-                    type="ORIGIN"
-                    externalSource={externalSource}
-                    userLang={_originalUser}
-                    followLang={_followBtn}
-                    followOnLang={_followingBtn}
-                    removedContents={_removedContents}
-                    profile={O_profileURL}
-                    userData={data}
-                    boardUid={boardUid}
-                    checkMoreMenuType={checkMoreMenuType}
-                  />
-                  {/* 2차 창작자 */}
-                  <ViewerUserForm 
-                    type="SECOND" 
-                    userLang={_recreateUser} 
-                    followLang={_followBtn} 
-                    followOnLang={_followingBtn} 
-                    profile={profileURL} 
-                    userData={data} 
-                    boardUid={boardUid}
-                    checkMoreMenuType={checkMoreMenuType}
-                  />
-                </>
-              ) : (
+            {checkOrigin ? (
+              <>
+                {/* 원작자 */}
                 <ViewerUserForm
-                  type="NOSECOND"
+                  type="ORIGIN"
                   externalSource={externalSource}
                   userLang={_originalUser}
+                  followLang={_followBtn}
+                  followOnLang={_followingBtn}
+                  removedContents={_removedContents}
+                  profile={O_profileURL}
+                  userData={data}
+                  boardUid={boardUid}
+                  checkMoreMenuType={checkMoreMenuType}
+                />
+                {/* 2차 창작자 */}
+                <ViewerUserForm
+                  type="SECOND"
+                  userLang={_recreateUser}
                   followLang={_followBtn}
                   followOnLang={_followingBtn}
                   profile={profileURL}
@@ -404,8 +384,20 @@ const Viewer = ({ boardItem, nonError }) => {
                   boardUid={boardUid}
                   checkMoreMenuType={checkMoreMenuType}
                 />
-              )
-            }
+              </>
+            ) : (
+              <ViewerUserForm
+                type="NOSECOND"
+                externalSource={externalSource}
+                userLang={_originalUser}
+                followLang={_followBtn}
+                followOnLang={_followingBtn}
+                profile={profileURL}
+                userData={data}
+                boardUid={boardUid}
+                checkMoreMenuType={checkMoreMenuType}
+              />
+            )}
 
             {/* 모바일용 뷰어 */}
             <MobileViewerPort>{_public === 'none' ? null : boardImg.map((item, index) => <ViewImg key={index} src={boardImg[index]} />)}</MobileViewerPort>
@@ -433,8 +425,6 @@ const Viewer = ({ boardItem, nonError }) => {
                       if (!loginOn) {
                         setUnAuth(true);
                         return;
-                      } else {
-                        toggleBookmark();
                       }
                     }}
                   >
@@ -446,8 +436,7 @@ const Viewer = ({ boardItem, nonError }) => {
                     onClick={() => {
                       if (!loginOn) {
                         setUnAuth(true);
-                      } else {
-                        toggleLike();
+                        return;
                       }
                     }}
                   >
@@ -515,20 +504,16 @@ const Viewer = ({ boardItem, nonError }) => {
         </Modal>
       )}
       */}
-       {
-        state_MoreMenu && (
-          <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
-            {type_MoreMenu}
-          </Modal>
-        )
-      }
-      {
-        state_React && (
-          <Modal visible={state_React} closable={true} maskClosable={true} onClose={() => toggle_Modal_React(false)}>
-            <ReactPopup />
-          </Modal>
-        )
-      }
+      {state_MoreMenu && (
+        <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
+          {type_MoreMenu}
+        </Modal>
+      )}
+      {state_React && (
+        <Modal visible={state_React} closable={true} maskClosable={true} onClose={() => toggle_Modal_React(false)}>
+          <ReactPopup />
+        </Modal>
+      )}
       {state_Trans && (
         <Modal visible={state_Trans} closable={true} maskClosable={true} onClose={() => toggle_Modal_Trans(false)}>
           <TranslatePopup writer={data.writer} />
@@ -744,7 +729,7 @@ const BookmarkBtn = styled.button.attrs({ type: 'submit' })`
 `;
 const LikeBtn = styled(BookmarkBtn)`
   &::before {
-    background: url(${(props) => (props.heart ? `/static/heart-1.svg` : `/static/heart-2.svg`)}) no-repeat center / contain;
+    background: url(${(props) => (props.heart ? `/static/heart-2.svg` : `/static/heart-1.svg`)}) no-repeat center / contain;
   }
   &:active {
     &:after {

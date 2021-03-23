@@ -33,16 +33,15 @@ export const ImageEditorCategory = () => {
     return await Promise.all(await converted.concat(await imageSample.filter((urls) => converted.every((conv) => conv.id !== urls.id)))).then((converted) => {
       converted.sort((b, a) => b.id - a.id);
       return converted;
-    }); 
+    });
   };
   // 조절 된 캔버스를 file 형태로 전송
   const urlToFileConvert = async (arr) => {
     return await Promise.all(
       arr.map(async (data, i) => {
-        const response = await fetch(data.canvas);
+        const response = await fetch(data.canvas.src ? data.canvas.src : data.canvas);
         const blob = await response.blob();
         const file = new File([blob], `worked${i}.jpg`, { type: blob.type });
-
         return { id: i, img: file };
       })
     ).then((res) => {

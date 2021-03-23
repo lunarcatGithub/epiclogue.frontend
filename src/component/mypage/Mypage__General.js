@@ -26,8 +26,15 @@ const MypageGeneral = () => {
     e.preventDefault();
     if (!loginOn) return;
     let formData = new FormData();
-    type === 'language' && formData.append('userDisplayLang', data);
-    langFetch(`${process.env.API_URL}/user/editProfile`, 'post', null, formData, null);
+    if (type === 'language') {
+      formData.append('userDisplayLang', data);
+      langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
+    } else if (type === 'interest') {
+      let listArr = [];
+      data.forEach( list => {
+        if(list.isChecked) listArr.push(list.value)
+      });
+    }
   };
 
   return (
@@ -35,7 +42,7 @@ const MypageGeneral = () => {
       {/* 일반 언어 설정 */}
       <MypageForm type="language" formDatas={{ formData, setFormData, submit }} />
       {/* 관심 언어 설정 */}
-      <MypageForm type="interest" />
+      <MypageForm type="interest" formDatas={{ formData, setFormData, submit }} />
       {/* 뮤트 설정 */}
       {loginOn && <MypageForm type="mute" />}
     </Container>

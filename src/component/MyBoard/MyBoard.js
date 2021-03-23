@@ -24,7 +24,6 @@ import useDebounce from '@hooks/useDebounce';
 
 export default function MyBoard({ boardItem, userId, nonError }) {
   const [goURL] = useUrlMove();
-
   const { langState } = useContext(LanguageContext);
   const { setMyboardData, loginOn, setUnAuth, followData, setFollowData, setFollowButton } = useContext(AppDataContext);
   const [follow, toggleFollow] = useToggle();
@@ -34,7 +33,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const [userScreenId, setUserScreenId] = useState();
 
   // debounce 처리
-  const followDebounce = useDebounce(follow, 2000);
+  const [followDebounce, getValue] = useDebounce();
 
   useEffect(() => {
     setUserScreenId(followData?.screenId);
@@ -76,13 +75,14 @@ export default function MyBoard({ boardItem, userId, nonError }) {
 
   const submitHandler = () => {
     if (!loginOn) return;
-    toggleFollow();
+    getValue(follow);
+    followFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: boardItem?.data?._id });
   };
 
   useEffect(() => {
-    if (followDebounce === null || followDebounce === undefined) return;
-    followFetch(`${process.env.API_URL}/interaction/follow`, followDebounce ? 'post' : 'delete', { targetUserId: boardItem?.data?._id });
-  }, [followDebounce]);
+    if (!loginOn) return;
+    getValue(follow);
+  }, [follow]);
 
   const moveFollowList = (type) => {
     if (!loginOn) {
@@ -90,7 +90,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
       return;
     }
     setFollowButton(type);
-    goURL({ pathname: '/follows' });
+    goURL({ pathname: `/follows/${userScreenId}` });
   };
 
   useEffect(() => {
@@ -104,7 +104,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   }, [boardItem, countryResult]);
 
   useEffect(() => {
-    userScreenId && boardDataFetch(`${process.env.API_URL}/myboard/${userScreenId}/${isTab}`, 'get', null);
+    userScreenId && boardDataFetch(`${process.env.NEXT_PUBLIC_API_URL}/myboard/${userScreenId}/${isTab}`, 'get', null);
   }, [isTab, userScreenId]);
 
   useEffect(() => {
@@ -146,7 +146,9 @@ export default function MyBoard({ boardItem, userId, nonError }) {
               </UserIdCreateDateBox>
               {/* 유저 소개 시작 */}
               <UserIntroduceBox>
-                <UserIntroduce>{!boardDataLoding && converted.length === 0 ? `${followData?.nickname} ${_noIntro}` : converted}</UserIntroduce>
+                <UserIntroduce>
+                    { !boardDataLoding && converted.length === 0 ? `${followData?.nickname} ${_noIntro}` : converted }
+                  </UserIntroduce>
               </UserIntroduceBox>
               {/* 팔로우 버튼 시작 */}
               <FollowsBox>
@@ -159,11 +161,12 @@ export default function MyBoard({ boardItem, userId, nonError }) {
                   {_followBtn}
                   <FollowScore>{followData?.followerCount}</FollowScore>
                 </FollowButton>
-                {!checkMe && (
+                {
+                !checkMe && (
                   <ButtonWrap>
                     {/* <FollowAddButton data={String(follow)} onClick={toggleFollow}>
-                      {follow ? _followingBtn : _followBtn}
-                    </FollowAddButton> */}
+                        {follow ? _followingBtn : _followBtn}
+                      </FollowAddButton> */}
                     <FollowAddButton
                       styling={follow}
                       onClick={() => {
@@ -171,16 +174,18 @@ export default function MyBoard({ boardItem, userId, nonError }) {
                           setUnAuth(true);
                           return;
                         }
+                        toggleFollow();
                         submitHandler();
                       }}
                     >
                       {follow ? _followingBtn : _followBtn}
                     </FollowAddButton>
                     {/* <MoreMenuBtn>
-                      <MoreMenu />
-                    </MoreMenuBtn> */}
-                  </ButtonWrap>
-                )}
+                        <MoreMenu />
+                      </MoreMenuBtn> */}
+                    </ButtonWrap> )
+                }
+
               </FollowsBox>
               {/*// 레이아웃 상단 유저정보 레이아웃 끝 */}
             </UserInformBox>
@@ -188,24 +193,25 @@ export default function MyBoard({ boardItem, userId, nonError }) {
           {/* 네비게이션 시작 */}
           <NavBar show={show}>
             <NavBarInner>
-              {navTabArr.map((nav, index) => (
-                <NavItem
-                  key={index}
-                  styling={isTab === nav.link}
-                  onClick={() => {
-                    setIsTab(nav.link);
-                    goURL({
-                      pathname: `/myboard/${followData?.screenId}`,
-                      as: `/myboard/${followData?.screenId}`,
-                      query: {
-                        tab: nav.link,
-                      },
-                    });
-                  }}
-                >
-                  <NavAllButton>{nav.title}</NavAllButton>
-                </NavItem>
-              ))}
+              {
+                navTabArr.map((nav, index) => (
+                  <NavItem
+                    key={index}
+                    styling={isTab === nav.link}
+                    onClick={() => {
+                      setIsTab(nav.link);
+                      goURL({
+                        pathname: `/myboard/${followData?.screenId}`,
+                        as: `/myboard/${followData?.screenId}`,
+                        query: {
+                          tab: nav.link,
+                        },
+                      });
+                    }}
+                  >
+                    <NavAllButton>{nav.title}</NavAllButton>
+                  </NavItem> ))
+              }
             </NavBarInner>
           </NavBar>
           {/* 작품 콘텐츠 시작 */}
@@ -216,11 +222,12 @@ export default function MyBoard({ boardItem, userId, nonError }) {
           </ContentsBox>
         </LayoutInner>
       </Layout>
-      {state_Confirm && (
-        <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
-          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={goURL} type={'REMOVE_USER'} />
-        </Modal>
-      )}
+      {
+        state_Confirm && (
+          <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
+            <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={goURL} type={'REMOVE_USER'} />
+          </Modal> )
+      }
     </>
   );
 }

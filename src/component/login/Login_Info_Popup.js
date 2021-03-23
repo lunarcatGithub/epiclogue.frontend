@@ -40,7 +40,7 @@ export const LoginInfoPopup = (props) => {
       setErrPlaceHolder(_noEmail);
       return;
     }
-    pwFetch(`${process.env.API_URL}/auth/findPass`, 'post', { email: values }, null, null);
+    pwFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/findPass`, 'post', { email: values }, null, null);
   };
 
   useEffect(() => {

@@ -33,7 +33,7 @@ const ReactPopup = () => {
   const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
 
   useEffect(() => {
-    initialFetch(`${process.env.API_URL}/boards/${boardUid}/react`, 'get', null, null);
+    initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/react`, 'get', null, null);
   }, []);
 
   useEffect(() => {

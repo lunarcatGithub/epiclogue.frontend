@@ -1,5 +1,8 @@
 #!/bin/bash
 
-cd /home/ubuntu/build/out
-sudo cp -r $(ls) /usr/share/nginx/html/
-sudo service nginx reload
+cd /home/ubuntu/epiclogue.frontend
+# 도커 이미지 클린 셋업
+docker-compose stop
+docker container rm $(docker ps -aq)
+docker-compose up --build -d
+  

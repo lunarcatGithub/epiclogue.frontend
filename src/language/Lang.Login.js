@@ -274,9 +274,9 @@ export const signUpError = {
     1: 'メールアドレスを入力してください',
   },
   dupliEmail: {
-    2: 'This email is already registered.',
-    0: '이미 가입되어 있는 이메일 입니다',
-    1: '登録済みのメールアドレスです',
+    2: 'Email already subscribed or withdrawn',
+    0: '이미 가입되었거나 탈퇴한 이메일입니다',
+    1: '登録済みまたは退会済みのメールアドレスです',
   },
 
   pwError: {
@@ -317,5 +317,5 @@ export const socialLogin = {
     2: 'Login canceled',
     0: '로그인이 취소되었습니다',
     1: 'ログインがキャンセルされました',
-  }
+  },
 };

@@ -177,7 +177,7 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
       return;
     }
 
-    pwConfirmFetch(`${process.env.API_URL}/auth/findPass`, 'patch', { userPwNew, userPwNewRe, email, token }, null, null);
+    pwConfirmFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/findPass`, 'patch', { userPwNew, userPwNewRe, email, token }, null, null);
   };
 
   useEffect(() => {
