@@ -57,7 +57,7 @@ export function langMetaMain() {
 export function langMetaBoard() {
   let metaBoardTitle,
       boardDescFirst,
-      boardDescSecond
+      boardDescSecond;
 
   switch (devidedLang) {
     case 0:
@@ -85,23 +85,32 @@ export function langMetaBoard() {
 }
 
 export function langMetaViewer() {
-  let metaViewerTitle;
+  let metaViewerTitle,
+      boardDescFirst,
+      boardDescSecond;
 
   switch (devidedLang) {
     case 0:
       metaViewerTitle = `님의 작품 || `;
+      boardDescFirst = `창작가`
+      boardDescSecond = `님의 작품을 감상해보세요!`
 
       break;
 
     case 1:
       metaViewerTitle = `さんの作品 || `;
+      boardDescFirst = `創作家`
+      boardDescSecond = `の作品をご鑑賞ください!`
       break;
 
     default:
       metaViewerTitle = `'s work || `;
+      boardDescFirst = `Enjoy the work of Artist`;
+      boardDescSecond = `!`;
+
       break;
   }
-  return metaViewerTitle;
+  return {metaViewerTitle, boardDescFirst, boardDescSecond};
 }
 
 export function langMetaMypage() {

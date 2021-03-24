@@ -13,7 +13,7 @@ const locales = {
   ko: 'ko',
   ja: 'ja',
 };
-console.log(navi)
+
 export const Meta = ({ meta }) => {
   const lang = locales[navi] || locales['en'];
   const title = meta.title;

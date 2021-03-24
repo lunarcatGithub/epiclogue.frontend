@@ -112,7 +112,7 @@ const Viewer = ({ boardItem, nonError }) => {
 
   const { originalUser, recreateUser, removedContents } = langViewerUser;
 
-  const {metaViewerTitle, metaDesc} = langMetaViewer();
+  const {metaViewerTitle, boardDescFirst, boardDescSecond} = langMetaViewer();
   const { followBtn, followingBtn } = LangCommon;
   const _contentsReact = contentsReact[selectedLanguage] || contentsReact[defaultLanguage],
     _feedbackScore = feedbackScore[selectedLanguage] || feedbackScore[defaultLanguage],
@@ -321,7 +321,7 @@ const Viewer = ({ boardItem, nonError }) => {
   // Meta 전용
   const metaData = {
     title: `${boardItem?.data?.writer?.nickname}${metaViewerTitle}${boardItem?.data?.boardTitle}`,
-    description: metaDesc,
+    description: `${boardDescFirst} ${boardItem?.data?.writer?.screenId}${boardDescSecond}`,
     image: boardItem?.data?.boardImg[0],
     canonical: `viewer/${boardUid}`,
   };

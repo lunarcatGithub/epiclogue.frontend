@@ -93,6 +93,7 @@ export const SignIn = (props) => {
   useEffect(() => {
     const mergyData = resData || snsLoginListApi;
     if (mergyData?.result === 'ok') {
+      getTestCookie('CREATE', 'test', 'ss', 1);
       setLoginOn(true);
       localStorage.setItem('loginOn', true);
       localStorage.setItem('userNick', mergyData?.nick);

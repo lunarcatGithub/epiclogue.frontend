@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import MyBoardFollowList from './MyBoard__Follow__List';
 import { useRouter } from 'next/router';
 
+//utils
+import AutoHiding from '@utils/autoHiding';
+
 // hooks&&reducer
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
@@ -24,6 +27,8 @@ const MyBoardFollow = ({route}) => {
 
   //fetch
   const [, followListApi, , followListFetch] = useAxiosFetch();
+  // 헤더 스크롤용
+  const show = AutoHiding();
 
   useEffect(() => {
     setItems((items) => items + 10);
@@ -44,12 +49,14 @@ const MyBoardFollow = ({route}) => {
     followButton === 'following' ? setFollowingList(followListApi?.data) : setFollowerList(followListApi?.data);
   }, [followListApi]);
 
+  const tabType = ['following', 'follower'];
+
   return (
     <Layout>
       <FollowsLayout>
         <LayoutInner>
           {/* 팔로우 헤더 상단 */}
-          <HeaderBox>
+          <HeaderBox show={show}>
             <TopHeaderBox>
               {/* <Link to={`/myboard/${dataId}`}>
                   <ArrowBtn />
@@ -122,7 +129,11 @@ const HeaderBox = styled.div`
   height: auto;
   background: ${(props) => props.theme.color.whiteColor};
   margin-bottom: 3px;
+  transition: all 0.2s 0.3s ease-in-out;
   z-index: 9;
+  @media (max-width:900px){
+    top: ${(props) => (props.show ? 0 : -54)}px;
+  }
 `;
 const TopHeaderBox = styled.div`
   display: flex;

@@ -190,6 +190,7 @@ const MypageProfile = () => {
 
   useEffect(() => {
     if (pwApi?.result === 'ok') {
+
       alertPatch({ type: 'PASSWORD_UPDATE', payload: true });
     } else {
       if (pwError) {
@@ -197,8 +198,8 @@ const MypageProfile = () => {
           setValidationError(_changePwError);
         } else if (pwError?.data.message === '비밀번호과 재입력이 다릅니다.') {
           setPwNotMatch(_valiPwError);
-        } else {
-          setNoPassword(_originPwError);
+        } else if(pwError?.data.message === '잘못된 비밀번호입니다.') {
+          setNoPassword('원래 비밀번호를 확인해주세요');
         }
       }
     }
@@ -386,7 +387,7 @@ const MypageProfile = () => {
             </TitleWrap>
             {pwTab === 3 ? (
               <HiddenBox>
-                <SendForm id="changePassForm" action="" method="post" onSubmit={handleSubmitUserPw}>
+                <SendForm id="changePassForm" method="post" onSubmit={handleSubmitUserPw}>
                   <InputWrap>
                     <InputText htmlFor="userPw">{_originPw}</InputText>
                     <HiddenPwInput name="userPw" onChange={handleUserPw} />

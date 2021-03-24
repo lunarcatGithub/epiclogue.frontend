@@ -28,7 +28,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const { langState } = useContext(LanguageContext);
   const { setMyboardData, loginOn, setUnAuth, followData, setFollowData, setFollowButton } = useContext(AppDataContext);
   const [follow, toggleFollow] = useToggle();
-
+  // console.log(boardItem)
   const [date, setDate] = useState();
   const [checkMe, setCheckMe] = useState();
   const [userScreenId, setUserScreenId] = useState();
@@ -122,9 +122,10 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     { link: 'secondaryWorks', title: _secondary },
     { link: 'bookmarks', title: _bookMarkTabs },
   ];
+
   const metaData = {
     title: `${boardItem?.data?.nickname}${metaBoardTitle}`,
-    description: `${boardItem?.data?.intro} || ${boardDescFirst}${boardItem?.data?.nickname}${boardDescSecond}`,
+    description: `${boardItem?.data?.intro} || ${boardDescFirst}${boardItem?.data?.screenId}${boardDescSecond}`,
     image: `${boardItem?.data?.profile?.thumbnail}`,
     canonical: `myboard/${boardItem?.data?._id}`,
   };
