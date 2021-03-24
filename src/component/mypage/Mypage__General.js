@@ -55,12 +55,5 @@ const MypageGeneral = () => {
   );
 };
 
-//공통
-// 레이아웃
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
 
 export default MypageGeneral;

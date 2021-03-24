@@ -7,13 +7,14 @@ import HeaderPfPopup from './Header__Profile';
 import UserInform from './Header__Inform';
 import SearchPopup from './Header__Search';
 import { LangHeader } from '@language/Lang.Header';
-import AutoHiding from '@utils/autoHiding';
-import Modal from '@utils/Modal';
 import AdminFeedback from '@component/develop/AdminFeedback';
 import { LangFeedbackMain } from '@language/Lang.Common';
 import HeaderUnauth from './Header__Unauth';
 
 // import Xbtn from '../../img/X-mark.png';
+// utils
+import AutoHiding from '@utils/autoHiding';
+import Modal from '@utils/Modal';
 
 // Hooks&&reducer import
 import { useChange } from '@hooks/useChange';
@@ -118,7 +119,7 @@ const Header = () => {
 
   useEffect(() => {
     readObserver();
-  });
+  },[pathname]);
 
   // 유저 프로필 API
   useEffect(() => {

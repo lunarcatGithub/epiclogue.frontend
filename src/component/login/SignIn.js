@@ -111,19 +111,17 @@ export const SignIn = (props) => {
       <LoginBox>
         <LoginInner>
           <LoginHeader styling={main}>
-            {main ? (
-              <>
-                <BackIconAnchor onClick={() => router.back()}>
-                  <PureBackIcon />
-                </BackIconAnchor>
-                <SubTitle>{_backLogin}</SubTitle>
-              </>
-            ) : (
-              <>
-                <LoginLogo />
-                <LoginTitle>{'Welcome to EpicLogue'}</LoginTitle>
-              </>
-            )}
+            {
+              main ? ( <>
+                  <BackIconAnchor onClick={() => router.back()}>
+                    <PureBackIcon />
+                  </BackIconAnchor>
+                  <SubTitle>{_backLogin}</SubTitle>
+                </> ) : ( <>
+                  <LoginLogo />
+                  <LoginTitle>{'Welcome to EpicLogue'}</LoginTitle>
+                </> )
+            }
           </LoginHeader>
           <FormInner>
             {/* 로그인 찾기 */}
@@ -146,7 +144,7 @@ export const SignIn = (props) => {
             <SubTitle>SNS Login</SubTitle>
 
             <LogingWrap>
-              <GoogleButton name="google" clientId={process.env.GOOGLE_API_KEY} onSuccess={(res) => responseSuccess(res, 'google')} onFailure={responseFail} />
+              <GoogleButton name="google" clientId={process.env.NEXT_PUBLIC_GOOGLE_API_KEY} onSuccess={(res) => responseSuccess(res, 'google')} onFailure={responseFail} />
               <GoogleStyle>{_googleAccount}</GoogleStyle>
             </LogingWrap>
             {/* <LogingWrap>
