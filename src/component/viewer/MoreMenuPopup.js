@@ -57,7 +57,8 @@ const MorePopup = (props) => {
   const removeBoardHandler = () => {
     removeBoardFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}`, 'delete', null, null, null);
   };
-
+  console.log(removeBoardApi, removeBoardError)
+  console.log(boardUid)
   useEffect(() => {
     // * 삭제 확인 이후 로직 실행
     if (accessConfirm) {

@@ -322,7 +322,7 @@ const Viewer = ({ boardItem, nonError }) => {
   const metaData = {
     title: `${boardItem?.data?.writer?.nickname}${metaViewerTitle}${boardItem?.data?.boardTitle}`,
     description: `${boardDescFirst} ${boardItem?.data?.writer?.screenId}${boardDescSecond}`,
-    image: boardItem?.data?.boardImg[0],
+    image: boardItem?.data?.boardImg,
     canonical: `viewer/${boardUid}`,
   };
 
@@ -358,7 +358,8 @@ const Viewer = ({ boardItem, nonError }) => {
         <UserCommentWrap>
           <UserComment>
             {/* 원작 유저 */}
-            {checkOrigin ? (
+            {
+              checkOrigin ? (
               <>
                 {/* 원작자 */}
                 <ViewerUserForm
