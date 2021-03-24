@@ -13,10 +13,9 @@ const locales = {
   ko: 'ko',
   ja: 'ja',
 };
-const language = navi.language;
 
 export const Meta = ({ meta }) => {
-  const lang = locales[language] || locales['en'];
+  const lang = locales[navi] || locales['en'];
   const title = meta.title;
   const description = meta.description || undefined;
   const image = meta.image || undefined || undefined;

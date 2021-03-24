@@ -8,7 +8,6 @@ export default function ViewerPage(props) {
 
 export async function getServerSideProps(context) {
   const { query, req, params } = context;
-
   const id = params?.id || query?.id;
 
   let error = null;
@@ -17,7 +16,7 @@ export async function getServerSideProps(context) {
   res = await axios({
     url,
     method: 'get',
-    headers: req?.headers?.cookie ? { cookie: encodeURIComponent(req.headers.cookie) } : undefined,
+    headers: req?.headers?.cookie ? { Cookie: req.headers.cookie } : undefined,
     withCredentials: true,
   }).catch((res) => {
     if (res.response?.status === 404) error = 404;

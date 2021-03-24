@@ -18,9 +18,10 @@ const Main = ({ boardItem }) => {
   const metaData = {
     title: metaMainTitle,
     description: metaMainDesc,
-    image: '/static/logo192.svg',
+    image: '/static/test.svg',
     canonical: `/`,
   };
+
   return (
     <>
       <Meta meta={metaData} />
