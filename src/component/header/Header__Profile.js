@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
+import {useRouter} from 'next/router';
 
 // 컴포넌트 import
 import { LangHeaderProfile } from '@language/Lang.Header';
@@ -18,6 +19,8 @@ import { useCookie } from '@hooks/useCookie';
 // 프로필 팝업
 
 const HeaderPfPopup = () => {
+  const router = useRouter();
+
   const [goURL] = useUrlMove();
   const [profileURL, , convertProfileIamge] = useConvertURL();
   //cookie
@@ -61,7 +64,9 @@ const HeaderPfPopup = () => {
   };
 
   useEffect(() => {
+    console.log(profileError)
     if (profileError?.status === 401) {
+      router.reload()
       alert(_sessionExpire);
       logout();
     }
