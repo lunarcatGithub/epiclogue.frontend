@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled, { css } from 'styled-components';
-import qs from 'query-string';
+import {useRouter} from 'next/router';
 
 // 컴포넌트 import
 import { LangConfirm } from '@language/Lang.Confirm';
@@ -14,16 +14,15 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 
 export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
   const { alertPatch } = useContext(AlertContext);
+  const router = useRouter()
 
   const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
 
   // 유저 정보
-  const userUrl = qs.parse(window.location.search);
+  const { email, token } = router.query
   const [userPwNew, handleuserPwNew] = useChange();
   const [userPwNewRe, handleUserPwNewRe] = useChange();
-  const [token, setToken] = useState(userUrl.token);
-  const [email, setEmain] = useState(userUrl.email);
 
   // 유효성
   const [valiPw, setValiPw] = useState('');

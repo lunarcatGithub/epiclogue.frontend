@@ -71,7 +71,7 @@ export default function MypageForm(props) {
       langPatch({ type: 'LANGUAGE_UPDATE', payload: selectData });
       formDatas.submit(e, 'language', selectData);
     } else if (type === 'interest') {
-      formDatas.submit(e, 'language', selectData);
+      formDatas.submit(e, 'interest', selectMultiple);
     }
     setToggleSet(false);
   };

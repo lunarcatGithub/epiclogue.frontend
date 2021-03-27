@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import qs from 'query-string';
+import {useRouter} from 'next/router';
 
 // 컴포넌트 import
 import ConfirmPopup from '@utils/ConfirmPopup';
@@ -10,13 +10,15 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 
 export function FindPass() {
   const [accessConfirm, setAccessConfirm] = useState(false);
+  const router = useRouter()
 
   //fetch
   const [findPassLoding, findPassApi, findPassError, findPassFetch] = useAxiosFetch();
 
   useEffect(() => {
-    let query = qs.parse(window.location.search);
-    accessConfirm && findPassFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/findPass`, 'get,', null, null, { email: query.email, token: query.token });
+    const { email, token } = router.query
+
+    accessConfirm && findPassFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/findPass`, 'get,', null, null, { email, token });
   }, []);
 
   useEffect(() => {

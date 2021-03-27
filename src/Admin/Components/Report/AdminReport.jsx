@@ -4,21 +4,20 @@ import styled from 'styled-components';
 // 컴포넌트 import
 import ListForm from '../Utils/List__Form';
 
-// utils
-
-export const AdminUsers =()=> {
+export const AdminReport =()=> {
     //data
     const [userContentsData, setUserContentsData] = useState([
-        {id:1, email:'asd@ads.com', _id:`@asasdd`, type:'정지', join:'2020-11-28', ban:false},
-        {id:2, email:'ascvcvd@xcvx.com', _id:`@adf`, type:'탈퇴', join:'2021-01-02', ban:true},
-        {id:3, email:'asxzcvzxd@ads.com', _id:`@qwerrt`, type:'정상', join:'2021-02-28', ban:false}
+        {id:1, email:'asd@ads.com', _id:`@asasdd`, type:'정지', result:'미정', kind:'대댓글', content:'asdasd', resultDate:'2020-11-28', count:5, category:'혐오', ban:false, hide:false},
+        {id:2, email:'ascvcvd@xcvx.com', _id:`@adf`, type:'탈퇴', result:'삭제',  kind:'대댓글',content:'qwwqw', resultDate:'2021-01-02', count:2, category:'갈등유발', ban:true, hide:true},
+        {id:3, email:'asxzcvzxd@ads.com', _id:`@qwerrt`, type:'정상', result:'숨김', kind:'대댓글', content:'12341', resultDate:'2021-02-28', count:1, category:'광고/홍보', ban:false, hide:false},
+        {id:4, email:'asxzcvzxd@ads.com', _id:`@qwerrt`, type:'정상', result:'숨김', kind:'대댓글', content:'s2d1', resultDate:'2021-02-28', count:1, category:'헤헤', ban:false, hide:false}
     ]);
 
     const categorySelec = [
         {title:'전체', value:'all'},
         {title:'정상', value:'green'},
         {title:'정지', value:'banned'},
-        {title:'탈퇴', value:'reave'}];
+        {title:'탈퇴', value:'leave'}];
 
     const searchFilter = [
         {title:'전체', value:'all'},
@@ -36,7 +35,7 @@ export const AdminUsers =()=> {
                     // 회원 탈퇴
                     data.splice(Number(toggleSelect)-1, 1)
                     setUserContentsData(data);
-
+                    
                 } else if( type === 'sub'){
                     // 회원 정지
                     if(userContentsData.hide === true){
@@ -52,13 +51,13 @@ export const AdminUsers =()=> {
         });
     }  
 
-    const headerArr = ['번호', '이메일', '아이디', '회원유형', '가입일', '', '정지', '탈퇴'];
+    const headerArr = ['번호', '유저 메일', '유저 아이디', '회원유형', '처리결과', '종류', '내용', '신고횟수', '처리일자', '신고 카테고리', '신고횟수', '상태', '삭제', '정지', '탈퇴'];
 
     return (
         <Layout>
             <LayoutInner>
                     <ListForm 
-                    type='USERS' 
+                    type='REPORT' 
                     contentsData={{
                         headerArr,
                         categorySelec,

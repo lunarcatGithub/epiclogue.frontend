@@ -122,11 +122,10 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     { link: 'secondaryWorks', title: _secondary },
     { link: 'bookmarks', title: _bookMarkTabs },
   ];
-
   const metaData = {
     title: `${boardItem?.data?.nickname}${metaBoardTitle}`,
     description: `${boardItem?.data?.intro} || ${boardDescFirst}${boardItem?.data?.screenId}${boardDescSecond}`,
-    image: `${boardItem?.data?.profile?.thumbnail}`,
+    image: [`${boardItem?.data?.profile?.thumbnail?.origin}`],
     canonical: `myboard/${boardItem?.data?._id}`,
   };
 

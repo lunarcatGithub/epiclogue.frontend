@@ -195,7 +195,6 @@ const MypageProfile = () => {
   };
 
   useEffect(() => {
-    console.log(pwError?.response)
       if (Object.keys(errors).length !== 0) {
         if (errors?.userPw === 'errorPW') {
           setValidationError(_changePwError);
