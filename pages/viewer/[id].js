@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export default function ViewerPage(props) {
   const { boardItem, id, error } = props;
-  return <>{boardItem ? <Viewer boardItem={boardItem} userId={id} nonError={error} /> : <div>loding...</div>}</>;
+  return <Viewer boardItem={boardItem} userId={id} nonError={error} />
 }
 
 export async function getServerSideProps(context) {
@@ -24,7 +24,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      boardItem: res?.data,
+      boardItem: res?.data || null,
       id: id,
       error,
     },

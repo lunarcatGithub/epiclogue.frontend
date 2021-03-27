@@ -18,19 +18,18 @@ const Main = ({ boardItem }) => {
   const metaData = {
     title: metaMainTitle,
     description: metaMainDesc,
-    image: ['/static/test.svg'],
+    image: ['/static/logo192.svg'],
     canonical: ``,
   };
-
   return (
     <>
       <Meta meta={metaData} />
       <Layout>
         <Contents type="MAIN" boardItem={boardItem} />
-        {/*업로드 버튼*/}
-        <UploadButton onClick={() => goURL({ pathname: '/upload' })}>
-          <UploadSvg />
-        </UploadButton>
+          {/*업로드 버튼*/}
+          <UploadButton onClick={() => goURL({ pathname: '/upload' })}>
+            <UploadSvg />
+          </UploadButton>
       </Layout>
     </>
   );
