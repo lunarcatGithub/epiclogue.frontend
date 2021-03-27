@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 
 export default function Error({ statusCode }) {
-  console.log(statusCode)
   return <div>{statusCode ? 'server error' : 'client error'}</div>;
 }
 

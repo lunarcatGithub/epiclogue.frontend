@@ -64,7 +64,6 @@ const HeaderPfPopup = () => {
   };
 
   useEffect(() => {
-    console.log(profileError)
     if (profileError?.status === 401) {
       router.reload()
       alert(_sessionExpire);

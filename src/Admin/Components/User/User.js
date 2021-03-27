@@ -36,7 +36,6 @@ export const AdminUsers =()=> {
                     // 회원 탈퇴
                     data.splice(Number(toggleSelect)-1, 1)
                     setUserContentsData(data);
-                    console.log(data)
 
                 } else if( type === 'sub'){
                     // 회원 정지
