@@ -1,8 +1,6 @@
 import { useState, useEffect, useReducer, createContext } from 'react';
 import { useRouter } from 'next/router';
 
-// create context
-const AdminContext = createContext({});
 
 // combine reducer function
 const combineReducers = (...reducers) => (state, action) => {
@@ -14,8 +12,6 @@ const combineReducers = (...reducers) => (state, action) => {
 const AdminContextStore = ({ children }) => {
     // initial Login
     const [adminAuth, setAdminAuth] = useState(false);
-    // tab controls
-    const [adminTab, setAdminTab] = useState('DASHBOARD');
     // router
     const router = useRouter();
 
@@ -24,7 +20,6 @@ const AdminContextStore = ({ children }) => {
             value={{adminTab, setAdminTab}}
         >
             {children}
-
         </AdminContext.Provider>
     );
 };

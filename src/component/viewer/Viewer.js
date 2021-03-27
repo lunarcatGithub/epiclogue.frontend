@@ -317,11 +317,11 @@ const Viewer = ({ boardItem, nonError }) => {
     // 성공 푸시탭
     alertPatch({ type: 'SHARE', payload: true });
   };
-
+  let metaBoardBody = boardItem?.data?.boardBody
   // Meta 전용
   const metaData = {
     title: `${boardItem?.data?.writer?.nickname}${metaViewerTitle}${boardItem?.data?.boardTitle}`,
-    description: `${boardDescFirst} ${boardItem?.data?.writer?.screenId}${boardDescSecond}`,
+    description: metaBoardBody.length !== 0 ? metaBoardBody : `${boardDescFirst} ${boardItem?.data?.writer?.screenId}${boardDescSecond}`,
     image: boardItem?.data?.boardImg,
     canonical: `viewer/${boardUid}`,
   };

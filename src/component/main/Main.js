@@ -19,7 +19,7 @@ const Main = ({ boardItem }) => {
     title: metaMainTitle,
     description: metaMainDesc,
     image: ['/static/test.svg'],
-    canonical: `/`,
+    canonical: ``,
   };
 
   return (

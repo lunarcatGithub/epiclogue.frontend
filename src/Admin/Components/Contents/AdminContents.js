@@ -1,4 +1,4 @@
-import React,{ useRef, useState, useEffect } from 'react'
+import React,{ useRef, useState } from 'react'
 import styled from 'styled-components';
 
 // 컴포넌트 import
@@ -31,17 +31,16 @@ export const AdminContents =()=> {
         {title:'제목', value:'title'}
     ];
     
-    const [selectNum, setSelectNum] = useState();
     const [toggleSelect, setToggleSelect] = useState();
 
     const dataHadler = (e, type) => {
         userContentsData?.forEach(_contentsData => {
             if(Number(toggleSelect) === _contentsData.id){
                 let data = userContentsData
-                if(type === 'remove'){
+                if(type === 'main'){
                     data.splice(Number(toggleSelect)-1, 1)
                     setUserContentsData(data)
-                } else if( type === 'hide'){
+                } else if( type === 'sub'){
                     if(userContentsData.hide === true){
                         data.hide = false
                     }else {
@@ -61,19 +60,18 @@ export const AdminContents =()=> {
     return (
         <Layout>
             <LayoutInner>
-                    <ListForm 
-                    type='CONTENTS' 
-                    contentsData={{
-                        categorySelec,
-                        hideOrNot,
-                        searchFilter,
-                        userContentsData,
-                        headerArr,
-                        tableRef,
-                        setSelectNum,
-                        setToggleSelect,
-                        dataHadler
-                        }} />
+                <ListForm 
+                type='CONTENTS' 
+                contentsData={{
+                    categorySelec,
+                    hideOrNot,
+                    searchFilter,
+                    userContentsData,
+                    headerArr,
+                    tableRef,
+                    setToggleSelect,
+                    dataHadler
+                    }} />
             </LayoutInner>
         </Layout>
     )

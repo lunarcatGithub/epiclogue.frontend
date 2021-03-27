@@ -24,15 +24,12 @@ export const Meta = ({ meta }) => {
   const width = (meta.image && (meta.width || 1200)) || undefined;
   const height = (meta.image && (meta.height || 627)) || undefined;
 
-  // const imgTag = image?.map((img, i) => <link rel="image_src" href={img} key={`imagesrc${i}`} /> )
-  // const imageProps = image?.map((img, i) => <meta itemProp="image" content={img} key={`imageProps${i}`} /> )
-  // const ogimg = image?.map((img, i) => <meta property="og:image" content={img} key={`ogimg${i}`}/> )
-  const _tagImges = image?.map((img, i)=> [
+  const _tagImges = image?.map((img, i)=> {
   <link rel="image_src" href={img} key={`imagesrc${i}`} />, 
   <meta itemProp="image" content={img} key={`imageProps${i}`} />,
   <meta property="og:image" content={img} key={`ogimg${i}`}/>,
   <meta name="twitter:image" content={img} key={`twitterimg${i}`} />
-])
+})
 
 
   return (
