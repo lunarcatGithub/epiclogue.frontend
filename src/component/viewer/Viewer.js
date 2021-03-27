@@ -112,7 +112,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
 
   const { originalUser, recreateUser, removedContents } = langViewerUser;
 
-  const {metaViewerTitle, boardDescFirst, boardDescSecond} = langMetaViewer();
+  const { metaViewerTitle, boardDescFirst, boardDescSecond } = langMetaViewer();
   const { followBtn, followingBtn } = LangCommon;
   const _contentsReact = contentsReact[selectedLanguage] || contentsReact[defaultLanguage],
     _feedbackScore = feedbackScore[selectedLanguage] || feedbackScore[defaultLanguage],
@@ -216,7 +216,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
   }, [renderList, eventCtrl, prevFb]);
 
   useEffect(() => {
-    if(!boardItem) return;
+    if (!boardItem) return;
     const initialData = boardItem;
 
     if (initialData?.result === 'ok') {
@@ -300,7 +300,6 @@ const Viewer = ({ boardItem = null, nonError }) => {
     } else {
       alert(initialData.message);
     }
-
   }, [boardItem]);
 
   useEffect(() => {
@@ -321,7 +320,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
     // 성공 푸시탭
     alertPatch({ type: 'SHARE', payload: true });
   };
-  let metaBoardBody = boardItem?.data?.boardBody
+  let metaBoardBody = boardItem?.data?.boardBody;
   // Meta 전용
   const metaData = {
     title: `${boardItem?.data?.writer?.nickname}${metaViewerTitle}${boardItem?.data?.boardTitle}`,
@@ -362,8 +361,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
         <UserCommentWrap>
           <UserComment>
             {/* 원작 유저 */}
-            {
-              checkOrigin ? (
+            {checkOrigin ? (
               <>
                 {/* 원작자 */}
                 <ViewerUserForm

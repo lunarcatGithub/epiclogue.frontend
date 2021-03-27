@@ -32,19 +32,16 @@ const MypageGeneral = () => {
     if (type === 'language') {
       formData.append('userDisplayLang', data);
       langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
-
     } else if (type === 'interest') {
-      const listArr = data?.filter(each => each.isChecked).map( list => list.value)
+      const listArr = data?.filter((each) => each.isChecked).map((list) => list.value);
       formData.append('userAvailableLang', listArr);
       langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
-
     }
-    
   };
 
-  useEffect(()=> {
-    loginOn && setIsLogin(loginOn)
-  },[loginOn])
+  useEffect(() => {
+    loginOn && setIsLogin(loginOn);
+  }, [loginOn]);
 
   return (
     <>
@@ -57,6 +54,5 @@ const MypageGeneral = () => {
     </>
   );
 };
-
 
 export default MypageGeneral;

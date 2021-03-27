@@ -11,7 +11,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
 import { AppDataContext } from '@store/App_Store';
 
-const MyBoardFollow = ({route}) => {
+const MyBoardFollow = ({ route }) => {
   const router = useRouter();
 
   const { followData, followButton, setFollowButton } = useContext(AppDataContext);
@@ -38,7 +38,6 @@ const MyBoardFollow = ({route}) => {
       setSliceFollower(followerList?.slice(0, items));
     }
   }, [page, followingList, followerList]);
-
 
   useEffect(() => {
     route && followButton && followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow?screenId=${route}&type=${followButton}`, 'get', null, null, null);
@@ -131,7 +130,7 @@ const HeaderBox = styled.div`
   margin-bottom: 3px;
   transition: all 0.2s 0.3s ease-in-out;
   z-index: 9;
-  @media (max-width:900px){
+  @media (max-width: 900px) {
     top: ${(props) => (props.show ? 0 : -54)}px;
   }
 `;

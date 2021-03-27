@@ -111,7 +111,7 @@ const Header = () => {
   const readObserver = () => {
     setRead(readApi?.data?.notiCount);
   };
-  console.log(readApi?.data)
+  console.log(readApi?.data);
   useEffect(() => {
     if (!loginOn) return;
     readFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification/check`, 'get', null, null, null);
@@ -119,7 +119,7 @@ const Header = () => {
 
   useEffect(() => {
     readObserver();
-  },[pathname]);
+  }, [pathname]);
 
   // 유저 프로필 API
   useEffect(() => {

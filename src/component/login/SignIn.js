@@ -111,17 +111,19 @@ export const SignIn = (props) => {
       <LoginBox>
         <LoginInner>
           <LoginHeader styling={main}>
-            {
-              main ? ( <>
-                  <BackIconAnchor onClick={() => router.back()}>
-                    <PureBackIcon />
-                  </BackIconAnchor>
-                  <SubTitle>{_backLogin}</SubTitle>
-                </> ) : ( <>
-                  <LoginLogo />
-                  <LoginTitle>{'Welcome to EpicLogue'}</LoginTitle>
-                </> )
-            }
+            {main ? (
+              <>
+                <BackIconAnchor onClick={() => router.back()}>
+                  <PureBackIcon />
+                </BackIconAnchor>
+                <SubTitle>{_backLogin}</SubTitle>
+              </>
+            ) : (
+              <>
+                <LoginLogo />
+                <LoginTitle>{'Welcome to EpicLogue'}</LoginTitle>
+              </>
+            )}
           </LoginHeader>
           <FormInner>
             {/* 로그인 찾기 */}

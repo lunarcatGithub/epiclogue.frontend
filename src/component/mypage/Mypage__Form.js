@@ -20,9 +20,9 @@ export default function MypageForm(props) {
   const [toggleSet, setToggleSet] = useState(false);
   const [selectData, setSelectData] = useState(selectedLanguage);
   const [selectMultiple, setSelectMultiple] = useState([
-    { id: 1, title: '한국어', value: 0, isChecked:false },
-    { id: 2, title: '日本語', value: 1, isChecked:false },
-    { id: 3, title: 'English', value: 2, isChecked:false },
+    { id: 1, title: '한국어', value: 0, isChecked: false },
+    { id: 2, title: '日本語', value: 1, isChecked: false },
+    { id: 3, title: 'English', value: 2, isChecked: false },
   ]);
   // const [currentData, setCurrentData] = useState();
 
@@ -52,18 +52,16 @@ export default function MypageForm(props) {
     _generalSetDesc = generalSetDesc[selectedLanguage] || generalSetDesc[defaultLanguage];
 
   const dataOnChangeHandler = (e) => setSelectData(Number(e.target.value));
-  
 
   const dataOnClickHandler = (e) => {
-    let selectArr = selectMultiple
-      selectArr.forEach( list => { 
-          if(list.value === Number(e.target.value)){
-          list.isChecked = e.target.checked;
-        }
-      })
-      setSelectMultiple(selectArr)
-  } 
-
+    let selectArr = selectMultiple;
+    selectArr.forEach((list) => {
+      if (list.value === Number(e.target.value)) {
+        list.isChecked = e.target.checked;
+      }
+    });
+    setSelectMultiple(selectArr);
+  };
 
   const sendDataHandler = (e) => {
     if (type === 'language') {
@@ -91,7 +89,8 @@ export default function MypageForm(props) {
       case 'mute':
         setLangTitle(_muteSetting);
         setLangSubtitle(_muteSetDesc);
-        setLangBtn(_changeBtn); 0
+        setLangBtn(_changeBtn);
+        0;
         break;
       case 'push':
         setLangTitle(_pushSetting);
@@ -125,47 +124,33 @@ export default function MypageForm(props) {
           <HiddenBox>
             <div>
               <HiddenInner>
-                {
-                  type === 'language' &&
+                {type === 'language' &&
                   LanguageList?.map((list) => (
                     <ListTxtBox key={list.id}>
                       <TextList>{list.title}</TextList>
-                      <ListTxtRadio 
-                        readOnly 
-                        id={list.id} 
-                        name="userLanguage" 
-                        value={list.state} 
-                        checked={selectData === list.state} 
-                        onChange={(e)=>dataOnChangeHandler(e, 'LANGUAGE')} 
-                      />
+                      <ListTxtRadio readOnly id={list.id} name="userLanguage" value={list.state} checked={selectData === list.state} onChange={(e) => dataOnChangeHandler(e, 'LANGUAGE')} />
                       <ListRadioCustom />
-                    </ListTxtBox> ))
-                }
-                {
-                  type === 'interest' &&
+                    </ListTxtBox>
+                  ))}
+                {type === 'interest' &&
                   selectMultiple?.map((list) => (
                     <ListCheckLabel key={list.id}>
                       <TextList>{list.title}</TextList>
-                      <ListCheck 
-                        {...list}
-                        onClick={(e)=>dataOnClickHandler(e)} 
-                      />
+                      <ListCheck {...list} onClick={(e) => dataOnClickHandler(e)} />
                       <ListCheckCustom />
-                    </ListCheckLabel> ))
-                }
-                {
-                  type === 'mute' || type === 'push' || type === 'generalset' ? (
+                    </ListCheckLabel>
+                  ))}
+                {type === 'mute' || type === 'push' || type === 'generalset' ? (
                   <HiddenBox>
                     <ServiceNotYet>{_notServicePush}</ServiceNotYet>
-                  </HiddenBox> ) : null
-                }
+                  </HiddenBox>
+                ) : null}
               </HiddenInner>
-              {
-                type === 'mute' || type === 'push' || type === 'generalset' ? null : (
-                  <BtnWrap>
-                    <PwChangeBtn onClick={sendDataHandler}>{langBtn}</PwChangeBtn>
-                  </BtnWrap> )
-              }
+              {type === 'mute' || type === 'push' || type === 'generalset' ? null : (
+                <BtnWrap>
+                  <PwChangeBtn onClick={sendDataHandler}>{langBtn}</PwChangeBtn>
+                </BtnWrap>
+              )}
             </div>
           </HiddenBox>
         )}

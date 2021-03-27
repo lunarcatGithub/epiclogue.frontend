@@ -186,27 +186,26 @@ const MypageProfile = () => {
 
   const handleSubmitUserPw = (e) => {
     e.preventDefault();
-    setvalue({userPw, userPwNew, userPwNewRe})
+    setvalue({ userPw, userPwNew, userPwNewRe });
     setValidationError('');
     setPwNotMatch('');
     setNoPassword('');
-    if(Object.keys(errors).length !== 0) return;
+    if (Object.keys(errors).length !== 0) return;
     pwFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/changePass`, 'patch', { userPw, userPwNew, userPwNewRe }, null);
   };
 
   useEffect(() => {
-      if (Object.keys(errors).length !== 0) {
-        if (errors?.userPw === 'errorPW') {
-          setValidationError(_changePwError);
-        } else if (errors?.userRePw === 'errorRePW') {
-          setPwNotMatch(_valiPwError);
-        }
-      } else {
-        if(pwError) {
-        setNoPassword(_originPwError);
-        }
+    if (Object.keys(errors).length !== 0) {
+      if (errors?.userPw === 'errorPW') {
+        setValidationError(_changePwError);
+      } else if (errors?.userRePw === 'errorRePW') {
+        setPwNotMatch(_valiPwError);
       }
-    
+    } else {
+      if (pwError) {
+        setNoPassword(_originPwError);
+      }
+    }
   }, [errors]);
 
   const imageDataAppend = (e, type) => {
@@ -312,12 +311,11 @@ const MypageProfile = () => {
 
       <SendForm action="" method="post" onSubmit={handleSubmit} autoComplete="off">
         <InfoContent maxLength="300" name="userIntro" defaultValue={inituserIntro} onChange={handleUserIntro} placeholder={_introPlaceHoder} />
-        {
-          userIntro.length > 300 && (
-            <ErrorTextWrap>
-              <ErrorText>{_errorintro}</ErrorText>
-            </ErrorTextWrap> )
-        }
+        {userIntro.length > 300 && (
+          <ErrorTextWrap>
+            <ErrorText>{_errorintro}</ErrorText>
+          </ErrorTextWrap>
+        )}
         <BtnWrap>
           <ChangeBtn disabled={userIntro ? false : true}>{_setChange}</ChangeBtn>
         </BtnWrap>
@@ -345,14 +343,13 @@ const MypageProfile = () => {
               <HiddenBox>
                 <SendForm id="editNicknameForm" action="" method="post" onSubmit={handleSubmit} autoComplete="off">
                   <HiddenInput id="userNick" name="userNick" onChange={handleUserNick} />
-                  <HiddenBtn disabled={ userNick ? false : true }>{_changeSmallBtn}</HiddenBtn>
+                  <HiddenBtn disabled={userNick ? false : true}>{_changeSmallBtn}</HiddenBtn>
                 </SendForm>
-                {
-                  validationError && (
-                    <ErrorTextWrap>
-                      <ErrorText>{validationError}</ErrorText>
-                    </ErrorTextWrap> )
-                }
+                {validationError && (
+                  <ErrorTextWrap>
+                    <ErrorText>{validationError}</ErrorText>
+                  </ErrorTextWrap>
+                )}
               </HiddenBox>
             ) : null}
           </IdContentInnerBox>
@@ -397,33 +394,30 @@ const MypageProfile = () => {
                   <InputWrap>
                     <InputText htmlFor="userPw">{_originPw}</InputText>
                     <HiddenPwInput name="userPw" onChange={handleUserPw} />
-                    {
-                      noPassword && (
-                        <ErrorTextWrap>
-                          <ErrorText>{noPassword}</ErrorText>
-                        </ErrorTextWrap> )
-                    }
+                    {noPassword && (
+                      <ErrorTextWrap>
+                        <ErrorText>{noPassword}</ErrorText>
+                      </ErrorTextWrap>
+                    )}
                   </InputWrap>
                   <InputWrap>
                     <InputText htmlFor="userPwNew">{_newPassword}</InputText>
                     <HiddenPwInput name="userPwNew" onChange={handleuserPwNew} />
-                    {
-                      validationError && (
-                        <ErrorTextWrap>
-                          <ErrorText>{validationError}</ErrorText>
-                        </ErrorTextWrap> )
-                    }
+                    {validationError && (
+                      <ErrorTextWrap>
+                        <ErrorText>{validationError}</ErrorText>
+                      </ErrorTextWrap>
+                    )}
                   </InputWrap>
                   <InputWrap>
                     <InputText htmlFor="userPwNewRe">{_confirmPw}</InputText>
                     <HiddenPwInput name="userPwNewRe" onChange={handleUserPwNewRe} />
                   </InputWrap>
-                  {
-                    pwNotMatch && (
-                      <ErrorTextWrap>
-                        <ErrorText>{pwNotMatch}</ErrorText>
-                      </ErrorTextWrap> )
-                  }
+                  {pwNotMatch && (
+                    <ErrorTextWrap>
+                      <ErrorText>{pwNotMatch}</ErrorText>
+                    </ErrorTextWrap>
+                  )}
                   <BtnWrap>
                     {/* {validationError && (
                         <ErrorTextWrap>

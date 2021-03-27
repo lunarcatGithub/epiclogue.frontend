@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -62,9 +62,9 @@ const Mypage = () => {
     { name: 'setting', lang: _generalSetTab },
   ];
 
-  useEffect(()=> {
-    loginOn && setIsLogin(loginOn)
-  },[loginOn])
+  useEffect(() => {
+    loginOn && setIsLogin(loginOn);
+  }, [loginOn]);
 
   return (
     <MypageContext.Provider value={{ LanguageList, countryArray, interestedList }}>
@@ -74,26 +74,22 @@ const Mypage = () => {
             <TopMenuTitleBox>
               <TopMenuTitle>{isLogin ? _settingProfile : _generalSetTab}</TopMenuTitle>
             </TopMenuTitleBox>
-            {
-              isLogin ? (
-                <TabMenuWrap>
-                  {navArr.map((tab, i) => (
-                    <NavItem key={i} onClick={() => goURL({ pathname: `/mypage/${tab.name}` })}>
-                      <TabSelect styling={router.asPath.match(tab.name)}> {tab.lang} </TabSelect>
-                    </NavItem>
-                  ))}
-                </TabMenuWrap>
-              ) : null
-            }
-            {
-              isLogin ? (
-                list.map(({ id, title, contents }) => {
-                  if (tab === title) return <div key={id}>{contents}</div>
-                })
-              ) : (
-                <MypageGeneral />
-              )
-            }
+            {isLogin ? (
+              <TabMenuWrap>
+                {navArr.map((tab, i) => (
+                  <NavItem key={i} onClick={() => goURL({ pathname: `/mypage/${tab.name}` })}>
+                    <TabSelect styling={router.asPath.match(tab.name)}> {tab.lang} </TabSelect>
+                  </NavItem>
+                ))}
+              </TabMenuWrap>
+            ) : null}
+            {isLogin ? (
+              list.map(({ id, title, contents }) => {
+                if (tab === title) return <div key={id}>{contents}</div>;
+              })
+            ) : (
+              <MypageGeneral />
+            )}
           </ProfileInner>
         </ProfileLayout>
       </Container>
