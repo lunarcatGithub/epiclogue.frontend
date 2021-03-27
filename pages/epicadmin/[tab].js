@@ -1,5 +1,5 @@
-import {AdmimMain} from '@Component/Main/AdmimMain';
+import { AdmimMain } from '@Component/Main/AdmimMain';
 
 export default function DashboardPage() {
-  return ( AdmimMain && <AdmimMain /> )
+  return AdmimMain && <AdmimMain />;
 }

@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
 import theme from '../styles/theme';
 import { GlobalStyles } from '../styles/GlobalStyles';
@@ -6,7 +6,7 @@ import Header from '@component/header/Header';
 import '../styles/App.css';
 import { InteractTab } from '@utils/Push__Interaction';
 import Helmet from 'react-helmet';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 
 // hooks & reducer
 import { ContextStore } from '@store/App_Store';
@@ -15,17 +15,17 @@ import { ContextStore } from '@store/App_Store';
 // Router.events.on('routeChangeError', () => console.log('routeChangeError'));
 
 function MyApp({ Component, pageProps }) {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-        <ContextStore>
-        {!router.asPath.match('/epicadmin/') && <Helmet/>}
+      <ContextStore>
+        {!router.asPath.match('/epicadmin/') && <Helmet />}
         {!router.asPath.match('/epicadmin/') && <Header />}
-          <Component {...pageProps} />
-          <InteractTab />
-        </ContextStore>
+        <Component {...pageProps} />
+        <InteractTab />
+      </ContextStore>
     </ThemeProvider>
   );
 }
@@ -48,8 +48,4 @@ function MyApp({ Component, pageProps }) {
 //   return { ...appProps }
 // }
 
-
-
-export default MyApp; 
-
-
+export default MyApp;

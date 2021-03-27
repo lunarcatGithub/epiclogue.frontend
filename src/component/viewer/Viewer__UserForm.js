@@ -87,75 +87,77 @@ export default function ViewerUserForm(props) {
   }, [type, externalSource, userData]);
 
   return (
-      <UserForm>
-        <UserProfileWrap>
-          {kindContent}
-          {externalSource ? (
-            <SourceLink href={`${externalSource}`} target="_blank">
-              {externalSource}
-            </SourceLink>
-          ) : (
-            <UserUploadInfo>{userLang}</UserUploadInfo>
-          )}
-        </UserProfileWrap>
-        <ProfileImgContent>
-          {/* 프로필 박스 */}
-          <ProfileImgBox>
-            <ProfileImg profile={profile} />
-          </ProfileImgBox>
-          {/* 유저 프로필 콘텐츠 박스 */}
-          <UserProfileContentsBox>
-            {/* 유저 아이디 등 프로필 */}
-            <UserProfileInfo>
-              {/* 유저 닉네임 팔로잉 */}
-              <UserNickInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>
-                {type === 'ORIGIN' ? userData?.originUserId?.nickname : userData?.nickname}
-              </UserNickInfo>
-              {
-                followMe && loginOn && (
-                  <UserFollowTxt
-                    styling={follow}
-                    onClick={() => {
-                      if (!loginOn) { setUnAuth(true); return; }
-                      toggleFollow();
-                      submitHandler();
-                    }}
-                  >
-                    {follow ? followOnLang : followLang}
-                  </UserFollowTxt> )
-              }
-            </UserProfileInfo>
-            {/* 유저 아이디 */}
-            <UserProfileId>
-              <UserIdInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>{screenId}</UserIdInfo>
-            </UserProfileId>
-            {/* 메뉴 더보기 */}
-            <FdMoreMenuAnchor onClick={checkMoreMenuType}>
-              <MoreMenuDot />
-            </FdMoreMenuAnchor>
-            {/* 콘텐츠 */}
-            <OriginalContent>{title}</OriginalContent>
-            <TextContent>{converted}</TextContent>
-            <BottomWrap>
-              {type !== 'ORIGIN' && <PostedTime>Posted by {indicateDate}</PostedTime>}
-              {userData?.edited && <ModifyText>{'_modified'}</ModifyText>}
-            </BottomWrap>
-            {originUserData && (
-              <ContentImgWrap styling={originUserData}>
-                {originUserData ? (
-                  <ContentImgBox onClick={() => goURL({ pathname: `/viewer/${originUserData._id}` })}>
-                    <ContentImg thumNail={originUserData.boardImg[0]} />
-                  </ContentImgBox>
-                ) : (
-                  <ContentImgBox>
-                    <NullContent>{removedContents}</NullContent>
-                  </ContentImgBox>
-                )}
-              </ContentImgWrap>
+    <UserForm>
+      <UserProfileWrap>
+        {kindContent}
+        {externalSource ? (
+          <SourceLink href={`${externalSource}`} target="_blank">
+            {externalSource}
+          </SourceLink>
+        ) : (
+          <UserUploadInfo>{userLang}</UserUploadInfo>
+        )}
+      </UserProfileWrap>
+      <ProfileImgContent>
+        {/* 프로필 박스 */}
+        <ProfileImgBox>
+          <ProfileImg profile={profile} />
+        </ProfileImgBox>
+        {/* 유저 프로필 콘텐츠 박스 */}
+        <UserProfileContentsBox>
+          {/* 유저 아이디 등 프로필 */}
+          <UserProfileInfo>
+            {/* 유저 닉네임 팔로잉 */}
+            <UserNickInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>
+              {type === 'ORIGIN' ? userData?.originUserId?.nickname : userData?.nickname}
+            </UserNickInfo>
+            {followMe && loginOn && (
+              <UserFollowTxt
+                styling={follow}
+                onClick={() => {
+                  if (!loginOn) {
+                    setUnAuth(true);
+                    return;
+                  }
+                  toggleFollow();
+                  submitHandler();
+                }}
+              >
+                {follow ? followOnLang : followLang}
+              </UserFollowTxt>
             )}
-          </UserProfileContentsBox>
-        </ProfileImgContent>
-      </UserForm>
+          </UserProfileInfo>
+          {/* 유저 아이디 */}
+          <UserProfileId>
+            <UserIdInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>{screenId}</UserIdInfo>
+          </UserProfileId>
+          {/* 메뉴 더보기 */}
+          <FdMoreMenuAnchor onClick={checkMoreMenuType}>
+            <MoreMenuDot />
+          </FdMoreMenuAnchor>
+          {/* 콘텐츠 */}
+          <OriginalContent>{title}</OriginalContent>
+          <TextContent>{converted}</TextContent>
+          <BottomWrap>
+            {type !== 'ORIGIN' && <PostedTime>Posted by {indicateDate}</PostedTime>}
+            {userData?.edited && <ModifyText>{'_modified'}</ModifyText>}
+          </BottomWrap>
+          {originUserData && (
+            <ContentImgWrap styling={originUserData}>
+              {originUserData ? (
+                <ContentImgBox onClick={() => goURL({ pathname: `/viewer/${originUserData._id}` })}>
+                  <ContentImg thumNail={originUserData.boardImg[0]} />
+                </ContentImgBox>
+              ) : (
+                <ContentImgBox>
+                  <NullContent>{removedContents}</NullContent>
+                </ContentImgBox>
+              )}
+            </ContentImgWrap>
+          )}
+        </UserProfileContentsBox>
+      </ProfileImgContent>
+    </UserForm>
   );
 }
 

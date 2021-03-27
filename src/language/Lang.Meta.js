@@ -55,22 +55,20 @@ export function langMetaMain() {
 }
 
 export function langMetaBoard() {
-  let metaBoardTitle,
-      boardDescFirst,
-      boardDescSecond;
+  let metaBoardTitle, boardDescFirst, boardDescSecond;
 
   switch (devidedLang) {
     case 0:
       metaBoardTitle = `님의 공간 || 에픽로그`;
-      boardDescFirst = `창작가`
-      boardDescSecond = `님의 작품을 감상해보세요!`
+      boardDescFirst = `창작가`;
+      boardDescSecond = `님의 작품을 감상해보세요!`;
 
       break;
 
     case 1:
       metaBoardTitle = `さんの空間 || エピックログ`;
-      boardDescFirst = `創作家`
-      boardDescSecond = `の作品をご鑑賞ください!`
+      boardDescFirst = `創作家`;
+      boardDescSecond = `の作品をご鑑賞ください!`;
 
       break;
 
@@ -81,26 +79,24 @@ export function langMetaBoard() {
 
       break;
   }
-  return {metaBoardTitle, boardDescFirst, boardDescSecond};
+  return { metaBoardTitle, boardDescFirst, boardDescSecond };
 }
 
 export function langMetaViewer() {
-  let metaViewerTitle,
-      boardDescFirst,
-      boardDescSecond;
+  let metaViewerTitle, boardDescFirst, boardDescSecond;
 
   switch (devidedLang) {
     case 0:
       metaViewerTitle = `님의 작품 || `;
-      boardDescFirst = `창작가`
-      boardDescSecond = `님의 작품을 감상해보세요!`
+      boardDescFirst = `창작가`;
+      boardDescSecond = `님의 작품을 감상해보세요!`;
 
       break;
 
     case 1:
       metaViewerTitle = `さんの作品 || `;
-      boardDescFirst = `創作家`
-      boardDescSecond = `の作品をご鑑賞ください!`
+      boardDescFirst = `創作家`;
+      boardDescSecond = `の作品をご鑑賞ください!`;
       break;
 
     default:
@@ -110,7 +106,7 @@ export function langMetaViewer() {
 
       break;
   }
-  return {metaViewerTitle, boardDescFirst, boardDescSecond};
+  return { metaViewerTitle, boardDescFirst, boardDescSecond };
 }
 
 export function langMetaMypage() {
