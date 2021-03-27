@@ -30,7 +30,7 @@ import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store'
 
 export const ReplyListContext = React.createContext();
 
-const Viewer = ({ boardItem, nonError }) => {
+const Viewer = ({ boardItem = null, nonError }) => {
   const router = useRouter();
   const boardUid = router?.query?.id;
 
@@ -112,7 +112,7 @@ const Viewer = ({ boardItem, nonError }) => {
 
   const { originalUser, recreateUser, removedContents } = langViewerUser;
 
-  const metaViewerTitle = langMetaViewer();
+  const {metaViewerTitle, boardDescFirst, boardDescSecond} = langMetaViewer();
   const { followBtn, followingBtn } = LangCommon;
   const _contentsReact = contentsReact[selectedLanguage] || contentsReact[defaultLanguage],
     _feedbackScore = feedbackScore[selectedLanguage] || feedbackScore[defaultLanguage],
@@ -216,6 +216,7 @@ const Viewer = ({ boardItem, nonError }) => {
   }, [renderList, eventCtrl, prevFb]);
 
   useEffect(() => {
+    if(!boardItem) return;
     const initialData = boardItem;
 
     if (initialData?.result === 'ok') {
@@ -242,7 +243,7 @@ const Viewer = ({ boardItem, nonError }) => {
         sourceUrl,
       } = boardData;
       const { screenId, nickname, _id, following, profile } = writer;
-      console.log(boardData)
+
       setData({
         boardTitle,
         boardBody,
@@ -296,7 +297,10 @@ const Viewer = ({ boardItem, nonError }) => {
       if (initialData.message === 'token 유효기간 만료 또는 토큰이 전송되지 않았습니다.') {
         window.location.href = '/login';
       }
+    } else {
+      alert(initialData.message);
     }
+
   }, [boardItem]);
 
   useEffect(() => {
@@ -317,12 +321,12 @@ const Viewer = ({ boardItem, nonError }) => {
     // 성공 푸시탭
     alertPatch({ type: 'SHARE', payload: true });
   };
-
+  let metaBoardBody = boardItem?.data?.boardBody
   // Meta 전용
   const metaData = {
-    title: `${data?.nickname}${metaViewerTitle}${data?.boardTitle}`,
-    description: data?.boardBody,
-    image: boardImg[0],
+    title: `${boardItem?.data?.writer?.nickname}${metaViewerTitle}${boardItem?.data?.boardTitle}`,
+    description: metaBoardBody?.length !== 0 ? metaBoardBody : `${boardDescFirst} ${boardItem?.data?.writer?.screenId}${boardDescSecond}`,
+    image: boardItem?.data?.boardImg,
     canonical: `viewer/${boardUid}`,
   };
 
@@ -358,7 +362,8 @@ const Viewer = ({ boardItem, nonError }) => {
         <UserCommentWrap>
           <UserComment>
             {/* 원작 유저 */}
-            {checkOrigin ? (
+            {
+              checkOrigin ? (
               <>
                 {/* 원작자 */}
                 <ViewerUserForm

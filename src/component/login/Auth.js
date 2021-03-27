@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import qs from 'query-string';
+import {useRouter} from 'next/router';
 
 // 컴포넌트 import
-import { LanguageContext } from '.@store/App_Store';
+import { LanguageContext } from '@store/App_Store';
 import { authPage } from '@language/Lang.Login';
 import { useUrlMove } from '@hooks/useUrlMove';
 
@@ -14,6 +15,7 @@ export function Auth() {
   const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
   const [authState, setAuthState] = useState();
+  const router = useRouter()
 
   //fetch
   const [authLoding, authApi, authError, authFetch] = useAxiosFetch();
@@ -28,8 +30,8 @@ export function Auth() {
     _contact = contact[selectedLanguage] || contact[defaultLanguage];
 
   useEffect(() => {
-    const query = qs.parse(window.location.search);
-    authFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/mailAuth`, 'get', null, null, { email: query.email, token: query.token });
+    const { email, token } = router.query
+    authFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/mailAuth`, 'get', null, null, { email, token });
   }, []);
 
   useEffect(() => {
@@ -55,18 +57,22 @@ export function Auth() {
           <SubHdTitle>{authState ? _authSubTitle : _authFailSub}</SubHdTitle>
           <TeleportEoji>🌀</TeleportEoji>
         </SubHdTitleBox>
-        {authState && (
-          <SubHdTitleBox>
-            <RocketIcon>🚀</RocketIcon>
-            <RocketSecond>🚀</RocketSecond>
-            <RocketThird>🚀</RocketThird>
-          </SubHdTitleBox>
-        )}
-        {!authState && (
-          <SubHdTitleBox>
-            <ContactBtn onClick={() => window.open('https://twitter.com/epiclogue_lunar', '_blank')}>{_contact}</ContactBtn>
-          </SubHdTitleBox>
-        )}
+        {
+          authState && (
+            <SubHdTitleBox>
+              <RocketIcon>🚀</RocketIcon>
+              <RocketSecond>🚀</RocketSecond>
+              <RocketThird>🚀</RocketThird>
+            </SubHdTitleBox>
+          )
+        }
+        {
+          !authState && (
+            <SubHdTitleBox>
+              <ContactBtn onClick={() => window.open('https://twitter.com/epiclogue_lunar', '_blank')}>{_contact}</ContactBtn>
+            </SubHdTitleBox>
+          )
+        }
       </LayoutInner>
     </Layout>
   );

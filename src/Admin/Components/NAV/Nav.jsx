@@ -1,10 +1,13 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, createContext } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import {AdminContext} from '../Store/Admin_Context';
 
 export const Nav = () => {
-    const { setAdminTab} = useContext(AdminContext);
+    // create context
+    const AdminContext = createContext({});
+
+    // tab controls
+    const [adminTab, setAdminTab] = useState('DASHBOARD');
 
     const NavArr = [
         { id:0, title:'대시보드', href:'dashboard', method:'DASHBOARD' },
@@ -14,24 +17,26 @@ export const Nav = () => {
     ]
 
     return (
-        <Layout>
-            <LayoutInner>
-                {/* NAV 상단 */}
-                <InnerTop>
-                    {
-                    NavArr.map(({id, title, href, method})=> (
-                        <Link key={id} href={`/epicadmin/${href}`} >
-                            <NavItemTxt onClick={()=>setAdminTab(method)} >{title}</NavItemTxt>
-                        </Link> ))
-                    }
-                </InnerTop>
-                <Dummy/>
-                    {/* NAV 하단 */}
-                <InnerBottom>
+        <AdminContext.Provider value={{adminTab, setAdminTab}}>
+            <Layout>
+                <LayoutInner>
+                    {/* NAV 상단 */}
+                    <InnerTop>
+                        {
+                        NavArr.map(({id, title, href, method})=> (
+                            <Link key={id} href={`/epicadmin/${href}`} >
+                                <NavItemTxt onClick={()=>setAdminTab(method)} >{title}</NavItemTxt>
+                            </Link> ))
+                        }
+                    </InnerTop>
+                    <Dummy/>
+                        {/* NAV 하단 */}
+                    <InnerBottom>
 
-                </InnerBottom>
-            </LayoutInner>
-        </Layout>                
+                    </InnerBottom>
+                </LayoutInner>
+            </Layout>
+        </AdminContext.Provider>
     )
 }
 

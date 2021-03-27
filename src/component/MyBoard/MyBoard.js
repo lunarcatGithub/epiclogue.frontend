@@ -19,6 +19,7 @@ import { useDate } from '@hooks/useDate';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { LanguageContext, AppDataContext } from '@store/App_Store';
 import useDebounce from '@hooks/useDebounce';
+import { Meta } from '@utils/MetaTags';
 
 // 아이콘 import
 
@@ -27,7 +28,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const { langState } = useContext(LanguageContext);
   const { setMyboardData, loginOn, setUnAuth, followData, setFollowData, setFollowButton } = useContext(AppDataContext);
   const [follow, toggleFollow] = useToggle();
-
+  // console.log(boardItem)
   const [date, setDate] = useState();
   const [checkMe, setCheckMe] = useState();
   const [userScreenId, setUserScreenId] = useState();
@@ -58,7 +59,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const { signDate, noIntro, allTabs, contentsTabs, bookMarkTabs, secondary } = LangMyBoard;
   const { followBtn, followingBtn } = LangCommon;
 
-  const metaBoardTitle = langMetaBoard();
+  const {metaBoardTitle, boardDescFirst, boardDescSecond} = langMetaBoard();
   const _signDate = signDate[selectedLanguage] || signDate[defaultLanguage],
     _noIntro = noIntro[selectedLanguage] || noIntro[defaultLanguage],
     _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
@@ -121,9 +122,16 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     { link: 'secondaryWorks', title: _secondary },
     { link: 'bookmarks', title: _bookMarkTabs },
   ];
+  const metaData = {
+    title: `${boardItem?.data?.nickname}${metaBoardTitle}`,
+    description: `${boardItem?.data?.intro} || ${boardDescFirst}${boardItem?.data?.screenId}${boardDescSecond}`,
+    image: [`${boardItem?.data?.profile?.thumbnail?.origin}`],
+    canonical: `myboard/${boardItem?.data?._id}`,
+  };
 
   return (
     <>
+      <Meta meta={metaData} />
       <Layout>
         <LayoutInner>
           <BackgroundBox>

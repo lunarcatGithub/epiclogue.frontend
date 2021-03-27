@@ -2,23 +2,27 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
-import { useChange } from '@hooks/useChange';
-import { useUrlMove } from '@hooks/useUrlMove';
 import { LangMypageProfile } from '@language/Lang.Mypage';
 import { LanguageContext, AlertContext } from '@store/App_Store';
+//utils
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
-import useAxiosFetch from '@hooks/useAxiosFetch';
-import useFetchData from '@hooks/useFetchData';
 
 // hooks&&reducer
 import { useModal } from '@hooks/useModal';
+import useAxiosFetch from '@hooks/useAxiosFetch';
+import useFetchData from '@hooks/useFetchData';
+import { useChange } from '@hooks/useChange';
+import { useUrlMove } from '@hooks/useUrlMove';
+import { useValidate } from '@hooks/useValidate';
 
 const MypageProfile = () => {
   const { alertPatch } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
-
   const [goUrl] = useUrlMove();
+
+  // hooks
+  const [errors, setvalue] = useValidate();
 
   // toggle Nav
   const [idTab, toggleIdTab] = useState(0);
@@ -182,27 +186,28 @@ const MypageProfile = () => {
 
   const handleSubmitUserPw = (e) => {
     e.preventDefault();
+    setvalue({userPw, userPwNew, userPwNewRe})
     setValidationError('');
     setPwNotMatch('');
     setNoPassword('');
+    if(Object.keys(errors).length !== 0) return;
     pwFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/changePass`, 'patch', { userPw, userPwNew, userPwNewRe }, null);
   };
 
   useEffect(() => {
-    if (pwApi?.result === 'ok') {
-      alertPatch({ type: 'PASSWORD_UPDATE', payload: true });
-    } else {
-      if (pwError) {
-        if (pwError?.data.message === '비밀번호 규칙을 확인해주세요.') {
+      if (Object.keys(errors).length !== 0) {
+        if (errors?.userPw === 'errorPW') {
           setValidationError(_changePwError);
-        } else if (pwError?.data.message === '비밀번호과 재입력이 다릅니다.') {
+        } else if (errors?.userRePw === 'errorRePW') {
           setPwNotMatch(_valiPwError);
-        } else {
-          setNoPassword(_originPwError);
+        }
+      } else {
+        if(pwError) {
+        setNoPassword(_originPwError);
         }
       }
-    }
-  }, [pwApi, pwError]);
+    
+  }, [errors]);
 
   const imageDataAppend = (e, type) => {
     //handlePreview에서 분류
@@ -307,11 +312,12 @@ const MypageProfile = () => {
 
       <SendForm action="" method="post" onSubmit={handleSubmit} autoComplete="off">
         <InfoContent maxLength="300" name="userIntro" defaultValue={inituserIntro} onChange={handleUserIntro} placeholder={_introPlaceHoder} />
-        {userIntro.length > 300 && (
-          <ErrorTextWrap>
-            <ErrorText>{_errorintro}</ErrorText>
-          </ErrorTextWrap>
-        )}
+        {
+          userIntro.length > 300 && (
+            <ErrorTextWrap>
+              <ErrorText>{_errorintro}</ErrorText>
+            </ErrorTextWrap> )
+        }
         <BtnWrap>
           <ChangeBtn disabled={userIntro ? false : true}>{_setChange}</ChangeBtn>
         </BtnWrap>
@@ -339,13 +345,14 @@ const MypageProfile = () => {
               <HiddenBox>
                 <SendForm id="editNicknameForm" action="" method="post" onSubmit={handleSubmit} autoComplete="off">
                   <HiddenInput id="userNick" name="userNick" onChange={handleUserNick} />
-                  <HiddenBtn disabled={userNick ? false : true}>{_changeSmallBtn}</HiddenBtn>
+                  <HiddenBtn disabled={ userNick ? false : true }>{_changeSmallBtn}</HiddenBtn>
                 </SendForm>
-                {validationError && (
-                  <ErrorTextWrap>
-                    <ErrorText>{validationError}</ErrorText>
-                  </ErrorTextWrap>
-                )}
+                {
+                  validationError && (
+                    <ErrorTextWrap>
+                      <ErrorText>{validationError}</ErrorText>
+                    </ErrorTextWrap> )
+                }
               </HiddenBox>
             ) : null}
           </IdContentInnerBox>
@@ -386,34 +393,37 @@ const MypageProfile = () => {
             </TitleWrap>
             {pwTab === 3 ? (
               <HiddenBox>
-                <SendForm id="changePassForm" action="" method="post" onSubmit={handleSubmitUserPw}>
+                <SendForm method="post" onSubmit={handleSubmitUserPw}>
                   <InputWrap>
                     <InputText htmlFor="userPw">{_originPw}</InputText>
                     <HiddenPwInput name="userPw" onChange={handleUserPw} />
-                    {noPassword && (
-                      <ErrorTextWrap>
-                        <ErrorText>{noPassword}</ErrorText>
-                      </ErrorTextWrap>
-                    )}
+                    {
+                      noPassword && (
+                        <ErrorTextWrap>
+                          <ErrorText>{noPassword}</ErrorText>
+                        </ErrorTextWrap> )
+                    }
                   </InputWrap>
                   <InputWrap>
                     <InputText htmlFor="userPwNew">{_newPassword}</InputText>
                     <HiddenPwInput name="userPwNew" onChange={handleuserPwNew} />
-                    {validationError && (
-                      <ErrorTextWrap>
-                        <ErrorText>{validationError}</ErrorText>
-                      </ErrorTextWrap>
-                    )}
+                    {
+                      validationError && (
+                        <ErrorTextWrap>
+                          <ErrorText>{validationError}</ErrorText>
+                        </ErrorTextWrap> )
+                    }
                   </InputWrap>
                   <InputWrap>
                     <InputText htmlFor="userPwNewRe">{_confirmPw}</InputText>
                     <HiddenPwInput name="userPwNewRe" onChange={handleUserPwNewRe} />
                   </InputWrap>
-                  {pwNotMatch && (
-                    <ErrorTextWrap>
-                      <ErrorText>{pwNotMatch}</ErrorText>
-                    </ErrorTextWrap>
-                  )}
+                  {
+                    pwNotMatch && (
+                      <ErrorTextWrap>
+                        <ErrorText>{pwNotMatch}</ErrorText>
+                      </ErrorTextWrap> )
+                  }
                   <BtnWrap>
                     {/* {validationError && (
                         <ErrorTextWrap>
@@ -617,6 +627,7 @@ const ProfileImgSetBox = styled.div`
   border: 6px solid ${(props) => props.theme.color.whiteColor};
   cursor: pointer;
 `;
+
 const ProfileImgSet = styled(BannerImgSet)``;
 
 const ProfileImgSetLabel = styled.label.attrs({
@@ -657,9 +668,6 @@ const InfoContent = styled.textarea.attrs({})`
   &::-webkit-scrollbar {
     display: none;
   }
-`;
-const ErrorLayout = styled.div`
-  display: flex;
 `;
 
 // 콘텐츠 내용
@@ -711,7 +719,9 @@ const HiddenInput = styled.input.attrs({ type: 'text' })`
   padding: 10px 12px;
   background: ${(props) => props.theme.color.microOrangeColor};
 `;
+
 const HiddenPwInput = styled(HiddenInput).attrs({ type: 'password' })``;
+
 const HiddenBtn = styled.button.attrs({
   type: 'submit',
 })`

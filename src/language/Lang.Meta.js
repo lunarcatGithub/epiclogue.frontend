@@ -2,11 +2,11 @@ let userBrowserLang, devidedLang;
 
 const devideLang = (() => {
   userBrowserLang = typeof window !== 'undefined' && navigator.language;
-  if (userBrowserLang === 'ko' || 'ko-KR' || 'ko-kr') {
+  if (userBrowserLang === 'ko' || userBrowserLang === 'ko-KR' || userBrowserLang === 'ko-kr') {
     devidedLang = 0;
-  } else if (userBrowserLang === 'ja' || 'ja-JA' || 'ja-ja') {
+  } else if (userBrowserLang === 'ja' || userBrowserLang === 'ja-JA' || userBrowserLang === 'ja-ja') {
     devidedLang = 1;
-  } else if (userBrowserLang === 'en' || 'en-US' || 'en-us') {
+  } else if (userBrowserLang === 'en' || userBrowserLang === 'en-US' || userBrowserLang === 'en-us') {
     devidedLang = 2;
   }
 })();
@@ -55,43 +55,62 @@ export function langMetaMain() {
 }
 
 export function langMetaBoard() {
-  let metaBoardTitle;
+  let metaBoardTitle,
+      boardDescFirst,
+      boardDescSecond;
 
   switch (devidedLang) {
     case 0:
       metaBoardTitle = `님의 공간 || 에픽로그`;
+      boardDescFirst = `창작가`
+      boardDescSecond = `님의 작품을 감상해보세요!`
+
       break;
 
     case 1:
-      metaBoardTitle = `さんの空間 || エピックログ
-             `;
+      metaBoardTitle = `さんの空間 || エピックログ`;
+      boardDescFirst = `創作家`
+      boardDescSecond = `の作品をご鑑賞ください!`
+
       break;
 
     default:
       metaBoardTitle = `'s space || Epic_Logue`;
+      boardDescFirst = `Enjoy the work of Artist`;
+      boardDescSecond = `!`;
+
       break;
   }
-  return metaBoardTitle;
+  return {metaBoardTitle, boardDescFirst, boardDescSecond};
 }
 
 export function langMetaViewer() {
-  let metaViewerTitle;
+  let metaViewerTitle,
+      boardDescFirst,
+      boardDescSecond;
 
   switch (devidedLang) {
     case 0:
       metaViewerTitle = `님의 작품 || `;
+      boardDescFirst = `창작가`
+      boardDescSecond = `님의 작품을 감상해보세요!`
 
       break;
 
     case 1:
       metaViewerTitle = `さんの作品 || `;
+      boardDescFirst = `創作家`
+      boardDescSecond = `の作品をご鑑賞ください!`
       break;
 
     default:
       metaViewerTitle = `'s work || `;
+      boardDescFirst = `Enjoy the work of Artist`;
+      boardDescSecond = `!`;
+
       break;
   }
-  return metaViewerTitle;
+  return {metaViewerTitle, boardDescFirst, boardDescSecond};
 }
 
 export function langMetaMypage() {

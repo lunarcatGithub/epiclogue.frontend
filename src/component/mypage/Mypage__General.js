@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
@@ -11,6 +11,8 @@ import useAxiosFetch from '@hooks/useFetchData';
 const MypageGeneral = () => {
   const { loginOn } = useContext(AppDataContext);
   const [formData, setFormData] = useState();
+  const [isLogin, setIsLogin] = useState();
+
   // fetch
   const [langLoding, langApi, langError, langFetch] = useAxiosFetch();
 
@@ -24,37 +26,37 @@ const MypageGeneral = () => {
   // ]
   const submit = (e, type, data) => {
     e.preventDefault();
+
     if (!loginOn) return;
     let formData = new FormData();
     if (type === 'language') {
       formData.append('userDisplayLang', data);
       langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
+
     } else if (type === 'interest') {
-      let listArr = [];
-      data.forEach( list => {
-        if(list.isChecked) listArr.push(list.value)
-      });
+      const listArr = data?.filter(each => each.isChecked).map( list => list.value)
+      formData.append('userAvailableLang', listArr);
+      langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
+
     }
+    
   };
 
+  useEffect(()=> {
+    loginOn && setIsLogin(loginOn)
+  },[loginOn])
+
   return (
-    <Container>
+    <>
       {/* 일반 언어 설정 */}
       <MypageForm type="language" formDatas={{ formData, setFormData, submit }} />
       {/* 관심 언어 설정 */}
       <MypageForm type="interest" formDatas={{ formData, setFormData, submit }} />
       {/* 뮤트 설정 */}
-      {loginOn && <MypageForm type="mute" />}
-    </Container>
+      {isLogin && <MypageForm type="mute" />}
+    </>
   );
 };
 
-//공통
-// 레이아웃
-const Container = styled.section`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
 
 export default MypageGeneral;

@@ -54,7 +54,6 @@ export default function ViewerUserForm(props) {
         setTitle(userData?.boardTitle);
         convert(userData?.boardBody);
         setUser_id(userData?._id);
-
         break;
 
       case 'ORIGIN':
@@ -88,7 +87,6 @@ export default function ViewerUserForm(props) {
   }, [type, externalSource, userData]);
 
   return (
-    <>
       <UserForm>
         <UserProfileWrap>
           {kindContent}
@@ -113,21 +111,19 @@ export default function ViewerUserForm(props) {
               <UserNickInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>
                 {type === 'ORIGIN' ? userData?.originUserId?.nickname : userData?.nickname}
               </UserNickInfo>
-              {followMe && loginOn && (
-                <UserFollowTxt
-                  styling={follow}
-                  onClick={() => {
-                    if (!loginOn) {
-                      setUnAuth(true);
-                      return;
-                    }
-                    toggleFollow();
-                    submitHandler();
-                  }}
-                >
-                  {follow ? followOnLang : followLang}
-                </UserFollowTxt>
-              )}
+              {
+                followMe && loginOn && (
+                  <UserFollowTxt
+                    styling={follow}
+                    onClick={() => {
+                      if (!loginOn) { setUnAuth(true); return; }
+                      toggleFollow();
+                      submitHandler();
+                    }}
+                  >
+                    {follow ? followOnLang : followLang}
+                  </UserFollowTxt> )
+              }
             </UserProfileInfo>
             {/* 유저 아이디 */}
             <UserProfileId>
@@ -160,7 +156,6 @@ export default function ViewerUserForm(props) {
           </UserProfileContentsBox>
         </ProfileImgContent>
       </UserForm>
-    </>
   );
 }
 

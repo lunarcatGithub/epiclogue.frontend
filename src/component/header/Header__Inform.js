@@ -76,7 +76,7 @@ const UserInform = () => {
         </ClosedBox>
       </InformHeader>
       <InformBodyInner>
-        {sliceData?.map(({ maker, notificationType, read, targetInfo, targetType }, key) => (
+        {sliceData?.map(({ maker, notificationType, read, targetInfo }, key) => (
           <ContentBox
             key={key}
             read={read}
