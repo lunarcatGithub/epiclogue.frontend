@@ -12,7 +12,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./:/usr/src/app  
-      - /usr/src/app/node_modules      
+      - ./node_modules:/usr/src/app/node_modules
+      - ./.next:/usr/scr/app/.next
     env_file:
       - ./.env.local
     networks:
