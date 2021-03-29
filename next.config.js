@@ -1,3 +1,4 @@
+const { i18n } = require("./next-i18next.config");
 let SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 let axios = require('axios');
 
@@ -37,4 +38,5 @@ module.exports = {
     );
     return config;
   },
+  i18n,
 };
