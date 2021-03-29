@@ -1,5 +1,6 @@
 import Viewer from '@component/viewer/Viewer';
 import axios from 'axios';
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export default function ViewerPage(props) {
   const { boardItem, id, error } = props;
@@ -7,7 +8,7 @@ export default function ViewerPage(props) {
 }
 
 export async function getServerSideProps(context) {
-  const { query, req, params } = context;
+  const { query, req, params, locale } = context;
   const id = params?.id || query?.id;
 
   let error = null;
@@ -27,6 +28,7 @@ export async function getServerSideProps(context) {
       boardItem: res?.data || null,
       id: id,
       error,
+      ...await serverSideTranslations(locale, ["common"])
     },
   };
 }

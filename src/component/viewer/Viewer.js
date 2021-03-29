@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import { useTranslation } from "next-i18next";
 
 // 컴포넌트 import
 import FB from './Feedback';
@@ -33,6 +34,7 @@ export const ReplyListContext = React.createContext();
 const Viewer = ({ boardItem = null, nonError }) => {
   const router = useRouter();
   const boardUid = router?.query?.id;
+  const { t } = useTranslation("common");
 
   const { alertPatch } = useContext(AlertContext);
   const [profileURL, , convertProfileIamge] = useConvertURL();
@@ -323,8 +325,8 @@ const Viewer = ({ boardItem = null, nonError }) => {
   let metaBoardBody = boardItem?.data?.boardBody;
   // Meta 전용
   const metaData = {
-    title: `${boardItem?.data?.writer?.nickname}${metaViewerTitle}${boardItem?.data?.boardTitle}`,
-    description: metaBoardBody?.length !== 0 ? metaBoardBody : `${boardDescFirst} ${boardItem?.data?.writer?.screenId}${boardDescSecond}`,
+    title: `${boardItem?.data?.writer?.nickname}${t('metaViewerTitle')}${boardItem?.data?.boardTitle}`,
+    description: metaBoardBody?.length !== 0 ? metaBoardBody : `${t('boardDescFirst')} ${boardItem?.data?.writer?.screenId}${t('boardDescSecond')}`,
     image: boardItem?.data?.boardImg,
     canonical: `viewer/${boardUid}`,
   };

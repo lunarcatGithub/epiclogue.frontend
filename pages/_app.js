@@ -7,6 +7,7 @@ import '../styles/App.css';
 import { InteractTab } from '@utils/Push__Interaction';
 import Helmet from 'react-helmet';
 import { useRouter } from 'next/router';
+import { appWithTranslation } from "next-i18next";
 
 // hooks & reducer
 import { ContextStore } from '@store/App_Store';
@@ -48,4 +49,4 @@ function MyApp({ Component, pageProps }) {
 //   return { ...appProps }
 // }
 
-export default MyApp;
+export default appWithTranslation(MyApp);

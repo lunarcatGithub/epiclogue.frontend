@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useTranslation } from "next-i18next";
 
 //component
 import Contents from '@component/content/Contents';
@@ -8,24 +9,28 @@ import { langMetaMain } from '@language/Lang.Meta';
 // Hooks&&reducer import
 import { useUrlMove } from '@hooks/useUrlMove';
 
-const Main = ({ boardItem }) => {
+const Main = ({ metaLang }) => {
   const [goURL] = useUrlMove();
+  const { t } = useTranslation("common");
 
   //언어 변수
   const [metaMainTitle, metaMainDesc] = langMetaMain();
 
   // Meta 전용
   const metaData = {
-    title: metaMainTitle,
-    description: metaMainDesc,
+    title: t('metaMainTitle'),
+    contentsTitle:t('metaContentTitle'),
+    description: t('metaMainDesc'),
     image: ['/static/logo192.svg'],
     canonical: ``,
+    lang:metaLang
   };
+
   return (
     <>
       <Meta meta={metaData} />
       <Layout>
-        <Contents type="MAIN" boardItem={boardItem} />
+        <Contents type="MAIN" />
         {/*업로드 버튼*/}
         <UploadButton onClick={() => goURL({ pathname: '/upload' })}>
           <UploadSvg />

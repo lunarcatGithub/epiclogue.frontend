@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from "next-i18next";
 
 // 컴포넌트 import
 import { LangMyBoard } from '@language/Lang.Myboard';
@@ -25,6 +26,8 @@ import { Meta } from '@utils/MetaTags';
 
 export default function MyBoard({ boardItem, userId, nonError }) {
   const [goURL] = useUrlMove();
+  const { t } = useTranslation("common");
+
   const { langState } = useContext(LanguageContext);
   const { setMyboardData, loginOn, setUnAuth, followData, setFollowData, setFollowButton } = useContext(AppDataContext);
   const [follow, toggleFollow] = useToggle();
@@ -123,8 +126,8 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     { link: 'bookmarks', title: _bookMarkTabs },
   ];
   const metaData = {
-    title: `${boardItem?.data?.nickname}${metaBoardTitle}`,
-    description: `${boardItem?.data?.intro} || ${boardDescFirst}${boardItem?.data?.screenId}${boardDescSecond}`,
+    title: `${boardItem?.data?.nickname}${t('metaBoardTitle')}`,
+    description: `${boardItem?.data?.intro} || ${t('boardDescFirst')}${boardItem?.data?.screenId}${t('boardDescSecond')}`,
     image: [`${boardItem?.data?.profile?.thumbnail?.origin}`],
     canonical: `myboard/${boardItem?.data?._id}`,
   };
