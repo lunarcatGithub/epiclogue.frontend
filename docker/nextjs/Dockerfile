@@ -4,4 +4,4 @@ WORKDIR /usr/src/app
 VOLUME /usr/src/app
 
 EXPOSE 3000
-CMD [ "yarn", "docker" ]
+CMD [ "yarn", "start" ]
