@@ -32,7 +32,7 @@ export function Auth() {
   useEffect(() => {
     const { email, token } = router.query;
     authFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/mailAuth`, 'get', null, null, { email, token });
-  }, []);
+  }, [router.query]);
 
   useEffect(() => {
     if (authApi?.result === 'ok') {
