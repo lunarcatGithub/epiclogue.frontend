@@ -5,7 +5,6 @@ import { useTranslation } from "next-i18next";
 // 컴포넌트 import
 import { LangMyBoard } from '@language/Lang.Myboard';
 import { LangCommon } from '@language/Lang.Common';
-import { langMetaBoard } from '@language/Lang.Meta';
 import Contents from '../content/Contents';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
@@ -62,7 +61,6 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const { signDate, noIntro, allTabs, contentsTabs, bookMarkTabs, secondary } = LangMyBoard;
   const { followBtn, followingBtn } = LangCommon;
 
-  const { metaBoardTitle, boardDescFirst, boardDescSecond } = langMetaBoard();
   const _signDate = signDate[selectedLanguage] || signDate[defaultLanguage],
     _noIntro = noIntro[selectedLanguage] || noIntro[defaultLanguage],
     _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
@@ -74,13 +72,14 @@ export default function MyBoard({ boardItem, userId, nonError }) {
 
   //fetch
   const [, , , followFetch] = useAxiosFetch();
-  const [boardLoding, boardApi, boardError, boardFetch] = useAxiosFetch();
   const [boardDataLoding, boardDataApi, boardDataError, boardDataFetch] = useAxiosFetch();
 
   const submitHandler = () => {
     if (!loginOn) return;
     getValue(follow);
+
     followFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: boardItem?.data?._id });
+
   };
 
   useEffect(() => {
@@ -94,7 +93,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
       return;
     }
     setFollowButton(type);
-    goURL({ pathname: `/follows/${userScreenId}` });
+    goURL({ pathname: `/follows/[id]`, as:`/follows/${userScreenId}`, query:{tab:type} });
   };
 
   useEffect(() => {
@@ -125,6 +124,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     { link: 'secondaryWorks', title: _secondary },
     { link: 'bookmarks', title: _bookMarkTabs },
   ];
+
   const metaData = {
     title: `${boardItem?.data?.nickname}${t('metaBoardTitle')}`,
     description: `${boardItem?.data?.intro} || ${t('boardDescFirst')}${boardItem?.data?.screenId}${t('boardDescSecond')}`,
@@ -170,29 +170,27 @@ export default function MyBoard({ boardItem, userId, nonError }) {
                   {_followBtn}
                   <FollowScore>{followData?.followerCount}</FollowScore>
                 </FollowButton>
-                {!checkMe && (
-                  <ButtonWrap>
-                    {/* <FollowAddButton data={String(follow)} onClick={toggleFollow}>
+                {
+                  !checkMe && (
+                    <ButtonWrap>
+                      {/* <FollowAddButton data={String(follow)} onClick={toggleFollow}>
+                          {follow ? _followingBtn : _followBtn}
+                        </FollowAddButton> */}
+                      <FollowAddButton
+                        styling={follow}
+                        onClick={() => {
+                          if (!loginOn) { setUnAuth(true); return; }
+                          toggleFollow();
+                          submitHandler();
+                        }}
+                      >
                         {follow ? _followingBtn : _followBtn}
-                      </FollowAddButton> */}
-                    <FollowAddButton
-                      styling={follow}
-                      onClick={() => {
-                        if (!loginOn) {
-                          setUnAuth(true);
-                          return;
-                        }
-                        toggleFollow();
-                        submitHandler();
-                      }}
-                    >
-                      {follow ? _followingBtn : _followBtn}
-                    </FollowAddButton>
-                    {/* <MoreMenuBtn>
-                        <MoreMenu />
-                      </MoreMenuBtn> */}
-                  </ButtonWrap>
-                )}
+                      </FollowAddButton>
+                      {/* <MoreMenuBtn>
+                          <MoreMenu />
+                        </MoreMenuBtn> */}
+                    </ButtonWrap> )
+                }
               </FollowsBox>
               {/*// 레이아웃 상단 유저정보 레이아웃 끝 */}
             </UserInformBox>
@@ -200,24 +198,26 @@ export default function MyBoard({ boardItem, userId, nonError }) {
           {/* 네비게이션 시작 */}
           <NavBar show={show}>
             <NavBarInner>
-              {navTabArr.map((nav, index) => (
-                <NavItem
-                  key={index}
-                  styling={isTab === nav.link}
-                  onClick={() => {
-                    setIsTab(nav.link);
-                    goURL({
-                      pathname: `/myboard/${followData?.screenId}`,
-                      as: `/myboard/${followData?.screenId}`,
-                      query: {
-                        tab: nav.link,
-                      },
-                    });
-                  }}
-                >
-                  <NavAllButton>{nav.title}</NavAllButton>
-                </NavItem>
-              ))}
+              {
+                navTabArr.map((nav, index) => (
+                  <NavItem
+                    key={index}
+                    styling={isTab === nav.link}
+                    onClick={() => {
+                      setIsTab(nav.link);
+                      goURL({
+                        pathname: `/myboard/${followData?.screenId}`,
+                        as: `/myboard/${followData?.screenId}`,
+                        query: {
+                          tab: nav.link,
+                        },
+                      });
+                    }}
+                  >
+                    <NavAllButton>{nav.title}</NavAllButton>
+                  </NavItem>
+                ))
+              }
             </NavBarInner>
           </NavBar>
           {/* 작품 콘텐츠 시작 */}

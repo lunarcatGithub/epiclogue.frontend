@@ -38,7 +38,7 @@ const ContextStore = ({ children }) => {
   const [paramsData, setParamsData] = useState();
   const [myboardData, setMyboardData] = useState([]);
   const [followData, setFollowData] = useState();
-  const [followButton, setFollowButton] = useState('following');
+  const [followButton, setFollowButton] = useState();
 
   // initial Login
   let login = typeof window !== 'undefined' && localStorage.getItem('loginOn');
