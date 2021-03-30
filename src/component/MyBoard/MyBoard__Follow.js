@@ -55,7 +55,6 @@ const MyBoardFollow = ({ routeId, routeTab }) => {
     routeTab === 'following' ? setFollowingList(followListApi?.data) : setFollowerList(followListApi?.data);
   }, [followListApi]);
 
-
   return (
     <Layout>
       <FollowsLayout>

@@ -4,7 +4,6 @@ import { useTranslation } from "next-i18next";
 //component
 import Contents from '@component/content/Contents';
 import { Meta } from '@utils/MetaTags';
-import { langMetaMain } from '@language/Lang.Meta';
 
 // Hooks&&reducer import
 import { useUrlMove } from '@hooks/useUrlMove';
@@ -12,9 +11,6 @@ import { useUrlMove } from '@hooks/useUrlMove';
 const Main = ({ metaLang }) => {
   const [goURL] = useUrlMove();
   const { t } = useTranslation("common");
-
-  //언어 변수
-  const [metaMainTitle, metaMainDesc] = langMetaMain();
 
   // Meta 전용
   const metaData = {

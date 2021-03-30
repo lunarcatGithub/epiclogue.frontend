@@ -268,7 +268,7 @@ const UploadCategory = (props) => {
           <UploadCategoryForm type="PUB" initialNum={pub} />
 
           {/* 2차 창작 허용 여부 */}
-          {!sourceToggleOn && originData?.length === 0 && <UploadCategoryForm type="SECONDARY" initialNum={secondCreate} />}
+          {originData?.length === 0 && <UploadCategoryForm type="SECONDARY" initialNum={secondCreate} />}
 
           {/* 작품의 언어 설정 */}
           <UploadCategoryForm type="LANGUAGE" initialNum={selectedLanguage || defaultLanguage} />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React,{ useState } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 
@@ -101,3 +101,23 @@ const LinkStyle = styled.a`
   line-height: 1.3em;
   cursor: pointer;
 `;
+
+
+// new Promise((res, rej) => {
+//   let data = props.replace(/(\n|\r\n)/g, '+<br>+').split('+')
+//   res(data)
+// }).then((data) => {
+//   console.log(data)
+// })
+
+// if (props.includes(' ')) {
+//   console.log('감지')
+//   splitBody = props.replace(' ', 'ㅁㄴㅇㅁㄴㅇㅁㄴㅇ');
+// }
+
+// if (props.match('\n')) {
+//   splitBody = props.replace(/(\n|\r\n)/g, '+<br>+')
+// }
+
+// test.push(splitBody)
+// console.log('필터링', splitBody)

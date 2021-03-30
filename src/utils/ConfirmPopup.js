@@ -188,7 +188,7 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
   useEffect(() => {
     changePopup();
   }, []);
-
+  console.log(type)
   return (
     <>
       <ConfirmInner>
@@ -201,52 +201,58 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
               <form action="" mehod="post" onSubmit={passwordChange}>
                 {descript}
                 {/* 비밀번호 변경 시 */}
-                {type === 'PWCHANGE' && (
-                  <>
-                    <PasswordInput placeholder={_newPwChange} onChange={handleuserPwNew} />
-                    {valiPw && <PlaceHolderTxt>{valiPw}</PlaceHolderTxt>}
-                    <PasswordInput placeholder={_newPwConfirm} onChange={handleUserPwNewRe} />
-                    {valiRePw && <PlaceHolderTxt>{valiRePw}</PlaceHolderTxt>}
-                  </>
-                )}
+                {
+                  type === 'PWCHANGE' && (
+                    <>
+                      <PasswordInput placeholder={_newPwChange} onChange={handleuserPwNew} />
+                      {valiPw && <PlaceHolderTxt>{valiPw}</PlaceHolderTxt>}
+                      <PasswordInput placeholder={_newPwConfirm} onChange={handleUserPwNewRe} />
+                      {valiRePw && <PlaceHolderTxt>{valiRePw}</PlaceHolderTxt>}
+                    </> )
+                }
               </form>
             </ContentsDesc>
             <ButtonWrap>
               {/* 비밀번호 변경, 비공개 작품, 삭제된 작품, 탈퇴유저, 2차 창작 금지, 원작글 삭제가 아닐 경우 [취소] 버튼 나타남 */}
-              {type !== 'PWCHANGE' && type !== 'GOBACK' && type !== 'REMOVE' && type !== 'REMOVE_USER' && type !== 'TRANS' && type !== 'REMOVEORIGIN' && (
-                <CancelBtn
-                  onClick={() => {
-                    handleModal();
-                  }}
-                >
-                  {_cancleBtn}
-                </CancelBtn>
-              )}
+              {
+                type !== 'PWCHANGE' && type !== 'GOBACK' && type !== 'REMOVE' && type !== 'REMOVE_USER' && type !== 'TRANS' && type !== 'REMOVEORIGIN' && (
+                  <CancelBtn
+                    onClick={() => {
+                      handleModal();
+                    }}
+                  >
+                    {_cancleBtn}
+                  </CancelBtn> )
+              }
               {/*  비공개 작품, 삭제된 작품, 탈퇴유저일 경우 [메인으로 가기] 버튼이 됨 */}
-              {type === 'GOBACK' || type === 'REMOVE' || type === 'REMOVE_USER' ? (
-                <ConfirmBtn
-                  onClick={() => {
-                    setAccessConfirm({ pathname: '/' });
-                  }}
-                >
-                  {confirmBtn}
-                </ConfirmBtn>
-              ) : null}
-              {type === 'INACTIVE' || type === 'COMMANT' || type === 'CONFIRM' ? (
-                <ConfirmBtn
-                  onClick={() => {
-                    handleModal();
-                    setAccessConfirm(true);
-                  }}
-                >
-                  {/*  확인 버튼으로 클릭시 true 값 반환 */}
-                  {confirmBtn}
-                  {/* 비밀번호 변경시 나타나는 버튼 */}
-                </ConfirmBtn>
-              ) : null}
+              {
+                type === 'GOBACK' || type === 'REMOVE' || type === 'REMOVE_USER' ? (
+                  <ConfirmBtn
+                    onClick={() => {
+                      setAccessConfirm({ pathname: '/' });
+                    }}
+                  >
+                    {confirmBtn}
+                  </ConfirmBtn>
+                ) : null
+              }
+              {
+                type === 'INACTIVE' || type === 'COMMANT' || type === 'CONFIRM' ? (
+                  <ConfirmBtn
+                    onClick={() => {
+                      handleModal();
+                      setAccessConfirm(true);
+                    }}
+                  >
+                    {/*  확인 버튼으로 클릭시 true 값 반환 */}
+                    {confirmBtn}
+                    {/* 비밀번호 변경시 나타나는 버튼 */}
+                  </ConfirmBtn>
+                ) : null
+              }
               {/* 의미 없이 팝업만 닫을 때 사용 */}
-              {type === 'TRANS' ||
-                (type === 'REMOVEORIGIN' && (
+              {
+                type === 'TRANS' || type === 'REMOVEORIGIN' ? 
                   <ConfirmBtn
                     onClick={() => {
                       handleModal();
@@ -254,17 +260,20 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
                   >
                     {confirmBtn}
                   </ConfirmBtn>
-                ))}
+                : null
+              }
               {/* 비밀번호 변경시 나타나는 버튼 */}
-              {type === 'PWCHANGE' ? (
-                <ConfirmBtn
-                  onClick={() => {
-                    passwordChange();
-                  }}
-                >
-                  {confirmBtn}
-                </ConfirmBtn>
-              ) : null}
+              {
+                type === 'PWCHANGE' ? (
+                  <ConfirmBtn
+                    onClick={() => {
+                      passwordChange();
+                    }}
+                  >
+                    {confirmBtn}
+                  </ConfirmBtn>
+                ) : null
+              }
             </ButtonWrap>
           </TabBoxInner>
         </TabBox>
