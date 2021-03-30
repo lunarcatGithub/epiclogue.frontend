@@ -17,9 +17,8 @@ export function FindPass() {
 
   useEffect(() => {
     const { email, token } = router.query;
-
     accessConfirm && findPassFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/findPass`, 'get,', null, null, { email, token });
-  }, []);
+  }, [router.query]);
 
   useEffect(() => {
     findPassApi && console.log(findPassApi);
