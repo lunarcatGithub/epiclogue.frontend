@@ -816,9 +816,11 @@ export const ImageEditor = (props) => {
                 <ToolDummy />
                 <LeftMoveBtn onClick={() => moveTab('left', currentPage)}>{`<<`}</LeftMoveBtn>
                 <CanvasListBox>
-                  {imageSample.map((i, key) => (
-                    <CanvasList styling={currentPage === i.id} key={key} onClick={() => moveTab('click', i.id)}>{`Image ${i.id + 1}`}</CanvasList>
-                  ))}
+                  {
+                    imageSample.map((i, key) => (
+                      <CanvasList styling={currentPage === i.id} key={key} onClick={() => moveTab('click', i.id)}>{`Image ${i.id + 1}`}</CanvasList>
+                    ))
+                  }
                   <CanvasListFakeBox />
                 </CanvasListBox>
                 <RightMoveBtn onClick={() => moveTab('right', currentPage)}>{`>>`}</RightMoveBtn>
