@@ -188,7 +188,7 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
   useEffect(() => {
     changePopup();
   }, []);
-  console.log(type)
+
   return (
     <>
       <ConfirmInner>
