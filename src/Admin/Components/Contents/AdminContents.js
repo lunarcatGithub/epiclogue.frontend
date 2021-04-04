@@ -11,9 +11,9 @@ export const AdminContents = () => {
   //toggle
 
   const [userContentsData, setUserContentsData] = useState([
-    { id: 1, email: 'asd@ads.com', _id: `@asasdd`, title: 'test', category: 'illus', hide: false },
-    { id: 2, email: 'ascvcvd@xcvx.com', _id: `@adf`, title: 'cxvxcvxc', category: 'illus', hide: true },
-    { id: 3, email: 'asxzcvzxd@ads.com', _id: `@qwerrt`, title: 'xvzvc', category: 'comic', hide: false },
+    { id: 1, email: 'asd@ads.com', _id: `@asasdd`, title: 'test', category: 'illus', view: 'view' },
+    { id: 2, email: 'ascvcvd@xcvx.com', _id: `@adf`, title: 'cxvxcvxc', category: 'illus', view: 'hide' },
+    { id: 3, email: 'asxzcvzxd@ads.com', _id: `@qwerrt`, title: 'xvzvc', category: 'comic', view: 'view' },
   ]);
 
   const categorySelec = [

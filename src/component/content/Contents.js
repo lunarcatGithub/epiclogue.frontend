@@ -134,6 +134,12 @@ const Contents = (props) => {
     searchData ? setResultKeyword(searchData) : setResultKeyword(keyword);
   }, [searchData, keyword]);
 
+  const fixedEncodeURIComponent =(str)=> {
+    return str.replace(/[!'()*]/gi, function (c) {
+      return '%' + c.charCodeAt(0).toString(16);
+    });
+  }
+
   // 검색단어로 데이터 요청하기
   useEffect(() => {
     setItems(initialCount);
@@ -143,11 +149,6 @@ const Contents = (props) => {
     if (resultKeyword) {
       const Url = keyword;
       const encodedUrl = encodeURIComponent(Url);
-      function fixedEncodeURIComponent(str) {
-        return str.replace(/[!'()*]/gi, function (c) {
-          return '%' + c.charCodeAt(0).toString(16);
-        });
-      }
       const result = fixedEncodeURIComponent(encodedUrl);
       if (url.match('/search/trend') && type === 'SEARCH' && searchType === 'trend') {
         searchFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&q=${null}`, 'get', null, null, null);

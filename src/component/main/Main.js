@@ -17,7 +17,7 @@ const Main = ({ metaLang }) => {
     title: t('metaMainTitle'),
     contentsTitle:t('metaContentTitle'),
     description: t('metaMainDesc'),
-    image: ['/public/static/logo192.svg'],
+    image: ['/static/logo192.svg'],
     canonical: ``,
     lang:metaLang
   };

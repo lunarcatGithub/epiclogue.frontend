@@ -131,91 +131,96 @@ export default function ListForm({ type, contentsData }) {
               <TableHeadLine>
                 <CheckBox onChange={(e) => allCheckHandle(e, 'all')} />
               </TableHeadLine>
-              {headerArray?.map((item, key) => (
-                <TableHeadLine key={key}>{item}</TableHeadLine>
-              ))}
+              {
+                headerArray?.map((item, key) => (
+                  <TableHeadLine key={key}>{item}</TableHeadLine> ))
+              }
             </TableRowBox>
           </TableHead>
           {/*  테이블 본문 시작 */}
           <TableBody>
-            {bodyData?.map((content, i) => (
-              <TableRowBox key={i}>
-                {console.log(content.isSelect)}
-                <TableDataBox>
-                  <CheckBox
-                    name="contents"
-                    value={content.id}
-                    onChange={(e) => allCheckHandle(e, 'one')}
-                    // checked={content.isSelect ? true : false}
-                  />
-                </TableDataBox>
-                <TableDataBox>{content.id}</TableDataBox>
-                <TableDataBox>{content.email}</TableDataBox>
-                <TableDataBox>{content._id}</TableDataBox>
-                {content.type && <TableDataBox>{content.type}</TableDataBox>}
-                {content.join && <TableDataBox>{content.join}</TableDataBox>}
-                {content.title && <TableDataBox>{content.title}</TableDataBox>}
-                {content.category && <TableDataBox>{content.category}</TableDataBox>}
-                {content.result && <TableDataBox>{content.result}</TableDataBox>}
-                {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
-                {content.content && <TableDataBox>{content.content}</TableDataBox>}
-                {content.resultDate && <TableDataBox>{content.resultDate}</TableDataBox>}
-                {content.count && <TableDataBox>{content.count}</TableDataBox>}
-                {type !== 'CONTENTS' && (
+            {
+              bodyData?.map((content, i) => (
+                <TableRowBox key={i}>
                   <TableDataBox>
-                    <AllButton
-                      id={content.id}
-                      onClick={(e) => {
-                        setToggleSelect(e.currentTarget.id);
-                        dataHadler(e);
-                      }}
-                    >
-                      {' '}
-                      {content.ban ? '해제' : '정지'}
-                    </AllButton>
+                    <CheckBox
+                      name="contents"
+                      value={content.id}
+                      onChange={(e) => allCheckHandle(e, 'one')}
+                      // checked={content.isSelect ? true : false}
+                    />
                   </TableDataBox>
-                )}
-                {type !== 'USERS' && (
-                  <TableDataBox>
-                    <AllButton
-                      id={content.id}
-                      onClick={(e) => {
-                        setToggleSelect(e.currentTarget.id);
-                        dataHadler(e);
-                      }}
-                    >
-                      {content.hide ? '보이기' : '숨기기'}
-                    </AllButton>
-                  </TableDataBox>
-                )}
-                {type !== 'USERS' && (
-                  <TableDataBox>
-                    <AllButton
-                      id={content.id}
-                      onClick={(e) => {
-                        setToggleSelect(e.currentTarget.id);
-                        dataHadler(e);
-                      }}
-                    >
-                      삭제
-                    </AllButton>
-                  </TableDataBox>
-                )}
-                {type !== 'CONTENTS' && (
-                  <TableDataBox>
-                    <AllButton
-                      id={content.id}
-                      onClick={(e) => {
-                        setToggleSelect(e.currentTarget.id);
-                        dataHadler(e);
-                      }}
-                    >
-                      탈퇴
-                    </AllButton>
-                  </TableDataBox>
-                )}
-              </TableRowBox>
-            ))}
+                  <TableDataBox >{content.id}</TableDataBox>
+                  <TableDataBox>{content.email}</TableDataBox>
+                  <TableDataBox>{content._id}</TableDataBox>
+                  {content.type && <TableDataBox>{content.type}</TableDataBox>}
+                  {content.join && <TableDataBox>{content.join}</TableDataBox>}
+                  {content.title && <TableDataBox>{content.title}</TableDataBox>}
+                  {content.category && <TableDataBox>{content.category}</TableDataBox>}
+                  {content.result && <TableDataBox>{content.result}</TableDataBox>}
+                  {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
+                  {content.content && <TableDataBox>{content.content}</TableDataBox>}
+                  {content.resultDate && <TableDataBox>{content.resultDate}</TableDataBox>}
+                  {content.count && <TableDataBox>{content.count}</TableDataBox>}
+                  {content.view && <TableDataBox>{content.view === 'view' ? '보임' : '숨김' }</TableDataBox>}
+                  {
+                    type !== 'CONTENTS' && (
+                      <TableDataBox>
+                        <AllButton
+                          id={content.id}
+                          onClick={(e) => {
+                            setToggleSelect(e.currentTarget.id);
+                            dataHadler(e);
+                          }}
+                        >
+                          {content.ban ? '해제' : '정지'}
+                        </AllButton>
+                      </TableDataBox> )
+                  }
+                  {
+                    type !== 'USERS' && (
+                      <TableDataBox>
+                        <AllButton
+                          id={content.id}
+                          onClick={(e) => {
+                            setToggleSelect(e.currentTarget.id);
+                            dataHadler(e);
+                          }}
+                        >
+                          {content.hide ? '보이기' : '숨기기'}
+                        </AllButton>
+                      </TableDataBox> )
+                  }
+                  {
+                    type !== 'USERS' && (
+                      <TableDataBox>
+                        <AllButton
+                          id={content.id}
+                          onClick={(e) => {
+                            setToggleSelect(e.currentTarget.id);
+                            dataHadler(e);
+                          }}
+                        >
+                          삭제
+                        </AllButton>
+                      </TableDataBox> )
+                  }
+                  {
+                    type !== 'CONTENTS' && (
+                      <TableDataBox>
+                        <AllButton
+                          id={content.id}
+                          onClick={(e) => {
+                            setToggleSelect(e.currentTarget.id);
+                            dataHadler(e);
+                          }}
+                        >
+                          탈퇴
+                        </AllButton>
+                      </TableDataBox> )
+                  }
+                </TableRowBox> ))
+            }
           </TableBody>
         </TableBox>
       </MainLayout>
