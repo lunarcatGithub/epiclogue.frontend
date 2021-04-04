@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer, createContext } from 'react';
+import React,{ useState, useEffect, useReducer, createContext } from 'react';
 import { languageReducer, langInit } from '@reducer/LanguageReducer';
 import { useRouter } from 'next/router';
 import { initialAlert, alertReducer } from '@reducer/AlertReducer';
@@ -10,6 +10,7 @@ import UnauthLogin from '@utils/UnauthLogin';
 import Modal from '@utils/Modal';
 // hooks
 import { useUrlMove } from '@hooks/useUrlMove';
+import { useCookie } from '@hooks/useCookie';
 
 // create context
 const AppDataContext = createContext({});
@@ -24,6 +25,9 @@ const combineReducers = (...reducers) => (state, action) => {
 
 // context provider
 const ContextStore = ({ children }) => {
+  // router
+  const router = useRouter();
+
   // app all method
   const [goURL] = useUrlMove();
   const [langState, langPatch] = useReducer(combineReducers(languageReducer), langInit);
@@ -41,12 +45,30 @@ const ContextStore = ({ children }) => {
   const [followButton, setFollowButton] = useState();
 
   // initial Login
-  let login = typeof window !== 'undefined' && localStorage.getItem('loginOn');
-  const [loginOn, setLoginOn] = useState(Boolean(login));
+  // let login = typeof window !== 'undefined' && localStorage.getItem('loginOn');
   const [unAuth, setUnAuth] = useState(false);
+  const [cookieValue, cookieHandle] = useCookie();
+  const [getTestCookie, getTestHandle] = useCookie();
+  const [loginOn, setLoginOn] = useState(false);
 
-  // router
-  const router = useRouter();
+  // 개발 & 프로덕션 로그인 분기처리
+  const devProductionHandle = () => {
+    cookieHandle('GET', 'access_token');
+    let divied = process.env.NODE_ENV;
+    if(divied === 'development'){
+      getTestHandle('GET', 'dev')
+      if(getTestCookie?.length > 1) { // 개발모드
+        setLoginOn(true)
+      }
+    } else {
+      if(cookieValue?.length > 1) { // 쿠키값이 있다면 로그인 상태로 반환
+        setLoginOn(true)
+      }}
+    }
+
+  useEffect(() => {
+    devProductionHandle()
+  }, [getTestCookie?.length, cookieValue?.length])
 
   useEffect(() => {
     if (!loginOn) {

@@ -93,20 +93,13 @@ export const SignIn = (props) => {
   useEffect(() => {
     const mergyData = resData || snsLoginListApi;
     if (mergyData?.result === 'ok') {
-      getTestCookie('CREATE', 'test', 'ss', 1);
-      getCookie('GET', 'access_token')
+      getTestCookie('CREATE', 'dev', 'test', 1);
       setLoginOn(true);
-      localStorage.setItem('loginOn', true);
       localStorage.setItem('userNick', mergyData?.nick);
       localStorage.setItem('userid', mergyData?.screenId);
       goURL({ pathname: '/' });
-    } else {
-      getCookie('GET', 'access_token')
-      if(cookieValue){
-        goURL({ pathname: '/' });
-      } else return;
     }
-  }, [resData, snsLoginListApi, cookieValue, testValue]);
+  }, [resData, snsLoginListApi, testValue]);
 
   useEffect(() => {
     errors && errorHandle();

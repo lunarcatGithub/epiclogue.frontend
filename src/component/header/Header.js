@@ -22,7 +22,6 @@ import { useModal } from '@hooks/useModal';
 import { useUrlMove } from '@hooks/useUrlMove';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store';
-import { useCookie } from '@hooks/useCookie';
 
 export const HeaderDataContext = React.createContext();
 
@@ -44,9 +43,6 @@ const Header = () => {
   const [isNotification, toggleNoti] = useModal();
 
   const [searchBody, handleChange] = useChange();
-
-  // cookie handler
-  const [cookieValue, getCookie] = useCookie();
 
   // 유저 프로필
   const [goURL] = useUrlMove();

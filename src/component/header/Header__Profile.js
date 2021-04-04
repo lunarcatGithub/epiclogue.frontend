@@ -47,22 +47,22 @@ const HeaderPfPopup = () => {
     _sessionExpire = sessionExpire[selectedLanguage] || sessionExpire[defaultLanguage];
 
   const logout = () => {
-    getTestCookie('GET', 'test');
-    getCookie('GET', 'access_token');
+    let divied = process.env.NODE_ENV;
+    
+    if(divied === 'development'){
+      testCookieHandle('DELETE', 'dev');
+    } else {
+      cookieHandle('DELETE', 'access_token');
+    }
 
-    cookieHandle('DELETE', 'access_token');
-    testCookieHandle('DELETE', 'test');
-
-    if (!cookieValue || !testCookieValue) {
-      localStorage.removeItem('loginOn');
+      setLoginOn(false)
       localStorage.removeItem('userNick');
       localStorage.removeItem('userid');
-      setLoginOn(false);
       setIsOpen();
       goURL({ pathname: '/login' });
-    }
   };
 
+  console.log(testCookieValue)
   useEffect(() => {
     if (profileError?.status === 401) {
       router.reload();
