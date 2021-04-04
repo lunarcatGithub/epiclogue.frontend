@@ -94,11 +94,17 @@ export const SignIn = (props) => {
     const mergyData = resData || snsLoginListApi;
     if (mergyData?.result === 'ok') {
       getTestCookie('CREATE', 'test', 'ss', 1);
+      getCookie('GET', 'access_token')
       setLoginOn(true);
       localStorage.setItem('loginOn', true);
       localStorage.setItem('userNick', mergyData?.nick);
       localStorage.setItem('userid', mergyData?.screenId);
       goURL({ pathname: '/' });
+    } else {
+      getCookie('GET', 'access_token')
+      if(cookieValue){
+        goURL({ pathname: '/' });
+      } else return;
     }
   }, [resData, snsLoginListApi, cookieValue, testValue]);
 

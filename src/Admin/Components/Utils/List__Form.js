@@ -63,7 +63,7 @@ export default function ListForm({ type, contentsData }) {
     }
   };
   const dataHandle = (e, type) => {
-    console.log(type);
+
   };
 
   const allCheckHandle = (e, type) => {
@@ -96,12 +96,14 @@ export default function ListForm({ type, contentsData }) {
       <TopLayout>
         {/* 상단 좌측 레이아웃 */}
         <TopLeftLayout>
-          {warnBtn.map((btn, i) => (
-            <TopmenuBtn key={i} onClick={(e) => dataHandle(e, btn.value)}>
-              {' '}
-              {btn.title}
-            </TopmenuBtn>
-          ))}
+          {
+            warnBtn.map((btn, i) => (
+              <TopmenuBtn key={i} onClick={(e) => dataHandle(e, btn.value)}>
+                {' '}
+                {btn.title}
+              </TopmenuBtn>
+            ))
+          }
         </TopLeftLayout>
         {/* 상단 중앙 레이아웃 */}
         <TopCenterLayout>

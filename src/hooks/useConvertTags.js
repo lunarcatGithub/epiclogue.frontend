@@ -25,7 +25,7 @@ export const useConvertTags = () => {
             href={{
               pathname: `/search/latest/`,
               query: {
-                text: str.split('#').pop(),
+                text: str,
                 type: 'latest',
               },
             }}

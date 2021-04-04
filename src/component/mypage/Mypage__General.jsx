@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import styled from 'styled-components';
 
 // 컴포넌트 import
 import MypageForm from './Mypage__Form';
@@ -34,6 +33,7 @@ const MypageGeneral = () => {
       langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
     } else if (type === 'interest') {
       const listArr = data?.filter((each) => each.isChecked).map((list) => list.value);
+      console.log(listArr)
       formData.append('userAvailableLang', listArr);
       langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
     }

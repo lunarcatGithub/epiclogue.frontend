@@ -105,7 +105,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     toggleFollow(boardItem?.data?.isFollowing);
     localStorage.getItem('userid') === boardItem?.data?.screenId && setCheckMe(true);
   }, [boardItem, countryResult]);
-
+  console.log(boardItem)
   useEffect(() => {
     userScreenId && boardDataFetch(`${process.env.NEXT_PUBLIC_API_URL}/myboard/${userScreenId}/${isTab}`, 'get', null);
   }, [isTab, userScreenId]);

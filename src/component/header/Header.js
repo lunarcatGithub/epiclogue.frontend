@@ -22,6 +22,7 @@ import { useModal } from '@hooks/useModal';
 import { useUrlMove } from '@hooks/useUrlMove';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store';
+import { useCookie } from '@hooks/useCookie';
 
 export const HeaderDataContext = React.createContext();
 
@@ -43,6 +44,9 @@ const Header = () => {
   const [isNotification, toggleNoti] = useModal();
 
   const [searchBody, handleChange] = useChange();
+
+  // cookie handler
+  const [cookieValue, getCookie] = useCookie();
 
   // 유저 프로필
   const [goURL] = useUrlMove();
@@ -109,7 +113,7 @@ const Header = () => {
 
   // 유저 알림 Read 여부
   const readObserver = () => {
-    setRead(readApi?.data?.notiCount);
+    setRead(readApi?.data?.notiCount !== 0);
   };
 
   useEffect(() => {
@@ -119,7 +123,7 @@ const Header = () => {
 
   useEffect(() => {
     readObserver();
-  }, [pathname]);
+  });
 
   // 유저 프로필 API
   useEffect(() => {
@@ -129,7 +133,7 @@ const Header = () => {
 
   useEffect(() => {
     if (profileApi) {
-      localStorage.setItem('language', profileApi.data.displayLanguage);
+      // localStorage.setItem('language', profileApi.data.displayLanguage);
       langPatch({ type: 'LANGUAGE_UPDATE', payload: profileApi.data.displayLanguage });
     }
   }, [profileApi]);
@@ -168,45 +172,47 @@ const Header = () => {
                 </CategoryWrap>
                 <Dummy />
                 {/* 팔로우 작품 및 프로필 버튼 영역 */}
-                {loginOn ? (
-                  <>
-                    <ProfileWrap>
-                      <FollowBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
-                        <ProfileFollow />
-                        <FollowTxt>{_followsButton}</FollowTxt>
-                      </FollowBtn>
-                      {/* </NavItem> */}
-                      <HeaderPfPopupWrap>
-                        {/* header profile */}
-                        <HeaderPfPopup />
-                      </HeaderPfPopupWrap>
-                    </ProfileWrap>
-                    <Dummy />
-                    {/* 옵션 set 영역 */}
-                    <OptionWrap>
-                      <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
-                        <OptionDm />
-                      </OptionBtn>
-                      {/* 알림 */}
-                      <OptionBtn
-                        onClick={() => {
-                          toggleNoti();
-                          setRead(0);
-                        }}
-                      >
-                        <OptionInfomation styling={isNotification} />
-                        {read > 0 && <InformIconRing />}
-                      </OptionBtn>
+                {
+                  loginOn ? (
+                    <>
+                      <ProfileWrap>
+                        <FollowBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+                          <ProfileFollow />
+                          <FollowTxt>{_followsButton}</FollowTxt>
+                        </FollowBtn>
+                        {/* </NavItem> */}
+                        <HeaderPfPopupWrap>
+                          {/* header profile */}
+                          <HeaderPfPopup />
+                        </HeaderPfPopupWrap>
+                      </ProfileWrap>
+                      <Dummy />
+                      {/* 옵션 set 영역 */}
+                      <OptionWrap>
+                        <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+                          <OptionDm />
+                        </OptionBtn>
+                        {/* 알림 */}
+                        <OptionBtn
+                          onClick={() => {
+                            toggleNoti();
+                            setRead(0);
+                          }}
+                        >
+                          <OptionInfomation styling={isNotification} />
+                          {read > 0 && <InformIconRing />}
+                        </OptionBtn>
 
-                      {/* setting */}
-                      <OptionBtn onClick={() => goURL({ pathname: `/mypage/profile` })}>
-                        <OptionSetting styling={['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)} />
-                      </OptionBtn>
-                    </OptionWrap>
-                  </>
-                ) : (
-                  <HeaderUnauth />
-                )}
+                        {/* setting */}
+                        <OptionBtn onClick={() => goURL({ pathname: `/mypage/profile` })}>
+                          <OptionSetting styling={['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)} />
+                        </OptionBtn>
+                      </OptionWrap>
+                    </>
+                  ) : (
+                    <HeaderUnauth />
+                  )
+                }
               </HeaderInner>
               {/* 뷰어 모바일 전용 뒤로가기 헤더 탭*/}
               <MbHeaderInner pathname={pathname.match('/viewer') ? 'flex' : 'none'}>
@@ -219,6 +225,7 @@ const Header = () => {
             <MobileHeader show={show}>
               <MobileHdInner>
                 {/* DM */}
+
                 <MbOptionWrap onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
                   <MbOptionDm />
                 </MbOptionWrap>

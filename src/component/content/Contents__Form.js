@@ -30,7 +30,7 @@ export default function MainContent(props) {
     <>
       <ContentBox>
         {/* 유저 콘텐츠 박스*/}
-        <ImgBox onClick={() => goURL({ pathname: `/viewer/${contents?._id}` })}>
+        <ImgBox onClick={() => goURL({ pathname: `/viewer/${contents?._id}` }, undefined, { scroll: false })}>
           <UserContentImg image={contents?.thumbnail} />
           <CategoryIconBox styling={category === '0' ? 'Illust' : 'Comic'}>
             <CategoryIcon icon={category === '0' ? '/static/illust_Icon.svg' : '/static/comic_Icon.svg'} />

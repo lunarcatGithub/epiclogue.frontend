@@ -25,7 +25,7 @@ export default function MypageForm(props) {
     { id: 3, title: 'English', value: 2, isChecked: false },
   ]);
   // const [currentData, setCurrentData] = useState();
-
+  console.log(selectMultiple)
   // 언어 변수 설정
   const [langTitle, setLangTitle] = useState();
   const [langSubtitle, setLangSubtitle] = useState();
@@ -51,7 +51,18 @@ export default function MypageForm(props) {
     _generalSetting = generalSetting[selectedLanguage] || generalSetting[defaultLanguage],
     _generalSetDesc = generalSetDesc[selectedLanguage] || generalSetDesc[defaultLanguage];
 
-  const dataOnChangeHandler = (e) => setSelectData(Number(e.target.value));
+  const dataOnChangeHandler = (e, type) => {
+    if(type === 'LANGUAGE'){
+      setSelectData(Number(e.target.value));
+
+    } else if(type === 'INTEREST'){
+      selectMultiple.forEach((list) => {
+        if (list.value === Number(e.target.value)) {
+          list.isChecked = e.target.checked;
+        }
+      });
+    }
+  };
 
   const dataOnClickHandler = (e) => {
     let selectArr = selectMultiple;
@@ -128,18 +139,31 @@ export default function MypageForm(props) {
                   LanguageList?.map((list) => (
                     <ListTxtBox key={list.id}>
                       <TextList>{list.title}</TextList>
-                      <ListTxtRadio readOnly id={list.id} name="userLanguage" value={list.state} checked={selectData === list.state} onChange={(e) => dataOnChangeHandler(e, 'LANGUAGE')} />
+                      <ListTxtRadio 
+                        readOnly 
+                        id={list.id} 
+                        name="userLanguage" 
+                        value={list.state} 
+                        checked={selectData === list.state} 
+                        onChange={(e) => dataOnChangeHandler(e, 'LANGUAGE')} 
+                      />
                       <ListRadioCustom />
                     </ListTxtBox>
                   ))}
-                {type === 'interest' &&
-                  selectMultiple?.map((list) => (
-                    <ListCheckLabel key={list.id}>
-                      <TextList>{list.title}</TextList>
-                      <ListCheck {...list} onClick={(e) => dataOnClickHandler(e)} />
-                      <ListCheckCustom />
-                    </ListCheckLabel>
-                  ))}
+                {
+                  type === 'interest' &&
+                    selectMultiple?.map((list) => (
+                      <ListCheckLabel key={list.id}>
+                        <TextList>{list.title}</TextList>
+                        <ListCheck
+                          {...list}
+                          checked={list.isChecked ? true : false}
+                          onChange={(e) => dataOnChangeHandler(e, 'INTEREST')}
+                        />
+                        <ListCheckCustom />
+                      </ListCheckLabel>
+                    ))
+                  }
                 {type === 'mute' || type === 'push' || type === 'generalset' ? (
                   <HiddenBox>
                     <ServiceNotYet>{_notServicePush}</ServiceNotYet>

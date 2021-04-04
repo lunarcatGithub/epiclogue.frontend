@@ -245,7 +245,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
         sourceUrl,
       } = boardData;
       const { screenId, nickname, _id, following, profile } = writer;
-
+      console.log(boardData)
       setData({
         boardTitle,
         boardBody,
@@ -480,11 +480,13 @@ const Viewer = ({ boardItem = null, nonError }) => {
               <WriteFbForm feedbackRef={feedbackRef} type="Fb" feedbackPlaceholder={_feedbackPlaceholder} />
             </FeedbackWrap>
             {/* 피드백 영역 */}
-            {renderList &&
-              !isLoading &&
-              renderList.slice(0, prevFb).map((item) => {
-                return <FB type="Fb" key={item._id} data={item} counting={renderList.length} />;
-              })}
+            {
+              renderList &&
+                !isLoading &&
+                renderList.slice(0, prevFb).map((item) => {
+                  return <FB type="Fb" key={item._id} data={item} counting={renderList.length} />;
+                })
+            }
             <MoreFb
               checkEvent={eventCtrl}
               fbLoading={fbLoading}

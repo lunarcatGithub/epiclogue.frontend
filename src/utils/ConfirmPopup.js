@@ -90,7 +90,7 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
   const [descript, setDescript] = useState();
   const [confirmBtn, setConfirmBtn] = useState();
   // fetch
-  const [pwConfirmLoding, pwConfirmApi, pwConfirmError, pwConfirmFetch] = useAxiosFetch();
+  const [, pwConfirmApi, , pwConfirmFetch] = useAxiosFetch();
 
   const changePopup = () => {
     // 차후 인증 메일 재발송 팝업, 삭제된 게시물 팝업, 존재하지 않는 회원 팝업 추가하기
