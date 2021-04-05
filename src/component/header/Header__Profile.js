@@ -10,7 +10,6 @@ import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store'
 import { useToggle } from '@hooks/useToggle';
 import { HeaderDataContext } from './Header';
 import { useUrlMove } from '@hooks/useUrlMove';
-import { useConvertURL } from '@hooks/useConvertURL';
 import { useCookie } from '@hooks/useCookie';
 
 // 이미지 import
@@ -22,7 +21,6 @@ const HeaderPfPopup = () => {
   const router = useRouter();
 
   const [goURL] = useUrlMove();
-  const [profileURL, , convertProfileIamge] = useConvertURL();
   //profile
   const [ProfileImg, setProfileImg] = useState();
 
@@ -30,7 +28,7 @@ const HeaderPfPopup = () => {
   const [, testCookieHandle] = useCookie();
   const [, cookieHandle] = useCookie();
 
-  const { alertState, alertPatch } = useContext(AlertContext);
+  const { alertPatch } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
   const { setLoginOn } = useContext(AppDataContext);
 
@@ -55,7 +53,6 @@ const HeaderPfPopup = () => {
     } else {
       cookieHandle('DELETE', 'access_token');
     }
-
       setLoginOn(false)
       localStorage.removeItem('userNick');
       localStorage.removeItem('userid');

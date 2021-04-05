@@ -245,7 +245,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
         sourceUrl,
       } = boardData;
       const { screenId, nickname, _id, following, profile } = writer;
-      console.log(boardData)
+
       setData({
         boardTitle,
         boardBody,

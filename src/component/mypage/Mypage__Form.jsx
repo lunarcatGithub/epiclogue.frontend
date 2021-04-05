@@ -14,7 +14,7 @@ export default function MypageForm(props) {
 
   // contextAPI
   const { LanguageList, interestedList } = useContext(MypageContext);
-  const { langState, langPatch } = useContext(LanguageContext);
+  const { langState, langPatch, availableLanguage } = useContext(LanguageContext);
 
   const { selectedLanguage, defaultLanguage } = langState;
   const [toggleSet, setToggleSet] = useState(false);
@@ -24,7 +24,6 @@ export default function MypageForm(props) {
     { id: 2, title: '日本語', value: 1, isChecked: false },
     { id: 3, title: 'English', value: 2, isChecked: false },
   ]);
-  // const [currentData, setCurrentData] = useState();
 
   // 언어 변수 설정
   const [langTitle, setLangTitle] = useState();
@@ -52,27 +51,22 @@ export default function MypageForm(props) {
     _generalSetDesc = generalSetDesc[selectedLanguage] || generalSetDesc[defaultLanguage];
 
   const dataOnChangeHandler = (e, type) => {
+    console.log(e.target.checked)
     if(type === 'LANGUAGE'){
       setSelectData(Number(e.target.value));
 
     } else if(type === 'INTEREST'){
       selectMultiple.forEach((list) => {
-        if (list.value === Number(e.target.value)) {
+        if (list.value === Number(e.target.value) ) {
           list.isChecked = e.target.checked;
         }
       });
     }
   };
 
-  const dataOnClickHandler = (e) => {
-    let selectArr = selectMultiple;
-    selectArr.forEach((list) => {
-      if (list.value === Number(e.target.value)) {
-        list.isChecked = e.target.checked;
-      }
-    });
-    setSelectMultiple(selectArr);
-  };
+  useEffect(() => {
+    availableLanguage.forEach( num => selectMultiple[num].isChecked = true); 
+  }, [availableLanguage])
 
   const sendDataHandler = (e) => {
     if (type === 'language') {
@@ -130,53 +124,57 @@ export default function MypageForm(props) {
           <ContentsScript>{langSubtitle}</ContentsScript>
         </TitleWrap>
 
-        {toggleSet && (
-          <HiddenBox>
-            <div>
-              <HiddenInner>
-                {type === 'language' &&
-                  LanguageList?.map((list) => (
-                    <ListTxtBox key={list.id}>
-                      <TextList>{list.title}</TextList>
-                      <ListTxtRadio 
-                        readOnly 
-                        id={list.id} 
-                        name="userLanguage" 
-                        value={list.state} 
-                        checked={selectData === list.state} 
-                        onChange={(e) => dataOnChangeHandler(e, 'LANGUAGE')} 
-                      />
-                      <ListRadioCustom />
-                    </ListTxtBox>
-                  ))}
-                {
-                  type === 'interest' &&
-                    selectMultiple?.map((list) => (
-                      <ListCheckLabel key={list.id}>
-                        <TextList>{list.title}</TextList>
-                        <ListCheck
-                          {...list}
-                          checked={list.isChecked ? true : false}
-                          onChange={(e) => dataOnChangeHandler(e, 'INTEREST')}
-                        />
-                        <ListCheckCustom />
-                      </ListCheckLabel>
-                    ))
+        {
+          toggleSet && (
+            <HiddenBox>
+              <div>
+                <HiddenInner>
+                  {
+                    type === 'language' &&
+                      LanguageList?.map((list) => (
+                        <ListTxtBox key={list.id}>
+                          <TextList>{list.title}</TextList>
+                          <ListTxtRadio 
+                            readOnly 
+                            id={list.id} 
+                            name="userLanguage" 
+                            value={list.state} 
+                            checked={selectData === list.state} 
+                            onChange={(e) => dataOnChangeHandler(e, 'LANGUAGE')} 
+                          />
+                          <ListRadioCustom />
+                        </ListTxtBox> ))
                   }
-                {type === 'mute' || type === 'push' || type === 'generalset' ? (
-                  <HiddenBox>
-                    <ServiceNotYet>{_notServicePush}</ServiceNotYet>
-                  </HiddenBox>
-                ) : null}
-              </HiddenInner>
-              {type === 'mute' || type === 'push' || type === 'generalset' ? null : (
-                <BtnWrap>
-                  <PwChangeBtn onClick={sendDataHandler}>{langBtn}</PwChangeBtn>
-                </BtnWrap>
-              )}
-            </div>
-          </HiddenBox>
-        )}
+                  {
+                    type === 'interest' &&
+                      selectMultiple?.map((list) => (
+                        <ListCheckLabel key={list.id}>
+                          <TextList>{list.title}</TextList>
+                          <ListCheck
+                            {...list}
+                            defaultChecked={list.isChecked}
+                            onChange={(e) => dataOnChangeHandler(e, 'INTEREST')}
+                          />
+                          <ListCheckCustom />
+                        </ListCheckLabel>
+                      ))
+                    }
+                  {
+                    type === 'mute' || type === 'push' || type === 'generalset' ? (
+                      <HiddenBox>
+                        <ServiceNotYet>{_notServicePush}</ServiceNotYet>
+                      </HiddenBox> ) : null
+                  }
+                </HiddenInner>
+                {
+                  type === 'mute' || type === 'push' || type === 'generalset' ? null : (
+                    <BtnWrap>
+                      <PwChangeBtn onClick={sendDataHandler}>{langBtn}</PwChangeBtn>
+                    </BtnWrap> )
+                }
+              </div>
+            </HiddenBox> )
+        }
       </IdContentInnerBox>
       {/* // 내 언어 설정 끝 */}
     </ContentsBox>

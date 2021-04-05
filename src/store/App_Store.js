@@ -2,12 +2,14 @@ import React,{ useState, useEffect, useReducer, createContext, useLayoutEffect }
 import { languageReducer, langInit } from '@reducer/LanguageReducer';
 import { useRouter } from 'next/router';
 import { initialAlert, alertReducer } from '@reducer/AlertReducer';
+import { initialArr, availableLang } from '@reducer/availableLanguage';
 
 // 컴포넌트 import
 import UnauthLogin from '@utils/UnauthLogin';
 
 // Utils
 import Modal from '@utils/Modal';
+
 // hooks
 import { useUrlMove } from '@hooks/useUrlMove';
 import { useCookie } from '@hooks/useCookie';
@@ -32,6 +34,7 @@ const ContextStore = ({ children }) => {
   const [goURL] = useUrlMove();
   const [langState, langPatch] = useReducer(combineReducers(languageReducer), langInit);
   const [alertState, alertPatch] = useReducer(combineReducers(alertReducer), initialAlert);
+  const [availableLanguage, availableLangPatch] = useReducer(combineReducers(availableLang), initialArr);
 
   // set filter
   const [clickedComic, setClickedComic] = useState(true);
@@ -107,23 +110,18 @@ const ContextStore = ({ children }) => {
       }}
     >
       <LanguageContext.Provider
-        value={{
-          langState,
-          langPatch,
-        }}
+        value={{ langState, langPatch, availableLanguage, availableLangPatch }}
       >
         <AlertContext.Provider
-          value={{
-            alertState,
-            alertPatch,
-          }}
+          value={{ alertState, alertPatch, }}
         >
           {children}
-          {unAuth && (
-            <Modal visible={unAuth} maskClosable={unAuth} onClose={setUnAuth}>
-              <UnauthLogin setUnAuth={setUnAuth} />
-            </Modal>
-          )}
+          {
+            unAuth && (
+              <Modal visible={unAuth} maskClosable={unAuth} onClose={setUnAuth}>
+                <UnauthLogin setUnAuth={setUnAuth} />
+              </Modal> )
+          }
         </AlertContext.Provider>
       </LanguageContext.Provider>
     </AppDataContext.Provider>

@@ -4,16 +4,17 @@ import React, { useContext, useState, useEffect } from 'react';
 import MypageForm from './Mypage__Form';
 
 // Hooks&&reducer import
-import { AppDataContext } from '@store/App_Store';
+import { AppDataContext, LanguageContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useFetchData';
 
 const MypageGeneral = () => {
   const { loginOn } = useContext(AppDataContext);
+  const {availableLangPatch} = useContext(LanguageContext)
   const [formData, setFormData] = useState();
   const [isLogin, setIsLogin] = useState();
 
   // fetch
-  const [langLoding, langApi, langError, langFetch] = useAxiosFetch();
+  const [, , , langFetch] = useAxiosFetch();
 
   // 차후 살릴 수도 있음
   // const countryList = [
@@ -35,6 +36,8 @@ const MypageGeneral = () => {
       const listArr = data?.filter((each) => each.isChecked).map((list) => list.value);
       formData.append('userAvailableLang', listArr);
       langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
+      availableLangPatch({type:'AVAILABLE_LANG', payload:listArr})
+
     }
   };
 

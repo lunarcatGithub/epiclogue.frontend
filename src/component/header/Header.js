@@ -33,7 +33,7 @@ const Header = () => {
   const { alertPatch } = useContext(AlertContext);
 
   //언어 변경
-  const { langState, langPatch } = useContext(LanguageContext);
+  const { langState, langPatch, availableLanguage, availableLangPatch } = useContext(LanguageContext);
   const { setSearchData, setClickedComic, setClickedIllust, clickedComic, clickedIllust, loginOn, setUnAuth, paramsData } = useContext(AppDataContext);
 
   // 팝업용
@@ -126,6 +126,14 @@ const Header = () => {
     if (!loginOn) return;
     profileFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'get', null, null, null);
   }, [loginOn]);
+
+  useEffect(() => {
+    // 유저 선택 언어로 콘텐츠 필터링
+    const avalLang = [];
+    profileApi?.data?.availableLanguage.forEach((num) => avalLang.push(Number(num)))
+    availableLangPatch({type:'AVAILABLE_LANG', payload:avalLang})
+
+  }, [profileApi?.data?.availableLanguage])
 
   useEffect(() => {
     if (profileApi) {
