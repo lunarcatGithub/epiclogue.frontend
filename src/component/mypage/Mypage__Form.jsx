@@ -51,7 +51,6 @@ export default function MypageForm(props) {
     _generalSetDesc = generalSetDesc[selectedLanguage] || generalSetDesc[defaultLanguage];
 
   const dataOnChangeHandler = (e, type) => {
-    console.log(e.target.checked)
     if(type === 'LANGUAGE'){
       setSelectData(Number(e.target.value));
 

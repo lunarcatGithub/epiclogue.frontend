@@ -56,7 +56,12 @@ export function alertReducer(state, { type, payload }) {
     case 'SUCCESS_PWCHANGE': {
       return { ...state, kind: 'SUCCESS_PWCHANGE', bool: payload };
     }
-
+    case 'SUCCESS_LANGUAGE_UPDATE': {
+      return { ...state, kind: 'SUCCESS_PWCHANGE', bool: payload };
+    }
+    case 'FAIL_LANGUAGE_UPDATE': {
+      return { ...state, kind: 'FAIL_LANGUAGE_UPDATE', bool: payload };
+    }
     default:
       return state;
   }
