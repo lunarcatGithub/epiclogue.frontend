@@ -8,4 +8,3 @@ export function availableLang(state, {type, payload}) {
             return state;
     }
   }
-  

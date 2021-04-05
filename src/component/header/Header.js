@@ -33,7 +33,7 @@ const Header = () => {
   const { alertPatch } = useContext(AlertContext);
 
   //언어 변경
-  const { langState, langPatch, availableLanguage, availableLangPatch } = useContext(LanguageContext);
+  const { langState, langPatch, availableLangPatch } = useContext(LanguageContext);
   const { setSearchData, setClickedComic, setClickedIllust, clickedComic, clickedIllust, loginOn, setUnAuth, paramsData } = useContext(AppDataContext);
 
   // 팝업용
@@ -132,7 +132,6 @@ const Header = () => {
     const avalLang = [];
     profileApi?.data?.availableLanguage.forEach((num) => avalLang.push(Number(num)))
     availableLangPatch({type:'AVAILABLE_LANG', payload:avalLang})
-
   }, [profileApi?.data?.availableLanguage])
 
   useEffect(() => {

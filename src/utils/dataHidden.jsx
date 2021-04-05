@@ -1,7 +1,8 @@
-export function dataHiddenFilter(data) {
+export function dataHiddenFilter(data, lang) {
+    const languageDivied = data.filter(data => (lang.indexOf(Number(data.language)) >= 0 ));
 
     const arr = []
-        data.filter((i) => {
+    languageDivied.filter((i) => {
             if (i.pub === 1) {
                 arr.push(i);
             } else if (i.pub === 0) {
@@ -11,7 +12,7 @@ export function dataHiddenFilter(data) {
                 return;
                 }
             }
-            });
+        });
     
     return arr;
 }

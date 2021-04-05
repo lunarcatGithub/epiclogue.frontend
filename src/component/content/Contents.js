@@ -8,7 +8,7 @@ import ContentsForm from './Contents__Form';
 import ContentsUserForm from './Contents__UserForm';
 
 // Hooks&&reducer import
-import { AppDataContext } from '@store/App_Store';
+import { AppDataContext, LanguageContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 // utils
@@ -25,6 +25,8 @@ const Contents = (props) => {
   const router = useRouter();
   const loader = useRef(null);
   const { searchData, clickedComic, clickedIllust, myboardData } = useContext(AppDataContext);
+  const {availableLanguage} = useContext(LanguageContext)
+
   const [resultKeyword, setResultKeyword] = useState();
 
   const url = router.asPath;
@@ -87,17 +89,18 @@ const Contents = (props) => {
     if (type === 'user') {
       setRenderList(renderData.slice(0, initialCount));
     } else {
-      setRenderList(dataHiddenFilter(renderData).slice(0, initialCount));
+      // 작품 숨기기 or 블라인드 or 유저 선호 언어에 따른 분류
+      setRenderList(dataHiddenFilter(renderData, availableLanguage).slice(0, initialCount));
     }
     // if (contentsList.length = renderData?.slice(0, initialCount).length) {
     //   setHasMore(false);
     // }
   };
-
+  
   useEffect(() => {
     devideTypeHandler();
     return () => devideTypeHandler();
-  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType]);
+  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType, availableLanguage]);
 
   // 코믹 && 일러스트 요청
 
