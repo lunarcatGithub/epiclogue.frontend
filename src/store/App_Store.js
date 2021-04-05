@@ -56,18 +56,25 @@ const ContextStore = ({ children }) => {
 
   // 개발 & 프로덕션 로그인 분기처리
   const devProductionHandle = () => {
-    
-    let divied = process.env.NODE_ENV;
-    if(divied === 'development'){
+
+    // dev 전용 쿠키 필요
+    // let divied = process.env.NODE_ENV;
+    // if(divied === 'development'){
+    //   getTestHandle('GET', 'dev')
+    //   if(getTestCookie?.length > 1) { // 개발모드
+    //     setLoginOn(true)
+    //   }
+    // } else {
+    //   cookieHandle('GET', 'access_token');
+    //   if(cookieValue?.length > 1) { // 쿠키값이 있다면 로그인 상태로 반환
+    //     setLoginOn(true)
+    //   }}
       getTestHandle('GET', 'dev')
-      if(getTestCookie?.length > 1) { // 개발모드
+      cookieHandle('GET', 'access_token');
+      if(cookieValue?.length > 1 || getTestCookie?.length > 1) { // 쿠키값이 있다면 로그인 상태로 반환
         setLoginOn(true)
       }
-    } else {
-      cookieHandle('GET', 'access_token');
-      if(cookieValue?.length > 1) { // 쿠키값이 있다면 로그인 상태로 반환
-        setLoginOn(true)
-      }}
+
     }
 
   useLayoutEffect(() => {

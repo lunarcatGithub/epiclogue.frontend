@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -109,7 +109,7 @@ const Header = () => {
 
   // 유저 알림 Read 여부
   const readObserver = () => {
-    setRead(readApi?.data?.notiCount !== 0);
+    setRead(readApi?.data?.notiCount > 0);
   };
 
   useEffect(() => {
@@ -228,6 +228,7 @@ const Header = () => {
               <MbHeaderInner pathname={pathname.match('/viewer') ? 'flex' : 'none'}>
                 <MbHeader>
                   <BackIcon onClick={() => router.back()} />
+                  <GoHomeBtn onClick={() => goURL({ pathname: '/' })}>Home</GoHomeBtn>
                 </MbHeader>
               </MbHeaderInner>
             </HeaderOutter>
@@ -603,7 +604,7 @@ const MbHeaderInner = styled.div`
 `;
 const MbHeader = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   width: 100%;
   height: 100%;
 `;
@@ -616,13 +617,23 @@ const BackIcon = styled.span`
   &::after {
     content: '';
     display: inline-block;
-    width: 1em;
-    height: 1em;
+    width: 0.9em;
+    height: 0.9em;
     border-top: 0.2em solid ${(props) => props.theme.color.popupColor};
     border-right: 0.2em solid ${(props) => props.theme.color.popupColor};
     transform: rotate(-135deg);
-  }
-`;
+  }`;
+
+const GoHomeBtn = styled.button`
+display:flex;
+padding:0.4em 1.1em;
+margin-right:0.2em;
+border-radius:2em;
+border:0.1em solid ${props => props.theme.color.popupColor};;
+font-size:${props => props.theme.fontSize.font15};
+font-weight:${props => props.theme.fontWeight.font700};
+color:${props => props.theme.color.popupColor};
+`
 
 // 모바일 전용 헤더
 const MobileHeader = styled.div`

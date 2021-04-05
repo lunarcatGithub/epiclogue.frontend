@@ -84,9 +84,8 @@ const theme = {
   PositionCenter,
   moreMenu,
   closeBtn,
-
  color:{
-    // 블랙 계열
+// 블랙 계열
  blackColor: "#4E4E4E",
  blackOpacity: 'rgba(34,34,34,0.7)',
  darkBlackOpacity: 'rgba(0,0,0,0.9)',

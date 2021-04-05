@@ -45,7 +45,6 @@ const MypageGeneral = () => {
         availableLangPatch({type:'AVAILABLE_LANG', payload:listArr});
         alertPatch({type: 'SUCCESS_LANGUAGE_UPDATE', payload:true });
       }
-
     }
   };
 
