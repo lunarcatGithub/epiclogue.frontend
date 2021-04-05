@@ -73,7 +73,6 @@ export default function ListForm({ type, contentsData }) {
         if (Number(e.target.value) === list.id) {
           list.isSelect = e.target.checked;
         }
-        console.log(bodyData);
       } else {
         list.isSelect = e.target.checked;
       }

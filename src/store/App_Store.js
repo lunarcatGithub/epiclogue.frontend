@@ -1,4 +1,4 @@
-import React,{ useState, useEffect, useReducer, createContext } from 'react';
+import React,{ useState, useEffect, useReducer, createContext, useLayoutEffect } from 'react';
 import { languageReducer, langInit } from '@reducer/LanguageReducer';
 import { useRouter } from 'next/router';
 import { initialAlert, alertReducer } from '@reducer/AlertReducer';
@@ -53,7 +53,7 @@ const ContextStore = ({ children }) => {
 
   // 개발 & 프로덕션 로그인 분기처리
   const devProductionHandle = () => {
-    cookieHandle('GET', 'access_token');
+    
     let divied = process.env.NODE_ENV;
     if(divied === 'development'){
       getTestHandle('GET', 'dev')
@@ -61,17 +61,18 @@ const ContextStore = ({ children }) => {
         setLoginOn(true)
       }
     } else {
+      cookieHandle('GET', 'access_token');
       if(cookieValue?.length > 1) { // 쿠키값이 있다면 로그인 상태로 반환
         setLoginOn(true)
       }}
     }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     devProductionHandle()
   }, [getTestCookie?.length, cookieValue?.length])
 
   useEffect(() => {
-    if (!loginOn) {
+    if (getTestCookie?.length < 1 || cookieValue?.length < 1 && !loginOn) {
       if (router.pathname.match('/upload') || router.pathname.match('/follow') || router.pathname.match('/editor')) {
         goURL({ pathname: '/login' });
         return;
@@ -81,7 +82,7 @@ const ContextStore = ({ children }) => {
     } else {
       return;
     }
-  }, [router.pathname]);
+  }, [cookieValue?.length, getTestCookie?.length, loginOn]);
 
   return (
     <AppDataContext.Provider

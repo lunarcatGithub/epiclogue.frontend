@@ -25,7 +25,7 @@ export default function MypageForm(props) {
     { id: 3, title: 'English', value: 2, isChecked: false },
   ]);
   // const [currentData, setCurrentData] = useState();
-  console.log(selectMultiple)
+
   // 언어 변수 설정
   const [langTitle, setLangTitle] = useState();
   const [langSubtitle, setLangSubtitle] = useState();
@@ -76,7 +76,6 @@ export default function MypageForm(props) {
 
   const sendDataHandler = (e) => {
     if (type === 'language') {
-      localStorage.setItem('language', selectData);
       langPatch({ type: 'LANGUAGE_UPDATE', payload: selectData });
       formDatas.submit(e, 'language', selectData);
     } else if (type === 'interest') {

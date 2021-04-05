@@ -11,7 +11,7 @@ export async function getServerSideProps({ query, req, locale }) {
   let error = null;
   const id = req?.params?.id || query?.id;
   const url = `${process.env.API_URL}/myboard/${id}`;
-  console.log('cookie', req?.headers?.cookie)
+
   res = await axios({
     url,
     method: 'get',

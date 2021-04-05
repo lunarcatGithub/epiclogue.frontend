@@ -54,8 +54,8 @@ const Header = () => {
   const [read, setRead] = useState();
 
   // fetch
-  const [profileLoding, profileApi, profileError, profileFetch] = useAxiosFetch();
-  const [readLoding, readApi, readError, readFetch] = useAxiosFetch();
+  const [, profileApi, profileError, profileFetch] = useAxiosFetch();
+  const [, readApi, , readFetch] = useAxiosFetch();
 
   // 헤더 막기
   const [preventHeader, setPreventHeader] = useState();
@@ -129,8 +129,7 @@ const Header = () => {
 
   useEffect(() => {
     if (profileApi) {
-      // localStorage.setItem('language', profileApi.data.displayLanguage);
-      langPatch({ type: 'LANGUAGE_UPDATE', payload: profileApi.data.displayLanguage });
+      langPatch({ type: 'LANGUAGE_UPDATE', payload: profileApi?.data?.displayLanguage });
     }
   }, [profileApi]);
 
@@ -139,7 +138,15 @@ const Header = () => {
   }, [pathname]);
 
   return (
-    <HeaderDataContext.Provider value={{ searchBody, toggleSearchPop, toggleIsOpen, toggleNoti, profileApi, profileError }}>
+    <HeaderDataContext.Provider 
+      value={{ 
+        searchBody, 
+        toggleSearchPop, 
+        toggleIsOpen, 
+        toggleNoti, 
+        profileApi, 
+        profileError 
+      }}>
       {/* 헤더 레이아웃 */}
       {preventHeader && (
         <>
