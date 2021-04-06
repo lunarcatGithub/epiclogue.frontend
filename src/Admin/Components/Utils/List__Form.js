@@ -62,13 +62,14 @@ export default function ListForm({ type, contentsData }) {
         break;
     }
   };
+
   const dataHandle = (e, type) => {
 
   };
 
   const allCheckHandle = (e, type) => {
-    let check = bodyData;
-    check.forEach((list) => {
+    
+    bodyData.forEach((list) => {
       if (type === 'one') {
         if (Number(e.target.value) === list.id) {
           list.isSelect = e.target.checked;
@@ -77,7 +78,8 @@ export default function ListForm({ type, contentsData }) {
         list.isSelect = e.target.checked;
       }
     });
-    setBodyData(check);
+    console.log(bodyData)
+    setBodyData(bodyData);
   };
 
   useEffect(() => {
@@ -98,7 +100,6 @@ export default function ListForm({ type, contentsData }) {
           {
             warnBtn.map((btn, i) => (
               <TopmenuBtn key={i} onClick={(e) => dataHandle(e, btn.value)}>
-                {' '}
                 {btn.title}
               </TopmenuBtn>
             ))
@@ -109,12 +110,13 @@ export default function ListForm({ type, contentsData }) {
           <Dropdown data={viewNum} />
           <Dummy2 />
           <Dropdown data={dropDown1} type={type} />
-          {type !== 'USERS' && (
-            <>
-              <Dummy />
-              <Dropdown data={dropDown2} type={type} />
-            </>
-          )}
+          {
+            type !== 'USERS' && (
+              <>
+                <Dummy />
+                <Dropdown data={dropDown2} type={type} />
+              </> )
+          }
         </TopCenterLayout>
         <TopRightLayout>
           <Dropdown data={dropDown3} type={type} />
@@ -148,8 +150,9 @@ export default function ListForm({ type, contentsData }) {
                       name="contents"
                       value={content.id}
                       onChange={(e) => allCheckHandle(e, 'one')}
-                      // checked={content.isSelect ? true : false}
+                      defaultChecked={content.isSelect}
                     />
+                    {console.log(content.isSelect)}
                   </TableDataBox>
                   <TableDataBox >{content.id}</TableDataBox>
                   <TableDataBox>{content.email}</TableDataBox>
