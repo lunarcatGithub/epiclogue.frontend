@@ -1,5 +1,10 @@
 export function dataHiddenFilter(data, lang) {
-    const languageDivied = data.filter(data => (lang.indexOf(Number(data.language)) >= 0 ));
+    let languageDivied;
+    if(lang.length === 0){
+        languageDivied = data
+    } else {
+        languageDivied = data.filter(data => (lang.indexOf(Number(data.language)) >= 0 ));
+    }
 
     const arr = []
     languageDivied.filter((i) => {
