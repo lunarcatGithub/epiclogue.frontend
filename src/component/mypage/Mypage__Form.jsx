@@ -136,7 +136,6 @@ export default function MypageForm(props) {
                           <ListTxtRadio 
                             readOnly 
                             id={list.id} 
-                            name="userLanguage" 
                             value={list.state} 
                             checked={selectData === list.state} 
                             onChange={(e) => dataOnChangeHandler(e, 'LANGUAGE')} 

@@ -74,7 +74,7 @@ const HeaderPfPopup = () => {
 
   const navTabArr = [
     { method: () => [setIsOpen(), goURL({ pathname: `/mypage/profile` })], title: _profileSet, icon: '/static/header/profileIcon.svg' },
-    { method: () => [setIsOpen(), goURL({ pathname: `/myboard/${profileApi?.data?.screenId}/bookmarks` })], title: _goToBookMark, icon: '/static/header/headerBookMark.svg' },
+    { method: () => [setIsOpen(), goURL({ pathname: `/myboard/${profileApi?.data?.screenId}`, as:`/myboard/${profileApi?.data?.screenId}` , query:{tab:'bookmarks'} })], title: _goToBookMark, icon: '/static/header/headerBookMark.svg' },
     { method: () => [setIsOpen(), goURL({ pathname: `/policy/service` })], title: _policyInform, icon: '/static/header/policyIcon.svg' },
     { method: () => alertPatch({ type: 'NOT_SERVICE', payload: true }), title: _changeAccount, icon: '/static/header/switchIcon.svg' },
     { method: () => logout(), title: _logOutTab, icon: '/static/header/logoutIcon.svg' },
@@ -107,14 +107,15 @@ const HeaderPfPopup = () => {
               {/* // 유저 프로필 팝업의 헤더 부분 끝 */}
 
               {/* 프로필 설정 */}
-              {navTabArr.map((navTab, index) => (
-                <PopupAnchor key={index}>
-                  <TabWrap onClick={navTab.method}>
-                    <IconImg icon={navTab.icon} />
-                    <ProfileTextTab>{navTab.title}</ProfileTextTab>
-                  </TabWrap>
-                </PopupAnchor>
-              ))}
+              {
+                navTabArr.map((navTab, index) => (
+                  <PopupAnchor key={index}>
+                    <TabWrap onClick={navTab.method}>
+                      <IconImg icon={navTab.icon} />
+                      <ProfileTextTab>{navTab.title}</ProfileTextTab>
+                    </TabWrap>
+                  </PopupAnchor> ))
+              }
             </PopUpInner>
           </PopupLayout> )
       }

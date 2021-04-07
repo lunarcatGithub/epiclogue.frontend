@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from "next-i18next";
+import { useRouter } from 'next/router';
 
 // 컴포넌트 import
 import { LangMyBoard } from '@language/Lang.Myboard';
@@ -26,6 +27,7 @@ import { Meta } from '@utils/MetaTags';
 export default function MyBoard({ boardItem, userId, nonError }) {
   const [goURL] = useUrlMove();
   const { t } = useTranslation("common");
+  const router = useRouter()
 
   const { langState } = useContext(LanguageContext);
   const { setMyboardData, loginOn, setUnAuth, followData, setFollowData, setFollowButton } = useContext(AppDataContext);
@@ -54,7 +56,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const [setGetDate, setCountryDivided, countryResult] = useDate();
 
   //tab
-  const [isTab, setIsTab] = useState('all');
+  const [isTab, setIsTab] = useState(router?.query?.tab || 'all');
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
@@ -228,11 +230,12 @@ export default function MyBoard({ boardItem, userId, nonError }) {
           </ContentsBox>
         </LayoutInner>
       </Layout>
-      {state_Confirm && (
-        <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
-          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={goURL} type={'REMOVE_USER'} />
-        </Modal>
-      )}
+      {
+        state_Confirm && (
+          <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
+            <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={goURL} type={'REMOVE_USER'} />
+          </Modal> )
+      }
     </>
   );
 }

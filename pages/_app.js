@@ -7,6 +7,7 @@ import { InteractTab } from '@utils/Push__Interaction';
 import Helmet from 'react-helmet';
 import { useRouter } from 'next/router';
 import { appWithTranslation } from "next-i18next";
+import {AdminContextStore} from '../src/Admin/Components/Store/Admin_Context';
 
 // hooks & reducer
 import { ContextStore } from '@store/App_Store';
@@ -18,10 +19,12 @@ function MyApp({ Component, pageProps }) {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <ContextStore>
+        <AdminContextStore>
         {!router.asPath.match('/epicadmin/') && <Helmet />}
         {!router.asPath.match('/epicadmin/') && <Header />}
         <Component {...pageProps} />
         <InteractTab />
+        </AdminContextStore>
       </ContextStore>
     </ThemeProvider>
   );

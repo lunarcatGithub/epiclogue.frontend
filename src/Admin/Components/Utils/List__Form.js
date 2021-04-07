@@ -1,10 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 
+//utils
 import Dropdown from '../Utils/Dropdown';
 
+//hooks && reduce
+import Modal from '@utils/Modal'
+import {AdminContext} from '../Store/Admin_Context';
+
+//component
+import {AdminConfirmPopup} from './Admin_Confirm_Popup';
+
 export default function ListForm({ type, contentsData }) {
-  const { categorySelec, hideOrNot, searchFilter, headerArr, userContentsData, tableRef, setToggleSelect, dataHadler } = contentsData;
+  const {
+    categorySelec,
+    hideOrNot,
+    searchFilter,
+    headerArr,
+    userContentsData,
+    tableRef,
+    setToggleSelect,
+    //remove
+    toggleSelect,
+    setUserContentsData
+  } = contentsData;
+  
+  const {reportList} = useContext(AdminContext);
 
   const [dropDown1, setDropDown1] = useState([]);
   const [dropDown2, setDropDown2] = useState([]);
@@ -12,6 +33,8 @@ export default function ListForm({ type, contentsData }) {
   const [headerArray, setHeaderArray] = useState();
   const [bodyData, setBodyData] = useState([]);
   const [warnBtn, setWarnBtn] = useState([]);
+  // confirm
+  const [warnConfrim, setWarnConfirm] = useState({type:null, bool:false});
 
   const typeHandler = () => {
     let arr = [];
@@ -63,8 +86,8 @@ export default function ListForm({ type, contentsData }) {
     }
   };
 
-  const dataHandle = (e, type) => {
-
+  const lastDataConfirm = (e, type) => {
+    setWarnConfirm({type, bool:true})
   };
 
   const allCheckHandle = (e, type) => {
@@ -78,8 +101,29 @@ export default function ListForm({ type, contentsData }) {
         list.isSelect = e.target.checked;
       }
     });
-    console.log(bodyData)
     setBodyData(bodyData);
+  };
+
+  const dataHandler = (e, subType) => {
+    userContentsData?.forEach((_contentsData) => {
+      if (Number(toggleSelect) === _contentsData.id) {
+        let data = userContentsData;
+        if(type === 'REPORT'){
+          if (subType === 'main') {
+            data.splice(Number(toggleSelect) - 1, 1);
+            setUserContentsData(data);
+          } else if (subType === 'sub') {
+            if (userContentsData.hide === true) {
+              data.hide = false;
+            } else {
+              data.hide = true;
+            }
+            setUserContentsData(data);
+          }
+        }
+      } else return;
+      
+    });
   };
 
   useEffect(() => {
@@ -152,7 +196,6 @@ export default function ListForm({ type, contentsData }) {
                       onChange={(e) => allCheckHandle(e, 'one')}
                       defaultChecked={content.isSelect}
                     />
-                    {console.log(content.isSelect)}
                   </TableDataBox>
                   <TableDataBox >{content.id}</TableDataBox>
                   <TableDataBox>{content.email}</TableDataBox>
@@ -164,7 +207,7 @@ export default function ListForm({ type, contentsData }) {
                   {content.result && <TableDataBox>{content.result}</TableDataBox>}
                   {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
                   {content.content && <TableDataBox>{content.content}</TableDataBox>}
-                  {content.resultDate && <TableDataBox>{content.resultDate}</TableDataBox>}
+                  {content.date && <TableDataBox>{content.date}</TableDataBox>}
                   {content.count && <TableDataBox>{content.count}</TableDataBox>}
                   {content.view && <TableDataBox>{content.view === 'view' ? '보임' : '숨김' }</TableDataBox>}
                   {
@@ -174,7 +217,7 @@ export default function ListForm({ type, contentsData }) {
                           id={content.id}
                           onClick={(e) => {
                             setToggleSelect(e.currentTarget.id);
-                            dataHadler(e);
+                            lastDataConfirm(e, 'Suspension ');
                           }}
                         >
                           {content.ban ? '해제' : '정지'}
@@ -188,7 +231,7 @@ export default function ListForm({ type, contentsData }) {
                           id={content.id}
                           onClick={(e) => {
                             setToggleSelect(e.currentTarget.id);
-                            dataHadler(e);
+                            lastDataConfirm(e, 'Hide');
                           }}
                         >
                           {content.hide ? '보이기' : '숨기기'}
@@ -202,7 +245,7 @@ export default function ListForm({ type, contentsData }) {
                           id={content.id}
                           onClick={(e) => {
                             setToggleSelect(e.currentTarget.id);
-                            dataHadler(e);
+                            lastDataConfirm(e, 'Remove');
                           }}
                         >
                           삭제
@@ -216,7 +259,7 @@ export default function ListForm({ type, contentsData }) {
                           id={content.id}
                           onClick={(e) => {
                             setToggleSelect(e.currentTarget.id);
-                            dataHadler(e);
+                            lastDataConfirm(e, 'Withdrawal');
                           }}
                         >
                           탈퇴
@@ -228,7 +271,17 @@ export default function ListForm({ type, contentsData }) {
           </TableBody>
         </TableBox>
       </MainLayout>
-      <BottomLayout>{''}</BottomLayout>
+        {
+          warnConfrim.bool &&
+        <Modal visible={warnConfrim.bool} closable={true} maskClosable={true} onClose={() => setWarnConfirm({...warnConfrim, bool:false})}>
+          < AdminConfirmPopup 
+            type={warnConfrim.type}
+            dataHandler={dataHandler}
+            reportList={reportList}
+            closePopup={setWarnConfirm}
+          />
+        </Modal>
+        }
     </>
   );
 }
@@ -336,5 +389,3 @@ const CheckBox = styled.input.attrs({
   height: 1em;
 `;
 
-// 하단 레이아웃
-const BottomLayout = styled.div``;
