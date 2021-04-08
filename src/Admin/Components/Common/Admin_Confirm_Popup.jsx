@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import styled,{css} from 'styled-components';
+
+//component
+import {CopyRightForm} from '../Common/Copyright_Form';
+
 // utils
 
 // hook
 import { useToggle } from '@hooks/useToggle';
 
 export function AdminConfirmPopup(props) {
-    const {mainType, type, dataHandler, reportList, closePopup} = props
+    const {mainType, type, dataHandler, reportList, closePopup, userData} = props
 
     const [headerTitle, setHeaderTitle] = useState({});
     const [dataOnChange, dataOnChangeHandler] = useState('스팸성');
@@ -59,33 +63,40 @@ export function AdminConfirmPopup(props) {
                     <TextBlock>콘텐츠 정보</TextBlock>
                     <InformBox></InformBox>
                     </BlockWrap>
-                        <BlockWrap>
-                            <TextBlock>해당 제재 목록</TextBlock>
-                        <DropdownBtn onClick={()=>toggleSelectList(!selectList)}>{dataOnChange}</DropdownBtn>
-                        { 
-                        selectList && 
-                        <Dropdown>
-                            {
-                                reportList?.map( list => (
-                                <ListTxtBox key={list.id}>
-                                    <TextList>{list.title}</TextList>
-                                    <ListTxtRadio
-                                    readOnly 
-                                    value={list.id}
-                                    checked={list.title === dataOnChange}
-                                    onChange={ e => dataOnChangeHandler(list.title)}
-                                    onClick={()=>toggleSelectList(!selectList)} 
-                                    />
-                                    <ListRadioCustom/>
-                                </ListTxtBox> ))
+                    { 
+                        mainType !== 'COPYRIGHT' ?
+                        <>
+                            <BlockWrap>
+                                <TextBlock>해당 제재 목록</TextBlock>
+                            <DropdownBtn onClick={()=>toggleSelectList(!selectList)}>{dataOnChange}</DropdownBtn>
+                            { 
+                            selectList && 
+                            <Dropdown>
+                                {
+                                    reportList?.map( list => (
+                                    <ListTxtBox key={list.id}>
+                                        <TextList>{list.title}</TextList>
+                                        <ListTxtRadio
+                                        readOnly 
+                                        value={list.id}
+                                        checked={list.title === dataOnChange}
+                                        onChange={ e => dataOnChangeHandler(list.title)}
+                                        onClick={()=>toggleSelectList(!selectList)} 
+                                        />
+                                        <ListRadioCustom/>
+                                    </ListTxtBox> ))
+                                }
+                            </Dropdown>
                             }
-                        </Dropdown>
+                            </BlockWrap>
+                            <BlockWrap>
+                            <TextBlock>유저 알림 메시지</TextBlock>
+                                <AdminWarnMessage value={userInform} onChange={(e)=>setUserInform(e.target.value)} />
+                            </BlockWrap> 
+                            </>
+                            : 
+                            <CopyRightForm userData={userData} />
                         }
-                        </BlockWrap>
-                        <BlockWrap>
-                        <TextBlock>유저 알림 메시지</TextBlock>
-                            <AdminWarnMessage value={userInform} onChange={(e)=>setUserInform(e.target.value)} />
-                        </BlockWrap>
                         </FormWrap>
                     </ConfirmDivBodyInner>
                 </ConfirmDivBody>
@@ -150,8 +161,8 @@ justify-content:flex-end;
 //block wrap
 const BlockWrap = styled.div`
 margin-bottom:0.5em;
-
 `
+
 // 상단 유저 정보
 const InformBox = styled.span`
 display:flex;

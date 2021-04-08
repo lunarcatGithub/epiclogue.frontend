@@ -2,7 +2,7 @@ import React,{ useState } from 'react'
 import styled from 'styled-components';
 
 // 컴포넌트 import
-import ListForm from '../Utils/List__Form';
+import ListForm from '../Common/List__Form';
 
 export const AdminReport =()=> {
     //data

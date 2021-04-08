@@ -33,6 +33,8 @@ export default function ListForm({ type, contentsData }) {
   const [dropDown3, setDropDown3] = useState([]);
   const [bodyData, setBodyData] = useState([]);
 
+  const [selectedData, setSelectedData] = useState([]);
+
   // confirm
   const [warnConfrim, setWarnConfirm] = useState({type:null, bool:false});
 
@@ -73,7 +75,8 @@ export default function ListForm({ type, contentsData }) {
   };
 
   const lastDataConfirm = (e, type) => {
-    setWarnConfirm({type, bool:true})
+    setWarnConfirm({type, bool:true});
+    bodyData?.filter( uid => uid.id === Number(e.target.id) && setSelectedData(uid))
   };
 
   const allCheckHandle = (e, type) => {
@@ -246,12 +249,13 @@ export default function ListForm({ type, contentsData }) {
         {
           warnConfrim.bool &&
           <Modal visible={warnConfrim.bool} closable={true} maskClosable={true} onClose={() => setWarnConfirm({...warnConfrim, bool:false})}>
-            < AdminConfirmPopup 
+            <AdminConfirmPopup 
               type={warnConfrim.type}
               mainType={type}
               dataHandler={dataHandler}
               reportList={reportList}
               closePopup={setWarnConfirm}
+              userData={selectedData}
             />
           </Modal>
         }
