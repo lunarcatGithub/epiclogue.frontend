@@ -11,7 +11,6 @@ const combineReducers = (...reducers) => (state, action) => {
 
 // context provider
 const AdminContextStore = ({ children }) => {
-
   const reportList = [
     { id: 0, title: '스팸성', value: 'spam'},
     { id: 1, title: '음란물', value: 'adult'},

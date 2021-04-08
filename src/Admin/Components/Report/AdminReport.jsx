@@ -51,7 +51,13 @@ export const AdminReport =()=> {
         });
     }  
 
-    const headerArr = ['번호', '이메일', '아이디', '회원유형', '종류', '처리결과', '콘텐츠','내용', '처리일자', '신고횟수', '상태', '정지', '숨김여부','삭제', '탈퇴'];
+    const headerArr = ['번호', '이메일', '아이디', '회원유형', '종류', '처리결과', '콘텐츠','내용', '처리일자', '신고횟수', '정지', '삭제', '탈퇴'];
+    const warnBtn = [
+        { title: '메일발송', value: 'sendMail' },
+        { title: '정지', value: 'ban' },
+        { title: '탈퇴', value: 'leave' },
+        { title: '삭제', value: 'remove' },
+    ]
 
     return (
         <Layout>
@@ -64,7 +70,8 @@ export const AdminReport =()=> {
                         userContentsData,
                         searchFilter,
                         dataHadler,
-                        setToggleSelect
+                        setToggleSelect,
+                        warnBtn
                         }} />
             </LayoutInner>
         </Layout>

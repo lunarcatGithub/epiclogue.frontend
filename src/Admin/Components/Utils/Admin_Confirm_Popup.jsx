@@ -6,33 +6,42 @@ import styled,{css} from 'styled-components';
 import { useToggle } from '@hooks/useToggle';
 
 export function AdminConfirmPopup(props) {
-    const {type, dataHandler, reportList, closePopup} = props
+    const {mainType, type, dataHandler, reportList, closePopup} = props
 
     const [headerTitle, setHeaderTitle] = useState({});
     const [dataOnChange, dataOnChangeHandler] = useState('스팸성');
     const [selectReport, setSelectReport] = useState();
     const [selectList, toggleSelectList] = useToggle(false);
+    const [userInform, setUserInform] = useState('')
 
     const deviedHandler = () => {
+        let _type,
+            postType = '댓글';
+            
         switch (type) {
             case 'Suspension':
                 setHeaderTitle({title:'유저 정지'})
+                _type = '정지 처리';
                 break;
             case 'Hide':
                 setHeaderTitle({title:'콘텐츠 블라인드'})
+                _type = '블라인드 처리';
                 break;
             case 'Remove':
-                setHeaderTitle({title:'콘텐츠 삭제'})
+                setHeaderTitle({title:'콘텐츠 삭제'});
+                _type = '삭제되';
+
                 break;
 
             default:
                 break;
         }
+        setUserInform(`해당 게시물 내에서 ${dataOnChange} 내용이 확인되어 ${postType}이 ${_type}었습니다 `)
     }
 
     useEffect(()=> {
         deviedHandler();
-    },[type])
+    },[type, dataOnChange])
 
     return (
         <>
@@ -45,12 +54,13 @@ export function AdminConfirmPopup(props) {
                 {/* 내용 desc */}
                 <ConfirmDivBody>
                     <ConfirmDivBodyInner>
+                    <FormWrap>
                     <BlockWrap>
-                    <TextBlock>해당 정보</TextBlock>
+                    <TextBlock>콘텐츠 정보</TextBlock>
                     <InformBox></InformBox>
                     </BlockWrap>
                         <BlockWrap>
-                            <TextBlock>해당 신고 목록</TextBlock>
+                            <TextBlock>해당 제재 목록</TextBlock>
                         <DropdownBtn onClick={()=>toggleSelectList(!selectList)}>{dataOnChange}</DropdownBtn>
                         { 
                         selectList && 
@@ -73,10 +83,10 @@ export function AdminConfirmPopup(props) {
                         }
                         </BlockWrap>
                         <BlockWrap>
-                            <AdminWarnMessage
-                            value={'haha'}
-                            />
+                        <TextBlock>유저 알림 메시지</TextBlock>
+                            <AdminWarnMessage value={userInform} onChange={(e)=>setUserInform(e.target.value)} />
                         </BlockWrap>
+                        </FormWrap>
                     </ConfirmDivBodyInner>
                 </ConfirmDivBody>
                 {/* 하단 title */}
@@ -86,10 +96,12 @@ export function AdminConfirmPopup(props) {
                 </ConfirmDivBottom>
             </ConfirmInner>
         </ConfirmLayout>
-   
         </>
     )
 }
+const FormWrap = styled.form`
+
+`
 
 const ConfirmLayout = styled.div`
 display: flex;

@@ -22,17 +22,17 @@ export default function ListForm({ type, contentsData }) {
     setToggleSelect,
     //remove
     toggleSelect,
-    setUserContentsData
+    setUserContentsData,
+    warnBtn
   } = contentsData;
-  
+
   const {reportList} = useContext(AdminContext);
 
   const [dropDown1, setDropDown1] = useState([]);
   const [dropDown2, setDropDown2] = useState([]);
   const [dropDown3, setDropDown3] = useState([]);
-  const [headerArray, setHeaderArray] = useState();
   const [bodyData, setBodyData] = useState([]);
-  const [warnBtn, setWarnBtn] = useState([]);
+
   // confirm
   const [warnConfrim, setWarnConfirm] = useState({type:null, bool:false});
 
@@ -48,39 +48,25 @@ export default function ListForm({ type, contentsData }) {
         setDropDown1(categorySelec);
         setDropDown2(hideOrNot);
         setDropDown3(searchFilter);
-        setHeaderArray(headerArr);
 
-        setWarnBtn([
-          { title: '삭제', value: 'remove' },
-          { title: '숨기기 ', value: 'hide' },
-        ]);
         break;
       case 'USERS':
         setDropDown1(categorySelec);
         setDropDown2('');
         setDropDown3(searchFilter);
-        setHeaderArray(headerArr);
-
-        setWarnBtn([
-          { title: '메일발송', value: 'sendMail' },
-          { title: '정지', value: 'ban' },
-          { title: '탈퇴', value: 'leave' },
-        ]);
 
         break;
       case 'REPORT':
         setDropDown1('');
         setDropDown2('');
         setDropDown3('');
-        setHeaderArray(headerArr);
-        setWarnBtn([
-          { title: '메일발송', value: 'sendMail' },
-          { title: '정지', value: 'ban' },
-          { title: '탈퇴', value: 'leave' },
-          { title: '삭제', value: 'remove' },
-        ]);
         break;
 
+      case 'COPYRIGHT':
+        setDropDown1('');
+        setDropDown2('');
+        setDropDown3('');
+        break;
       default:
         break;
     }
@@ -142,7 +128,7 @@ export default function ListForm({ type, contentsData }) {
         {/* 상단 좌측 레이아웃 */}
         <TopLeftLayout>
           {
-            warnBtn.map((btn, i) => (
+            warnBtn?.map((btn, i) => (
               <TopmenuBtn key={i} onClick={(e) => dataHandle(e, btn.value)}>
                 {btn.title}
               </TopmenuBtn>
@@ -179,7 +165,7 @@ export default function ListForm({ type, contentsData }) {
                 <CheckBox onChange={(e) => allCheckHandle(e, 'all')} />
               </TableHeadLine>
               {
-                headerArray?.map((item, key) => (
+                headerArr?.map((item, key) => (
                   <TableHeadLine key={key}>{item}</TableHeadLine> ))
               }
             </TableRowBox>
@@ -209,7 +195,6 @@ export default function ListForm({ type, contentsData }) {
                   {content.content && <TableDataBox>{content.content}</TableDataBox>}
                   {content.date && <TableDataBox>{content.date}</TableDataBox>}
                   {content.count && <TableDataBox>{content.count}</TableDataBox>}
-                  {content.view && <TableDataBox>{content.view === 'view' ? '보임' : '숨김' }</TableDataBox>}
                   {
                     type !== 'CONTENTS' && (
                       <TableDataBox>
@@ -221,20 +206,6 @@ export default function ListForm({ type, contentsData }) {
                           }}
                         >
                           {content.ban ? '해제' : '정지'}
-                        </AllButton>
-                      </TableDataBox> )
-                  }
-                  {
-                    type !== 'USERS' && (
-                      <TableDataBox>
-                        <AllButton
-                          id={content.id}
-                          onClick={(e) => {
-                            setToggleSelect(e.currentTarget.id);
-                            lastDataConfirm(e, 'Hide');
-                          }}
-                        >
-                          {content.hide ? '보이기' : '숨기기'}
                         </AllButton>
                       </TableDataBox> )
                   }
@@ -271,17 +242,20 @@ export default function ListForm({ type, contentsData }) {
           </TableBody>
         </TableBox>
       </MainLayout>
+      {/* 정지, 탈퇴, 블라인드 팝업 */}
         {
           warnConfrim.bool &&
-        <Modal visible={warnConfrim.bool} closable={true} maskClosable={true} onClose={() => setWarnConfirm({...warnConfrim, bool:false})}>
-          < AdminConfirmPopup 
-            type={warnConfrim.type}
-            dataHandler={dataHandler}
-            reportList={reportList}
-            closePopup={setWarnConfirm}
-          />
-        </Modal>
+          <Modal visible={warnConfrim.bool} closable={true} maskClosable={true} onClose={() => setWarnConfirm({...warnConfrim, bool:false})}>
+            < AdminConfirmPopup 
+              type={warnConfrim.type}
+              mainType={type}
+              dataHandler={dataHandler}
+              reportList={reportList}
+              closePopup={setWarnConfirm}
+            />
+          </Modal>
         }
+        {/* 콘텐츠 내용, 댓글 내용, 유저 정보 팝업 */}
     </>
   );
 }

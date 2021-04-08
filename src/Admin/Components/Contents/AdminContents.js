@@ -33,7 +33,9 @@ export const AdminContents = () => {
     { title: '아이디', value: 'hide' },
     { title: '제목', value: 'title' },
   ];
-
+  const warnBtn = [
+    { title: '삭제', value: 'remove' },
+  ]
 
   const dataHadler = (e, type) => {
     userContentsData?.forEach((_contentsData) => {
@@ -55,7 +57,7 @@ export const AdminContents = () => {
     });
   };
 
-  const headerArr = ['번호', '이메일', '아이디', '제목', '카테고리', '작성일', '숨김 여부', '숨기기', '삭제'];
+  const headerArr = ['번호', '이메일', '아이디', '제목', '카테고리', '작성일', '삭제'];
 
 
   return (
@@ -75,6 +77,7 @@ export const AdminContents = () => {
             toggleSelect,
             userContentsData,
             setUserContentsData,
+            warnBtn
           }}
         />
       </LayoutInner>

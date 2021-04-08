@@ -14,6 +14,7 @@ export const Nav = () => {
         { id:1, title:'콘텐츠관리', href:'contents', method:'CONTENTS' },
         { id:2, title:'회원관리', href:'users', method:'USERS' },
         { id:3, title:'신고관리', href:'reports', method:'REPORTS' },
+        { id:4, title:'저작권 신고', href:'copyright', method:'COPYRIGHT' },
     ]
 
     return (
