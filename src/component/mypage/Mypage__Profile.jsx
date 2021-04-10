@@ -206,7 +206,7 @@ const MypageProfile = () => {
         setNoPassword(_originPwError);
       }
     }
-  }, [errors]);
+  }, [errors, pwError]);
 
   const imageDataAppend = (e, type) => {
     //handlePreview에서 분류

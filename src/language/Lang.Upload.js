@@ -169,8 +169,8 @@ export const langUploadSource = {
     1: '出所',
   },
   uploadPermission: {
-    2: `You need the consent of the original author`,
-    0: '원작자의 동의가 필요합니다',
-    1: '原作者の同意が必要です',
+    2: `Please check the copyright policy`,
+    0: '저작권 정책을 확인해주세요',
+    1: '著作権ポリシーを確認してください',
   },
 };

@@ -53,7 +53,7 @@ export const AdminUsers = () => {
     });
   };
 
-  const headerArr = ['번호', '이메일', '아이디', '회원유형', '가입일', '', '정지', '탈퇴'];
+  const headerArr = ['번호', '이메일', '아이디', '회원유형', '가입일', '정지', '탈퇴'];
 
   return (
     <Layout>

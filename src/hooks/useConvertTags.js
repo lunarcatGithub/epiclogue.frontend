@@ -1,34 +1,31 @@
-import { useState } from 'react';
+import React,{ useState } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 
 export const useConvertTags = () => {
   const [converted, setConverted] = useState([]);
-  const regURL = new RegExp(/([a-z0-9\w]+\.*)+[a-z0-9]{2,4}/gi);
-  const regURLHttp = new RegExp(/(http(s)?:\/\/)([a-z0-9\w]+\.*)+[a-z0-9]{2,4}/gi);
-  const regExp = new RegExp(/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i);
+  const regURLHttp = new RegExp(/^(((http(s?))\:\/\/)?)([0-9a-zA-Z\-]+\.)+[a-zA-Z]{2,6}(\:[0-9]+)?(\/\S*)?/);
+  const regExp = new RegExp(/^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i);
 
   const convert = (props) => {
     if (!props) return;
     const arr = [];
-    let splitBody;
+  
+    new Promise((res, rej) => {
+    let data = props.replace(/(\n|\r\n)/g, '+<br/>+').split('+').join('+')
+    res(data)
+  }).then((data) => {
+    return data.replace(/\s/g, '+').split('+')
+  }).then((test) => {
 
-    if (props.match(' ')) {
-      splitBody = props.split(' ');
-    } else if (props.match('\n')) {
-      splitBody = props.replaceAll('\n', '+<br/>+').split('+');
-    } else {
-      splitBody = [props];
-    }
-
-    splitBody?.map((str, index) => {
+    test?.map((str, index) => {
       if (str[0] === '#') {
         arr.push(
           <Link
             href={{
               pathname: `/search/latest/`,
               query: {
-                text: str.split('#').pop(),
+                text: str,
                 type: 'latest',
               },
             }}
@@ -58,25 +55,20 @@ export const useConvertTags = () => {
       } else if (str.toString().match(regExp) || str.toString().match(regURLHttp)) {
         // 사이트 주소
         arr.push(
-          <LinkStyle key={index} href={`https://${str}`} target="_blank">
+          <LinkStyle key={index} href={`${str.toString().match(/(http(s)?:\/\/)/gi) ? str : `https://${str}` }`} target="_blank">
             {str}
           </LinkStyle>
         );
       }
-      // else if(str.toString().match(regURL)){
-      //   // 이메일 주소
-      //   arr.push(
-      //     <LinkStyle key={index} href={`https://${str}`} target="_blank">
-      //       {str}
-      //     </LinkStyle>
-      //   );
-      // }
       else if (str === '<br/>') {
         arr.push(<br key={index} />);
       } else {
         arr.push(<TextChild key={index}>{str}</TextChild>);
       }
     });
+  })
+
+    
 
     setConverted(arr);
   };
