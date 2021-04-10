@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, {css} from 'styled-components';
 
-export function CopyRightForm(props) {
+export function EmailForm(props) {
   const {userData} = props
 
   return (
@@ -45,6 +45,8 @@ border: 1px solid #999;
 border-radius:0.3em;
 padding:0.8em 0.5em;
 ${TextSize15};
+font-weight:${(props) => props.theme.fontWeight.font500};
+
 `
 //block wrap
 const BlockWrap = styled.div`
@@ -57,6 +59,7 @@ const TextBlock = styled.span`
 display:flex;
 ${TextSize15};
 margin-bottom:0.7em;
+
 `
 
 //input

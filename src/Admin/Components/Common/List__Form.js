@@ -37,12 +37,14 @@ export default function ListForm({ type, contentsData }) {
 
   // confirm
   const [warnConfrim, setWarnConfirm] = useState({type:null, bool:false});
+  const [userEmail, setUserEmail] = useState({type:null, bool:false});
 
   const typeHandler = () => {
     let arr = [];
     userContentsData?.forEach((data, i) => {
       arr.push({ ...data, isSelect: false });
     });
+
     setBodyData(arr);
 
     switch (type) {
@@ -79,8 +81,12 @@ export default function ListForm({ type, contentsData }) {
     bodyData?.filter( uid => uid.id === Number(e.target.id) && setSelectedData(uid))
   };
 
+  const userSendEmail = (e, type) => {
+    setUserEmail({type, bool:true});
+    console.log(type)
+  }
+
   const allCheckHandle = (e, type) => {
-    
     bodyData.forEach((list) => {
       if (type === 'one') {
         if (Number(e.target.value) === list.id) {
@@ -132,7 +138,11 @@ export default function ListForm({ type, contentsData }) {
         <TopLeftLayout>
           {
             warnBtn?.map((btn, i) => (
-              <TopmenuBtn key={i} onClick={(e) => dataHandle(e, btn.value)}>
+              <TopmenuBtn 
+              key={i}
+              onClick={ e => {
+                userSendEmail(e, type)
+              }}>
                 {btn.title}
               </TopmenuBtn>
             ))
@@ -147,7 +157,10 @@ export default function ListForm({ type, contentsData }) {
             type !== 'USERS' && (
               <>
                 <Dummy />
-                <Dropdown data={dropDown2} type={type} />
+                <Dropdown
+                data={dropDown2} 
+                type={type} 
+                />
               </> )
           }
         </TopCenterLayout>
@@ -200,7 +213,7 @@ export default function ListForm({ type, contentsData }) {
                   {content.count && <TableDataBox>{content.count}</TableDataBox>}
                   {
                     type !== 'CONTENTS' && (
-                      <TableDataBox>
+                      <TableDataBox type='btn' >
                         <AllButton
                           id={content.id}
                           onClick={(e) => {
@@ -214,7 +227,7 @@ export default function ListForm({ type, contentsData }) {
                   }
                   {
                     type !== 'USERS' && (
-                      <TableDataBox>
+                      <TableDataBox type='btn' >
                         <AllButton
                           id={content.id}
                           onClick={(e) => {
@@ -228,7 +241,7 @@ export default function ListForm({ type, contentsData }) {
                   }
                   {
                     type !== 'CONTENTS' && (
-                      <TableDataBox>
+                      <TableDataBox type='btn' >
                         <AllButton
                           id={content.id}
                           onClick={(e) => {
@@ -256,6 +269,16 @@ export default function ListForm({ type, contentsData }) {
               reportList={reportList}
               closePopup={setWarnConfirm}
               userData={selectedData}
+            />
+          </Modal>
+        }
+        {
+          userEmail.bool &&
+          <Modal visible={userEmail.bool} closable={true} maskClosable={true} onClose={() => setUserEmail({...userEmail, bool:false})}>
+            <AdminConfirmPopup 
+              type={userEmail.type}
+              closePopup={setUserEmail}
+
             />
           </Modal>
         }
@@ -356,8 +379,9 @@ const TableRowBox = styled.tr`
   background: ${(props) => props.theme.adminColor.whiteColor};
 `;
 const TableDataBox = styled.td`
+  width:${props => props.type === 'btn' && '4.5em'};
   text-align: center;
-  padding: 0.8em 1em;
+  padding: 0.8em 0.5em;
 `;
 // 본문 레이아웃 - 헤더 UI
 const CheckBox = styled.input.attrs({

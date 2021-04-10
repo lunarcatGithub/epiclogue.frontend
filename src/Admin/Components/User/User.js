@@ -56,6 +56,7 @@ export const AdminUsers = () => {
   const headerArr = ['번호', '이메일', '아이디', '회원유형', '가입일', '정지', '탈퇴'];
   
   const warnBtn = [
+    { title: '알림발송', value: 'sendInfo' },
     { title: '메일발송', value: 'sendMail' },
     { title: '정지', value: 'ban' },
     { title: '탈퇴', value: 'leave' },

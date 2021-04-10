@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled,{css} from 'styled-components';
 
 //component
-import {CopyRightForm} from '../Common/Copyright_Form';
+import {EmailForm} from '../Common/EmailForm_Form';
 
 // utils
 
@@ -61,7 +61,12 @@ export function AdminConfirmPopup(props) {
                     <FormWrap>
                     <BlockWrap>
                     <TextBlock>콘텐츠 정보</TextBlock>
-                    <InformBox></InformBox>
+                    <InformBox>{userData?.title}</InformBox>
+                    </BlockWrap>
+                    {/* 콘텐츠 업로드 유저 */}
+                    <BlockWrap>
+                    <TextBlock>업로드 유저</TextBlock>
+                    <InformBox>{userData?._id}</InformBox>
                     </BlockWrap>
                     { 
                         mainType !== 'COPYRIGHT' ?
@@ -80,7 +85,7 @@ export function AdminConfirmPopup(props) {
                                         readOnly 
                                         value={list.id}
                                         checked={list.title === dataOnChange}
-                                        onChange={ e => dataOnChangeHandler(list.title)}
+                                        onChange={() => dataOnChangeHandler(list.title)}
                                         onClick={()=>toggleSelectList(!selectList)} 
                                         />
                                         <ListRadioCustom/>
@@ -95,7 +100,7 @@ export function AdminConfirmPopup(props) {
                             </BlockWrap> 
                             </>
                             : 
-                            <CopyRightForm userData={userData} />
+                            <EmailForm userData={userData} />
                         }
                         </FormWrap>
                     </ConfirmDivBodyInner>
@@ -110,9 +115,13 @@ export function AdminConfirmPopup(props) {
         </>
     )
 }
-const FormWrap = styled.form`
-
+const TextSize15 = css`
+color:${(props) => props.theme.color.blackColor};
+font-weight:${(props) => props.theme.fontWeight.font700};
+font-size:${(props) => props.theme.fontSize.font15};
 `
+
+const FormWrap = styled.form``
 
 const ConfirmLayout = styled.div`
 display: flex;
@@ -169,11 +178,14 @@ display:flex;
 width:100%;
 height:auto;
 max-height:5em;
-overflow-x:hidden;
-overflow-x:scroll;
+overflow-y:hidden;
+overflow-y:scroll;
 border: 1px solid #999;
 border-radius:0.3em;
-padding:0.8em 0;
+padding:0.8em 0.5em;
+${TextSize15};
+font-weight:${(props) => props.theme.fontWeight.font500};
+
 `
 
 // hidden contents 영역 - 라디오 버튼
@@ -223,12 +235,6 @@ const TextList = styled.span`
     color: ${(props) => props.theme.color.blackColor};
     padding: 0 4px;
 `;
-
-const TextSize15 = css`
-color:${(props) => props.theme.color.blackColor};
-font-weight:${(props) => props.theme.fontWeight.font700};
-font-size:${(props) => props.theme.fontSize.font15};
-`
 
 const TextBlock = styled.span`
 display:flex;

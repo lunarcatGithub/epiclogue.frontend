@@ -22,17 +22,20 @@ export const AdminContents = () => {
     { title: '일러스트', value: 'illust' },
     { title: '코믹', value: 'comic' },
   ];
+
   const hideOrNot = [
     { title: '전체', value: 'all' },
     { title: '표시', value: 'view' },
     { title: '숨김', value: 'hide' },
   ];
+
   const searchFilter = [
     { title: '전체', value: 'all' },
     { title: '이메일', value: 'view' },
     { title: '아이디', value: 'hide' },
     { title: '제목', value: 'title' },
   ];
+  
   const warnBtn = [
     { title: '삭제', value: 'remove' },
   ]
