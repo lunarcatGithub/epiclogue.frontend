@@ -1,20 +1,38 @@
-import React from 'react'
+import React,{useState, useEffect} from 'react'
 import styled, {css} from 'styled-components';
 
-export function EmailForm(props) {
-  const {userData} = props
+export function EmailForm({userData, mainType}) {
+  const [emailTitle, setEmailTitle] = useState('');
+
+  const initValueHandler = () => {
+    switch (mainType) {
+      case 'COPYRIGHT':
+        setEmailTitle('저작권 신고 처리 결과')
+        break;
+    
+      default:
+        break;
+    }
+  }
+  const changeValue = (e) => {
+    console.log(e.target.value)
+  }
+
+  useEffect(() => {
+    initValueHandler();
+  }, [mainType])
 
   return (
     <Layout>
       {/* 보낼 유저 이메일 */}
       <BlockWrap>
       <TextBlock>유저 이메일</TextBlock>
-      <InformBox>{userData.email}</InformBox>
+      <InformBox>{userData?.email}</InformBox>
       </BlockWrap>
       {/* 이메일 제목 */}
       <BlockWrap>
       <TextBlock>이메일 제목</TextBlock>
-        <TextInput/>
+        <TextInput value={emailTitle} onChange={e => changeValue(e)} />
       </BlockWrap>
       {/* 이메일 설명 */}
       <BlockWrap>

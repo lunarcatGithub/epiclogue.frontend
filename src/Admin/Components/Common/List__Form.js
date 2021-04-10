@@ -83,7 +83,6 @@ export default function ListForm({ type, contentsData }) {
 
   const userSendEmail = (e, type) => {
     setUserEmail({type, bool:true});
-    console.log(type)
   }
 
   const allCheckHandle = (e, type) => {
@@ -141,7 +140,7 @@ export default function ListForm({ type, contentsData }) {
               <TopmenuBtn 
               key={i}
               onClick={ e => {
-                userSendEmail(e, type)
+                btn.value === 'sendMail' ? userSendEmail(e, type) : null
               }}>
                 {btn.title}
               </TopmenuBtn>
@@ -272,13 +271,14 @@ export default function ListForm({ type, contentsData }) {
             />
           </Modal>
         }
+        {/* 유저 정보 확인 (저작권 신고) */}
         {
           userEmail.bool &&
           <Modal visible={userEmail.bool} closable={true} maskClosable={true} onClose={() => setUserEmail({...userEmail, bool:false})}>
             <AdminConfirmPopup 
               type={userEmail.type}
+              mainType={type}
               closePopup={setUserEmail}
-
             />
           </Modal>
         }

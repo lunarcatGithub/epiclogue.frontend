@@ -100,7 +100,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
   const [converted, convert] = useConvertTags();
 
   // 토글 submit 전용
-  const [likeLoding, likeApi, likeError, likeFetch] = useAxiosFetch();
+  const [likeApi, likeError, likeFetch] = useAxiosFetch();
   const [bookmarkLoding, bookmarkApi, bookmarkError, bookmarkFetch] = useAxiosFetch();
   // const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
 
@@ -245,7 +245,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
         sourceUrl,
       } = boardData;
       const { screenId, nickname, _id, following, profile } = writer;
-
+      console.log(boardData)
       setData({
         boardTitle,
         boardBody,

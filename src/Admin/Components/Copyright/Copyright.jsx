@@ -54,7 +54,12 @@ export const AdminCopyright = () => {
   };
 
   const headerArr = ['번호', '이메일', '아이디', '회원유형', '제목', '신고날짜', '정지', '삭제', '탈퇴'];
-
+  const warnBtn = [
+    { title: '메일발송', value: 'sendMail' },
+    { title: '정지', value: 'ban' },
+    { title: '탈퇴', value: 'leave' },
+    { title: '삭제', value: 'remove' },
+]
   return (
     <Layout>
       <LayoutInner>
@@ -67,6 +72,7 @@ export const AdminCopyright = () => {
             searchFilter,
             dataHadler,
             setToggleSelect,
+            warnBtn
           }}
         />
       </LayoutInner>

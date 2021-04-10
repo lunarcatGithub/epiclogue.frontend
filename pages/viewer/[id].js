@@ -23,6 +23,8 @@ export async function getServerSideProps(context) {
     if (res.response?.status === 404) error = 404;
   });
 
+  console.log('cookie', req?.headers?.cookie)
+
   return {
     props: {
       boardItem: res?.data || null,

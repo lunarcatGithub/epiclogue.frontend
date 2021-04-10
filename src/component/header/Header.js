@@ -56,7 +56,8 @@ const Header = () => {
   // fetch
   const [, profileApi, profileError, profileFetch] = useAxiosFetch();
   const [, readApi, , readFetch] = useAxiosFetch();
-
+  console.log(profileApi)
+  
   // 헤더 막기
   const [preventHeader, setPreventHeader] = useState();
 

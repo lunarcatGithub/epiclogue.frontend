@@ -18,6 +18,8 @@ export function AdminConfirmPopup(props) {
     const [selectList, toggleSelectList] = useToggle(false);
     const [userInform, setUserInform] = useState('')
 
+    const [emailDevide, setEmailDevide] = useState();
+    console.log(type)
     const deviedHandler = () => {
         let _type,
             postType = '댓글';
@@ -26,6 +28,7 @@ export function AdminConfirmPopup(props) {
             case 'Suspension':
                 setHeaderTitle({title:'유저 정지'})
                 _type = '정지 처리';
+                // setEmailDevide(<EmailForm/>)
                 break;
             case 'Hide':
                 setHeaderTitle({title:'콘텐츠 블라인드'})
@@ -34,7 +37,6 @@ export function AdminConfirmPopup(props) {
             case 'Remove':
                 setHeaderTitle({title:'콘텐츠 삭제'});
                 _type = '삭제되';
-
                 break;
 
             default:
@@ -96,12 +98,18 @@ export function AdminConfirmPopup(props) {
                             </BlockWrap>
                             <BlockWrap>
                             <TextBlock>유저 알림 메시지</TextBlock>
-                                <AdminWarnMessage value={userInform} onChange={(e)=>setUserInform(e.target.value)} />
+                                <AdminWarnMessage 
+                                value={userInform}
+                                onChange={(e)=>setUserInform(e.target.value)} />
                             </BlockWrap> 
                             </>
                             : 
-                            <EmailForm userData={userData} />
+                            <EmailForm 
+                                userData={userData}
+                                mainType={mainType}
+                            />
                         }
+
                         </FormWrap>
                     </ConfirmDivBodyInner>
                 </ConfirmDivBody>
