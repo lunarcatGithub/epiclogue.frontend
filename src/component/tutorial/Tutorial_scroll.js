@@ -59,7 +59,7 @@ export default function TutorialScroll() {
                     {image.desc.Login}
                   </Button>
                 </ButtonWrap>
-                <JustButton onClick={() => goURL({ pathname: '/main' })}>{image.desc.main}</JustButton>
+                <JustButton onClick={() => goURL({ pathname: '/' })}>{image.desc.main}</JustButton>
               </DescriptBox>
             ) : (
               <DescriptBox color={image.color}>

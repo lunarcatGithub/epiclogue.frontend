@@ -74,22 +74,26 @@ const Mypage = () => {
             <TopMenuTitleBox>
               <TopMenuTitle>{isLogin ? _settingProfile : _generalSetTab}</TopMenuTitle>
             </TopMenuTitleBox>
-            {isLogin ? (
+            
+            {
+              isLogin ? (
               <TabMenuWrap>
-                {navArr.map((tab, i) => (
+                {
+                  navArr.map((tab, i) => (
                   <NavItem key={i} onClick={() => goURL({ pathname: `/mypage/${tab.name}` })}>
                     <TabSelect styling={router.asPath.match(tab.name)}> {tab.lang} </TabSelect>
-                  </NavItem>
-                ))}
-              </TabMenuWrap>
-            ) : null}
-            {isLogin ? (
-              list.map(({ id, title, contents }) => {
-                if (tab === title) return <div key={id}>{contents}</div>;
-              })
-            ) : (
-              <MypageGeneral />
-            )}
+                  </NavItem> ))
+                }
+              </TabMenuWrap> ) : null
+            }
+            {
+              isLogin ? (
+                list.map(({ id, title, contents }) => {
+                  if (tab === title) return <div key={id}>{contents}</div>;
+                })
+              ) : (
+                <MypageGeneral /> )
+            }
           </ProfileInner>
         </ProfileLayout>
       </Container>

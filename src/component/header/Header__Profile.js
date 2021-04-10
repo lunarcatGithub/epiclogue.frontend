@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -10,7 +10,6 @@ import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store'
 import { useToggle } from '@hooks/useToggle';
 import { HeaderDataContext } from './Header';
 import { useUrlMove } from '@hooks/useUrlMove';
-import { useConvertURL } from '@hooks/useConvertURL';
 import { useCookie } from '@hooks/useCookie';
 
 // 이미지 import
@@ -22,14 +21,14 @@ const HeaderPfPopup = () => {
   const router = useRouter();
 
   const [goURL] = useUrlMove();
-  const [profileURL, , convertProfileIamge] = useConvertURL();
+  //profile
+  const [ProfileImg, setProfileImg] = useState();
+
   //cookie
   const [, testCookieHandle] = useCookie();
   const [, cookieHandle] = useCookie();
-  const [cookieValue, getCookie] = useCookie();
-  const [testCookieValue, getTestCookie] = useCookie();
 
-  const { alertState, alertPatch } = useContext(AlertContext);
+  const { alertPatch } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
   const { setLoginOn } = useContext(AppDataContext);
 
@@ -47,20 +46,18 @@ const HeaderPfPopup = () => {
     _sessionExpire = sessionExpire[selectedLanguage] || sessionExpire[defaultLanguage];
 
   const logout = () => {
-    getTestCookie('GET', 'test');
-    getCookie('GET', 'access_token');
-
-    cookieHandle('DELETE', 'access_token');
-    testCookieHandle('DELETE', 'test');
-
-    if (!cookieValue || !testCookieValue) {
-      localStorage.removeItem('loginOn');
+    let divied = process.env.NODE_ENV;
+    
+    if(divied === 'development'){
+      testCookieHandle('DELETE', 'dev');
+    } else {
+      cookieHandle('DELETE', 'access_token');
+    }
+      setLoginOn(false)
       localStorage.removeItem('userNick');
       localStorage.removeItem('userid');
-      setLoginOn(false);
       setIsOpen();
       goURL({ pathname: '/login' });
-    }
   };
 
   useEffect(() => {
@@ -71,10 +68,9 @@ const HeaderPfPopup = () => {
     }
   }, [profileError]);
 
-  useEffect(() => {
-    toggleSearchPop(false);
-    convertProfileIamge(profileApi?.data?.profile?.thumbnail);
-  }, [profileApi]);
+  useLayoutEffect(() => {
+    setProfileImg(profileApi?.data?.profile?.thumbnail);
+  }, [profileApi?.data?.profile])
 
   const navTabArr = [
     { method: () => [setIsOpen(), goURL({ pathname: `/mypage/profile` })], title: _profileSet, icon: '/static/header/profileIcon.svg' },
@@ -87,40 +83,41 @@ const HeaderPfPopup = () => {
   return (
     <>
       <ProfileImgBox onClick={() => setIsOpen()}>
-        <ProfileImgInner profile={profileURL} />
+        <ProfileImgInner profile={ProfileImg} />
       </ProfileImgBox>
-      {isOpen && (
-        <PopupLayout id="closemodal" onClick={() => setIsOpen()}>
-          <PopUpInner show={show}>
-            {/* 유저 프로필 팝업의 헤더 부분 */}
-            <PopupAnchorHd>
-              <TabWrap onClick={() => goURL({ pathname: `/myboard/${profileApi.data.screenId}` })}>
-                <ProfileImgBox>
-                  <ProfileImgInner profile={profileApi?.data?.profile?.thumbnail} />
-                </ProfileImgBox>
-                <TabIdWrap>
-                  <ProfileNick>{profileApi?.data?.nickname}</ProfileNick>
-                  <ProfileId>{profileApi?.data?.screenId}</ProfileId>
-                </TabIdWrap>
-              </TabWrap>
-              <ClosedBox>
-                <ClosedBtn onClick={() => setIsOpen()} />
-              </ClosedBox>
-            </PopupAnchorHd>
-            {/* // 유저 프로필 팝업의 헤더 부분 끝 */}
-
-            {/* 프로필 설정 */}
-            {navTabArr.map((navTab, index) => (
-              <PopupAnchor key={index}>
-                <TabWrap onClick={navTab.method}>
-                  <IconImg icon={navTab.icon} />
-                  <ProfileTextTab>{navTab.title}</ProfileTextTab>
+      {
+        isOpen && (
+          <PopupLayout id="closemodal" onClick={() => setIsOpen()}>
+            <PopUpInner show={show}>
+              {/* 유저 프로필 팝업의 헤더 부분 */}
+              <PopupAnchorHd>
+                <TabWrap onClick={() => goURL({ pathname: `/myboard/${profileApi.data.screenId}` })}>
+                  <ProfileImgBox>
+                    <ProfileImgInner profile={ProfileImg} />
+                  </ProfileImgBox>
+                  <TabIdWrap>
+                    <ProfileNick>{profileApi?.data?.nickname}</ProfileNick>
+                    <ProfileId>{profileApi?.data?.screenId}</ProfileId>
+                  </TabIdWrap>
                 </TabWrap>
-              </PopupAnchor>
-            ))}
-          </PopUpInner>
-        </PopupLayout>
-      )}
+                <ClosedBox>
+                  <ClosedBtn onClick={() => setIsOpen()} />
+                </ClosedBox>
+              </PopupAnchorHd>
+              {/* // 유저 프로필 팝업의 헤더 부분 끝 */}
+
+              {/* 프로필 설정 */}
+              {navTabArr.map((navTab, index) => (
+                <PopupAnchor key={index}>
+                  <TabWrap onClick={navTab.method}>
+                    <IconImg icon={navTab.icon} />
+                    <ProfileTextTab>{navTab.title}</ProfileTextTab>
+                  </TabWrap>
+                </PopupAnchor>
+              ))}
+            </PopUpInner>
+          </PopupLayout> )
+      }
     </>
   );
 };

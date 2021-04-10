@@ -1,20 +1,21 @@
 import React, { useContext, useState, useEffect } from 'react';
-import styled from 'styled-components';
 
 // 컴포넌트 import
 import MypageForm from './Mypage__Form';
 
 // Hooks&&reducer import
-import { AppDataContext } from '@store/App_Store';
+import { AppDataContext, LanguageContext, AlertContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useFetchData';
 
 const MypageGeneral = () => {
   const { loginOn } = useContext(AppDataContext);
+  const {availableLangPatch} = useContext(LanguageContext)
+  const {alertPatch} = useContext(AlertContext)
   const [formData, setFormData] = useState();
   const [isLogin, setIsLogin] = useState();
 
   // fetch
-  const [langLoding, langApi, langError, langFetch] = useAxiosFetch();
+  const [, , , langFetch] = useAxiosFetch();
 
   // 차후 살릴 수도 있음
   // const countryList = [
@@ -34,8 +35,16 @@ const MypageGeneral = () => {
       langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
     } else if (type === 'interest') {
       const listArr = data?.filter((each) => each.isChecked).map((list) => list.value);
-      formData.append('userAvailableLang', listArr);
-      langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
+      
+      if(listArr.length === 0){
+        alertPatch({type: 'FAIL_LANGUAGE_UPDATE', payload:true });
+        return;
+      } else {
+        formData.append('userAvailableLang', listArr);
+        langFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'post', null, formData, null);
+        availableLangPatch({type:'AVAILABLE_LANG', payload:listArr});
+        alertPatch({type: 'SUCCESS_LANGUAGE_UPDATE', payload:true });
+      }
     }
   };
 
