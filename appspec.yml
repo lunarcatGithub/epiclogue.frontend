@@ -9,3 +9,8 @@ hooks:
   - location: ./scripts/after-install.sh
     timeout: 300 # 5mins
     runas: root
+permissions:
+  - object: /
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu

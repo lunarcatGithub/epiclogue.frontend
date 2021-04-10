@@ -2,7 +2,7 @@ import React,{ useState, useEffect, useReducer, createContext, useLayoutEffect }
 import { languageReducer, langInit } from '@reducer/LanguageReducer';
 import { useRouter } from 'next/router';
 import { initialAlert, alertReducer } from '@reducer/AlertReducer';
-import { initialArr, availableLang } from '@reducer/availableLanguage';
+import { initialArr, availableLang } from '@reducer/AvailableLanguage';
 
 // 컴포넌트 import
 import UnauthLogin from '@utils/UnauthLogin';
