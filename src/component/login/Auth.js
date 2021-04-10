@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import qs from 'query-string';
 import { useRouter } from 'next/router';
 
 // 컴포넌트 import

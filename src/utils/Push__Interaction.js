@@ -26,14 +26,14 @@ export const InteractTab = () => {
     uploadedUpdatePush,
     authFail,
     introUpdatePush,
-    nickUpdatePush,
-    idUpdatePush,
     passwordUpdatePush,
     feedbackThanks,
     reportReceive,
     pwSend,
     pwChange,
     nowUpload,
+    successLang,
+    failLang
   } = LangPush;
   const _errorPush = errorPush[selectedLanguage] || errorPush[defaultLanguage],
     _uploadedPush = uploadedPush[selectedLanguage] || uploadedPush[defaultLanguage],
@@ -52,7 +52,10 @@ export const InteractTab = () => {
     _reportReceive = reportReceive[selectedLanguage] || reportReceive[defaultLanguage],
     _pwSend = pwSend[selectedLanguage] || pwSend[defaultLanguage],
     _pwChange = pwChange[selectedLanguage] || pwChange[defaultLanguage],
-    _nowUpload = nowUpload[selectedLanguage] || nowUpload[defaultLanguage];
+    _nowUpload = nowUpload[selectedLanguage] || nowUpload[defaultLanguage],
+    _successLang = successLang[selectedLanguage] || successLang[defaultLanguage],
+    _failLang = failLang[selectedLanguage] || failLang[defaultLanguage];
+
 
   const [alert, setAlert] = useState();
   const [bottom, setBottom] = useState();
@@ -148,6 +151,17 @@ export const InteractTab = () => {
         setColor(`#ECA62C`);
         break;
 
+      // 유저 선호 언어 변경 성공
+      case 'SUCCESS_LANGUAGE_UPDATE':
+        setAlert(`${_successLang}`);
+        setColor(`#ECA62C`);
+        break;
+      // 유저 선호 언어 변경 성공
+      case 'FAIL_LANGUAGE_UPDATE':
+        setAlert(`${_failLang}`);
+        setColor(`rgba(247, 112, 143, 1)`);
+        break;
+
       default:
         break;
     }
@@ -170,24 +184,25 @@ export const InteractTab = () => {
   }, [errorHandler]);
   return (
     <>
-      {kind !== 'LOADING_PUSH' ? (
-        <PushBox bool={bool} color={color}>
-          {/* 푸쉬바 내부 콘텐츠 */}
-          <PushBoxInner>
-            <Contents>{alert}</Contents>
-            {/* // 푸쉬바 내부 콘텐츠 끝 */}
-          </PushBoxInner>
-        </PushBox>
-      ) : (
-        <Modal bool={bool}>
-          <PushLayout bool={bool} color={color}>
-            <ProgressSmall disabled={true} />
-            <TextBox>
-              <InformText>{_nowUpload}</InformText>
-            </TextBox>
-          </PushLayout>
-        </Modal>
-      )}
+      {
+        kind !== 'LOADING_PUSH' ? 
+          <PushBox bool={bool} color={color}>
+            {/* 푸쉬바 내부 콘텐츠 */}
+            <PushBoxInner>
+              <Contents>{alert}</Contents>
+              {/* // 푸쉬바 내부 콘텐츠 끝 */}
+            </PushBoxInner>
+          </PushBox>
+          : 
+          <Modal bool={bool}>
+            <PushLayout bool={bool} color={color}>
+              <ProgressSmall disabled={true} />
+              <TextBox>
+                <InformText>{_nowUpload}</InformText>
+              </TextBox>
+            </PushLayout>
+          </Modal> 
+      }
     </>
   );
 };

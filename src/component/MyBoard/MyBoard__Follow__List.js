@@ -52,19 +52,21 @@ const MyBoardFollowList = (props) => {
         </UserPfContentBox>
       </UserIconNickBox>
 
-      {userData?.screenId !== localStorage.getItem('userid') ? (
-        <FollowBox>
-          <FollowBtn
-            onClick={() => {
-              toggleFollow();
-              followSubmit();
-            }}
-            styling={follow}
-          >
-            {follow ? _followingBtn : _followBtn}
-          </FollowBtn>
-        </FollowBox>
-      ) : null}
+      {
+        userData?.screenId !== localStorage.getItem('userid') ? (
+          <FollowBox>
+            <FollowBtn
+              onClick={() => {
+                toggleFollow();
+                followSubmit();
+              }}
+              styling={follow}
+            >
+              {follow ? _followingBtn : _followBtn}
+            </FollowBtn>
+          </FollowBox>
+        ) : null
+      }
     </ContentInner>
   );
 };

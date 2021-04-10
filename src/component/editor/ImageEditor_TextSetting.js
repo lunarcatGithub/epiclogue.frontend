@@ -285,8 +285,8 @@ const ButtonWrapRight = styled(ButtonWrapLeft)`
 // 텍스트 굵기
 const TextBold = styled.svg`
   background: url(${(props) => (props.styling === 'bold' ? `/static/editor/boldOn.svg` : `/static/editor/bold.svg`)}) no-repeat center center / contain;
-  width: 1.4em;
-  height: 1.4em;
+  width: 1.3em;
+  height: 1.3em;
 `;
 
 // 텍스트 기울기
@@ -296,5 +296,7 @@ const TextSlope = styled(TextBold)`
 
 // 텍스트 밑줄
 const TextUnderbar = styled(TextBold)`
-  background: url(${(props) => (props.styling ? `/static/editor/underbarOn.svg"` : `/static/editor/underbar.svg"`)}) no-repeat center center / contain;
+  background: url(${(props) => (props.styling ? `/static/editor/underbarOn.svg` : `/static/editor/underbar.svg`)}) no-repeat center center / contain;
+  width: 1.4em;
+  height: 1.4em;
 `;

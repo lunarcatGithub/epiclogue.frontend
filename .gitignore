@@ -36,3 +36,6 @@ yarn-error.log*
 
 # nginx log
 docker/nginx/log
+
+# yarn.lock
+yarn.lock

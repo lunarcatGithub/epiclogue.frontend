@@ -1,7 +1,3 @@
-// let userBrowserLang = navigator.language,
-//     devidedLang;
-
-// let selectLang = Number(localStorage.getItem('language')),
 let selectLang = 0,
   defaultLang = typeof window !== 'undefined' && navigator.language,
   _defaultLang;

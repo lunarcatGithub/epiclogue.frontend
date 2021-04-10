@@ -16,6 +16,7 @@ export const LangCommon = {
   },
 };
 
+// push interaction
 export const LangPush = {
   errorPush: {
     2: 'Please try again',
@@ -109,6 +110,16 @@ export const LangPush = {
     2: 'Now Uploading...',
     0: '업로드 중...',
     1: 'アップロード中..',
+  },
+  successLang: {
+    2: 'Language Change Completed!',
+    0: '언어 변경 완료!',
+    1: '言語チェンジ完了！',
+  },
+  failLang: {
+    2: 'Please select at least one',
+    0: '1개 이상 선택해주세요',
+    1: '1つ以上選択してください',
   },
 };
 

@@ -8,8 +8,11 @@ import ContentsForm from './Contents__Form';
 import ContentsUserForm from './Contents__UserForm';
 
 // Hooks&&reducer import
-import { AppDataContext } from '@store/App_Store';
+import { AppDataContext, LanguageContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
+
+// utils
+import {dataHiddenFilter} from '@utils/dataHidden'
 
 let renderCount = 35;
 let initialCount = 35;
@@ -18,9 +21,12 @@ const Contents = (props) => {
   const { type, searchType, boardItem } = props;
 
   //차후 viewer === 더보기 같으면 filtering
+
   const router = useRouter();
   const loader = useRef(null);
   const { searchData, clickedComic, clickedIllust, myboardData } = useContext(AppDataContext);
+  const {availableLanguage} = useContext(LanguageContext)
+
   const [resultKeyword, setResultKeyword] = useState();
 
   const url = router.asPath;
@@ -28,21 +34,18 @@ const Contents = (props) => {
 
   const [initialLoading, setInitialLoading] = useState(false);
   const [hasMoreLoading, setHasMoreLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [contentsList, setContentsList] = useState([]);
   const [renderList, setRenderList] = useState([]);
-  const [renderSearch, setRenderSearch] = useState([]);
   const [items, setItems] = useState(initialCount);
   const [hasMore, setHasMore] = useState(false);
 
   // fetch
-  const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
-  const [comicLoding, comicApi, comicError, comicFetch] = useAxiosFetch();
-  const [illustLoding, illustApi, illustError, illustFetch] = useAxiosFetch();
-  const [searchLoding, searchApi, searchError, searchFetch] = useAxiosFetch();
-  const [userLoding, userApi, userError, userFetch] = useAxiosFetch();
+  const [, initialApi, , initialFetch] = useAxiosFetch();
+  const [, comicApi, , comicFetch] = useAxiosFetch();
+  const [, illustApi, , illustFetch] = useAxiosFetch();
+  const [, searchApi, , searchFetch] = useAxiosFetch();
+  const [, userApi, , userFetch] = useAxiosFetch();
   const [page, setPage] = useState(1);
-  console.log(initialApi);
 
   // devide type
   const devideTypeHandler = () => {
@@ -86,34 +89,18 @@ const Contents = (props) => {
     if (type === 'user') {
       setRenderList(renderData.slice(0, initialCount));
     } else {
-      setRenderList(dataFilter(renderData).slice(0, initialCount));
+      // 작품 숨기기 or 블라인드 or 유저 선호 언어에 따른 분류
+      setRenderList(dataHiddenFilter(renderData, availableLanguage).slice(0, initialCount));
     }
     // if (contentsList.length = renderData?.slice(0, initialCount).length) {
     //   setHasMore(false);
     // }
   };
-
+  
   useEffect(() => {
     devideTypeHandler();
     return () => devideTypeHandler();
-  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType]);
-
-  // pub 여부에 따른 필터링
-  const dataFilter = (data = null) => {
-    const arr = [];
-    data.filter((i) => {
-      if (i.pub === 1) {
-        arr.push(i);
-      } else if (i.pub === 0) {
-        if (i.writer.screenId === localStorage.getItem('userid')) {
-          arr.push(i);
-        } else {
-          return;
-        }
-      }
-    });
-    return arr;
-  };
+  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType, availableLanguage]);
 
   // 코믹 && 일러스트 요청
 
@@ -135,6 +122,12 @@ const Contents = (props) => {
     searchData ? setResultKeyword(searchData) : setResultKeyword(keyword);
   }, [searchData, keyword]);
 
+  const fixedEncodeURIComponent =(str)=> {
+    return str.replace(/[!'()*]/gi, function (c) {
+      return '%' + c.charCodeAt(0).toString(16);
+    });
+  }
+
   // 검색단어로 데이터 요청하기
   useEffect(() => {
     setItems(initialCount);
@@ -144,11 +137,6 @@ const Contents = (props) => {
     if (resultKeyword) {
       const Url = keyword;
       const encodedUrl = encodeURIComponent(Url);
-      function fixedEncodeURIComponent(str) {
-        return str.replace(/[!'()*]/gi, function (c) {
-          return '%' + c.charCodeAt(0).toString(16);
-        });
-      }
       const result = fixedEncodeURIComponent(encodedUrl);
       if (url.match('/search/trend') && type === 'SEARCH' && searchType === 'trend') {
         searchFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&q=${null}`, 'get', null, null, null);
@@ -219,29 +207,33 @@ const Contents = (props) => {
   return (
     <>
       <Layout>
-        {!url.match('main') && !url.match('myboard') && !isLoading && renderList.length === 0 && renderSearch.length === 0 && (
-          <NoResultWrap>
-            <NoResultImg />
-          </NoResultWrap>
-        )}
-        {initialLoading && (
-          <DummyLayout>
-            <Progress />
-          </DummyLayout>
-        )}
+        {
+          !url.match('main') && !url.match('myboard') && renderList.length === 0 && (
+            <NoResultWrap>
+              <NoResultImg />
+            </NoResultWrap> )
+        }
+        {
+          initialLoading && (
+            <DummyLayout>
+              <Progress />
+            </DummyLayout> )
+        }
         <LayoutInner>
-          <MasonryBox isLoading={isLoading}>{renderContents}</MasonryBox>
+          <MasonryBox >{renderContents}</MasonryBox>
         </LayoutInner>
-        {hasMoreLoading && (
+        {
+        hasMoreLoading && (
           <DummyLayout>
             <Progress />
-          </DummyLayout>
-        )}
-        {hasMore && (
-          <>
-            <RefLayout ref={loader}></RefLayout>
-          </>
-        )}
+          </DummyLayout> )
+        }
+        {
+          hasMore && (
+            <>
+              <RefLayout ref={loader}></RefLayout>
+            </> )
+        }
       </Layout>
     </>
   );

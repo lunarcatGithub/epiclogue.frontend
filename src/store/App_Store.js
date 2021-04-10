@@ -1,15 +1,18 @@
-import { useState, useEffect, useReducer, createContext } from 'react';
+import React,{ useState, useEffect, useReducer, createContext, useLayoutEffect } from 'react';
 import { languageReducer, langInit } from '@reducer/LanguageReducer';
 import { useRouter } from 'next/router';
 import { initialAlert, alertReducer } from '@reducer/AlertReducer';
+import { initialArr, availableLang } from '@reducer/availableLanguage';
 
 // 컴포넌트 import
 import UnauthLogin from '@utils/UnauthLogin';
 
 // Utils
 import Modal from '@utils/Modal';
+
 // hooks
 import { useUrlMove } from '@hooks/useUrlMove';
+import { useCookie } from '@hooks/useCookie';
 
 // create context
 const AppDataContext = createContext({});
@@ -24,10 +27,14 @@ const combineReducers = (...reducers) => (state, action) => {
 
 // context provider
 const ContextStore = ({ children }) => {
+  // router
+  const router = useRouter();
+
   // app all method
   const [goURL] = useUrlMove();
   const [langState, langPatch] = useReducer(combineReducers(languageReducer), langInit);
   const [alertState, alertPatch] = useReducer(combineReducers(alertReducer), initialAlert);
+  const [availableLanguage, availableLangPatch] = useReducer(combineReducers(availableLang), initialArr);
 
   // set filter
   const [clickedComic, setClickedComic] = useState(true);
@@ -38,18 +45,30 @@ const ContextStore = ({ children }) => {
   const [paramsData, setParamsData] = useState();
   const [myboardData, setMyboardData] = useState([]);
   const [followData, setFollowData] = useState();
-  const [followButton, setFollowButton] = useState('following');
+  const [followButton, setFollowButton] = useState();
 
   // initial Login
-  let login = typeof window !== 'undefined' && localStorage.getItem('loginOn');
-  const [loginOn, setLoginOn] = useState(Boolean(login));
+  // let login = typeof window !== 'undefined' && localStorage.getItem('loginOn');
   const [unAuth, setUnAuth] = useState(false);
+  const [cookieValue, cookieHandle] = useCookie();
+  const [getTestCookie, getTestHandle] = useCookie();
+  const [loginOn, setLoginOn] = useState(false);
 
-  // router
-  const router = useRouter();
+  // 개발 & 프로덕션 로그인 분기처리
+  const devProductionHandle = () => {
+      getTestHandle('GET', 'dev')
+      cookieHandle('GET', 'access_token');
+      if(cookieValue?.length > 1 || getTestCookie?.length > 1) { // 쿠키값이 있다면 로그인 상태로 반환
+        setLoginOn(true)
+      }
+    }
+
+  useLayoutEffect(() => {
+    devProductionHandle()
+  }, [getTestCookie?.length, cookieValue?.length])
 
   useEffect(() => {
-    if (!loginOn) {
+    if (getTestCookie?.length < 1 || cookieValue?.length < 1 && !loginOn) {
       if (router.pathname.match('/upload') || router.pathname.match('/follow') || router.pathname.match('/editor')) {
         goURL({ pathname: '/login' });
         return;
@@ -59,7 +78,7 @@ const ContextStore = ({ children }) => {
     } else {
       return;
     }
-  }, [router.pathname]);
+  }, [cookieValue?.length, getTestCookie?.length, loginOn]);
 
   return (
     <AppDataContext.Provider
@@ -84,23 +103,18 @@ const ContextStore = ({ children }) => {
       }}
     >
       <LanguageContext.Provider
-        value={{
-          langState,
-          langPatch,
-        }}
+        value={{ langState, langPatch, availableLanguage, availableLangPatch }}
       >
         <AlertContext.Provider
-          value={{
-            alertState,
-            alertPatch,
-          }}
+          value={{ alertState, alertPatch, }}
         >
           {children}
-          {unAuth && (
-            <Modal visible={unAuth} maskClosable={unAuth} onClose={setUnAuth}>
-              <UnauthLogin setUnAuth={setUnAuth} />
-            </Modal>
-          )}
+          {
+            unAuth && (
+              <Modal visible={unAuth} maskClosable={unAuth} onClose={setUnAuth}>
+                <UnauthLogin setUnAuth={setUnAuth} />
+              </Modal> )
+          }
         </AlertContext.Provider>
       </LanguageContext.Provider>
     </AppDataContext.Provider>

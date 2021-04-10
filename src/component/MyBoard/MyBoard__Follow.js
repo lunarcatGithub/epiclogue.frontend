@@ -10,12 +10,14 @@ import AutoHiding from '@utils/autoHiding';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
 import { AppDataContext } from '@store/App_Store';
+import { useUrlMove } from '@hooks/useUrlMove';
 
-const MyBoardFollow = ({ route }) => {
+const MyBoardFollow = ({ routeId, routeTab }) => {
   const router = useRouter();
+  const [goURL] = useUrlMove();
 
   const { followData, followButton, setFollowButton } = useContext(AppDataContext);
-
+  // tab
   const [followingList, setFollowingList] = useState([]);
   const [followerList, setFollowerList] = useState([]);
 
@@ -24,15 +26,20 @@ const MyBoardFollow = ({ route }) => {
   const [sliceFollowing, setSliceFollowing] = useState();
   const [sliceFollower, setSliceFollower] = useState();
   const [page, scroll] = useScroll();
-
   //fetch
   const [, followListApi, , followListFetch] = useAxiosFetch();
+
   // 헤더 스크롤용
   const show = AutoHiding();
 
+  const moveFollowList = (type) => {
+    setFollowButton(type);
+    goURL({ pathname: `/follows/${routeId}`, query:{tab:type, id:routeId} });
+  };
+
   useEffect(() => {
     setItems((items) => items + 10);
-    if (followButton === 'following') {
+    if (routeTab === 'following') {
       setSliceFollowing(followingList?.slice(0, items));
     } else {
       setSliceFollower(followerList?.slice(0, items));
@@ -40,15 +47,13 @@ const MyBoardFollow = ({ route }) => {
   }, [page, followingList, followerList]);
 
   useEffect(() => {
-    route && followButton && followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow?screenId=${route}&type=${followButton}`, 'get', null, null, null);
-  }, [followButton, route]);
+    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow?screenId=${routeId}&type=${routeTab}`, 'get', null, null, null);
+  }, [routeTab]);
 
   useEffect(() => {
     if (!followListApi) return;
-    followButton === 'following' ? setFollowingList(followListApi?.data) : setFollowerList(followListApi?.data);
+    routeTab === 'following' ? setFollowingList(followListApi?.data) : setFollowerList(followListApi?.data);
   }, [followListApi]);
-
-  const tabType = ['following', 'follower'];
 
   return (
     <Layout>
@@ -69,10 +74,10 @@ const MyBoardFollow = ({ route }) => {
               </UserPfBox>
             </TopHeaderBox>
             <FollowTabBox>
-              <FollowingTab tabType={followButton} onClick={() => setFollowButton('following')}>
+              <FollowingTab tabType={routeTab} onClick={() => moveFollowList('following')}>
                 Following
               </FollowingTab>
-              <FollowerTab tabType={followButton} onClick={() => setFollowButton('follower')}>
+              <FollowerTab tabType={routeTab} onClick={() => moveFollowList('follower')}>
                 Follower
               </FollowerTab>
             </FollowTabBox>
@@ -80,8 +85,11 @@ const MyBoardFollow = ({ route }) => {
           </HeaderBox>
           {/* 팔로우 본문 */}
           <ContentBox>
-            {followButton === 'following' && sliceFollowing?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)}
-            {followButton === 'follower' && sliceFollower?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower" />)}
+            {
+              routeTab === 'following' ? sliceFollowing?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)
+              :
+              sliceFollower?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower" />)
+            }
             {/* // 팔로우 본문 끝 */}
             <Observer {...scroll} />
           </ContentBox>
