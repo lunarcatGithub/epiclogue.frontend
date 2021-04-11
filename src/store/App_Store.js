@@ -2,7 +2,7 @@ import React,{ useState, useEffect, useReducer, createContext, useLayoutEffect }
 import { languageReducer, langInit } from '@reducer/LanguageReducer';
 import { useRouter } from 'next/router';
 import { initialAlert, alertReducer } from '@reducer/AlertReducer';
-import { initialArr, availableLang } from '@reducer/availableLanguage';
+import { initialArr, availableLang } from '@reducer/AvailableLanguage';
 
 // 컴포넌트 import
 import UnauthLogin from '@utils/UnauthLogin';
@@ -56,25 +56,11 @@ const ContextStore = ({ children }) => {
 
   // 개발 & 프로덕션 로그인 분기처리
   const devProductionHandle = () => {
-
-    // dev 전용 쿠키 필요
-    // let divied = process.env.NODE_ENV;
-    // if(divied === 'development'){
-    //   getTestHandle('GET', 'dev')
-    //   if(getTestCookie?.length > 1) { // 개발모드
-    //     setLoginOn(true)
-    //   }
-    // } else {
-    //   cookieHandle('GET', 'access_token');
-    //   if(cookieValue?.length > 1) { // 쿠키값이 있다면 로그인 상태로 반환
-    //     setLoginOn(true)
-    //   }}
       getTestHandle('GET', 'dev')
       cookieHandle('GET', 'access_token');
       if(cookieValue?.length > 1 || getTestCookie?.length > 1) { // 쿠키값이 있다면 로그인 상태로 반환
         setLoginOn(true)
       }
-
     }
 
   useLayoutEffect(() => {
