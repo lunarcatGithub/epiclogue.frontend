@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
@@ -83,11 +83,11 @@ const UserInform = () => {
             onClick={() => {
               if (!targetInfo) return;
               if (notificationType === 'Follow') {
-                goURL({ pathname: `/myboard/${maker.screenId}` });
+                goURL({ pathname: `/myboard/${maker?.screenId}` });
               } else if (notificationType === 'Reply') {
-                goURL({ pathname: `/viewer/${targetInfo.boardId}` });
+                goURL({ pathname: `/viewer/${targetInfo?.boardId}` });
               } else {
-                goURL({ pathname: `/viewer/${targetInfo._id}` });
+                goURL({ pathname: `/viewer/${targetInfo?._id}` });
               }
               toggleNoti();
             }}
@@ -95,7 +95,7 @@ const UserInform = () => {
             {/* 유저 이미지 */}
             <UserImgWrap>
               <UserImgBox>
-                <UserImg profile={maker.profile.thumbnail} />
+                <UserImg profile={maker?.profile?.thumbnail} />
                 <InformTypeIcon>
                   {notificationType === 'Bookmark' && <BookmarkImg infoImg={'/static/bookmark-2.svg'} />}
                   {notificationType === 'Feedback' && <FeedbackImg infoImg={'/static/comment-3.svg'} />}
@@ -110,7 +110,7 @@ const UserInform = () => {
             <ContentRColumn>
               <TextBox>
                 <UserText>
-                  {maker.nickname}
+                  {maker?.nickname}
                   {notificationType === 'Bookmark' && <UserInteract>{_userBookmark}</UserInteract>}
                   {notificationType === 'Feedback' && <UserInteract>{_userFeedback}</UserInteract>}
                   {notificationType === 'Like' && <UserInteract>{_userReactLike}</UserInteract>}
