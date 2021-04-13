@@ -271,7 +271,7 @@ export default function ListForm({ type, contentsData }) {
             />
           </Modal>
         }
-        {/* 유저 정보 확인 (저작권 신고) */}
+        { /* 유저 정보 확인 (저작권 신고) */ }
         {
           userEmail.bool &&
           <Modal visible={userEmail.bool} closable={true} maskClosable={true} onClose={() => setUserEmail({...userEmail, bool:false})}>

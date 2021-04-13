@@ -12,7 +12,6 @@ import TranslatePopup from './TranslatePopup';
 import { ProgressSmall } from '@utils/LoadingProgress';
 import { langViewer, langViewerUser } from '@language/Lang.Viewer';
 import { LangCommon } from '@language/Lang.Common';
-import { langMetaViewer } from '@language/Lang.Meta';
 import { Meta } from '@utils/MetaTags';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
@@ -31,7 +30,7 @@ import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store'
 
 export const ReplyListContext = React.createContext();
 
-const Viewer = ({ boardItem = null, nonError }) => {
+const Viewer = ({ boardItem, nonError }) => {
   const router = useRouter();
   const boardUid = router?.query?.id;
   const { t } = useTranslation("common");
@@ -51,17 +50,15 @@ const Viewer = ({ boardItem = null, nonError }) => {
   const [data, setData] = useState({});
   const [checkOrigin, setCheckOrigin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [getIndicateDate, setGetIndicateDate] = useState();
   const [_heartCount, setHeartCount] = useState();
 
   const [bookmark, toggleBookmark] = useToggle();
   const [like, toggleLike] = useToggle();
-  const [globe, toggleGloobe] = useToggle();
+  const [globe, ] = useToggle();
   const [screenId, setScreenId] = useState();
 
   // 모달 팝업 컨트롤
   const [type_MoreMenu, setType_MoreMenu] = useState();
-  const [state_O_MoreMenu, toggle_O_Modal_MoreMenu] = useModal();
   const [state_MoreMenu, toggle_Modal_MoreMenu] = useModal();
   const [state_React, toggle_Modal_React] = useModal();
   const [state_Share, toggle_Modal_Share] = useModal();
@@ -97,11 +94,11 @@ const Viewer = ({ boardItem = null, nonError }) => {
   const [noContents, setNoContents] = useState(false);
 
   // 태그 및 하이퍼링크 convert
-  const [converted, convert] = useConvertTags();
+  const [, convert] = useConvertTags();
 
   // 토글 submit 전용
-  const [likeApi, likeError, likeFetch] = useAxiosFetch();
-  const [bookmarkLoding, bookmarkApi, bookmarkError, bookmarkFetch] = useAxiosFetch();
+  const [ , likeApi, , likeFetch] = useAxiosFetch();
+  const [, , , bookmarkFetch] = useAxiosFetch();
   // const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
 
   // ref
@@ -114,7 +111,6 @@ const Viewer = ({ boardItem = null, nonError }) => {
 
   const { originalUser, recreateUser, removedContents } = langViewerUser;
 
-  const { metaViewerTitle, boardDescFirst, boardDescSecond } = langMetaViewer();
   const { followBtn, followingBtn } = LangCommon;
   const _contentsReact = contentsReact[selectedLanguage] || contentsReact[defaultLanguage],
     _feedbackScore = feedbackScore[selectedLanguage] || feedbackScore[defaultLanguage],
@@ -184,15 +180,6 @@ const Viewer = ({ boardItem = null, nonError }) => {
     likeApi && setHeartCount(likeApi?.data.heartCount);
   }, [likeApi]);
 
-  // const checkO_MoreMenuType = () => {
-  //   toggle_O_Modal_MoreMenu();
-  //   if (data.originBoardId.screenId === localStorage.getItem('userid')) {
-  //     setType_O_MoreMenu(<MorePopup type="O_More"  handleModal_Menu={() => toggle_O_Modal_MoreMenu(false)} />);
-  //   } else {
-  //     setType_O_MoreMenu(<MorePopup handleModal_Menu={() => toggle_O_Modal_MoreMenu(false)} />);
-  //   }
-  // };
-
   // 회원 유저
   const checkMoreMenuType = () => {
     // 비회원 유저
@@ -203,9 +190,19 @@ const Viewer = ({ boardItem = null, nonError }) => {
     // 회원 유저
     toggle_Modal_MoreMenu();
     if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
-      setType_MoreMenu(<MorePopup type="myMore" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+      setType_MoreMenu(
+        <MorePopup 
+          type="myMore" 
+          conFirmType="CONFIRM" 
+          onUpdate={() => goUploadUpdate({pathname:`/upload`, as:`/upload`, query:{_type:'modify', boardUid}})} 
+          handleModal_Menu={() => toggle_Modal_MoreMenu(false)} 
+        />);
     } else {
-      setType_MoreMenu(<MorePopup type="userMore" handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+      setType_MoreMenu(
+        <MorePopup 
+        type="userMore" 
+        handleModal_Menu={() => toggle_Modal_MoreMenu(false)} 
+      />);
     }
   };
 
@@ -245,7 +242,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
         sourceUrl,
       } = boardData;
       const { screenId, nickname, _id, following, profile } = writer;
-      console.log(boardData)
+
       setData({
         boardTitle,
         boardBody,
@@ -283,7 +280,6 @@ const Viewer = ({ boardItem = null, nonError }) => {
       setBoardImg(boardImg);
       setHeartCount(heartCount);
       setIsLoading(false);
-      setGetIndicateDate(writeDate, '');
       setExternalSource(sourceUrl === 'null' ? false : sourceUrl);
 
       // secondAllow
@@ -372,6 +368,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
                   userLang={_originalUser}
                   followLang={_followBtn}
                   followOnLang={_followingBtn}
+                  modified={_modified}
                   removedContents={_removedContents}
                   profile={O_profileURL}
                   userData={data}
@@ -388,6 +385,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
                   userData={data}
                   boardUid={boardUid}
                   checkMoreMenuType={checkMoreMenuType}
+                  modified={_modified}
                 />
               </>
             ) : (
@@ -401,6 +399,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
                 userData={data}
                 boardUid={boardUid}
                 checkMoreMenuType={checkMoreMenuType}
+                modified={_modified}
               />
             )}
 

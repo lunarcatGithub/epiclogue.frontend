@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { useTranslation } from "next-i18next";
 
@@ -28,7 +29,7 @@ const Main = ({ metaLang }) => {
       <Layout>
         <Contents type="MAIN" />
         {/*업로드 버튼*/}
-        <UploadButton onClick={() => goURL({ pathname: '/upload' })}>
+        <UploadButton onClick={() => goURL({ pathname: '/upload', query:{_type:'upload'} })}>
           <UploadSvg />
         </UploadButton>
       </Layout>

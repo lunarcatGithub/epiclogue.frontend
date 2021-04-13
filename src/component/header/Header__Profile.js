@@ -11,6 +11,7 @@ import { useToggle } from '@hooks/useToggle';
 import { HeaderDataContext } from './Header';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { useCookie } from '@hooks/useCookie';
+import useAxiosFetch from '@hooks/useAxiosFetch';
 
 // 이미지 import
 // import Xbtn from "../../img/X-mark.png";
@@ -25,14 +26,15 @@ const HeaderPfPopup = () => {
   const [ProfileImg, setProfileImg] = useState();
 
   //cookie
-  const [, testCookieHandle] = useCookie();
   const [, cookieHandle] = useCookie();
 
   const { alertPatch } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
   const { setLoginOn } = useContext(AppDataContext);
 
-  const { toggleSearchPop, show, profileApi, profileError } = useContext(HeaderDataContext);
+  const { show, profileApi, profileError } = useContext(HeaderDataContext);
+  const [ , , , logoutFetch] = useAxiosFetch();
+
   const [isOpen, setIsOpen] = useToggle();
 
   //언어 변수
@@ -46,13 +48,10 @@ const HeaderPfPopup = () => {
     _sessionExpire = sessionExpire[selectedLanguage] || sessionExpire[defaultLanguage];
 
   const logout = () => {
-    let divied = process.env.NODE_ENV;
-    
-    if(divied === 'development'){
-      testCookieHandle('DELETE', 'dev');
-    } else {
+
       cookieHandle('DELETE', 'access_token');
-    }
+
+      logoutFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, 'get')
       setLoginOn(false)
       localStorage.removeItem('userNick');
       localStorage.removeItem('userid');
@@ -63,8 +62,11 @@ const HeaderPfPopup = () => {
   useEffect(() => {
     if (profileError?.status === 401) {
       router.reload();
-      alert(_sessionExpire);
-      logout();
+      
+      if(alert(_sessionExpire)){
+        logout();
+      }
+      
     }
   }, [profileError]);
 

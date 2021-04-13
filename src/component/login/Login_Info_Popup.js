@@ -12,7 +12,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 export const LoginInfoPopup = (props) => {
   const { handleModal } = props;
 
-  const { alertState, alertPatch } = useContext(AlertContext);
+  const { alertPatch } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
 
   const [values, handleChange] = useChange({ email: '' });

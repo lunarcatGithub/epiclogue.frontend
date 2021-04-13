@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // 컴포넌트 import
@@ -12,10 +12,9 @@ let initialX = null,
   boxes,
   boxesWidth;
 
-const Slider = (props) => {
-  const layoutRef = React.createRef();
-  const moveRef = React.createRef();
-
+const Slider = ({imgData, onRemove}) => {
+  const layoutRef = useRef();
+  const moveRef = useRef();
   const [distanceInit, setDistanceInit] = useState(null);
 
   const [mouseMoving, setMouseMoving] = useState(false);
@@ -61,7 +60,7 @@ const Slider = (props) => {
   };
 
   const removeImage = (key) => {
-    props.onRemove(key);
+    onRemove(key);
   };
 
   useEffect(() => {
@@ -77,7 +76,6 @@ const Slider = (props) => {
     };
   }, [mouseMoving]);
 
-  const { imgData } = props;
   return (
     <>
       <SliderLayout id="slider" ref={layoutRef}>

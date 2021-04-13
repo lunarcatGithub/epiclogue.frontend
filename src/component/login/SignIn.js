@@ -20,7 +20,6 @@ import { LanguageContext, AppDataContext } from '@store/App_Store';
 import { useModal } from '@hooks/useModal';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useForm from '@hooks/useForm';
-import { useCookie } from '@hooks/useCookie';
 
 export const SignIn = (props) => {
   const { setChangePage } = props;
@@ -32,14 +31,9 @@ export const SignIn = (props) => {
   const [goURL] = useUrlMove();
   const [_isShowing, _toggle] = useModal();
 
-  //cookie
-  const [, cookieHandle] = useCookie();
-  const [cookieValue, getCookie] = useCookie();
-  const [testValue, getTestCookie] = useCookie();
-
   // 로그인 에러
   // fetch
-  const [snsLoginListLoding, snsLoginListApi, snsLoginListError, snsLoginFetch] = useAxiosFetch();
+  const [, snsLoginListApi, , snsLoginFetch] = useAxiosFetch();
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
@@ -93,13 +87,12 @@ export const SignIn = (props) => {
   useEffect(() => {
     const mergyData = resData || snsLoginListApi;
     if (mergyData?.result === 'ok') {
-      getTestCookie('CREATE', 'dev', 'test', 1);
       setLoginOn(true);
       localStorage.setItem('userNick', mergyData?.nick);
       localStorage.setItem('userid', mergyData?.screenId);
       goURL({ pathname: '/' });
     }
-  }, [resData, snsLoginListApi, testValue]);
+  }, [resData, snsLoginListApi]);
 
   useEffect(() => {
     errors && errorHandle();

@@ -51,24 +51,29 @@ const ContextStore = ({ children }) => {
   // let login = typeof window !== 'undefined' && localStorage.getItem('loginOn');
   const [unAuth, setUnAuth] = useState(false);
   const [cookieValue, cookieHandle] = useCookie();
-  const [getTestCookie, getTestHandle] = useCookie();
   const [loginOn, setLoginOn] = useState(false);
 
   // 개발 & 프로덕션 로그인 분기처리
   const devProductionHandle = () => {
-      getTestHandle('GET', 'dev')
+    let divied = process.env.NODE_ENV;
+
       cookieHandle('GET', 'access_token');
-      if(cookieValue?.length > 1 || getTestCookie?.length > 1) { // 쿠키값이 있다면 로그인 상태로 반환
+      if(divied === 'production'){
+        if(cookieValue?.length > 1) { // 쿠키값이 있다면 로그인 상태로 반환
+          setLoginOn(true)
+        }
+      } else {
         setLoginOn(true)
       }
+ 
     }
 
   useLayoutEffect(() => {
     devProductionHandle()
-  }, [getTestCookie?.length, cookieValue?.length])
+  }, [cookieValue?.length])
 
   useEffect(() => {
-    if (getTestCookie?.length < 1 || cookieValue?.length < 1 && !loginOn) {
+    if (cookieValue?.length < 1 && !loginOn) {
       if (router.pathname.match('/upload') || router.pathname.match('/follow') || router.pathname.match('/editor')) {
         goURL({ pathname: '/login' });
         return;
@@ -78,7 +83,7 @@ const ContextStore = ({ children }) => {
     } else {
       return;
     }
-  }, [cookieValue?.length, getTestCookie?.length, loginOn]);
+  }, [cookieValue?.length, loginOn]);
 
   return (
     <AppDataContext.Provider

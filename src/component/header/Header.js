@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled, { css } from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -56,8 +56,7 @@ const Header = () => {
   // fetch
   const [, profileApi, profileError, profileFetch] = useAxiosFetch();
   const [, readApi, , readFetch] = useAxiosFetch();
-  console.log(profileApi)
-  
+
   // 헤더 막기
   const [preventHeader, setPreventHeader] = useState();
 

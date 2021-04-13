@@ -11,7 +11,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import useDebounce from '@hooks/useDebounce';
 
 export default function ViewerUserForm(props) {
-  const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents, checkMoreMenuType } = props;
+  const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents, checkMoreMenuType, modified} = props;
 
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
@@ -140,7 +140,7 @@ export default function ViewerUserForm(props) {
           <TextContent>{converted}</TextContent>
           <BottomWrap>
             {type !== 'ORIGIN' && <PostedTime>Posted by {indicateDate}</PostedTime>}
-            {userData?.edited && <ModifyText>{'_modified'}</ModifyText>}
+            {userData?.edited && <ModifyText>{modified}</ModifyText>}
           </BottomWrap>
           {originUserData && (
             <ContentImgWrap styling={originUserData}>
