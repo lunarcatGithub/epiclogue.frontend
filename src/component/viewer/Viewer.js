@@ -65,6 +65,7 @@ const Viewer = ({ boardItem, nonError }) => {
   const [state_Trans, toggle_Modal_Trans] = useModal();
   const [allowSecondary, setAllowSecondary] = useModal();
   const [originDeleted, setOriginDeleted] = useModal();
+  const [isShowing_Menu, handleModal_Menu] = useModal();
 
   const [originId, setOriginId] = useState();
   const [secondAllow, setSecondAllow] = useState();
@@ -100,6 +101,9 @@ const Viewer = ({ boardItem, nonError }) => {
   const [ , likeApi, , likeFetch] = useAxiosFetch();
   const [, , , bookmarkFetch] = useAxiosFetch();
   // const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
+
+  //피드백 팝업
+  const [typeMenu, setTypeMenu] = useState();
 
   // ref
   const feedbackRef = useRef();
@@ -181,15 +185,16 @@ const Viewer = ({ boardItem, nonError }) => {
   }, [likeApi]);
 
   // 회원 유저
-  const checkMoreMenuType = () => {
+  const checkMoreMenuType = (userId) => {
     // 비회원 유저
     if (!loginOn) {
       setUnAuth(true);
       return;
     }
-    // 회원 유저
+
+    // 콘텐츠 팝업
     toggle_Modal_MoreMenu();
-    if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
+    if (userId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
       setType_MoreMenu(
         <MorePopup 
           type="myMore" 
@@ -205,6 +210,31 @@ const Viewer = ({ boardItem, nonError }) => {
       />);
     }
   };
+  // 피드백 수정
+  const [feedBackModify, setFeedBackModify] = useState(false)
+
+  // 댓글 팝업
+  const checkFeedbackMenu = (userId, _id, fbtype) => {
+    handleModal_Menu()
+    if (localStorage.getItem('userid') === userId) {
+      setTypeMenu(
+      <MorePopup 
+        type="myFbMore"
+        fbtype={fbtype}
+        conFirmType="COMMANT" 
+        _id={_id} 
+        handleModal_Menu={() => handleModal_Menu(false)} />
+      );
+    } else {
+      setTypeMenu(
+      <MorePopup 
+      type="userMore"
+      _id={_id}
+      handleModal_Menu={() => handleModal_Menu(false)} 
+      />
+      );
+    }
+  }
 
   useEffect(() => {
     addList();
@@ -326,7 +356,7 @@ const Viewer = ({ boardItem, nonError }) => {
     image: boardItem?.data?.boardImg,
     canonical: `viewer/${boardUid}`,
   };
-
+  console.log(ReFbUid)
   return (
     <ReplyListContext.Provider
       value={{
@@ -347,6 +377,9 @@ const Viewer = ({ boardItem, nonError }) => {
         checkFbLength,
         data,
         boardImg,
+        // 피드백 수정
+        feedBackModify,
+        setFeedBackModify
       }}
     >
       <Meta meta={metaData} />
@@ -482,9 +515,16 @@ const Viewer = ({ boardItem, nonError }) => {
             {
               renderList &&
                 !isLoading &&
-                renderList.slice(0, prevFb).map((item) => {
-                  return <FB type="Fb" key={item._id} data={item} counting={renderList.length} />;
-                })
+                renderList.slice(0, prevFb).map((item) => ( 
+                  <FB 
+                    type="Fb" 
+                    key={item._id}
+                    id={item._id} 
+                    data={item} 
+                    counting={renderList.length} 
+                    morePopup={checkFeedbackMenu} 
+                  />
+                ))
             }
             <MoreFb
               checkEvent={eventCtrl}
@@ -510,9 +550,16 @@ const Viewer = ({ boardItem, nonError }) => {
         </Modal>
       )}
       */}
+      {/* 콘텐츠 더보기 팝업 */}
       {state_MoreMenu && (
         <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
           {type_MoreMenu}
+        </Modal>
+      )}
+      {/* 피드백 더보기 팝업 */}
+      {isShowing_Menu && (
+        <Modal visible={isShowing_Menu} closable={true} maskClosable={true} onClose={() => handleModal_Menu(false)}>
+          {typeMenu}
         </Modal>
       )}
       {state_React && (

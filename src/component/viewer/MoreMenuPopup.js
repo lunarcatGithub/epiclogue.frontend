@@ -17,7 +17,8 @@ import { LanguageContext } from '@store/App_Store';
 
 const MorePopup = (props) => {
   const { langState } = useContext(LanguageContext);
-  const { _id, conFirmType, type, handleModal_Menu, onUpdate } = props;
+  const { _id, conFirmType, type, handleModal_Menu, onUpdate, fbtype, fbUid} = props;
+  const { boardUid, setReplyList, setRenderList, setFbReList, fbReList, ReFbUid } = useContext(ReplyListContext);
 
   const [accessConfirm, setAccessConfirm] = useState(false);
   // fetch
@@ -41,32 +42,33 @@ const MorePopup = (props) => {
   const [goURL] = useUrlMove();
   const [state_Confirm, toggle_Modal_Confirm] = useModal();
   const [handleReport, setHandleReport] = useModal();
-
-  const { boardUid, replyList, renderList, setReplyList, setRenderList, setFbReList, fbReList, ReFbUid } = useContext(ReplyListContext);
-
+  
   // const type = props.conFirmType;
 
   const deleteFb = () => {
+    console.log('성고')
     removeFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}`, 'delete', null, null, null);
   };
 
   const deleteFbRe = () => {
-    removeReFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`, 'delete', null, null);
+    console.log(boardUid, _id, ReFbUid)
+    removeReFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`, 'delete', null, null, null);
   };
 
   const removeBoardHandler = () => {
     removeBoardFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}`, 'delete', null, null, null);
   };
-
+  console.log(fbtype)
   useEffect(() => {
     // * 삭제 확인 이후 로직 실행
     if (accessConfirm) {
-      if (ReFbUid) {
-        deleteFbRe();
+      if (fbtype === 'Fb' || fbtype === 'popupFb') {
+        deleteFb();
       } else if (type === 'myMore') {
         removeBoardHandler();
       } else {
-        deleteFb();
+        console.log('실패')
+        deleteFbRe();
       }
     }
   }, [accessConfirm]);
@@ -97,18 +99,22 @@ const MorePopup = (props) => {
         {
           type === 'myMore' || type === 'myFbMore' ? 
           <>
-            <MyTab
+            {type !== 'myFbMore' && <MyTab
                 onClick={() => {
                   onUpdate();
+                  // setFeedBackModify(true)
                   handleModal_Menu();
                 }}
               >
                 {_modifyContent}
-              </MyTab>
-              <MyTab onClick={() => toggle_Modal_Confirm()}>{_deleteContent}</MyTab>
+              </MyTab>}
+              <MyTab 
+                onClick={() => {
+                toggle_Modal_Confirm();
+                }}>{_deleteContent}
+                </MyTab>
               </>
             : 
-            
               <MyTab onClick={() => setHandleReport()}>{_reportUser}</MyTab>
         }
         </MyTabBox>

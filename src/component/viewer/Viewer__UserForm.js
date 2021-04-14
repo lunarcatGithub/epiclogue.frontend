@@ -77,6 +77,7 @@ export default function ViewerUserForm(props) {
     followFetch(URL, followDebounce ? 'delete' : 'post', { targetUserId: user_id });
   };
 
+  
   useEffect(() => {
     if (!loginOn) return;
     getValue(follow);
@@ -111,28 +112,29 @@ export default function ViewerUserForm(props) {
             <UserNickInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>
               {type === 'ORIGIN' ? userData?.originUserId?.nickname : userData?.nickname}
             </UserNickInfo>
-            {followMe && loginOn && (
-              <UserFollowTxt
-                styling={follow}
-                onClick={() => {
-                  if (!loginOn) {
-                    setUnAuth(true);
-                    return;
-                  }
-                  toggleFollow();
-                  submitHandler();
-                }}
-              >
-                {follow ? followOnLang : followLang}
-              </UserFollowTxt>
-            )}
+            {
+              followMe && loginOn && (
+                <UserFollowTxt
+                  styling={follow}
+                  onClick={() => {
+                    if (!loginOn) {
+                      setUnAuth(true);
+                      return;
+                    }
+                    toggleFollow();
+                    submitHandler();
+                  }}
+                >
+                  {follow ? followOnLang : followLang}
+                </UserFollowTxt> )
+            }
           </UserProfileInfo>
           {/* 유저 아이디 */}
           <UserProfileId>
             <UserIdInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>{screenId}</UserIdInfo>
           </UserProfileId>
           {/* 메뉴 더보기 */}
-          <FdMoreMenuAnchor onClick={checkMoreMenuType}>
+          <FdMoreMenuAnchor onClick={() => checkMoreMenuType(screenId)}>
             <MoreMenuDot />
           </FdMoreMenuAnchor>
           {/* 콘텐츠 */}

@@ -11,8 +11,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 
 const ReFeedback = (props) => {
   const { fbReList, setFbReList, boardUid, fbUid } = useContext(ReplyListContext);
-  const { data, onClose } = props;
-  ClosedBox;
+  const { data, onClose, morePopup } = props;
   const [replyLoding, replyApi, replyError, replyFetch] = useAxiosFetch();
 
   useEffect(() => {
@@ -21,6 +20,9 @@ const ReFeedback = (props) => {
 
   useEffect(() => {
     replyApi && setFbReList(replyApi?.data);
+    return () => {
+      setFbReList(null);
+    }
   }, [replyApi]);
 
   return (
@@ -36,12 +38,17 @@ const ReFeedback = (props) => {
       {/* 원 댓글  */}
       <OriginUserBox>
         <OriginFeedback>
-          <FB type="popupFb" key={data?._id} data={data} />
+          <FB type="popupFb" key={data?._id} data={data} morePopup={morePopup} />
         </OriginFeedback>
       </OriginUserBox>
       {/* 대댓글  */}
       <FBcontent>
-        <FeedbackInner>{!replyLoding && fbReList ? fbReList.map((item) => <FB type="ReFb" key={item._id} data={item} counting={fbReList.length} />) : <ProgressSmall />}</FeedbackInner>
+        <FeedbackInner>{
+        !replyLoding && fbReList ? fbReList.map((item) => 
+        <FB type="ReFb" key={item._id} data={item} counting={fbReList.length} morePopup={morePopup} refbUid={item._id} />) 
+        :
+        <ProgressSmall />
+        }</FeedbackInner>
       </FBcontent>
       <FBform>
         <WriteFbForm type="ReFb" setFbReList={setFbReList} />

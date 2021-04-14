@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 // 컴포넌트 import
-import MorePopup from './MoreMenuPopup';
 import { LanguageContext, AppDataContext } from '@store/App_Store';
 import { LangCommon } from '@language/Lang.Common';
 import ReFeedback from './Feedback__ReFb';
@@ -19,18 +18,14 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import { useUrlMove } from '@hooks/useUrlMove';
 
 // porps.data._id 는 댓글  uid, writer._id = 작성자의 uid
-
 const FB = (props) => {
   const [isShowing_ReFb, handleModal_ReFb] = useModal();
-  const [isShowing_Menu, handleModal_Menu] = useModal();
-
-  const [typeMenu, setTypeMenu] = useState();
 
   const { langState } = useContext(LanguageContext);
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
   const { feedbackBody, heartCount, _id, writeDate, writer, replyBody, liked } = props.data;
-  const { fbUid, setFbUid, setReFbUid } = useContext(ReplyListContext);
+  const { fbUid, setFbUid, setReFbUid, feedBackModify } = useContext(ReplyListContext);
 
   const [getIndicateDate, setGetIndicateDate] = useState();
   const [indicateDate] = useTimeCalculation(getIndicateDate);
@@ -44,13 +39,11 @@ const FB = (props) => {
   const [converted, convert] = useConvertTags();
   const [reConverted, reConvert] = useConvertTags();
 
-  //임시임 바꿔야함
-  const [clickedUpdate, setClickedUpdate] = useState(true);
-
   // ============================
   const [_heartCount, setHeartCount] = useState(heartCount && heartCount);
   const [goURL] = useUrlMove();
-
+  const [feedbackFilter, setFeedBackFilter] = useState();
+  
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
 
@@ -97,20 +90,12 @@ const FB = (props) => {
 
   useEffect(() => {
     setGetIndicateDate(writeDate, '');
-    convertProfileIamge(writer.profile.thumbnail);
+    convertProfileIamge(writer?.profile?.thumbnail);
   }, [setFbUid, fbUid]);
 
   useEffect(() => {
-    // 일반 회원 팝업
-    if (localStorage.getItem('userid') === writer.screenId) {
-      setTypeMenu(<MorePopup type="myFbMore" conFirmType="COMMANT" onUpdate={setClickedUpdate} _id={_id} handleModal_Menu={() => handleModal_Menu(false)} />);
-    } else {
-      setTypeMenu(<MorePopup type="userMore" handleModal_Menu={() => handleModal_Menu(false)} />);
-    }
-    if (props.type === 'ReFb') {
-      setReFbUid(props.data._id);
-    }
-  }, [isShowing_Menu]);
+      setReFbUid(props.refbUid);
+  }, [props.type, props.refbUid]);
 
   return (
     <FeedbackUserWrap>
@@ -124,13 +109,14 @@ const FB = (props) => {
           <UserLink onClick={() => goURL({ pathname: `/myboard/${writer.screenId}` })}>
             <FeedbackNickInfo>{writer.nickname}</FeedbackNickInfo>
           </UserLink>
-          {writer.following !== 'me' && loginOn && (
-            <form action="" method="post" onSubmit={(e) => submitHandler(e, 'follow')}>
-              <FeedbackFollowTxt clickState={follow} onClick={() => toggle_follow()}>
-                {follow ? _followingBtn : _followBtn}
-              </FeedbackFollowTxt>
-            </form>
-          )}
+          {
+            writer.following !== 'me' && loginOn && (
+              <form action="" method="post" onSubmit={(e) => submitHandler(e, 'follow')}>
+                <FeedbackFollowTxt clickState={follow} onClick={() => toggle_follow()}>
+                  {follow ? _followingBtn : _followBtn}
+                </FeedbackFollowTxt>
+              </form> )
+          }
         </FeedbackProfile>
         <FeedbackProfile>
           <UserLink onClick={() => goURL({ pathname: `/myboard/${writer.screenId}` })}>
@@ -138,34 +124,34 @@ const FB = (props) => {
           </UserLink>
         </FeedbackProfile>
       </FeedbackProfileWrap>
-      {props.type !== 'popupFb' && (
-        <FdMoreMenuAnchor
-          onClick={() => {
-            if (!loginOn) {
-              setUnAuth(true);
-              return;
-            } else {
-              handleModal_Menu();
-            }
-          }}
-        >
-          <MoreMenuDot />
-        </FdMoreMenuAnchor>
-      )}
-      {clickedUpdate && (
-        <FeedbackContentBox>
-          <FeedbackContentInner>
-            {props.type === 'Fb' && <FeedbackTextContent>{converted}</FeedbackTextContent>}
-            {props.type === 'popupFb' && <FeedbackTextContent>{converted}</FeedbackTextContent>}
-            {props.type === 'ReFb' && <FeedbackTextContent>{reConverted}</FeedbackTextContent>}
-            <FeedbackPostedTime>{`Posted by ${indicateDate}`}</FeedbackPostedTime>
-          </FeedbackContentInner>
-        </FeedbackContentBox>
-      )}
+      {
+          <FdMoreMenuAnchor
+            onClick={() => {
+              // console.log(props)
+              !loginOn ? setUnAuth(true) : props.morePopup(writer.screenId, _id, props.type)
+            } }
+          >
+            <MoreMenuDot />
+          </FdMoreMenuAnchor> 
+      }
+          <FeedbackContentBox>
+            <FeedbackContentInner modify={feedBackModify}>
+              
+                <ModifiForm>
+                  {props.type === 'Fb' && <FeedbackTextContent>{converted}</FeedbackTextContent>}
+                  {props.type === 'popupFb' && <FeedbackTextContent>{converted}</FeedbackTextContent>}
+                  {props.type === 'ReFb' && <FeedbackTextContent>{reConverted}</FeedbackTextContent>}
+                  <FeedbackPostedTime>{`Posted by ${indicateDate}`}</FeedbackPostedTime>
+                </ModifiForm>
+              
+            </FeedbackContentInner>
+          </FeedbackContentBox> 
       <FeedbackBtnWrap>
         <form onSubmit={(e) => submitHandler(e, 'like')}>
           {/* 피드백 좋아요 버튼 */}
-          <ReactBtnWrap
+          <ReactBtnWrap>
+            <LikeFbBtn
+            heart={like}
             onClick={() => {
               if (!loginOn) {
                 setUnAuth(true);
@@ -174,42 +160,37 @@ const FB = (props) => {
                 toggle_like();
               }
             }}
-          >
-            <LikeFbBtn heart={like} />
+            />
             <LikeFbScore>{_heartCount && _heartCount}</LikeFbScore>
           </ReactBtnWrap>
         </form>
-        {props.type === 'ReFb' && (
-          <ReactBtnWrap>
+        <ReactBtnWrap>
+
+        {
+          props.type === 'ReFb' && 
             <ReReFbBtn />
-          </ReactBtnWrap>
-        )}
-        {props.type === 'Fb' && (
-          <ReactBtnWrap>
-            {/* 피드백 버튼 */}
-            <ReFbBtn
-              comment={comment}
-              onClick={() => {
-                toggle_comment(false);
-                comment ? setFbUid(undefined) : setFbUid(_id);
-                handleModal_ReFb(true);
-              }}
-            />
-          </ReactBtnWrap>
-        )}
+        }
+        {
+          props.type === 'Fb' && 
+          <ReFbBtn
+            comment={comment}
+            onClick={() => {
+              toggle_comment(false);
+              comment ? setFbUid(undefined) : setFbUid(_id);
+              handleModal_ReFb(true);
+            }}
+          />
+        }
+        </ReactBtnWrap>
       </FeedbackBtnWrap>
 
       {/* Modal */}
       {isShowing_ReFb && (
         <Modal visible={isShowing_ReFb} closable={true} maskClosable={true} onClose={() => handleModal_ReFb(false)}>
-          <ReFeedback data={props.data} onClose={() => handleModal_ReFb(false)} type="ReFb" />
+          <ReFeedback data={props.data} onClose={() => handleModal_ReFb(false)} type="ReFb" morePopup={props.morePopup} />
         </Modal>
       )}
-      {isShowing_Menu && (
-        <Modal visible={isShowing_Menu} closable={true} maskClosable={true} onClose={() => handleModal_Menu(false)}>
-          {typeMenu}
-        </Modal>
-      )}
+
     </FeedbackUserWrap>
   );
 };
@@ -250,14 +231,7 @@ const ImgButtonfb = css`
     background: ${(props) => props.theme.color.hoverColor};
   }
 `;
-const PositionCenterfb = css`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 28px;
-  height: 30px;
-  transform: translate(-50%, -50%);
-`;
+
 const FdMoreMenuAnchor = styled.button.attrs({
   type: 'button',
 })`
@@ -381,7 +355,8 @@ const FeedbackContentInner = styled.div`
   flex-flow: column;
   margin-top: 6px;
   margin-right: 1em;
-  margin-left: 3.5em;
+  margin-left: ${props => props.modify ? `0em` : `3.5em`};
+  
 `;
 const FeedbackContent = styled.span`
   margin-left: 6px;
@@ -409,7 +384,6 @@ const ReactBtnWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
 `;
 
 // 댓글 및 좋아요 버튼
@@ -485,14 +459,14 @@ const LikeFbScore = styled(ReFbScore)`
 
 // 수정하기 스타일링
 const ModifiForm = styled.form`
-  width: 100%;
-  height: auto;
+  display: flex;
+  flex-direction: column;
   resize: none;
 `;
 const ModifiWrap = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(100% - 7%);
+  width: 100%;
   @media (max-width: 900px) {
     margin-bottom: 10px;
   }
