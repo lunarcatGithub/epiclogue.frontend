@@ -32,6 +32,7 @@ const ContextStore = ({ children }) => {
 
   // app all method
   const [goURL] = useUrlMove();
+
   const [langState, langPatch] = useReducer(combineReducers(languageReducer), langInit);
   const [alertState, alertPatch] = useReducer(combineReducers(alertReducer), initialAlert);
   const [availableLanguage, availableLangPatch] = useReducer(combineReducers(availableLang), initialArr);

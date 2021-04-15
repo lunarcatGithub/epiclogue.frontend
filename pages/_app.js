@@ -1,3 +1,4 @@
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import theme from '../styles/theme';
 import { GlobalStyles } from '../styles/GlobalStyles';
@@ -8,9 +9,9 @@ import Helmet from 'react-helmet';
 import { useRouter } from 'next/router';
 import { appWithTranslation } from "next-i18next";
 import {AdminContextStore} from '../src/Admin/Components/Store/Admin_Context';
-
 // hooks & reducer
 import { ContextStore } from '@store/App_Store';
+import '../i18n';
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();

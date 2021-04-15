@@ -84,11 +84,11 @@ const Header = () => {
     }
   };
 
-  useEffect(() => {
-    if (profileApi?.status === 401) {
-      goURL({ pathname: `/login` });
-    }
-  }, [profileApi]);
+  // useEffect(() => {
+  //   if (profileApi?.status === 401) {
+  //     goURL({ pathname: `/login` });
+  //   }
+  // }, [profileApi]);
 
   // 헤더 코믹/일러스트 필터링
   const selectFilterComic = () => {
@@ -138,10 +138,13 @@ const Header = () => {
     if (profileApi) {
       langPatch({ type: 'LANGUAGE_UPDATE', payload: profileApi?.data?.displayLanguage });
     }
-  }, [profileApi]);
+  }, [profileApi?.data?.displayLanguage]);
 
   useEffect(() => {
     ['/epiclogueadmin', '/welcome', '/login', '/login/'].includes(pathname) || pathname.match('/editor/') || pathname.match('/findPass') ? setPreventHeader(false) : setPreventHeader(true);
+  return () => {
+    setPreventHeader(null)
+  }
   }, [pathname]);
 
   return (

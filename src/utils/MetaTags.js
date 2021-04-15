@@ -18,7 +18,7 @@ export const Meta = ({ meta }) => {
   const lang = meta.lang || navi;
   const title = meta.title;
   const description = meta.description || undefined;
-  const image = meta.image[0] || undefined || undefined;
+  const image = meta.image[0] || undefined;
   const canonical = meta.canonical;
   const type = isMobile ? 'mobile' : 'website';
   const width = (meta.image && (meta.width || 1200)) || undefined;

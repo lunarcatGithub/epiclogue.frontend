@@ -20,6 +20,7 @@ import { LanguageContext, AppDataContext } from '@store/App_Store';
 import { useModal } from '@hooks/useModal';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useForm from '@hooks/useForm';
+import { useCookie } from '@hooks/useCookie';
 
 export const SignIn = (props) => {
   const { setChangePage } = props;
@@ -30,7 +31,7 @@ export const SignIn = (props) => {
   const [errorTitle, setErrorTitle] = useState();
   const [goURL] = useUrlMove();
   const [_isShowing, _toggle] = useModal();
-
+  
   // 로그인 에러
   // fetch
   const [, snsLoginListApi, , snsLoginFetch] = useAxiosFetch();
@@ -52,6 +53,8 @@ export const SignIn = (props) => {
     _leaveUser = leaveUser[selectedLanguage] || leaveUser[defaultLanguage],
     _lostPassword = lostPassword[selectedLanguage] || lostPassword[defaultLanguage],
     _backLogin = backLogin[selectedLanguage] || backLogin[defaultLanguage];
+  //create cookie
+  const [, devCookieHandle] = useCookie();
 
   // sns 로그인 통신
   const responseSuccess = (res, type) => {
@@ -86,7 +89,10 @@ export const SignIn = (props) => {
 
   useEffect(() => {
     const mergyData = resData || snsLoginListApi;
+    let divied = process.env.NODE_ENV;
     if (mergyData?.result === 'ok') {
+      divied === 'development' && devCookieHandle('CREATE', 'dev', 'test', 1);
+
       setLoginOn(true);
       localStorage.setItem('userNick', mergyData?.nick);
       localStorage.setItem('userid', mergyData?.screenId);

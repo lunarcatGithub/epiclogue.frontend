@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
 
 // 컴포넌트 import
 import { LangHeaderProfile } from '@language/Lang.Header';
@@ -13,13 +12,8 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { useCookie } from '@hooks/useCookie';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
-// 이미지 import
-// import Xbtn from "../../img/X-mark.png";
-
 // 프로필 팝업
-
 const HeaderPfPopup = () => {
-  const router = useRouter();
 
   const [goURL] = useUrlMove();
   //profile
@@ -27,8 +21,9 @@ const HeaderPfPopup = () => {
 
   //cookie
   const [, cookieHandle] = useCookie();
+  const [, testCookieHandle] = useCookie();
 
-  const { alertPatch } = useContext(AlertContext);
+  const { alertPatch, loginOn } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
   const { setLoginOn } = useContext(AppDataContext);
 
@@ -48,27 +43,26 @@ const HeaderPfPopup = () => {
     _sessionExpire = sessionExpire[selectedLanguage] || sessionExpire[defaultLanguage];
 
   const logout = () => {
-
+      setIsOpen();
       cookieHandle('DELETE', 'access_token');
-
+      // testCookieHandle('DELETE', 'dev');
       logoutFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, 'get')
-      setLoginOn(false)
+      setLoginOn(false);
       localStorage.removeItem('userNick');
       localStorage.removeItem('userid');
-      setIsOpen();
+      
       goURL({ pathname: '/login' });
   };
 
   useEffect(() => {
+    if(!profileError) return;
     if (profileError?.status === 401) {
-      router.reload();
-      
-      if(alert(_sessionExpire)){
-        logout();
-      }
-      
+      alert(_sessionExpire)
+      logout();
     }
-  }, [profileError]);
+    return ()=> logout();
+    
+  }, [profileError, loginOn]);
 
   useLayoutEffect(() => {
     setProfileImg(profileApi?.data?.profile?.thumbnail);

@@ -46,19 +46,16 @@ const MorePopup = (props) => {
   // const type = props.conFirmType;
 
   const deleteFb = () => {
-    console.log('성고')
     removeFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}`, 'delete', null, null, null);
   };
 
   const deleteFbRe = () => {
-    console.log(boardUid, _id, ReFbUid)
     removeReFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`, 'delete', null, null, null);
   };
 
   const removeBoardHandler = () => {
     removeBoardFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}`, 'delete', null, null, null);
   };
-  console.log(fbtype)
   useEffect(() => {
     // * 삭제 확인 이후 로직 실행
     if (accessConfirm) {
@@ -67,7 +64,6 @@ const MorePopup = (props) => {
       } else if (type === 'myMore') {
         removeBoardHandler();
       } else {
-        console.log('실패')
         deleteFbRe();
       }
     }

@@ -1,30 +1,32 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'next-i18next'
+
 // 컴포넌트 import
 import { LangPush } from '@language/Lang.Common';
 import { LangMypageGene, LangMypageInform } from '@language/Lang.Mypage';
 
 // hooks&&reducer
 import { MypageContext } from './Mypage';
-
 import { LanguageContext } from '@store/App_Store';
+import { Meta } from '@utils/MetaTags';
 
 export default function MypageForm(props) {
   const { type, formDatas } = props;
-
+  const { i18n } = useTranslation()
   // contextAPI
   const { LanguageList, interestedList } = useContext(MypageContext);
   const { langState, langPatch, availableLanguage } = useContext(LanguageContext);
 
   const { selectedLanguage, defaultLanguage } = langState;
   const [toggleSet, setToggleSet] = useState(false);
-  const [selectData, setSelectData] = useState(selectedLanguage);
+  const [selectData, setSelectData] = useState(selectedLanguage || defaultLanguage);
   const [selectMultiple, setSelectMultiple] = useState([
     { id: 1, title: '한국어', value: 0, isChecked: false },
     { id: 2, title: '日本語', value: 1, isChecked: false },
     { id: 3, title: 'English', value: 2, isChecked: false },
   ]);
-
+  let language;
   // 언어 변수 설정
   const [langTitle, setLangTitle] = useState();
   const [langSubtitle, setLangSubtitle] = useState();
@@ -71,6 +73,15 @@ export default function MypageForm(props) {
     if (type === 'language') {
       langPatch({ type: 'LANGUAGE_UPDATE', payload: selectData });
       formDatas.submit(e, 'language', selectData);
+      if(selectData === 0){
+        language = 'ko'
+      } else if(selectData === 1){
+        language = 'ja'
+      } else {
+        language = 'en'
+      }
+      i18n.changeLanguage(language)
+      document.documentElement.lang = language
     } else if (type === 'interest') {
       formDatas.submit(e, 'interest', selectMultiple);
     }
@@ -113,8 +124,13 @@ export default function MypageForm(props) {
   useEffect(() => {
     langHandler();
   }, [selectedLanguage, defaultLanguage]);
-
+  // Meta 전용
+  const metaData = {
+    image: ''
+  };
   return (
+    <>
+    <Meta meta={metaData} />
     <ContentsBox>
       {/* 내 언어 설정 */}
       <IdContentInnerBox styling={toggleSet}>
@@ -176,6 +192,7 @@ export default function MypageForm(props) {
       </IdContentInnerBox>
       {/* // 내 언어 설정 끝 */}
     </ContentsBox>
+    </>
   );
 }
 
