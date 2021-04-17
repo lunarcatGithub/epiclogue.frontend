@@ -9,9 +9,9 @@ import ListForm from '../Common/List__Form';
 export const AdminCopyright = () => {
   //data
   const [userContentsData, setUserContentsData] = useState([
-    { id: 1, email: 'asd@ads.com', _id: `@asasdd`, title: 'adasd', type: '정지', date: '2020-11-28', ban: false },
-    { id: 2, email: 'ascvcvd@xcvx.com', _id: `@adf`, title: '1234', type: '탈퇴', date: '2021-01-02', ban: true },
-    { id: 3, email: 'asxzcvzxd@ads.com', _id: `@qwerrt`, title: 'qqqqq', type: '정상', date: '2021-02-28', ban: false },
+    { id: 1, email: 'asd@ads.com', _id: `@asasdd`, title: 'adasd', result:'미정', date: '2020-11-28', ban: false },
+    { id: 2, email: 'ascvcvd@xcvx.com', _id: `@adf`, title: '1234', result:'삭제', date: '2021-01-02', ban: true },
+    { id: 3, email: 'asxzcvzxd@ads.com', _id: `@qwerrt`, title: 'qqqqq', result:'미정', date: '2021-02-28', ban: false },
   ]);
 
   const categorySelec = [
@@ -53,7 +53,7 @@ export const AdminCopyright = () => {
     });
   };
 
-  const headerArr = ['번호', '이메일', '아이디', '회원유형', '제목', '신고날짜', '정지', '삭제', '탈퇴'];
+  const headerArr = ['번호', '아이디', '이메일', '제목', '처리결과', '신고날짜', '정지', '삭제', '탈퇴'];
   const warnBtn = [
     { title: '메일발송', value: 'sendMail' },
     { title: '정지', value: 'ban' },

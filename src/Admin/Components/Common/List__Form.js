@@ -199,8 +199,8 @@ export default function ListForm({ type, contentsData }) {
                     />
                   </TableDataBox>
                   <TableDataBox >{content.id}</TableDataBox>
-                  <TableDataBox>{content.email}</TableDataBox>
                   <TableDataBox>{content._id}</TableDataBox>
+                  {content.email && <TableDataBox>{content.email}</TableDataBox>}
                   {content.type && <TableDataBox>{content.type}</TableDataBox>}
                   {content.join && <TableDataBox>{content.join}</TableDataBox>}
                   {content.title && <TableDataBox>{content.title}</TableDataBox>}
