@@ -14,7 +14,6 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 // utils
 import {dataHiddenFilter} from '@utils/dataHidden'
 
-let renderCount = 35;
 let initialCount = 35;
 
 const Contents = (props) => {
@@ -38,6 +37,12 @@ const Contents = (props) => {
   const [renderList, setRenderList] = useState([]);
   const [items, setItems] = useState(initialCount);
   const [hasMore, setHasMore] = useState(false);
+  // 마지막 콘텐츠id 감지하기
+  const [lastContentId, setLastContentId] = useState(null);
+  // 콘텐츠 리스트
+  const [comicList, setComicList] = useState([]);
+  const [illustList, setIllustList] = useState([]);
+  const [initialList, setInitialList] = useState([]);
 
   // fetch
   const [, initialApi, , initialFetch] = useAxiosFetch();
@@ -46,35 +51,41 @@ const Contents = (props) => {
   const [, searchApi, , searchFetch] = useAxiosFetch();
   const [, userApi, , userFetch] = useAxiosFetch();
   const [page, setPage] = useState(1);
-
+  console.log('illustList', illustList)
+  console.log('comicList', comicList)
+  console.log('initialApi', initialApi)
   // devide type
   const devideTypeHandler = () => {
     setInitialLoading(true);
     switch (type) {
       case 'MAIN':
         if (initialApi && clickedComic && clickedIllust) {
-          renderDataHandler(initialApi?.data, 'content');
+          latesIdDetect(initialApi?.data, 'initial');
         } else if ((comicApi && clickedComic) || !clickedIllust) {
-          renderDataHandler(comicApi?.data, 'content');
+          latesIdDetect(comicApi?.data, 'comic');
         } else if ((comicApi && clickedIllust) || !clickedComic) {
-          renderDataHandler(illustApi?.data, 'content');
+          latesIdDetect(illustApi?.data, 'illust');
         }
+        
+        // latesIdDetect(initialApi?.data || comicApi?.data || illustApi?.data, 'content');
+        
         break;
 
       case 'MYBOARD':
-        renderDataHandler(myboardData, 'content');
-
+        latesIdDetect(myboardData, 'content');
+      
         break;
       case 'VIEWER':
         // 향후 알고리즘 작품 (현재 메인과 통합)
         break;
 
       case 'SEARCH':
-        if (searchType === 'users') {
-          renderDataHandler(userApi?.data, 'user');
-        } else {
-          renderDataHandler(searchApi?.data, 'content');
-        }
+        // if (searchType === 'users') {
+        //   renderDataHandler(userApi?.data, 'user');
+        // } else {
+        //   renderDataHandler(searchApi?.data, 'content');
+        // }
+        latesIdDetect(userApi?.data || searchApi?.data, searchType === 'users' ? 'user' : 'content')
         break;
 
       default:
@@ -83,24 +94,56 @@ const Contents = (props) => {
     setInitialLoading(false);
   };
 
-  const renderDataHandler = (renderData, type) => {
-    if (!renderData) return;
-    setContentsList(renderData);
-    if (type === 'user') {
-      setRenderList(renderData.slice(0, initialCount));
+  // const renderDataHandler = (renderData, type) => {
+  //   if (!renderData) return;
+  //   setContentsList(renderData);
+  //   if (type === 'user') {
+  //     setRenderList(renderData.slice(0, initialCount));
+  //   } else {
+  //     // 작품 숨기기 or 블라인드 or 유저 선호 언어에 따른 분류
+  //     setRenderList(dataHiddenFilter(renderData, availableLanguage).slice(0, initialCount));
+  //   }
+  //   // if (contentsList.length = renderData?.slice(0, initialCount).length) {
+  //   //   setHasMore(false);
+  //   // }
+  // };
+  console.log('renderList', renderList)
+
+  const latesIdDetect = (data, type) => {
+    if(!data || data.length === 0) return;
+    if(type === 'comic'){
+      setComicList([...comicList, ...data])
+      setRenderList(comicList)
+      setIllustList([])
+      setInitialList([])
+      setLastContentId(null)
+
+    } else if(type === 'illust') {
+      setIllustList([...illustList, ...data])
+      setRenderList(illustList)
+      setComicList([])
+      setInitialList([])
+      setLastContentId(null)
+
     } else {
-      // 작품 숨기기 or 블라인드 or 유저 선호 언어에 따른 분류
-      setRenderList(dataHiddenFilter(renderData, availableLanguage).slice(0, initialCount));
+      setInitialList([...initialList, ...data])
+      setRenderList(initialList)
+      setIllustList([])
+      setComicList([])
+      setLastContentId(null)
+
     }
-    // if (contentsList.length = renderData?.slice(0, initialCount).length) {
-    //   setHasMore(false);
-    // }
-  };
-  
+      setLastContentId(data && data[data?.length - 1]._id)
+  }
+
+  useEffect(() => {
+    latesIdDetect()
+  }, [comicList, illustList, initialList])
+
   useEffect(() => {
     devideTypeHandler();
     return () => devideTypeHandler();
-  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType, availableLanguage]);
+  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType]);
 
   // 코믹 && 일러스트 요청
 
@@ -109,13 +152,13 @@ const Contents = (props) => {
     setHasMore(true);
 
     if (clickedComic && !clickedIllust) {
-      comicFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Comic`, 'get', null, null, null);
+      comicFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Comic&size=${initialCount}${lastContentId && `&latestId=${lastContentId}`}`, 'get', null, null, null);
     } else if (!clickedComic && clickedIllust) {
-      illustFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Illust`, 'get', null, null, null);
+      illustFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Illust&size=${initialCount}${lastContentId && `&latestId=${lastContentId}`}`, 'get', null, null, null);
     } else if (clickedComic && clickedIllust) {
-      initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, null);
+      initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?size=${initialCount}${lastContentId && `&latestId=${lastContentId}`}`, 'get', null, null, null);
     }
-  }, [clickedComic, clickedIllust]);
+  }, [clickedComic, clickedIllust, page]);
 
   // 검색단어 가져오기
   useEffect(() => {
@@ -130,7 +173,7 @@ const Contents = (props) => {
 
   // 검색단어로 데이터 요청하기
   useEffect(() => {
-    setItems(initialCount);
+    setItems(initialCount); 
     setInitialLoading(true);
     setHasMore(true);
 
@@ -151,30 +194,27 @@ const Contents = (props) => {
 
   // 데이터 메인 스크롤 시키기
 
-  const renderDataScroll = useCallback(() => {
-    if (renderList.length && contentsList.length <= renderList.length) setHasMore(false);
+  // const renderDataScroll = useCallback(() => {
+  //   if (renderList.length && contentsList.length <= renderList.length) setHasMore(false);
 
-    let checkRemainingcount;
+  //   let checkRemainingcount;
 
-    if (contentsList.length) {
-      setItems((prev) => prev + renderCount);
-      if (renderCount < contentsList.length - renderList.length) {
-        checkRemainingcount = renderCount;
-        setHasMoreLoading(true);
-      } else {
-        checkRemainingcount = Math.abs(contentsList.length - renderList.length);
-        setHasMoreLoading(false);
-      }
-    }
-    const slice = contentsList.slice(items, items + checkRemainingcount);
-    const newList = renderList.concat(slice);
-    setRenderList(newList);
-  }, [renderList, contentsList]);
+  //   if (contentsList.length) {
+  //     setItems((prev) => prev + renderCount);
+  //     if (renderCount < contentsList.length - renderList.length) {
+  //       checkRemainingcount = renderCount;
+  //       setHasMoreLoading(true);
+  //     } else {
+  //       checkRemainingcount = Math.abs(contentsList.length - renderList.length);
+  //       setHasMoreLoading(false);
+  //     }
+  //   }
+  //   const slice = contentsList.slice(items, items + checkRemainingcount);
+  //   const newList = renderList.concat(slice);
+  //   setRenderList(newList);
+  // }, [renderList, contentsList]);
 
   // 스크롤 이벤트
-  useEffect(() => {
-    renderDataScroll();
-  }, [page]);
 
   // overver 감지
   const handleObserver = (entities) => {
@@ -198,17 +238,18 @@ const Contents = (props) => {
   }, [loader.current]);
 
   let renderContents;
+  console.log(renderList)
   if (searchType === 'users') {
-    renderContents = renderList.map((item, index) => <ContentsUserForm searchData={item} key={index} />);
+    renderContents = renderList?.map((item, index) => <ContentsUserForm searchData={item} key={index} />);
   } else {
-    renderContents = renderList.map((item, index) => <ContentsForm key={index} contentData={item} />);
+    renderContents = renderList?.map((item, index) => <ContentsForm key={index} contentData={item} />);
   }
 
   return (
     <>
       <Layout>
         {
-          !url.match('main') && !url.match('myboard') && renderList.length === 0 && (
+          !url.match('main') && !url.match('myboard') && renderList?.length === 0 && (
             <NoResultWrap>
               <NoResultImg />
             </NoResultWrap> )
