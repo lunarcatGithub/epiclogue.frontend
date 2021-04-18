@@ -38,7 +38,7 @@ const Contents = (props) => {
   const [items, setItems] = useState(initialCount);
   const [hasMore, setHasMore] = useState(false);
   // 마지막 콘텐츠id 감지하기
-  const [lastContentId, setLastContentId] = useState(null);
+  const [lastContentId, setLastContentId] = useState({initId:0, comicId:0, illustId:0});
   // 콘텐츠 리스트
   const [comicList, setComicList] = useState([]);
   const [illustList, setIllustList] = useState([]);
@@ -51,20 +51,26 @@ const Contents = (props) => {
   const [, searchApi, , searchFetch] = useAxiosFetch();
   const [, userApi, , userFetch] = useAxiosFetch();
   const [page, setPage] = useState(1);
-  console.log('illustList', illustList)
-  console.log('comicList', comicList)
-  console.log('initialApi', initialApi)
+  // console.log('illustApi', illustApi)
+  // console.log('comicApi', comicApi)
+  // console.log('initialApi', initialApi)
   // devide type
   const devideTypeHandler = () => {
     setInitialLoading(true);
     switch (type) {
       case 'MAIN':
         if (initialApi && clickedComic && clickedIllust) {
-          latesIdDetect(initialApi?.data, 'initial');
-        } else if ((comicApi && clickedComic) || !clickedIllust) {
-          latesIdDetect(comicApi?.data, 'comic');
-        } else if ((comicApi && clickedIllust) || !clickedComic) {
-          latesIdDetect(illustApi?.data, 'illust');
+          let initData = initialApi?.data
+          latesIdDetect(initData, 'initial');
+          setLastContentId({initId:initData[initData?.length - 1]?._id, comicId:0, illustId:0})
+        } else if ((comicApi && clickedComic) && !clickedIllust) {
+          let comicData = comicApi?.data
+          latesIdDetect(comicData, 'comic');
+          setLastContentId({initId:0, comicId:comicData[comicData?.length - 1]?._id, illustId:0})
+        } else if ((illustApi && clickedIllust) && !clickedComic) {
+          let illustData = illustApi?.data
+          latesIdDetect(illustData, 'illust');
+          setLastContentId({initId:0, comicId:0, illustId:illustData[illustData?.length - 1]?._id})
         }
         
         // latesIdDetect(initialApi?.data || comicApi?.data || illustApi?.data, 'content');
@@ -116,24 +122,21 @@ const Contents = (props) => {
       setRenderList(comicList)
       setIllustList([])
       setInitialList([])
-      setLastContentId(null)
 
     } else if(type === 'illust') {
       setIllustList([...illustList, ...data])
       setRenderList(illustList)
       setComicList([])
       setInitialList([])
-      setLastContentId(null)
 
     } else {
       setInitialList([...initialList, ...data])
       setRenderList(initialList)
       setIllustList([])
       setComicList([])
-      setLastContentId(null)
-
     }
-      setLastContentId(data && data[data?.length - 1]._id)
+      console.log(type, data[data?.length - 1]._id)
+      // setLastContentId(data ? data[data?.length - 1]._id : null)
   }
 
   useEffect(() => {
@@ -143,20 +146,20 @@ const Contents = (props) => {
   useEffect(() => {
     devideTypeHandler();
     return () => devideTypeHandler();
-  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType]);
+  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType, page]);
 
   // 코믹 && 일러스트 요청
+  console.log(lastContentId)
 
   useEffect(() => {
     setItems(initialCount);
     setHasMore(true);
-
     if (clickedComic && !clickedIllust) {
-      comicFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Comic&size=${initialCount}${lastContentId && `&latestId=${lastContentId}`}`, 'get', null, null, null);
+      comicFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Comic&size=${initialCount}${lastContentId?.comicId && `&latestId=${lastContentId?.comicId}`}`, 'get', null, null, null);
     } else if (!clickedComic && clickedIllust) {
-      illustFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Illust&size=${initialCount}${lastContentId && `&latestId=${lastContentId}`}`, 'get', null, null, null);
-    } else if (clickedComic && clickedIllust) {
-      initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?size=${initialCount}${lastContentId && `&latestId=${lastContentId}`}`, 'get', null, null, null);
+      illustFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Illust&size=${initialCount}${lastContentId?.illustId && `&latestId=${lastContentId?.illustId}`}`, 'get', null, null, null);
+    } else {
+      initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?size=${initialCount}${lastContentId?.initId && `&latestId=${lastContentId?.initId}`}`, 'get', null, null, null);
     }
   }, [clickedComic, clickedIllust, page]);
 
@@ -238,7 +241,6 @@ const Contents = (props) => {
   }, [loader.current]);
 
   let renderContents;
-  console.log(renderList)
   if (searchType === 'users') {
     renderContents = renderList?.map((item, index) => <ContentsUserForm searchData={item} key={index} />);
   } else {
