@@ -56,7 +56,6 @@ export const AdminContents = () => {
           setUserContentsData(data);
         }
       } else return;
-      
     });
   };
 

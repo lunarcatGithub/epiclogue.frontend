@@ -52,8 +52,8 @@ const Contents = (props) => {
   const [, userApi, , userFetch] = useAxiosFetch();
   const [page, setPage] = useState(0);
   // console.log('illustApi', illustApi)
-  console.log('page', page)
-  console.log('initialList', initialList)
+  console.log('comicList', comicList)
+  console.log('initialApi', initialApi)
 
   // devide type
   const devideTypeHandler = () => {
@@ -62,6 +62,7 @@ const Contents = (props) => {
       case 'MAIN':
         if (initialApi && clickedComic && clickedIllust) {
           if(!initialApi) return
+
           let initData = initialApi?.data
           latesIdDetect(initData, 'initial');
           setLastContentId({initId:initData[initData?.length - 1]?._id, comicId:0, illustId:0})
@@ -104,8 +105,6 @@ const Contents = (props) => {
     setInitialLoading(false);
   };
 
-  console.log('renderList', renderList)
-
   const latesIdDetect = (data, type) => {
     if(!data || data.length === 0) return;
     if(type === 'comic'){
@@ -126,13 +125,12 @@ const Contents = (props) => {
       setIllustList([])
       setComicList([])
     }
-      console.log(type, data[data?.length - 1]._id)
       // setLastContentId(data ? data[data?.length - 1]._id : null)
   }
 
   useEffect(() => {
     latesIdDetect()
-  }, [comicList, illustList, initialList])
+  }, [initialList])
 
   useEffect(() => {
     devideTypeHandler();
@@ -140,7 +138,7 @@ const Contents = (props) => {
   }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType]);
 
   // 코믹 && 일러스트 요청
-
+  console.log('lastContentId', lastContentId)
   useEffect(() => {
     setItems(initialCount);
     setHasMore(true);
@@ -190,7 +188,6 @@ const Contents = (props) => {
   // overver 감지
   const handleObserver = (entities) => {
 
-console.log('entities', entities[0])
     const target = entities[0];
     if (target.isIntersecting) {
       setPage((page) => page + 1);
@@ -198,6 +195,8 @@ console.log('entities', entities[0])
   };
 
   useEffect(() => {
+    if(initialApi?.data?.lenght === 0) return
+
     let options = {
       root: null,
       rootMargin: '10px',
