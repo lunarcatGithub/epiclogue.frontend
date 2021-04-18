@@ -38,7 +38,7 @@ const Contents = (props) => {
   const [items, setItems] = useState(initialCount);
   const [hasMore, setHasMore] = useState(false);
   // 마지막 콘텐츠id 감지하기
-  const [lastContentId, setLastContentId] = useState({initId:0, comicId:0, illustId:0});
+  const [lastContentId, setLastContentId] = useState({initId:null, comicId:null, illustId:null});
   // 콘텐츠 리스트
   const [comicList, setComicList] = useState([]);
   const [illustList, setIllustList] = useState([]);
@@ -50,24 +50,28 @@ const Contents = (props) => {
   const [, illustApi, , illustFetch] = useAxiosFetch();
   const [, searchApi, , searchFetch] = useAxiosFetch();
   const [, userApi, , userFetch] = useAxiosFetch();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   // console.log('illustApi', illustApi)
-  // console.log('comicApi', comicApi)
-  // console.log('initialApi', initialApi)
+  console.log('page', page)
+  console.log('initialList', initialList)
+
   // devide type
   const devideTypeHandler = () => {
     setInitialLoading(true);
     switch (type) {
       case 'MAIN':
         if (initialApi && clickedComic && clickedIllust) {
+          if(!initialApi) return
           let initData = initialApi?.data
           latesIdDetect(initData, 'initial');
           setLastContentId({initId:initData[initData?.length - 1]?._id, comicId:0, illustId:0})
         } else if ((comicApi && clickedComic) && !clickedIllust) {
+          if(!comicApi) return
           let comicData = comicApi?.data
           latesIdDetect(comicData, 'comic');
           setLastContentId({initId:0, comicId:comicData[comicData?.length - 1]?._id, illustId:0})
         } else if ((illustApi && clickedIllust) && !clickedComic) {
+          if(!illustApi) return
           let illustData = illustApi?.data
           latesIdDetect(illustData, 'illust');
           setLastContentId({initId:0, comicId:0, illustId:illustData[illustData?.length - 1]?._id})
@@ -100,19 +104,6 @@ const Contents = (props) => {
     setInitialLoading(false);
   };
 
-  // const renderDataHandler = (renderData, type) => {
-  //   if (!renderData) return;
-  //   setContentsList(renderData);
-  //   if (type === 'user') {
-  //     setRenderList(renderData.slice(0, initialCount));
-  //   } else {
-  //     // 작품 숨기기 or 블라인드 or 유저 선호 언어에 따른 분류
-  //     setRenderList(dataHiddenFilter(renderData, availableLanguage).slice(0, initialCount));
-  //   }
-  //   // if (contentsList.length = renderData?.slice(0, initialCount).length) {
-  //   //   setHasMore(false);
-  //   // }
-  // };
   console.log('renderList', renderList)
 
   const latesIdDetect = (data, type) => {
@@ -146,20 +137,19 @@ const Contents = (props) => {
   useEffect(() => {
     devideTypeHandler();
     return () => devideTypeHandler();
-  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType, page]);
+  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType]);
 
   // 코믹 && 일러스트 요청
-  console.log(lastContentId)
 
   useEffect(() => {
     setItems(initialCount);
     setHasMore(true);
     if (clickedComic && !clickedIllust) {
-      comicFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Comic&size=${initialCount}${lastContentId?.comicId && `&latestId=${lastContentId?.comicId}`}`, 'get', null, null, null);
+      comicFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Comic&size=${items}${lastContentId?.comicId && `&latestId=${lastContentId?.comicId}`}`, 'get', null, null, null);
     } else if (!clickedComic && clickedIllust) {
-      illustFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Illust&size=${initialCount}${lastContentId?.illustId && `&latestId=${lastContentId?.illustId}`}`, 'get', null, null, null);
+      illustFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Illust&size=${items}${lastContentId?.illustId && `&latestId=${lastContentId?.illustId}`}`, 'get', null, null, null);
     } else {
-      initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?size=${initialCount}${lastContentId?.initId && `&latestId=${lastContentId?.initId}`}`, 'get', null, null, null);
+      initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?size=${items}${lastContentId?.initId && `&latestId=${lastContentId?.initId}`}`, 'get', null, null, null);
     }
   }, [clickedComic, clickedIllust, page]);
 
@@ -195,32 +185,12 @@ const Contents = (props) => {
     }
   }, [searchType, resultKeyword, searchData, router.asPath]);
 
-  // 데이터 메인 스크롤 시키기
-
-  // const renderDataScroll = useCallback(() => {
-  //   if (renderList.length && contentsList.length <= renderList.length) setHasMore(false);
-
-  //   let checkRemainingcount;
-
-  //   if (contentsList.length) {
-  //     setItems((prev) => prev + renderCount);
-  //     if (renderCount < contentsList.length - renderList.length) {
-  //       checkRemainingcount = renderCount;
-  //       setHasMoreLoading(true);
-  //     } else {
-  //       checkRemainingcount = Math.abs(contentsList.length - renderList.length);
-  //       setHasMoreLoading(false);
-  //     }
-  //   }
-  //   const slice = contentsList.slice(items, items + checkRemainingcount);
-  //   const newList = renderList.concat(slice);
-  //   setRenderList(newList);
-  // }, [renderList, contentsList]);
-
   // 스크롤 이벤트
 
   // overver 감지
   const handleObserver = (entities) => {
+
+console.log('entities', entities[0])
     const target = entities[0];
     if (target.isIntersecting) {
       setPage((page) => page + 1);
@@ -231,7 +201,7 @@ const Contents = (props) => {
     let options = {
       root: null,
       rootMargin: '10px',
-      threshold: 0.7,
+      threshold: 0.8,
     };
 
     const observer = new IntersectionObserver(handleObserver, options);
@@ -322,8 +292,7 @@ const MasonryBox = styled.section`
   }
   @media (max-width: 380px) {
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-  }
-`;
+  }`;
 
 const RefLayout = styled.div`
   width: 1px;

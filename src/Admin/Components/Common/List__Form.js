@@ -205,7 +205,7 @@ export default function ListForm({ type, contentsData }) {
                   {content.join && <TableDataBox>{content.join}</TableDataBox>}
                   {content.title && <TableDataBox>{content.title}</TableDataBox>}
                   {content.category && <TableDataBox>{content.category}</TableDataBox>}
-                  {content.result && <TableDataBox>{content.result}</TableDataBox>}
+                  {content.result && <TableDataBox type={'result'}>{content.result}</TableDataBox>}
                   {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
                   {content.content && <TableDataBox>{content.content}</TableDataBox>}
                   {content.date && <TableDataBox>{content.date}</TableDataBox>}
@@ -379,7 +379,7 @@ const TableRowBox = styled.tr`
   background: ${(props) => props.theme.adminColor.whiteColor};
 `;
 const TableDataBox = styled.td`
-  width:${props => props.type === 'btn' && '4.5em'};
+  width:${props => props.type === 'btn' && props.type === 'result' && '4em'};
   text-align: center;
   padding: 0.8em 0.5em;
 `;
