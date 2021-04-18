@@ -25,7 +25,7 @@ const Report = () => {
     { id: 'private', title: '상기 내용에 대한 정보제공(개인정보, 신고내용)을 동의합니다.', isChecked: false },
     { id: 'swear', title: '본인은 위증을 하지 않았고, 확실한 저작권자이며 상기의 내용은 모두 진실임을 동의합니다.', isChecked: false },
   ]);
-  const [signitrue, setSignitrue] = useState();
+  const [signitrue, setSignitrue] = useState('');
 
   const handleChangeValue = (e, type) => {
     const { value } = e.target;
@@ -50,24 +50,27 @@ const Report = () => {
     e.preventDefault();
     let formData = new FormData();
     // formData.append()
-    if (agreeCheck[0].isChecked === false && agreeCheck[1].isChecked === false) {
-      alert('상기의 내용에 동의하지 않으면 신고하실 수 없습니다');
-    }
-    alert('아직 개발중입니다. 피드백을 통해 발송해주세요');
+    if (agreeCheck[0].isChecked === false) {
+      alert('정보제공에 동의하지 않으면 신고하실 수 없습니다');
+    } else if (agreeCheck[1].isChecked === false){
+      alert('위증여부에 동의하지 않으면 신고하실 수 없습니다');
+    } 
+
+    // formData.append('')
   };
 
   const informArr = [
-    { id: 0, title: '이름', name: 'name' },
-    { id: 1, title: '회사명', name: 'company' },
-    { id: 2, title: '연락처', name: 'contact' },
-    { id: 3, title: '이메일', name: 'email' },
-    { id: 4, title: '국가', name: 'country' },
+    { id: 0, title: '이름', name: 'name', required:true },
+    { id: 1, title: '회사명', name: 'company', required:false },
+    { id: 2, title: '연락처', name: 'contact', required:true },
+    { id: 3, title: '이메일', name: 'email', required:true },
+    { id: 4, title: '국가', name: 'country', required:false },
   ];
 
   useEffect(() => {
     let form = [];
     for (let i = 0; i <= originSite; i++) {
-      form.push(<TxtInput placeholder={'ex) http://'} onChange={(e) => handleChangeValue(e, 'origin')} />);
+      form.push(<TxtInput key={i} placeholder={'ex) https://'} onChange={(e) => handleChangeValue(e, 'origin')} />);
     }
     setOriginForm(form);
   }, []);
@@ -86,17 +89,20 @@ const Report = () => {
             <Dummy />
 
             <ReportSubTitle> 신고자의 정보</ReportSubTitle>
-            {informArr.map(({ id, title, name }) => (
-              <InputWrap key={id}>
-                <ReportTxt>{title}</ReportTxt>
-                <TxtInput
-                  name={name}
-                  onChange={(e) => {
-                    handleChangeValue(e, name);
-                  }}
-                />
-              </InputWrap>
-            ))}
+            {
+              informArr.map(({ id, title, name, required }) => (
+                <InputWrap key={id}>
+                  <ReportTxt>{title}</ReportTxt>
+                  <TxtInput
+                    name={name}
+                    onChange={(e) => {
+                      handleChangeValue(e, name);
+                    }}
+                    required={required}
+                  />
+                </InputWrap>
+              ))
+            }
 
             {/* // 저작권 신고 상단 파트 끝 */}
           </ReportTop>
@@ -128,12 +134,14 @@ const Report = () => {
             </InputWrap>
             <InputWrap>
               <ReportSubTitle>상기 내용에 대한 동의</ReportSubTitle>
-              {agreeCheck?.map(({ id, title }) => (
-                <AgreeBoxWrap key={id}>
-                  <PvAgreeBox id={id} onChange={(e) => handleChangeValue(e, 'checkBox')} />
-                  <PvAgreeBoxLabel htmlFor={id}>{title}</PvAgreeBoxLabel>
-                </AgreeBoxWrap>
-              ))}
+              {
+                agreeCheck?.map(({ id, title }) => (
+                  <AgreeBoxWrap key={id}>
+                    <PvAgreeBox id={id} onChange={(e) => handleChangeValue(e, 'checkBox')} />
+                    <PvAgreeBoxLabel htmlFor={id}>{title}</PvAgreeBoxLabel>
+                  </AgreeBoxWrap>
+                ))
+              }
             </InputWrap>
             <InputWrap>
               <ReportSubTitle>본인의 성명을 작성해주세요. 전자서명으로 대체합니다.</ReportSubTitle>
