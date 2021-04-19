@@ -30,7 +30,14 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const router = useRouter()
 
   const { langState } = useContext(LanguageContext);
-  const { setMyboardData, loginOn, setUnAuth, followData, setFollowData, setFollowButton } = useContext(AppDataContext);
+  const {
+    setMyboardData,
+    loginOn,
+    setUnAuth,
+    followData,
+    setFollowData,
+    setFollowButton
+  } = useContext(AppDataContext);
   const [follow, toggleFollow] = useToggle();
   // console.log(boardItem)
   const [date, setDate] = useState();
@@ -79,9 +86,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const submitHandler = () => {
     if (!loginOn) return;
     getValue(follow);
-
     followFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: boardItem?.data?._id });
-
   };
 
   useEffect(() => {
@@ -159,7 +164,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
               </UserIdCreateDateBox>
               {/* 유저 소개 시작 */}
               <UserIntroduceBox>
-                <UserIntroduce>{!boardDataLoding && converted.length === 0 ? `${followData?.nickname} ${_noIntro}` : converted}</UserIntroduce>
+                <UserIntroduce>{converted.length === 0 ? `${followData?.nickname} ${_noIntro}` : converted}</UserIntroduce>
               </UserIntroduceBox>
               {/* 팔로우 버튼 시작 */}
               <FollowsBox>

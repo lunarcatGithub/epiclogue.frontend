@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -11,147 +11,40 @@ import ContentsUserForm from './Contents__UserForm';
 import { AppDataContext, LanguageContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
-// utils
-import {dataHiddenFilter} from '@utils/dataHidden'
-
-let initialCount = 35;
-
-const Contents = (props) => {
-  const { type, searchType, boardItem } = props;
-
-  //차후 viewer === 더보기 같으면 filtering
-
-  const router = useRouter();
+  const Contents = ({ type, searchType }) => {
+    const router = useRouter();
   const loader = useRef(null);
-  const { searchData, clickedComic, clickedIllust, myboardData } = useContext(AppDataContext);
-  const {availableLanguage} = useContext(LanguageContext)
+  const {
+    searchData,
+    clickedComic,
+    clickedIllust,
+    myboardData,
+    lastContentId,
+    setLastContentId,
+    renderList,
+    setRenderList,
+    page,
+    setPage
+  } = useContext(AppDataContext);
 
+  const {availableLanguage} = useContext(LanguageContext)
   const [resultKeyword, setResultKeyword] = useState();
 
   const url = router.asPath;
   const keyword = router.query.text;
 
-  const [initialLoading, setInitialLoading] = useState(false);
-  const [hasMoreLoading, setHasMoreLoading] = useState(false);
-  const [contentsList, setContentsList] = useState([]);
-  const [renderList, setRenderList] = useState([]);
-  const [items, setItems] = useState(initialCount);
-  const [hasMore, setHasMore] = useState(false);
+  // 콘텐츠 렌더링
+  const [renderComponent, setRenderComponent] = useState();
+
+  // 유저 설정 가능한 fillter
+  const [items, setItems] = useState(35);
+
   // 마지막 콘텐츠id 감지하기
-  const [lastContentId, setLastContentId] = useState({initId:null, comicId:null, illustId:null});
-  // 콘텐츠 리스트
-  const [comicList, setComicList] = useState([]);
-  const [illustList, setIllustList] = useState([]);
-  const [initialList, setInitialList] = useState([]);
 
   // fetch
-  const [, initialApi, , initialFetch] = useAxiosFetch();
-  const [, comicApi, , comicFetch] = useAxiosFetch();
-  const [, illustApi, , illustFetch] = useAxiosFetch();
-  const [, searchApi, , searchFetch] = useAxiosFetch();
+  const [initDataLoading, initialApi, , initialFetch] = useAxiosFetch();
   const [, userApi, , userFetch] = useAxiosFetch();
-  const [page, setPage] = useState(0);
-  // console.log('illustApi', illustApi)
-  console.log('comicList', comicList)
-  console.log('initialApi', initialApi)
 
-  // devide type
-  const devideTypeHandler = () => {
-    setInitialLoading(true);
-    switch (type) {
-      case 'MAIN':
-        if (initialApi && clickedComic && clickedIllust) {
-          if(!initialApi) return
-
-          let initData = initialApi?.data
-          latesIdDetect(initData, 'initial');
-          setLastContentId({initId:initData[initData?.length - 1]?._id, comicId:0, illustId:0})
-        } else if ((comicApi && clickedComic) && !clickedIllust) {
-          if(!comicApi) return
-          let comicData = comicApi?.data
-          latesIdDetect(comicData, 'comic');
-          setLastContentId({initId:0, comicId:comicData[comicData?.length - 1]?._id, illustId:0})
-        } else if ((illustApi && clickedIllust) && !clickedComic) {
-          if(!illustApi) return
-          let illustData = illustApi?.data
-          latesIdDetect(illustData, 'illust');
-          setLastContentId({initId:0, comicId:0, illustId:illustData[illustData?.length - 1]?._id})
-        }
-        
-        // latesIdDetect(initialApi?.data || comicApi?.data || illustApi?.data, 'content');
-        
-        break;
-
-      case 'MYBOARD':
-        latesIdDetect(myboardData, 'content');
-      
-        break;
-      case 'VIEWER':
-        // 향후 알고리즘 작품 (현재 메인과 통합)
-        break;
-
-      case 'SEARCH':
-        // if (searchType === 'users') {
-        //   renderDataHandler(userApi?.data, 'user');
-        // } else {
-        //   renderDataHandler(searchApi?.data, 'content');
-        // }
-        latesIdDetect(userApi?.data || searchApi?.data, searchType === 'users' ? 'user' : 'content')
-        break;
-
-      default:
-        break;
-    }
-    setInitialLoading(false);
-  };
-
-  const latesIdDetect = (data, type) => {
-    if(!data || data.length === 0) return;
-    if(type === 'comic'){
-      setComicList([...comicList, ...data])
-      setRenderList(comicList)
-      setIllustList([])
-      setInitialList([])
-
-    } else if(type === 'illust') {
-      setIllustList([...illustList, ...data])
-      setRenderList(illustList)
-      setComicList([])
-      setInitialList([])
-
-    } else {
-      setInitialList([...initialList, ...data])
-      setRenderList(initialList)
-      setIllustList([])
-      setComicList([])
-    }
-      // setLastContentId(data ? data[data?.length - 1]._id : null)
-  }
-
-  useEffect(() => {
-    latesIdDetect()
-  }, [initialList])
-
-  useEffect(() => {
-    devideTypeHandler();
-    return () => devideTypeHandler();
-  }, [initialApi, comicApi, illustApi, myboardData, userApi, searchApi, searchType]);
-
-  // 코믹 && 일러스트 요청
-  console.log('lastContentId', lastContentId)
-  useEffect(() => {
-    setItems(initialCount);
-    setHasMore(true);
-    if (clickedComic && !clickedIllust) {
-      comicFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Comic&size=${items}${lastContentId?.comicId && `&latestId=${lastContentId?.comicId}`}`, 'get', null, null, null);
-    } else if (!clickedComic && clickedIllust) {
-      illustFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Illust&size=${items}${lastContentId?.illustId && `&latestId=${lastContentId?.illustId}`}`, 'get', null, null, null);
-    } else {
-      initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?size=${items}${lastContentId?.initId && `&latestId=${lastContentId?.initId}`}`, 'get', null, null, null);
-    }
-  }, [clickedComic, clickedIllust, page]);
-
-  // 검색단어 가져오기
   useEffect(() => {
     searchData ? setResultKeyword(searchData) : setResultKeyword(keyword);
   }, [searchData, keyword]);
@@ -162,90 +55,134 @@ const Contents = (props) => {
     });
   }
 
-  // 검색단어로 데이터 요청하기
-  useEffect(() => {
-    setItems(initialCount); 
-    setInitialLoading(true);
-    setHasMore(true);
-
-    if (resultKeyword) {
-      const Url = keyword;
-      const encodedUrl = encodeURIComponent(Url);
-      const result = fixedEncodeURIComponent(encodedUrl);
-      if (url.match('/search/trend') && type === 'SEARCH' && searchType === 'trend') {
-        searchFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&q=${null}`, 'get', null, null, null);
-      } else if (url.match('/search/latest') && type === 'SEARCH' && searchType === 'latest') {
-        searchFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&q=${result}`, 'get', null, null, null);
-      } else if (url.match('/search/users') && type === 'SEARCH' && searchType === 'users') {
-        userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=User&q=${result}`, 'get', null, null, null);
+// 검색시 받는 데이터
+  const contentInitHandler = () => {
+    if(page < 1) return;
+    if(type === 'MAIN'){
+      if (clickedComic && !clickedIllust) {
+        initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Comic&size=${items}${lastContentId && `&latestId=${lastContentId}`}`, 'get', null, null, null);
+      } else if (!clickedComic && clickedIllust) {
+        initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Illust&size=${items}${lastContentId && `&latestId=${lastContentId}`}`, 'get', null, null, null);
+      } else {
+        initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?size=${items}${lastContentId && `&latestId=${lastContentId}`}`, 'get', null, null, null);
       }
-      setInitialLoading(false);
     }
-  }, [searchType, resultKeyword, searchData, router.asPath]);
+  }
 
-  // 스크롤 이벤트
+  // 검색시 받는 데이터
+  const searchContentsHandler = () => {
+    if(page < 1) return;
+    if(type === 'SEARCH' && resultKeyword){
+      setRenderList(null)
+      const result = fixedEncodeURIComponent(resultKeyword);
+      if (url.match('/search/trend') && searchType === 'trend') {
+        initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&q=${null}`, 'get', null, null, null);
+      } else if(url.match('/search/latest') && searchType === 'latest'){
+        initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&size=${items}&q=${result}`, 'get', null, null, null);
+      } else if(url.match('/search/users') && searchType === 'users'){
+        userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=User&size=${items}&q=${result}`, 'get', null, null, null);
+      }
+    }
+  }
 
+  const finalRenderHandler = () => {
+    if(type === 'SEARCH' && searchType === 'users'){
+      if(!userApi) return;
+      setRenderList(renderList ? [...renderList, ...userApi?.data] : [...userApi?.data]);
+    } else if(type === 'MYBOARD') {
+      if(!myboardData) return;
+      setRenderList(myboardData);
+    } else {
+      if(!initialApi) return;
+      setRenderList(renderList ? [...renderList, ...initialApi?.data] : [...initialApi?.data]);
+
+    }
+  }
+  // 검색 탭 바뀔 때 마다 page 0으로 초기화
+  useEffect(() => {
+    setPage(0);
+    setRenderList(null)
+  }, [type, searchType]);
+
+
+  useEffect(() => {
+    searchContentsHandler()
+    return ()=>searchContentsHandler()
+  }, [page, url, type, searchType, resultKeyword])
+
+  // 초기 코믹, 일러 필터링
+  useEffect(() => {
+    contentInitHandler();
+  }, [clickedComic, clickedIllust, type, page, url])
+
+  // hook 변수에 데이터 삽입
+  useEffect(() => {
+    finalRenderHandler()
+  }, [initialApi, userApi, myboardData]);
+
+  useEffect(() => {
+    let contentData = initialApi?.data
+    contentData && setLastContentId(contentData[contentData?.length - 1]?._id)
+  }, [page, initialApi])
+
+  useEffect(() => {
+    setLastContentId(null)
+  }, [clickedComic, clickedIllust])
+
+  // 받은 데이터 각 컴포넌트에 뿌려서 렌더링
+  useEffect(() => {
+    if (searchType === 'users') {
+      setRenderComponent(renderList?.map((item, index) => <ContentsUserForm searchData={item} key={index} />));
+    } else {
+      setRenderComponent(renderList?.map((item, index) => <ContentsForm key={index} contentData={item} />));
+    }
+    return () => setRenderComponent()
+  }, [renderList, searchType])
+
+  // 스크롤 이벤트 ****************************
   // overver 감지
   const handleObserver = (entities) => {
-
     const target = entities[0];
     if (target.isIntersecting) {
-      setPage((page) => page + 1);
+      setPage(num => num + 1);
     }
   };
 
   useEffect(() => {
-    if(initialApi?.data?.lenght === 0) return
 
     let options = {
       root: null,
-      rootMargin: '10px',
-      threshold: 0.8,
+      rootMargin: '20px',
+      threshold: 0.3,
     };
 
     const observer = new IntersectionObserver(handleObserver, options);
     if (loader.current) {
       observer.observe(loader.current);
     }
-  }, [loader.current]);
-
-  let renderContents;
-  if (searchType === 'users') {
-    renderContents = renderList?.map((item, index) => <ContentsUserForm searchData={item} key={index} />);
-  } else {
-    renderContents = renderList?.map((item, index) => <ContentsForm key={index} contentData={item} />);
-  }
+  }, []);
 
   return (
     <>
       <Layout>
         {
-          !url.match('main') && !url.match('myboard') && renderList?.length === 0 && (
+          !url.match('main') && !url.match('myboard') && renderList?.length === 0 && 
             <NoResultWrap>
               <NoResultImg />
-            </NoResultWrap> )
-        }
-        {
-          initialLoading && (
-            <DummyLayout>
-              <Progress />
-            </DummyLayout> )
+            </NoResultWrap> 
         }
         <LayoutInner>
-          <MasonryBox >{renderContents}</MasonryBox>
+          <MasonryBox >{renderComponent}</MasonryBox>
         </LayoutInner>
         {
-        hasMoreLoading && (
+        initDataLoading && (
           <DummyLayout>
             <Progress />
           </DummyLayout> )
         }
-        {
-          hasMore && (
-            <>
-              <RefLayout ref={loader}></RefLayout>
-            </> )
-        }
+        
+          <RefLayout ref={loader}/>
+        
       </Layout>
     </>
   );
@@ -294,8 +231,8 @@ const MasonryBox = styled.section`
   }`;
 
 const RefLayout = styled.div`
-  width: 1px;
-  height: 1px;
+  width: 100%;
+  height: 20px;
 `;
 
 const NoResultWrap = styled.div`

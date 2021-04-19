@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect} from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -34,6 +34,10 @@ const SearchResult = ({query}) => {
     { data: 'latest', lang: _latestTab },
     { data: 'users', lang: _userTab },
   ];
+  useEffect(() => {
+    type && setParamsData(type)
+    goURL({ pathname: `/search/[type]`, as: `/search/${type}/${text}`, query: { type, text: text } })
+  }, [type, text])
 
   return (
     <BodyLayout>

@@ -33,8 +33,25 @@ const Header = () => {
   const { alertPatch } = useContext(AlertContext);
 
   //언어 변경
-  const { langState, langPatch, availableLangPatch } = useContext(LanguageContext);
-  const { setSearchData, setClickedComic, setClickedIllust, clickedComic, clickedIllust, loginOn, setUnAuth, paramsData } = useContext(AppDataContext);
+  const {
+    langState,
+    langPatch,
+    availableLangPatch
+  } = useContext(LanguageContext);
+
+  const {
+    setSearchData,
+    setClickedComic,
+    setClickedIllust,
+    clickedComic,
+    clickedIllust,
+    loginOn,
+    setUnAuth,
+    paramsData,
+    setLastContentId,
+    setRenderList,
+    setPage
+  } = useContext(AppDataContext);
 
   // 팝업용
   const [isOpen, toggleIsOpen] = useModal();
@@ -91,21 +108,21 @@ const Header = () => {
   // }, [profileApi]);
 
   // 헤더 코믹/일러스트 필터링
-  const selectFilterComic = () => {
-    setClickedComic(!clickedComic);
+  const selectFilter = (type) => {
+    if(type === 'comic'){
+      setClickedComic(!clickedComic);
+    } else {
+      setClickedIllust(!clickedIllust);
+    }
     if (!clickedComic || !clickedIllust) {
       setClickedComic(true);
       setClickedIllust(true);
+      setLastContentId(null);
     }
+      setRenderList(null)
+      setPage(0)
   };
 
-  const selectFilterIllust = () => {
-    setClickedIllust(!clickedIllust);
-    if (!clickedComic || !clickedIllust) {
-      setClickedComic(true);
-      setClickedIllust(true);
-    }
-  };
 
   // 유저 알림 Read 여부
   const readObserver = () => {
@@ -295,10 +312,10 @@ const Header = () => {
             </ClosedBox>
           </CategoryHeader>
           <CategoryInner>
-            <MbCategoryComic styling={clickedComic} onClick={() => selectFilterComic()}>
+            <MbCategoryComic styling={clickedComic} onClick={() => selectFilter('comic')}>
               Comic
             </MbCategoryComic>
-            <MbCategoryIllust styling={clickedIllust} onClick={() => selectFilterIllust()}>
+            <MbCategoryIllust styling={clickedIllust} onClick={() => selectFilter('illust')}>
               Illust
             </MbCategoryIllust>
           </CategoryInner>

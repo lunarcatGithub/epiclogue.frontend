@@ -356,7 +356,7 @@ const Viewer = ({ boardItem, nonError }) => {
     image: boardItem?.data?.boardImg,
     canonical: `viewer/${boardUid}`,
   };
-  console.log(ReFbUid)
+
   return (
     <ReplyListContext.Provider
       value={{
