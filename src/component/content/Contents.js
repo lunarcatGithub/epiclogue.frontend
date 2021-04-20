@@ -79,13 +79,13 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
       if (searchType === 'trend') {
         initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&q=${null}`, 'get', null, null, null);
       } else if(searchType === 'latest'){
-        initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&size=${items}&q=${resultKeyword}`, 'get', null, null, null);
+        initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&size=${items}${lastContentId && `&latestId=${lastContentId}`}&q=${resultKeyword}`, 'get', null, null, null);
       } else if(searchType === 'users'){
-        userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=User&size=${items}&q=${resultKeyword}`, 'get', null, null, null);
+        console.log(lastContentId)
+        userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=User&size=${items}${lastContentId && `&latestId=${lastContentId}`}&q=${resultKeyword}`, 'get', null, null, null);
       }
     }
   }
-
   const finalRenderHandler = () => {
     // 콘텐츠 위주 렌더링 처리 함수
     if(type === 'MYBOARD') {
@@ -120,7 +120,8 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
     setOnlyUser(null)
     setUserRender(null)
     setInitRender(null)
-  }, [type, searchType, resultKeyword]);
+    setLastContentId(null)
+  }, [type, searchType, resultKeyword, keyword]);
 
   useEffect(() => {
     searchContentsHandler()
@@ -143,9 +144,14 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 
   useEffect(() => {
     // if(page < 1) return;
-    let contentData = initialApi?.data
+    let contentData;
+    if(searchType === 'users'){
+      contentData = userApi?.data
+    } else {
+      contentData = initialApi?.data
+    }
     contentData && setLastContentId(contentData[contentData?.length - 1]?._id)
-  }, [page, initialApi])
+  }, [page, initialApi, userApi])
 
   useEffect(() => {
     setLastContentId(null)

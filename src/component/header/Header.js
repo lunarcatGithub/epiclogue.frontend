@@ -99,6 +99,7 @@ const Header = () => {
         query: { type: 'latest', text: searchBody },
       });
     }
+    setLastContentId(null)
   };
 
   // useEffect(() => {

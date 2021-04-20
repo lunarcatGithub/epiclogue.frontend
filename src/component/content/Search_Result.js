@@ -13,7 +13,12 @@ import { LanguageContext, AppDataContext } from '@store/App_Store';
 
 const SearchResult = ({query}) => {
 
-  const { setParamsData, paramsData, setRenderList } = useContext(AppDataContext);
+  const {
+    setParamsData,
+    paramsData,
+    setRenderList,
+    setLastContentId
+  } = useContext(AppDataContext);
   const { langState } = useContext(LanguageContext);
   const router = useRouter();
   const { text, type } = router.query;
@@ -39,6 +44,7 @@ const SearchResult = ({query}) => {
   useEffect(() => {
     type && setParamsData(type)
     goURL({ pathname: `/search/[type]`, as: `/search/${type}/${text}`, query: { type, text: text } })
+    setLastContentId(null)
   }, [type, text])
 
   return (
