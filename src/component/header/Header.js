@@ -182,6 +182,7 @@ const Header = () => {
               <HeaderInner pathname={pathname.match('/viewer') && 'none'}>
                 <LogoWrap
                   onClick={() => {
+                    setRenderList(null)
                     toggleSearchPop(false);
                     goURL({ pathname: '/' });
                   }}

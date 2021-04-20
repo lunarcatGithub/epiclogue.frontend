@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, memo } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -13,7 +13,6 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 
   const Contents = ({ type, searchType }) => {
     const router = useRouter();
-  const loader = useRef(null);
   const {
     searchData,
     clickedComic,
@@ -24,7 +23,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
     renderList,
     setRenderList,
     page,
-    setPage
+    setPage,
   } = useContext(AppDataContext);
 
   const {availableLanguage} = useContext(LanguageContext)
@@ -34,12 +33,16 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
   const keyword = router.query.text;
 
   // 콘텐츠 렌더링
-  const [renderComponent, setRenderComponent] = useState();
+  const [renderComponent, setRenderComponent] = useState(null);
+  const [initRender, setInitRender] = useState([]);
+  const [userRender, setUserRender] = useState([]);
+  const [onlyUser, setOnlyUser] = useState([]);
 
   // 유저 설정 가능한 fillter
   const [items, setItems] = useState(35);
 
-  // 마지막 콘텐츠id 감지하기
+  // 순서 감지하기
+  const [itmesNum, setItemsNum] = useState(0);
 
   // fetch
   const [initDataLoading, initialApi, , initialFetch] = useAxiosFetch();
@@ -49,15 +52,15 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
     searchData ? setResultKeyword(searchData) : setResultKeyword(keyword);
   }, [searchData, keyword]);
 
-  const fixedEncodeURIComponent =(str)=> {
-    return str.replace(/[!'()*]/gi, function (c) {
-      return '%' + c.charCodeAt(0).toString(16);
-    });
-  }
+  // const fixedEncodeURIComponent =(str)=> {
+  //   return str?.replace(/[!'()*]/gi, function (c) {
+  //     return '%' + c.charCodeAt(0).toString(16);
+  //   });
+  // }
 
 // 검색시 받는 데이터
   const contentInitHandler = () => {
-    if(page < 1) return;
+    // if(page < 1) return;
     if(type === 'MAIN'){
       if (clickedComic && !clickedIllust) {
         initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards?type=Comic&size=${items}${lastContentId && `&latestId=${lastContentId}`}`, 'get', null, null, null);
@@ -71,102 +74,123 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 
   // 검색시 받는 데이터
   const searchContentsHandler = () => {
-    if(page < 1) return;
+    // if(page < 1) return;
     if(type === 'SEARCH' && resultKeyword){
-      setRenderList(null)
-      const result = fixedEncodeURIComponent(resultKeyword);
-      if (url.match('/search/trend') && searchType === 'trend') {
+      if (searchType === 'trend') {
         initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&q=${null}`, 'get', null, null, null);
-      } else if(url.match('/search/latest') && searchType === 'latest'){
-        initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&size=${items}&q=${result}`, 'get', null, null, null);
-      } else if(url.match('/search/users') && searchType === 'users'){
-        userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=User&size=${items}&q=${result}`, 'get', null, null, null);
+      } else if(searchType === 'latest'){
+        initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=Board&size=${items}&q=${resultKeyword}`, 'get', null, null, null);
+      } else if(searchType === 'users'){
+        userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search?type=User&size=${items}&q=${resultKeyword}`, 'get', null, null, null);
       }
     }
   }
 
   const finalRenderHandler = () => {
-    if(type === 'SEARCH' && searchType === 'users'){
-      if(!userApi) return;
-      setRenderList(renderList ? [...renderList, ...userApi?.data] : [...userApi?.data]);
-    } else if(type === 'MYBOARD') {
-      if(!myboardData) return;
-      setRenderList(myboardData);
-    } else {
-      if(!initialApi) return;
-      setRenderList(renderList ? [...renderList, ...initialApi?.data] : [...initialApi?.data]);
-
+    // 콘텐츠 위주 렌더링 처리 함수
+    if(type === 'MYBOARD') {
+      myboardData && setInitRender(myboardData)
+    } else if(type === 'MAIN') {
+      initialApi && setInitRender(initRender ? [...initRender, ...initialApi?.data] : [...initialApi?.data]);
     }
   }
+
+  const userRenderHandler = () => {
+    // 유저 및 검색 위주 렌더링 처리 함수
+      if(searchType === 'users'){
+        userApi && setUserRender(userRender ? [...userRender, ...userApi?.data] : [...userApi?.data])
+      } else if(searchType === 'latest'){  
+        initialApi && setInitRender(initRender ? [...initRender, ...initialApi?.data] : [...initialApi?.data])
+      }
+  }
+
+  useEffect(() => {
+    if(searchType === 'users'){
+      setOnlyUser(userRender)
+    }else {
+      setRenderList(initRender)
+    }
+    setItemsNum(userRender?.length || initRender?.length)
+  }, [initRender, userRender, searchType])
+
   // 검색 탭 바뀔 때 마다 page 0으로 초기화
   useEffect(() => {
     setPage(0);
     setRenderList(null)
-  }, [type, searchType]);
-
+    setOnlyUser(null)
+    setUserRender(null)
+    setInitRender(null)
+  }, [type, searchType, resultKeyword]);
 
   useEffect(() => {
     searchContentsHandler()
-    return ()=>searchContentsHandler()
-  }, [page, url, type, searchType, resultKeyword])
+  }, [page, type, searchType, resultKeyword])
 
   // 초기 코믹, 일러 필터링
   useEffect(() => {
     contentInitHandler();
-  }, [clickedComic, clickedIllust, type, page, url])
+  }, [clickedComic, clickedIllust, page])
 
   // hook 변수에 데이터 삽입
   useEffect(() => {
     finalRenderHandler()
-  }, [initialApi, userApi, myboardData]);
+  }, [initialApi, myboardData, type]);
+
+  // 검색 결과 렌더링
+  useEffect(() => {
+    userRenderHandler()
+  }, [userApi, initialApi])
 
   useEffect(() => {
+    // if(page < 1) return;
     let contentData = initialApi?.data
     contentData && setLastContentId(contentData[contentData?.length - 1]?._id)
   }, [page, initialApi])
 
   useEffect(() => {
     setLastContentId(null)
+    setInitRender(null)
   }, [clickedComic, clickedIllust])
 
   // 받은 데이터 각 컴포넌트에 뿌려서 렌더링
   useEffect(() => {
     if (searchType === 'users') {
-      setRenderComponent(renderList?.map((item, index) => <ContentsUserForm searchData={item} key={index} />));
+      setRenderComponent(onlyUser?.map((item, index) => <ContentsUserForm searchData={item} key={index} />));
     } else {
       setRenderComponent(renderList?.map((item, index) => <ContentsForm key={index} contentData={item} />));
     }
     return () => setRenderComponent()
-  }, [renderList, searchType])
+  }, [renderList, onlyUser, searchType])
 
-  // 스크롤 이벤트 ****************************
-  // overver 감지
+  // 스크롤 ****************************
+  const loader = useRef(null);
+
   const handleObserver = (entities) => {
     const target = entities[0];
     if (target.isIntersecting) {
       setPage(num => num + 1);
     }
-  };
+  }
 
   useEffect(() => {
-
     let options = {
       root: null,
       rootMargin: '20px',
       threshold: 0.3,
     };
 
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (loader.current) {
-      observer.observe(loader.current);
-    }
-  }, []);
+      const observer = new IntersectionObserver(handleObserver, options);
+      if (loader.current) {
+        observer.observe(loader.current);
+      }
+
+  }, [loader.current]);
 
   return (
     <>
       <Layout>
         {
-          !url.match('main') && !url.match('myboard') && renderList?.length === 0 && 
+          !url.match('main') && !url.match('myboard') && renderList?.length === 0 || onlyUser?.length === 0 && 
             <NoResultWrap>
               <NoResultImg />
             </NoResultWrap> 
@@ -180,8 +204,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
             <Progress />
           </DummyLayout> )
         }
-        
-          <RefLayout ref={loader}/>
+          {itmesNum > 34 ? <RefLayout ref={loader}/> : null}
         
       </Layout>
     </>
@@ -231,8 +254,10 @@ const MasonryBox = styled.section`
   }`;
 
 const RefLayout = styled.div`
-  width: 100%;
-  height: 20px;
+  display:flex;
+  color:#222;
+  width: 200px;
+  height: 50px;
 `;
 
 const NoResultWrap = styled.div`
@@ -248,4 +273,4 @@ const NoResultImg = styled.svg`
   height: 24em;
 `;
 
-export default Contents;
+export default memo(Contents);
