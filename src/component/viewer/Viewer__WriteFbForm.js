@@ -6,9 +6,10 @@ import { ReplyListContext } from './Viewer';
 import { ProgressSmall } from '@utils/LoadingProgress';
 
 // hooks&&reducer
-import { AlertContext, AppDataContext } from '@store/App_Store';
+import { AlertContext, AppDataContext, LanguageContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { useChange } from '@hooks/useChange';
+import { langViewer } from '@language/Lang.Viewer';
 
 let fbCnt = 10;
 
@@ -17,10 +18,18 @@ const WriteFbForm = (props) => {
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   const [feedbackBody, handleChange, resetValue] = useChange('');
   const { boardUid, fbUid, setReplyList, setRenderList } = useContext(ReplyListContext);
+  //언어 변수
+  const { langState } = useContext(LanguageContext);
+
+  const { selectedLanguage, defaultLanguage } = langState;
+
+  const { feedbackPlaceholder } = langViewer;
+  
+  const _feedbackPlaceholder = feedbackPlaceholder[selectedLanguage] || feedbackPlaceholder[defaultLanguage];
 
   //fetch
-  const [feedbackLoding, feedbackApi, feedbackError, feedbackFetch] = useAxiosFetch();
-  const [reFeedbackLoding, reFeedbackApi, reFeedbackError, reFeedbackFetch] = useAxiosFetch();
+  const [feedbackLoding, feedbackApi, , feedbackFetch] = useAxiosFetch();
+  const [reFeedbackLoding, reFeedbackApi, , reFeedbackFetch] = useAxiosFetch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -65,7 +74,7 @@ const WriteFbForm = (props) => {
   return (
     <form action="" method="post" onSubmit={handleSubmit} autoComplete="off">
       <FeedbackInputWrap>
-        <FeedbackInput ref={props.feedbackRef} name="replyBody" onChange={handleChange} value={feedbackBody} placeholder={props.feedbackPlaceholder} />
+        <FeedbackInput ref={props.feedbackRef} name="replyBody" onChange={handleChange} value={feedbackBody} placeholder={_feedbackPlaceholder} />
         <InputSendBtn loading={String(feedbackLoding || reFeedbackLoding)} feedbackBody={feedbackBody.length > 1}>
           {!feedbackLoding ? <InputSendImg imgOn={feedbackBody.length > 1} /> : <ProgressSmall />}
         </InputSendBtn>
