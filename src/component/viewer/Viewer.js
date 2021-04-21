@@ -377,6 +377,8 @@ const Viewer = ({ boardItem, nonError }) => {
         checkFbLength,
         data,
         boardImg,
+        // 신고하기 팝업
+        toggle_Modal_MoreMenu,
         // 피드백 수정
         feedBackModify,
         setFeedBackModify

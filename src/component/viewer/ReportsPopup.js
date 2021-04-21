@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 //컴포넌트 import
@@ -10,11 +10,12 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { LanguageContext, AlertContext } from '@store/App_Store';
 
 const ReportsPopup = (props) => {
-  const { alertState, alertPatch } = useContext(AlertContext);
+  const { alertPatch } = useContext(AlertContext);
   const { toggle_Modal_MoreMenu } = useContext(ReplyListContext);
   const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
-
+  // 선택한 값
+  const [selectValue, setSelectValue] = useState();
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
   const { closeBtn } = LangCommon;
@@ -61,8 +62,9 @@ const ReportsPopup = (props) => {
   const reportSub = (e) => {
     e.preventDefault();
     alertPatch({ type: 'REPORT_SUBMIT', payload: true });
-    props.closeModal();
-    toggle_Modal_MoreMenu(false);
+    console.log(selectValue)
+    // props.closeModal();
+    // toggle_Modal_MoreMenu(false);
   };
 
   return (
@@ -73,16 +75,23 @@ const ReportsPopup = (props) => {
           <PwChangeBtn>제출</PwChangeBtn>
         </BtnWrap>
         <ReportTabBox onClick={(e) => e.stopPropagation()}>
-          {list.map((item, index) => (
-            <ReportTab key={index}>
-              <ReportTxtWrap>
-                <ReportTxt>{item.title}</ReportTxt>
-                <ReportScript>{item.desc}</ReportScript>
-              </ReportTxtWrap>
-              <ListTxtRadio name="report" value={item.value} defaultChecked={index === 0} />
-              <ListRadioCustom />
-            </ReportTab>
-          ))}
+          {
+            list.map((item, index) => (
+              <ReportTab key={index}>
+                <ReportTxtWrap>
+                  <ReportTxt>{item.title}</ReportTxt>
+                  <ReportScript>{item.desc}</ReportScript>
+                </ReportTxtWrap>
+                <ListTxtRadio 
+                name="report" 
+                value={item.value} 
+                defaultChecked={index === 0}
+                onChange={e => setSelectValue(e.target.value)}
+                />
+                <ListRadioCustom />
+              </ReportTab>
+            ))
+          }
           <ReportTab onClick={() => goURL({ pathname: '/report' })}>
             <ReportTxtWrap>
               <ReportTxt>내 저작물 침해</ReportTxt>

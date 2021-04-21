@@ -53,7 +53,7 @@ export const AdminCopyright = () => {
     });
   };
 
-  const headerArr = ['번호', '아이디', '이메일', '제목', '처리결과', '신고날짜', '정지', '삭제', '탈퇴'];
+  const headerArr = ['번호', '아이디', '이메일', '제목', '처리결과', '신고날짜', '삭제', '정지', '탈퇴'];
   const warnBtn = [
     { title: '메일발송', value: 'sendMail' },
     { title: '정지', value: 'ban' },

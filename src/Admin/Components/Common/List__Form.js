@@ -211,20 +211,6 @@ export default function ListForm({ type, contentsData }) {
                   {content.date && <TableDataBox>{content.date}</TableDataBox>}
                   {content.count && <TableDataBox>{content.count}</TableDataBox>}
                   {
-                    type !== 'CONTENTS' && (
-                      <TableDataBox type='btn' >
-                        <AllButton
-                          id={content.id}
-                          onClick={(e) => {
-                            setToggleSelect(e.currentTarget.id);
-                            lastDataConfirm(e, 'Suspension ');
-                          }}
-                        >
-                          {content.ban ? '해제' : '정지'}
-                        </AllButton>
-                      </TableDataBox> )
-                  }
-                  {
                     type !== 'USERS' && (
                       <TableDataBox type='btn' >
                         <AllButton
@@ -235,6 +221,20 @@ export default function ListForm({ type, contentsData }) {
                           }}
                         >
                           삭제
+                        </AllButton>
+                      </TableDataBox> )
+                  }
+                  {
+                    type !== 'CONTENTS' && (
+                      <TableDataBox type='btn' >
+                        <AllButton
+                          id={content.id}
+                          onClick={(e) => {
+                            setToggleSelect(e.currentTarget.id);
+                            lastDataConfirm(e, 'Suspension ');
+                          }}
+                        >
+                          {content.ban ? '해제' : '정지'}
                         </AllButton>
                       </TableDataBox> )
                   }
@@ -379,7 +379,7 @@ const TableRowBox = styled.tr`
   background: ${(props) => props.theme.adminColor.whiteColor};
 `;
 const TableDataBox = styled.td`
-  width:${props => props.type === 'btn' && props.type === 'result' && '4em'};
+  width:${props => props.type === 'btn' && props.type === 'result' && '3.5em'};
   text-align: center;
   padding: 0.8em 0.5em;
 `;
