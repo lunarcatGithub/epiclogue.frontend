@@ -805,7 +805,7 @@ const ShareBtn = styled(BookmarkBtn)`
 
 const GlobeBtn = styled(BookmarkBtn)`
   &::before {
-    background: url(${(props) => (props.globe ? '/static/globe-2.svg' : '/static/globe-1.svg')}) no-repeat center / contain;
+    background: url(${(props) => (props.globe ? '/static/secondary.svg' : '/static/secondary.svg')}) no-repeat center / contain;
   }
   &:active {
     &:after {
