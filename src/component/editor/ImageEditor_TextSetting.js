@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 // 컴포넌트 import
 import { EditorText } from '@language/Lang.Editor';

@@ -19,6 +19,8 @@
     "express": "^4.17.1",
     "fabric": "^4.3.1",
     "i18next": "^20.1.0",
+    "i18next-browser-languagedetector": "^6.1.0",
+    "i18next-xhr-backend": "^3.2.2",
     "next": "10.0.5",
     "next-i18next": "8.1.2",
     "next-server": "^9.0.5",
@@ -32,7 +34,8 @@
     "react-kakao-login": "^2.1.0",
     "serve": "^11.3.2",
     "styled-components": "^5.2.1",
-    "styled-reset": "^4.3.4"
+    "styled-reset": "^4.3.4",
+    "sw-precache-webpack-plugin": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
@@ -48,8 +51,7 @@
     "eslint": "^7.21.0",
     "eslint-plugin-react": "^7.22.0",
     "next-pwa": "^5.0.5",
-    "prettier": "^2.2.1",
-    "sw-precache-webpack-plugin": "^1.0.0"
+    "prettier": "^2.2.1"
   },
   "eslintConfig": {
     "extends": "react-app"

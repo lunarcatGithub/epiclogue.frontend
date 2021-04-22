@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { Dashboard } from '../Dashboard/Dashboard';
 import { AdminContents } from '../Contents/AdminContents';
 import { AdminReport } from '../Report/AdminReport';
+import { AdminCopyright } from '../Copyright/Copyright';
 import GNB from '@Component/GNB/Gnb';
 import { Nav } from '@Component/NAV/Nav';
 
@@ -26,6 +27,8 @@ export const AdmimMain = () => {
       setViewTab(<AdminUsers />);
     } else if (router.query.tab === 'reports') {
       setViewTab(<AdminReport />);
+    }else if (router.query.tab === 'copyright') {
+      setViewTab(<AdminCopyright />);
     }
   }, [router.query]);
 

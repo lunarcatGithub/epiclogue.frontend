@@ -7,4 +7,4 @@ export function availableLang(state, {type, payload}) {
         default:
             return state;
     }
-  }
+}

@@ -1,3 +1,4 @@
+import React from 'react';
 import Document, { Html, Main, NextScript, Head } from 'next/document';
 import Helmet from 'react-helmet'; // head태그에 넣을 정보를 jsx로 작성할 수 있게 도와준다.
 import { GlobalStyles } from '../styles/GlobalStyles';

@@ -2,15 +2,15 @@ import React,{ useState } from 'react'
 import styled from 'styled-components';
 
 // 컴포넌트 import
-import ListForm from '../Utils/List__Form';
+import ListForm from '../Common/List__Form';
 
 export const AdminReport =()=> {
     //data
     const [userContentsData, setUserContentsData] = useState([
-        {id:1, email:'asd@ads.com', _id:`@asasdd`, type:'정지', result:'미정', kind:'대댓글', content:'asdasd', resultDate:'2020-11-28', count:5, category:'혐오', view:'view', ban:false, hide:false},
-        {id:2, email:'ascvcvd@xcvx.com', _id:`@adf`, type:'탈퇴', result:'삭제',  kind:'대댓글',content:'qwwqw', resultDate:'2021-01-02', count:2, category:'갈등유발', view:'hide', ban:true, hide:true},
-        {id:3, email:'asxzcvzxd@ads.com', _id:`@qwerrt`, type:'정상', result:'숨김', kind:'대댓글', content:'12341', resultDate:'2021-02-28', count:1, category:'광고/홍보', view:'hide', ban:false, hide:false},
-        {id:4, email:'asxzcvzxd@ads.com', _id:`@qwerrt`, type:'정상', result:'숨김', kind:'대댓글', content:'s2d1', resultDate:'2021-02-28', count:1, category:'헤헤', view:'view', ban:false, hide:false}
+        {id:1, _id:`@asasdd`,  result:'미정', kind:'대댓글',  date:'2020-11-28', count:5, view:'view', ban:false, hide:false},
+        {id:2, _id:`@adf`, result:'삭제',  kind:'대댓글', date:'2021-01-02', count:2,  view:'hide', ban:true, hide:true},
+        {id:3, _id:`@qwerrt`, result:'숨김', kind:'대댓글', date:'2021-02-28', count:1, view:'hide', ban:false, hide:false},
+        {id:4, _id:`@qwerrt`, result:'숨김', kind:'대댓글', date:'2021-02-28', count:1, view:'view', ban:false, hide:false}
     ]);
 
     const categorySelec = [
@@ -51,7 +51,13 @@ export const AdminReport =()=> {
         });
     }  
 
-    const headerArr = ['번호', '이메일', '아이디', '회원유형', '종류', '처리결과', '콘텐츠','내용', '처리일자', '신고횟수', '상태', '정지', '숨김여부','삭제', '탈퇴'];
+    const headerArr = ['번호', '아이디', '처리결과', '콘텐츠', '처리일자', '신고횟수', '정지', '삭제', '탈퇴'];
+    const warnBtn = [
+        { title: '메일발송', value: 'sendMail' },
+        { title: '정지', value: 'ban' },
+        { title: '탈퇴', value: 'leave' },
+        { title: '삭제', value: 'remove' },
+    ]
 
     return (
         <Layout>
@@ -64,7 +70,8 @@ export const AdminReport =()=> {
                         userContentsData,
                         searchFilter,
                         dataHadler,
-                        setToggleSelect
+                        setToggleSelect,
+                        warnBtn
                         }} />
             </LayoutInner>
         </Layout>

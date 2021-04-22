@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { langUpload } from '@language/Lang.Upload';
 
@@ -9,21 +9,19 @@ import SliderEmpty from '@utils/Slider__Empty';
 
 // Hooks & Reducer
 import { LanguageContext } from '@store/App_Store';
-import { RoadDataContext } from '@hooks/useRoadDataContext';
 
-let G_index = 0;
-
-const UploadFile = () => {
-  const { boardImg, URLs, setBoardImg, setURLs } = useContext(RoadDataContext);
-  // const [roadData, setRoadData] = useState([]);
+const UploadFile = ({type, editData, boardUid}) => {
   const [dragging, toggleDragging] = useState(false);
-
+  const [imageData, setImageData] = useState([]);
+  const [urlData, setUrlData] = useState([]);
+  const [initialData, setInitialData] = useState([]);
+  const [indexNum, setIndexNum] = useState(0)
   // 언어 변수
   const { langState } = useContext(LanguageContext);
   const { selectedLanguage, defaultLanguage } = langState;
   const { dropImage } = langUpload;
   const _dropImage = dropImage[selectedLanguage] || dropImage[defaultLanguage];
-
+  // convert
   const handleDragEnter = (e) => {
     e.preventDefault();
     toggleDragging(true);
@@ -48,43 +46,71 @@ const UploadFile = () => {
     } else {
       files = [...e.dataTransfer.files];
     }
+    setInitialData(files);
+  };
 
+  const fetchImage = async() => {
+    let box = [];
+    if(type !== 'modify') return;
+      for (let i = 0; i < editData?.boardImg.length; i++) {
+        const res = await fetch(editData.boardImg[i], {
+          mode: 'cors',
+          cache: 'no-cache',
+        });
+        const blob = await res.blob();
+        let name = editData.boardImg[i].split('/');
+        let file = new File([blob], name[3]);
+        box.push(file)
+    }
+    setInitialData(box);
+}
+
+  const dataConvertHandler = () => {
     let urlList = [];
     let imgList = [];
-    files.map((file, index) => {
-      const url = { key: G_index + index, url: URL.createObjectURL(file) };
-      const img = { key: G_index + index, img: file };
+
+    initialData?.map((file, index) => {
+      const url = { key: indexNum + index, url: URL.createObjectURL(file) };
+      const img = { key: indexNum + index, img: file };
       urlList.push(url);
       imgList.push(img);
+      setIndexNum(urlData.length  + 1)
     });
 
-    if (files) {
-      setBoardImg(boardImg.concat(imgList));
-      setURLs(URLs.concat(urlList));
+    if (initialData) {
+      setImageData(imageData.concat(imgList));
+      setUrlData(urlData.concat(urlList));
       toggleDragging(false);
     }
-    G_index = G_index + files.length;
-  };
+  }
 
   const removeImage = useCallback(
     (key) => {
-      setURLs(URLs.filter((item) => item.key !== key));
-      setBoardImg(boardImg.filter((item) => item.key !== key));
+      setUrlData(urlData.filter((item) => item.key !== key));
+      setImageData(imageData.filter((item) => item.key !== key));
     },
-    [URLs, boardImg]
+    [urlData, imageData]
   );
+
+  useEffect(() => {
+    dataConvertHandler();
+  }, [initialData])
+
+  useEffect(() => {
+    fetchImage();
+  }, [type, editData?.boardImg])
 
   return (
     <MainContainer>
       <UploadLayout>
         <UploadLayoutInner onDragOver={(e) => handleDragOver(e)}>
           {dragging ? (
-            <ToggleBox id="container" className={'drag-drop-zone'} onDrop={(e) => handleDrop(e)} onDragEnter={(e) => handleDragEnter(e)} onDragLeave={(e) => handleDragLeave(e)}>
+            <ToggleBox onDrop={(e) => handleDrop(e)} onDragEnter={(e) => handleDragEnter(e)} onDragLeave={(e) => handleDragLeave(e)}>
               <ToggleBoxInner>{_dropImage}</ToggleBoxInner>
             </ToggleBox>
           ) : null}
           {/* 슬라이더 */}
-          <Slider imgData={URLs} onRemove={removeImage} />
+          <Slider imgData={urlData} onRemove={removeImage} />
           {/* //슬라이더 */}
           <Btn id="fileInputBtn" accept=".gif, .jpg, .jpeg, .png" multiple onChange={handleDrop} />
           {!dragging ? <LabelBtn /> : null}
@@ -92,20 +118,21 @@ const UploadFile = () => {
       </UploadLayout>
       <ContentContainer>
         <ContentImgBox>
-          {URLs && !URLs.length ? (
-            <SliderEmpty />
-          ) : (
-            URLs.map((file, index) => {
-              return (
+          {
+            urlData?.length === 0? 
+              <SliderEmpty />
+              : 
+              urlData.map( file => (
                 <PreviewImgWrap key={file.key}>
                   <PreviewImg src={file.url} draggable="false" />
-                </PreviewImgWrap>
-              );
-            })
-          )}
+                </PreviewImgWrap> ))
+          }
         </ContentImgBox>
         <ContentOptionBox>
-          <UploadCategory boardImg={boardImg} />
+          <UploadCategory 
+          boardImg={imageData} 
+          editData={editData}
+          type={type || 'upload'} />
         </ContentOptionBox>
         <DummyLayout />
       </ContentContainer>

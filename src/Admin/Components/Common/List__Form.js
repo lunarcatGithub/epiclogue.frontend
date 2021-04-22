@@ -1,23 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 
+//utils
 import Dropdown from '../Utils/Dropdown';
 
+//hooks && reduce
+import Modal from '@utils/Modal'
+import {AdminContext} from '../Store/Admin_Context';
+
+//component
+import {AdminConfirmPopup} from './Admin_Confirm_Popup';
+
 export default function ListForm({ type, contentsData }) {
-  const { categorySelec, hideOrNot, searchFilter, headerArr, userContentsData, tableRef, setToggleSelect, dataHadler } = contentsData;
+  const {
+    categorySelec,
+    hideOrNot,
+    searchFilter,
+    headerArr,
+    userContentsData,
+    tableRef,
+    setToggleSelect,
+    //remove
+    toggleSelect,
+    setUserContentsData,
+    warnBtn
+  } = contentsData;
+
+  const {reportList} = useContext(AdminContext);
 
   const [dropDown1, setDropDown1] = useState([]);
   const [dropDown2, setDropDown2] = useState([]);
   const [dropDown3, setDropDown3] = useState([]);
-  const [headerArray, setHeaderArray] = useState();
   const [bodyData, setBodyData] = useState([]);
-  const [warnBtn, setWarnBtn] = useState([]);
+
+  const [selectedData, setSelectedData] = useState([]);
+
+  // confirm
+  const [warnConfrim, setWarnConfirm] = useState({type:null, bool:false});
+  const [userEmail, setUserEmail] = useState({type:null, bool:false});
 
   const typeHandler = () => {
     let arr = [];
     userContentsData?.forEach((data, i) => {
       arr.push({ ...data, isSelect: false });
     });
+
     setBodyData(arr);
 
     switch (type) {
@@ -25,50 +52,41 @@ export default function ListForm({ type, contentsData }) {
         setDropDown1(categorySelec);
         setDropDown2(hideOrNot);
         setDropDown3(searchFilter);
-        setHeaderArray(headerArr);
 
-        setWarnBtn([
-          { title: '삭제', value: 'remove' },
-          { title: '숨기기 ', value: 'hide' },
-        ]);
         break;
       case 'USERS':
         setDropDown1(categorySelec);
         setDropDown2('');
         setDropDown3(searchFilter);
-        setHeaderArray(headerArr);
-
-        setWarnBtn([
-          { title: '메일발송', value: 'sendMail' },
-          { title: '정지', value: 'ban' },
-          { title: '탈퇴', value: 'leave' },
-        ]);
 
         break;
       case 'REPORT':
         setDropDown1('');
         setDropDown2('');
         setDropDown3('');
-        setHeaderArray(headerArr);
-        setWarnBtn([
-          { title: '메일발송', value: 'sendMail' },
-          { title: '정지', value: 'ban' },
-          { title: '탈퇴', value: 'leave' },
-          { title: '삭제', value: 'remove' },
-        ]);
         break;
 
+      case 'COPYRIGHT':
+        setDropDown1('');
+        setDropDown2('');
+        setDropDown3('');
+        break;
       default:
         break;
     }
   };
-  const dataHandle = (e, type) => {
 
+  const lastDataConfirm = (e, type) => {
+    setWarnConfirm({type, bool:true});
+    bodyData?.filter( uid => uid.id === Number(e.target.id) && setSelectedData(uid))
   };
 
+  const userSendEmail = (e, type) => {
+    setUserEmail({type, bool:true});
+  }
+
   const allCheckHandle = (e, type) => {
-    let check = bodyData;
-    check.forEach((list) => {
+    bodyData.forEach((list) => {
       if (type === 'one') {
         if (Number(e.target.value) === list.id) {
           list.isSelect = e.target.checked;
@@ -77,7 +95,29 @@ export default function ListForm({ type, contentsData }) {
         list.isSelect = e.target.checked;
       }
     });
-    setBodyData(check);
+    setBodyData(bodyData);
+  };
+
+  const dataHandler = (e, subType) => {
+    userContentsData?.forEach((_contentsData) => {
+      if (Number(toggleSelect) === _contentsData.id) {
+        let data = userContentsData;
+        if(type === 'REPORT'){
+          if (subType === 'main') {
+            data.splice(Number(toggleSelect) - 1, 1);
+            setUserContentsData(data);
+          } else if (subType === 'sub') {
+            if (userContentsData.hide === true) {
+              data.hide = false;
+            } else {
+              data.hide = true;
+            }
+            setUserContentsData(data);
+          }
+        }
+      } else return;
+      
+    });
   };
 
   useEffect(() => {
@@ -96,9 +136,12 @@ export default function ListForm({ type, contentsData }) {
         {/* 상단 좌측 레이아웃 */}
         <TopLeftLayout>
           {
-            warnBtn.map((btn, i) => (
-              <TopmenuBtn key={i} onClick={(e) => dataHandle(e, btn.value)}>
-                {' '}
+            warnBtn?.map((btn, i) => (
+              <TopmenuBtn 
+              key={i}
+              onClick={ e => {
+                btn.value === 'sendMail' ? userSendEmail(e, type) : null
+              }}>
                 {btn.title}
               </TopmenuBtn>
             ))
@@ -109,12 +152,16 @@ export default function ListForm({ type, contentsData }) {
           <Dropdown data={viewNum} />
           <Dummy2 />
           <Dropdown data={dropDown1} type={type} />
-          {type !== 'USERS' && (
-            <>
-              <Dummy />
-              <Dropdown data={dropDown2} type={type} />
-            </>
-          )}
+          {
+            type !== 'USERS' && (
+              <>
+                <Dummy />
+                <Dropdown
+                data={dropDown2} 
+                type={type} 
+                />
+              </> )
+          }
         </TopCenterLayout>
         <TopRightLayout>
           <Dropdown data={dropDown3} type={type} />
@@ -133,7 +180,7 @@ export default function ListForm({ type, contentsData }) {
                 <CheckBox onChange={(e) => allCheckHandle(e, 'all')} />
               </TableHeadLine>
               {
-                headerArray?.map((item, key) => (
+                headerArr?.map((item, key) => (
                   <TableHeadLine key={key}>{item}</TableHeadLine> ))
               }
             </TableRowBox>
@@ -148,30 +195,29 @@ export default function ListForm({ type, contentsData }) {
                       name="contents"
                       value={content.id}
                       onChange={(e) => allCheckHandle(e, 'one')}
-                      // checked={content.isSelect ? true : false}
+                      defaultChecked={content.isSelect}
                     />
                   </TableDataBox>
                   <TableDataBox >{content.id}</TableDataBox>
-                  <TableDataBox>{content.email}</TableDataBox>
                   <TableDataBox>{content._id}</TableDataBox>
+                  {content.email && <TableDataBox>{content.email}</TableDataBox>}
                   {content.type && <TableDataBox>{content.type}</TableDataBox>}
                   {content.join && <TableDataBox>{content.join}</TableDataBox>}
                   {content.title && <TableDataBox>{content.title}</TableDataBox>}
                   {content.category && <TableDataBox>{content.category}</TableDataBox>}
-                  {content.result && <TableDataBox>{content.result}</TableDataBox>}
+                  {content.result && <TableDataBox type={'result'}>{content.result}</TableDataBox>}
                   {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
                   {content.content && <TableDataBox>{content.content}</TableDataBox>}
-                  {content.resultDate && <TableDataBox>{content.resultDate}</TableDataBox>}
+                  {content.date && <TableDataBox>{content.date}</TableDataBox>}
                   {content.count && <TableDataBox>{content.count}</TableDataBox>}
-                  {content.view && <TableDataBox>{content.view === 'view' ? '보임' : '숨김' }</TableDataBox>}
                   {
                     type !== 'CONTENTS' && (
-                      <TableDataBox>
+                      <TableDataBox type='btn' >
                         <AllButton
                           id={content.id}
                           onClick={(e) => {
                             setToggleSelect(e.currentTarget.id);
-                            dataHadler(e);
+                            lastDataConfirm(e, 'Suspension ');
                           }}
                         >
                           {content.ban ? '해제' : '정지'}
@@ -180,26 +226,12 @@ export default function ListForm({ type, contentsData }) {
                   }
                   {
                     type !== 'USERS' && (
-                      <TableDataBox>
+                      <TableDataBox type='btn' >
                         <AllButton
                           id={content.id}
                           onClick={(e) => {
                             setToggleSelect(e.currentTarget.id);
-                            dataHadler(e);
-                          }}
-                        >
-                          {content.hide ? '보이기' : '숨기기'}
-                        </AllButton>
-                      </TableDataBox> )
-                  }
-                  {
-                    type !== 'USERS' && (
-                      <TableDataBox>
-                        <AllButton
-                          id={content.id}
-                          onClick={(e) => {
-                            setToggleSelect(e.currentTarget.id);
-                            dataHadler(e);
+                            lastDataConfirm(e, 'Remove');
                           }}
                         >
                           삭제
@@ -208,12 +240,12 @@ export default function ListForm({ type, contentsData }) {
                   }
                   {
                     type !== 'CONTENTS' && (
-                      <TableDataBox>
+                      <TableDataBox type='btn' >
                         <AllButton
                           id={content.id}
                           onClick={(e) => {
                             setToggleSelect(e.currentTarget.id);
-                            dataHadler(e);
+                            lastDataConfirm(e, 'Withdrawal');
                           }}
                         >
                           탈퇴
@@ -225,7 +257,32 @@ export default function ListForm({ type, contentsData }) {
           </TableBody>
         </TableBox>
       </MainLayout>
-      <BottomLayout>{''}</BottomLayout>
+      {/* 정지, 탈퇴, 블라인드 팝업 */}
+        {
+          warnConfrim.bool &&
+          <Modal visible={warnConfrim.bool} closable={true} maskClosable={true} onClose={() => setWarnConfirm({...warnConfrim, bool:false})}>
+            <AdminConfirmPopup 
+              type={warnConfrim.type}
+              mainType={type}
+              dataHandler={dataHandler}
+              reportList={reportList}
+              closePopup={setWarnConfirm}
+              userData={selectedData}
+            />
+          </Modal>
+        }
+        { /* 유저 정보 확인 (저작권 신고) */ }
+        {
+          userEmail.bool &&
+          <Modal visible={userEmail.bool} closable={true} maskClosable={true} onClose={() => setUserEmail({...userEmail, bool:false})}>
+            <AdminConfirmPopup 
+              type={userEmail.type}
+              mainType={type}
+              closePopup={setUserEmail}
+            />
+          </Modal>
+        }
+        {/* 콘텐츠 내용, 댓글 내용, 유저 정보 팝업 */}
     </>
   );
 }
@@ -322,8 +379,9 @@ const TableRowBox = styled.tr`
   background: ${(props) => props.theme.adminColor.whiteColor};
 `;
 const TableDataBox = styled.td`
+  width:${props => props.type === 'btn' && props.type === 'result' && '4em'};
   text-align: center;
-  padding: 0.8em 1em;
+  padding: 0.8em 0.5em;
 `;
 // 본문 레이아웃 - 헤더 UI
 const CheckBox = styled.input.attrs({
@@ -333,5 +391,3 @@ const CheckBox = styled.input.attrs({
   height: 1em;
 `;
 
-// 하단 레이아웃
-const BottomLayout = styled.div``;

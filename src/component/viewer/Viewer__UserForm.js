@@ -11,7 +11,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import useDebounce from '@hooks/useDebounce';
 
 export default function ViewerUserForm(props) {
-  const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents, checkMoreMenuType } = props;
+  const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents, checkMoreMenuType, modified} = props;
 
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
@@ -77,6 +77,7 @@ export default function ViewerUserForm(props) {
     followFetch(URL, followDebounce ? 'delete' : 'post', { targetUserId: user_id });
   };
 
+  
   useEffect(() => {
     if (!loginOn) return;
     getValue(follow);
@@ -111,28 +112,29 @@ export default function ViewerUserForm(props) {
             <UserNickInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>
               {type === 'ORIGIN' ? userData?.originUserId?.nickname : userData?.nickname}
             </UserNickInfo>
-            {followMe && loginOn && (
-              <UserFollowTxt
-                styling={follow}
-                onClick={() => {
-                  if (!loginOn) {
-                    setUnAuth(true);
-                    return;
-                  }
-                  toggleFollow();
-                  submitHandler();
-                }}
-              >
-                {follow ? followOnLang : followLang}
-              </UserFollowTxt>
-            )}
+            {
+              followMe && loginOn && (
+                <UserFollowTxt
+                  styling={follow}
+                  onClick={() => {
+                    if (!loginOn) {
+                      setUnAuth(true);
+                      return;
+                    }
+                    toggleFollow();
+                    submitHandler();
+                  }}
+                >
+                  {follow ? followOnLang : followLang}
+                </UserFollowTxt> )
+            }
           </UserProfileInfo>
           {/* 유저 아이디 */}
           <UserProfileId>
             <UserIdInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>{screenId}</UserIdInfo>
           </UserProfileId>
           {/* 메뉴 더보기 */}
-          <FdMoreMenuAnchor onClick={checkMoreMenuType}>
+          <FdMoreMenuAnchor onClick={() => checkMoreMenuType(screenId)}>
             <MoreMenuDot />
           </FdMoreMenuAnchor>
           {/* 콘텐츠 */}
@@ -140,7 +142,7 @@ export default function ViewerUserForm(props) {
           <TextContent>{converted}</TextContent>
           <BottomWrap>
             {type !== 'ORIGIN' && <PostedTime>Posted by {indicateDate}</PostedTime>}
-            {userData?.edited && <ModifyText>{'_modified'}</ModifyText>}
+            {userData?.edited && <ModifyText>{modified}</ModifyText>}
           </BottomWrap>
           {originUserData && (
             <ContentImgWrap styling={originUserData}>

@@ -17,13 +17,14 @@ import { LanguageContext } from '@store/App_Store';
 
 const MorePopup = (props) => {
   const { langState } = useContext(LanguageContext);
-  const { _id, conFirmType, type, handleModal_Menu } = props;
+  const { _id, conFirmType, type, handleModal_Menu, onUpdate, fbtype, fbUid} = props;
+  const { boardUid, setReplyList, setRenderList, setFbReList, fbReList, ReFbUid } = useContext(ReplyListContext);
 
   const [accessConfirm, setAccessConfirm] = useState(false);
   // fetch
-  const [removeBoardLoding, removeBoardApi, removeBoardError, removeBoardFetch] = useAxiosFetch();
-  const [removeFbLoding, removeFbFbApi, removeFbFbError, removeFbFetch] = useAxiosFetch();
-  const [removeReFbLoding, removeReFbFbApi, removeReFbFbError, removeReFbFetch] = useAxiosFetch();
+  const [, removeBoardApi, , removeBoardFetch] = useAxiosFetch();
+  const [, removeFbFbApi, , removeFbFetch] = useAxiosFetch();
+  const [, removeReFbFbApi, , removeReFbFetch] = useAxiosFetch();
 
   // 언어변수
   const { selectedLanguage, defaultLanguage } = langState;
@@ -33,7 +34,7 @@ const MorePopup = (props) => {
 
   const _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage],
     _myOptions = myOptions[selectedLanguage] || myOptions[defaultLanguage],
-    // _modifyContent = modifyContent[selectedLanguage] || modifyContent[defaultLanguage],
+    _modifyContent = modifyContent[selectedLanguage] || modifyContent[defaultLanguage],
     _deleteContent = deleteContent[selectedLanguage] || deleteContent[defaultLanguage],
     _userOptions = userOptions[selectedLanguage] || userOptions[defaultLanguage],
     _reportUser = reportUser[selectedLanguage] || reportUser[defaultLanguage];
@@ -41,9 +42,7 @@ const MorePopup = (props) => {
   const [goURL] = useUrlMove();
   const [state_Confirm, toggle_Modal_Confirm] = useModal();
   const [handleReport, setHandleReport] = useModal();
-
-  const { boardUid, replyList, renderList, setReplyList, setRenderList, setFbReList, fbReList, ReFbUid } = useContext(ReplyListContext);
-
+  
   // const type = props.conFirmType;
 
   const deleteFb = () => {
@@ -51,22 +50,21 @@ const MorePopup = (props) => {
   };
 
   const deleteFbRe = () => {
-    removeReFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`, 'delete', null, null);
+    removeReFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`, 'delete', null, null, null);
   };
 
   const removeBoardHandler = () => {
     removeBoardFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}`, 'delete', null, null, null);
   };
-
   useEffect(() => {
     // * 삭제 확인 이후 로직 실행
     if (accessConfirm) {
-      if (ReFbUid) {
-        deleteFbRe();
+      if (fbtype === 'Fb' || fbtype === 'popupFb') {
+        deleteFb();
       } else if (type === 'myMore') {
         removeBoardHandler();
       } else {
-        deleteFb();
+        deleteFbRe();
       }
     }
   }, [accessConfirm]);
@@ -93,26 +91,29 @@ const MorePopup = (props) => {
     <>
       <MyPopupInner>
         <MyTitleBox>{type === 'myMore' || type === 'myFbMore' ? _myOptions : _userOptions}</MyTitleBox>
-        {type === 'myMore' || type === 'myFbMore' ? (
-          <MyTabBox>
-            {
-              //  props.type === '_More' &&
-              //  <MyTab
-              //     onClick={(e) => {
-              //       props.onUpdate();
-              //       handleModal_Menu();
-              //     }}
-              //   >
-              //     {_modifyContent}
-              //   </MyTab>
-            }
-            <MyTab onClick={() => toggle_Modal_Confirm()}>{_deleteContent}</MyTab>
-          </MyTabBox>
-        ) : (
-          <MyTabBox>
-            <MyTab onClick={() => setHandleReport()}>{_reportUser}</MyTab>
-          </MyTabBox>
-        )}
+        <MyTabBox>
+        {
+          type === 'myMore' || type === 'myFbMore' ? 
+          <>
+            {type !== 'myFbMore' && <MyTab
+                onClick={() => {
+                  onUpdate();
+                  // setFeedBackModify(true)
+                  handleModal_Menu();
+                }}
+              >
+                {_modifyContent}
+              </MyTab>}
+              <MyTab 
+                onClick={() => {
+                toggle_Modal_Confirm();
+                }}>{_deleteContent}
+                </MyTab>
+              </>
+            : 
+              <MyTab onClick={() => setHandleReport()}>{_reportUser}</MyTab>
+        }
+        </MyTabBox>
         <PopupClose onClick={() => handleModal_Menu()}>{_closeBtn}</PopupClose>
       </MyPopupInner>
       {state_Confirm && (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled, { css } from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -33,8 +33,25 @@ const Header = () => {
   const { alertPatch } = useContext(AlertContext);
 
   //언어 변경
-  const { langState, langPatch, availableLangPatch } = useContext(LanguageContext);
-  const { setSearchData, setClickedComic, setClickedIllust, clickedComic, clickedIllust, loginOn, setUnAuth, paramsData } = useContext(AppDataContext);
+  const {
+    langState,
+    langPatch,
+    availableLangPatch
+  } = useContext(LanguageContext);
+
+  const {
+    setSearchData,
+    setClickedComic,
+    setClickedIllust,
+    clickedComic,
+    clickedIllust,
+    loginOn,
+    setUnAuth,
+    paramsData,
+    setLastContentId,
+    setRenderList,
+    setPage
+  } = useContext(AppDataContext);
 
   // 팝업용
   const [isOpen, toggleIsOpen] = useModal();
@@ -82,30 +99,31 @@ const Header = () => {
         query: { type: 'latest', text: searchBody },
       });
     }
+    setLastContentId(null)
   };
 
-  useEffect(() => {
-    if (profileApi?.status === 401) {
-      goURL({ pathname: `/login` });
-    }
-  }, [profileApi]);
+  // useEffect(() => {
+  //   if (profileApi?.status === 401) {
+  //     goURL({ pathname: `/login` });
+  //   }
+  // }, [profileApi]);
 
   // 헤더 코믹/일러스트 필터링
-  const selectFilterComic = () => {
-    setClickedComic(!clickedComic);
+  const selectFilter = (type) => {
+    if(type === 'comic'){
+      setClickedComic(!clickedComic);
+    } else {
+      setClickedIllust(!clickedIllust);
+    }
     if (!clickedComic || !clickedIllust) {
       setClickedComic(true);
       setClickedIllust(true);
+      setLastContentId(null);
     }
+      setRenderList(null)
+      setPage(0)
   };
 
-  const selectFilterIllust = () => {
-    setClickedIllust(!clickedIllust);
-    if (!clickedComic || !clickedIllust) {
-      setClickedComic(true);
-      setClickedIllust(true);
-    }
-  };
 
   // 유저 알림 Read 여부
   const readObserver = () => {
@@ -138,10 +156,13 @@ const Header = () => {
     if (profileApi) {
       langPatch({ type: 'LANGUAGE_UPDATE', payload: profileApi?.data?.displayLanguage });
     }
-  }, [profileApi]);
+  }, [profileApi?.data?.displayLanguage]);
 
   useEffect(() => {
     ['/epiclogueadmin', '/welcome', '/login', '/login/'].includes(pathname) || pathname.match('/editor/') || pathname.match('/findPass') ? setPreventHeader(false) : setPreventHeader(true);
+  return () => {
+    setPreventHeader(null)
+  }
   }, [pathname]);
 
   return (
@@ -162,6 +183,7 @@ const Header = () => {
               <HeaderInner pathname={pathname.match('/viewer') && 'none'}>
                 <LogoWrap
                   onClick={() => {
+                    setRenderList(null)
                     toggleSearchPop(false);
                     goURL({ pathname: '/' });
                   }}
@@ -292,10 +314,10 @@ const Header = () => {
             </ClosedBox>
           </CategoryHeader>
           <CategoryInner>
-            <MbCategoryComic styling={clickedComic} onClick={() => selectFilterComic()}>
+            <MbCategoryComic styling={clickedComic} onClick={() => selectFilter('comic')}>
               Comic
             </MbCategoryComic>
-            <MbCategoryIllust styling={clickedIllust} onClick={() => selectFilterIllust()}>
+            <MbCategoryIllust styling={clickedIllust} onClick={() => selectFilter('illust')}>
               Illust
             </MbCategoryIllust>
           </CategoryInner>

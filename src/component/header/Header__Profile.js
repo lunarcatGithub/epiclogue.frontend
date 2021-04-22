@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
 
 // 컴포넌트 import
 import { LangHeaderProfile } from '@language/Lang.Header';
@@ -11,28 +10,26 @@ import { useToggle } from '@hooks/useToggle';
 import { HeaderDataContext } from './Header';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { useCookie } from '@hooks/useCookie';
-
-// 이미지 import
-// import Xbtn from "../../img/X-mark.png";
+import useAxiosFetch from '@hooks/useAxiosFetch';
 
 // 프로필 팝업
-
 const HeaderPfPopup = () => {
-  const router = useRouter();
 
   const [goURL] = useUrlMove();
   //profile
   const [ProfileImg, setProfileImg] = useState();
 
   //cookie
-  const [, testCookieHandle] = useCookie();
   const [, cookieHandle] = useCookie();
+  const [, testCookieHandle] = useCookie();
 
-  const { alertPatch } = useContext(AlertContext);
+  const { alertPatch, loginOn } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
   const { setLoginOn } = useContext(AppDataContext);
 
-  const { toggleSearchPop, show, profileApi, profileError } = useContext(HeaderDataContext);
+  const { show, profileApi, profileError } = useContext(HeaderDataContext);
+  const [ , , , logoutFetch] = useAxiosFetch();
+
   const [isOpen, setIsOpen] = useToggle();
 
   //언어 변수
@@ -46,27 +43,26 @@ const HeaderPfPopup = () => {
     _sessionExpire = sessionExpire[selectedLanguage] || sessionExpire[defaultLanguage];
 
   const logout = () => {
-    let divied = process.env.NODE_ENV;
-    
-    if(divied === 'development'){
-      testCookieHandle('DELETE', 'dev');
-    } else {
+      setIsOpen();
       cookieHandle('DELETE', 'access_token');
-    }
-      setLoginOn(false)
+      // testCookieHandle('DELETE', 'dev');
+      logoutFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, 'get')
+      setLoginOn(false);
       localStorage.removeItem('userNick');
       localStorage.removeItem('userid');
-      setIsOpen();
+      
       goURL({ pathname: '/login' });
   };
 
   useEffect(() => {
+    if(!profileError) return;
     if (profileError?.status === 401) {
-      router.reload();
-      alert(_sessionExpire);
+      alert(_sessionExpire)
       logout();
     }
-  }, [profileError]);
+    return ()=> logout();
+    
+  }, [profileError, loginOn]);
 
   useLayoutEffect(() => {
     setProfileImg(profileApi?.data?.profile?.thumbnail);
@@ -74,7 +70,7 @@ const HeaderPfPopup = () => {
 
   const navTabArr = [
     { method: () => [setIsOpen(), goURL({ pathname: `/mypage/profile` })], title: _profileSet, icon: '/static/header/profileIcon.svg' },
-    { method: () => [setIsOpen(), goURL({ pathname: `/myboard/${profileApi?.data?.screenId}/bookmarks` })], title: _goToBookMark, icon: '/static/header/headerBookMark.svg' },
+    { method: () => [setIsOpen(), goURL({ pathname: `/myboard/${profileApi?.data?.screenId}`, as:`/myboard/${profileApi?.data?.screenId}` , query:{tab:'bookmarks'} })], title: _goToBookMark, icon: '/static/header/headerBookMark.svg' },
     { method: () => [setIsOpen(), goURL({ pathname: `/policy/service` })], title: _policyInform, icon: '/static/header/policyIcon.svg' },
     { method: () => alertPatch({ type: 'NOT_SERVICE', payload: true }), title: _changeAccount, icon: '/static/header/switchIcon.svg' },
     { method: () => logout(), title: _logOutTab, icon: '/static/header/logoutIcon.svg' },
@@ -107,14 +103,15 @@ const HeaderPfPopup = () => {
               {/* // 유저 프로필 팝업의 헤더 부분 끝 */}
 
               {/* 프로필 설정 */}
-              {navTabArr.map((navTab, index) => (
-                <PopupAnchor key={index}>
-                  <TabWrap onClick={navTab.method}>
-                    <IconImg icon={navTab.icon} />
-                    <ProfileTextTab>{navTab.title}</ProfileTextTab>
-                  </TabWrap>
-                </PopupAnchor>
-              ))}
+              {
+                navTabArr.map((navTab, index) => (
+                  <PopupAnchor key={index}>
+                    <TabWrap onClick={navTab.method}>
+                      <IconImg icon={navTab.icon} />
+                      <ProfileTextTab>{navTab.title}</ProfileTextTab>
+                    </TabWrap>
+                  </PopupAnchor> ))
+              }
             </PopUpInner>
           </PopupLayout> )
       }

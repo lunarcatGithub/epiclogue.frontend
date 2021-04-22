@@ -51,7 +51,7 @@ const TranslatePopup = ({ writer }) => {
         >
           {_useEditor}
         </UserContentTab>
-        <UserContentTab onClick={() => goURL({ pathname: `/upload`, query: { writer, boardUid, data: JSON.stringify(data) } })}>{_selfUpload}</UserContentTab>
+        <UserContentTab onClick={() => goURL({ pathname: `/upload`, query: { writer, boardUid, data: JSON.stringify(data), _type:'noneEditor'} })}>{_selfUpload}</UserContentTab>
       </UserContentTabBox>
       <PopupClose onClick={() => toggle_Modal_Trans()}>{_closeBtn}</PopupClose>
     </UserContentPopupInner>

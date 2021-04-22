@@ -6,7 +6,7 @@ import { langUploadSource } from '@language/Lang.Upload';
 import { LanguageContext } from '@store/App_Store';
 
 export default function OriginUserSource() {
-  const { sourceToggleOn, setSourceToggleOn, setSourceHref } = useContext(uploadContext);
+  const { sourceToggleOn, setSourceToggleOn, setSourceHref, sourceHref } = useContext(uploadContext);
 
   const { langState } = useContext(LanguageContext);
   const { selectedLanguage, defaultLanguage } = langState;
@@ -28,11 +28,12 @@ export default function OriginUserSource() {
           <ToggleTama styling={sourceToggleOn} />
         </Toggle>
         {!sourceToggleOn && <AlertText>{_uploadPermission}</AlertText>}
-        {sourceToggleOn && (
-          <SourceDataWrap>
-            <SourceData placeholder={'https://'} ref={inputRef} onChange={(e) => setSourceHref(e.target.value)} />
-          </SourceDataWrap>
-        )}
+        {
+          sourceToggleOn && 
+            <SourceDataWrap>
+              <SourceData placeholder={'https://'} ref={inputRef} defaultValue={sourceHref} onChange={(e) => setSourceHref(e.target.value)} />
+            </SourceDataWrap> 
+        }
       </LayoutInner>
     </Layout>
   );

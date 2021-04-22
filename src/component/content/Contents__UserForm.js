@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 export default function ContentsUserForm(props) {
   const { banner, comicCount, illustCount, intro, nickname, profile, screenId } = props.searchData;
-
   return (
     <BodyLayout>
       <ContentInner banner={banner}>

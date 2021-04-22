@@ -11,10 +11,7 @@ services:
       context: ./docker/nextjs
       dockerfile: Dockerfile
     volumes:
-      - ./:/usr/src/app  
-      - ./node_modules:/usr/src/app/node_modules
-      - ./.next:/usr/src/app/.next
-
+      - ./:/usr/src/app
     env_file:
       - ./.env.local
       - ./.env.production

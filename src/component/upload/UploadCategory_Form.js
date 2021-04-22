@@ -67,7 +67,8 @@ export default function UploadCategoryForm({ type, initialNum }) {
   const typeHandler = () => {
     switch (type) {
       case 'CONTENTS':
-        if (categoryNum === 0) {
+
+      if (categoryNum === 0) {
           setCategoryIcon(<IllustIcon />);
           setCategoryTxt(_thisIllust);
           setCategory(0);

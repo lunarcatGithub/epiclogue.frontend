@@ -16,16 +16,17 @@ export default function Dropdown({ data, type }) {
       </ButtonLayout>
       {dropOn && (
         <ContentsLayout>
-          {data?.map(({ title, value }, i) => (
-            <ContentBlock
-              key={i}
-              onClick={() => {
-                setTitle(title);
-              }}
-            >
-              {title}
-            </ContentBlock>
-          ))}
+          {
+            data?.map(({ title, value }, i) => (
+              <ContentBlock
+                key={i}
+                onClick={() => {
+                  setTitle(title);
+                }}
+              >
+                {title}
+              </ContentBlock> ))
+          }
         </ContentsLayout>
       )}
     </AllLayout>

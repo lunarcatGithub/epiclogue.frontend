@@ -6,19 +6,19 @@ import ListForm from '../Common/List__Form';
 
 // utils
 
-export const AdminUsers = () => {
+export const AdminCopyright = () => {
   //data
   const [userContentsData, setUserContentsData] = useState([
-    { id: 1, email: 'asd@ads.com', _id: `@asasdd`, type: '정지', join: '2020-11-28', ban: false },
-    { id: 2, email: 'ascvcvd@xcvx.com', _id: `@adf`, type: '탈퇴', join: '2021-01-02', ban: true },
-    { id: 3, email: 'asxzcvzxd@ads.com', _id: `@qwerrt`, type: '정상', join: '2021-02-28', ban: false },
+    { id: 1, email: 'asd@ads.com', _id: `@asasdd`, title: 'adasd', result:'미정', date: '2020-11-28', ban: false },
+    { id: 2, email: 'ascvcvd@xcvx.com', _id: `@adf`, title: '1234', result:'삭제', date: '2021-01-02', ban: true },
+    { id: 3, email: 'asxzcvzxd@ads.com', _id: `@qwerrt`, title: 'qqqqq', result:'미정', date: '2021-02-28', ban: false },
   ]);
 
   const categorySelec = [
     { title: '전체', value: 'all' },
-    { title: '정상', value: 'green' },
+    { title: '정상', value: 'normal' },
     { title: '정지', value: 'banned' },
-    { title: '탈퇴', value: 'reave' },
+    { title: '탈퇴', value: 'leave' },
   ];
 
   const searchFilter = [
@@ -53,20 +53,18 @@ export const AdminUsers = () => {
     });
   };
 
-  const headerArr = ['번호', '이메일', '아이디', '회원유형', '가입일', '정지', '탈퇴'];
-  
+  const headerArr = ['번호', '아이디', '이메일', '제목', '처리결과', '신고날짜', '정지', '삭제', '탈퇴'];
   const warnBtn = [
-    { title: '알림발송', value: 'sendInfo' },
     { title: '메일발송', value: 'sendMail' },
     { title: '정지', value: 'ban' },
     { title: '탈퇴', value: 'leave' },
-  ];
-
+    { title: '삭제', value: 'remove' },
+]
   return (
     <Layout>
       <LayoutInner>
         <ListForm
-          type="USERS"
+          type="COPYRIGHT"
           contentsData={{
             headerArr,
             categorySelec,

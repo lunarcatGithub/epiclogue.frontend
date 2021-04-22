@@ -13,43 +13,36 @@ import OriginUserSource from './Upload__Source';
 
 // Hooks&&reducer import
 import useFetchData from '@hooks/useFetchData';
-import { RoadDataContext } from '@hooks/useRoadDataContext';
 
 export const uploadContext = React.createContext();
 
 const UploadCategory = (props) => {
-  const { categoryToggle, mergyImage, type, imageAdjust, urlToFileConvert, editorData, editorUid } = props;
+  const { editData, boardImg, categoryToggle, mergyImage, type, imageAdjust, urlToFileConvert, editorData, editorUid } = props;
   const router = useRouter();
+
   // 직접 업로드 하기에서 가져온 데이터
-  const { data, boardUid } = router.query;
+  const { data, boardUid, _type } = router.query;
 
   const { alertPatch } = useContext(AlertContext);
   const { langState } = useContext(LanguageContext);
-  const { roadData, boardImg } = useContext(RoadDataContext);
-  const _roadData = props.type === 'editor' ? editorData : roadData;
-
-  const uploadData = _roadData || _roadData.uploadData;
-  const modifyContent = null;
-
-  let _boardImg = props.type === 'editor' ? [] : boardImg;
 
   // 카테고리 선택 데이터
   const [boardTitle, setBoardTitle] = useState();
   const [boardBody, setBoardBody] = useState('');
+  const [pub, setPublic] = useState(1);
+  const [secondCreate, setSecondCreate] = useState(1);
+  const [category, setCategory] = useState(0);
 
   // 경고용
   const [alertTitle, setAlertTitle] = useState(false);
   const [goViewer] = useUrlMove();
   const [fileSize, setFileSize] = useState();
-
-  // 카테고리 선택 데이터
-  const [pub, setPublic] = useState(1);
-  const [secondCreate, setSecondCreate] = useState(1);
-  const [category, setCategory] = useState(0);
+  // type [noneEditor(직접업로드), upload(기본업로드), editor(에디터 업로드)]
+  const [uploadType, setUploadType] = useState(type || _type);
 
   // 외부출처
   const [sourceToggleOn, setSourceToggleOn] = useState(false);
-  const [sourceHref, setSourceHref] = useState(null);
+  const [sourceHref, setSourceHref] = useState('');
 
   // 언어API 통신 관련
   const [sendLang, setSendLang] = useState();
@@ -61,11 +54,37 @@ const UploadCategory = (props) => {
   const [disabled, setDisabled] = useState(false);
 
   //fetch
-  const [uploadLoding, uploadApi, uploadError, uploadFetch] = useFetchData();
+  const [uploadError, uploadApi, ,uploadFetch] = useFetchData();
 
   useEffect(() => {
-    setOriginData((data && JSON.parse(data)) || uploadData);
-  }, [router, editorData]);
+    
+    switch (uploadType) {
+      case 'noneEditor':
+        setOriginData(JSON.parse(data))
+        break;
+
+      case 'modify':
+        setOriginData(editData)
+        break;
+    
+      case 'upload':
+        setOriginData('')
+        break;
+
+      case 'editor':
+        setOriginData(editorData)
+        // setOriginData('')
+        break;
+
+      default:
+        break;
+    }
+
+  }, [uploadType, editData, editorData])
+
+  // useEffect(() => {
+  //   setOriginData(uploadType === 'noneEditor' ? JSON.parse(data) : uploadData);
+  // }, [router, editorData, data]);
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
@@ -89,7 +108,7 @@ const UploadCategory = (props) => {
 
   const editorDevideHandler = (e) => {
     e.preventDefault();
-    if (type === 'editor') {
+    if (uploadType === 'editor') {
       new Promise((res, rej) => {
         let adjustedData = imageAdjust();
         res(adjustedData);
@@ -110,7 +129,7 @@ const UploadCategory = (props) => {
         });
     } else {
       // 일반 업로드를 통해 받아온 이미지
-      handleSubmit(_boardImg);
+      handleSubmit(boardImg);
     }
   };
 
@@ -149,8 +168,8 @@ const UploadCategory = (props) => {
       _uploadData.append('allowSecondaryCreation', secondCreate);
       _uploadData.append('sourceUrl', sourceHref);
 
-      // 2차 창작 분류
-      if (originData?.length !== 0) {
+      // 2차 창작 및 수정하기 분류
+      if (originData) {
         if (originData?.originUserId) {
           _uploadData.append('originUserId', originData?.originUserId._id);
           _uploadData.append('originBoardId', originData?.originBoardId._id);
@@ -160,7 +179,7 @@ const UploadCategory = (props) => {
         }
       }
 
-      if (!_boardImg) {
+      if (uploadType !== 'editor' && !boardImg) {
         alertPatch({ type: 'UPLOADED_IMAGE', payload: true });
         setDisabled(false);
         return;
@@ -176,10 +195,9 @@ const UploadCategory = (props) => {
       // for (let [key, value] of _uploadData.entries()) {
       //   console.log(key, value);
       // }
-
-      if (modifyContent) {
-        // uploadFetch(`${process.env.API_URL}/boards/${modifyContent}/edit`, 'post', null, _uploadData);
-      } else if (originData?.length !== 0) {
+      if (uploadType === 'modify') {
+        uploadFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/edit`, 'post', null, _uploadData);
+      } else if (uploadType === 'noneEditor' || uploadType === 'editor') {
         uploadFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/sec`, 'post', null, _uploadData);
       } else {
         uploadFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'post', null, _uploadData);
@@ -206,17 +224,18 @@ const UploadCategory = (props) => {
       return;
     }
   }, [uploadApi]);
-
+  
   useEffect(() => {
     // 콘텐츠 수정하기 할 때 기존의 데이터 대입
-    if (_roadData.length !== 0) {
-      setBoardTitle(uploadData.boardTitle);
-      setBoardBody(uploadData.boardBody);
-      setCategory(Number(uploadData?.category));
-      setPublic(Number(uploadData.pub));
-      setSecondCreate(uploadData.allowSecondaryCreation);
-    }
-  }, [_roadData, editorData]);
+    if (!originData) return;
+      setBoardTitle(originData?.boardTitle);
+      setBoardBody(originData?.boardBody);
+      setCategory(Number(originData?.category));
+      setPublic(Number(originData?.pub));
+      setSecondCreate(originData?.allowSecondaryCreation);
+      setSourceHref(originData?.sourceUrl)
+      setSourceToggleOn(originData?.sourceUrl && true)
+  }, [originData, uploadType, editorData]);
 
   return (
     <uploadContext.Provider
@@ -249,16 +268,16 @@ const UploadCategory = (props) => {
             placeholder={alertTitle ? _alertPlaceholder : _titlePlaceholder}
             name="boardTitle"
             onChange={changeBoardTitle}
-            defaultValue={uploadData ? uploadData.boardTitle : ''}
+            defaultValue={boardTitle}
             maxLength={50}
           />
         </ContentTitle>
 
         <ContentInfoBox>
-          <ContentInfo defaultValue={uploadData ? uploadData.boardBody : ''} name="boardBody" onChange={changeBoardBody} placeholder={_descPlaceholder} />
+          <ContentInfo defaultValue={boardBody} name="boardBody" onChange={changeBoardBody} placeholder={_descPlaceholder} />
         </ContentInfoBox>
         {/* 원작자 폼 */}
-        {originData?.length !== 0 ? <OriginUserForm originData={originData} /> : <OriginUserSource />}
+        {uploadType === 'noneEditor' || uploadType === 'editor' || originData ? <OriginUserForm originData={originData} /> : <OriginUserSource />}
 
         <CategorySelectLayout>
           {/* 일러스트 & 만화 선택 카테고리 */}
@@ -268,7 +287,7 @@ const UploadCategory = (props) => {
           <UploadCategoryForm type="PUB" initialNum={pub} />
 
           {/* 2차 창작 허용 여부 */}
-          {originData?.length === 0 && <UploadCategoryForm type="SECONDARY" initialNum={secondCreate} />}
+          { uploadType === 'upload' ? <UploadCategoryForm type="SECONDARY" initialNum={secondCreate} /> : null}
 
           {/* 작품의 언어 설정 */}
           <UploadCategoryForm type="LANGUAGE" initialNum={selectedLanguage || defaultLanguage} />

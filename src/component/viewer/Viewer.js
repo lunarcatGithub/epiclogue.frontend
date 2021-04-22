@@ -12,7 +12,6 @@ import TranslatePopup from './TranslatePopup';
 import { ProgressSmall } from '@utils/LoadingProgress';
 import { langViewer, langViewerUser } from '@language/Lang.Viewer';
 import { LangCommon } from '@language/Lang.Common';
-import { langMetaViewer } from '@language/Lang.Meta';
 import { Meta } from '@utils/MetaTags';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
@@ -31,7 +30,7 @@ import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store'
 
 export const ReplyListContext = React.createContext();
 
-const Viewer = ({ boardItem = null, nonError }) => {
+const Viewer = ({ boardItem, nonError }) => {
   const router = useRouter();
   const boardUid = router?.query?.id;
   const { t } = useTranslation("common");
@@ -51,23 +50,22 @@ const Viewer = ({ boardItem = null, nonError }) => {
   const [data, setData] = useState({});
   const [checkOrigin, setCheckOrigin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [getIndicateDate, setGetIndicateDate] = useState();
   const [_heartCount, setHeartCount] = useState();
 
   const [bookmark, toggleBookmark] = useToggle();
   const [like, toggleLike] = useToggle();
-  const [globe, toggleGloobe] = useToggle();
+  const [globe, ] = useToggle();
   const [screenId, setScreenId] = useState();
 
   // 모달 팝업 컨트롤
   const [type_MoreMenu, setType_MoreMenu] = useState();
-  const [state_O_MoreMenu, toggle_O_Modal_MoreMenu] = useModal();
   const [state_MoreMenu, toggle_Modal_MoreMenu] = useModal();
   const [state_React, toggle_Modal_React] = useModal();
   const [state_Share, toggle_Modal_Share] = useModal();
   const [state_Trans, toggle_Modal_Trans] = useModal();
   const [allowSecondary, setAllowSecondary] = useModal();
   const [originDeleted, setOriginDeleted] = useModal();
+  const [isShowing_Menu, handleModal_Menu] = useModal();
 
   const [originId, setOriginId] = useState();
   const [secondAllow, setSecondAllow] = useState();
@@ -97,12 +95,15 @@ const Viewer = ({ boardItem = null, nonError }) => {
   const [noContents, setNoContents] = useState(false);
 
   // 태그 및 하이퍼링크 convert
-  const [converted, convert] = useConvertTags();
+  const [, convert] = useConvertTags();
 
   // 토글 submit 전용
-  const [likeLoding, likeApi, likeError, likeFetch] = useAxiosFetch();
-  const [bookmarkLoding, bookmarkApi, bookmarkError, bookmarkFetch] = useAxiosFetch();
+  const [ , likeApi, , likeFetch] = useAxiosFetch();
+  const [, , , bookmarkFetch] = useAxiosFetch();
   // const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
+
+  //피드백 팝업
+  const [typeMenu, setTypeMenu] = useState();
 
   // ref
   const feedbackRef = useRef();
@@ -114,7 +115,6 @@ const Viewer = ({ boardItem = null, nonError }) => {
 
   const { originalUser, recreateUser, removedContents } = langViewerUser;
 
-  const { metaViewerTitle, boardDescFirst, boardDescSecond } = langMetaViewer();
   const { followBtn, followingBtn } = LangCommon;
   const _contentsReact = contentsReact[selectedLanguage] || contentsReact[defaultLanguage],
     _feedbackScore = feedbackScore[selectedLanguage] || feedbackScore[defaultLanguage],
@@ -184,30 +184,57 @@ const Viewer = ({ boardItem = null, nonError }) => {
     likeApi && setHeartCount(likeApi?.data.heartCount);
   }, [likeApi]);
 
-  // const checkO_MoreMenuType = () => {
-  //   toggle_O_Modal_MoreMenu();
-  //   if (data.originBoardId.screenId === localStorage.getItem('userid')) {
-  //     setType_O_MoreMenu(<MorePopup type="O_More"  handleModal_Menu={() => toggle_O_Modal_MoreMenu(false)} />);
-  //   } else {
-  //     setType_O_MoreMenu(<MorePopup handleModal_Menu={() => toggle_O_Modal_MoreMenu(false)} />);
-  //   }
-  // };
-
   // 회원 유저
-  const checkMoreMenuType = () => {
+  const checkMoreMenuType = (userId) => {
     // 비회원 유저
     if (!loginOn) {
       setUnAuth(true);
       return;
     }
-    // 회원 유저
+
+    // 콘텐츠 팝업
     toggle_Modal_MoreMenu();
-    if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
-      setType_MoreMenu(<MorePopup type="myMore" conFirmType="CONFIRM" onUpdate={() => goUploadUpdate(`/uploadupdate/${boardUid}`)} handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+    if (userId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
+      setType_MoreMenu(
+        <MorePopup 
+          type="myMore" 
+          conFirmType="CONFIRM" 
+          onUpdate={() => goUploadUpdate({pathname:`/upload`, as:`/upload`, query:{_type:'modify', boardUid}})} 
+          handleModal_Menu={() => toggle_Modal_MoreMenu(false)} 
+        />);
     } else {
-      setType_MoreMenu(<MorePopup type="userMore" handleModal_Menu={() => toggle_Modal_MoreMenu(false)} />);
+      setType_MoreMenu(
+        <MorePopup 
+        type="userMore" 
+        handleModal_Menu={() => toggle_Modal_MoreMenu(false)} 
+      />);
     }
   };
+  // 피드백 수정
+  const [feedBackModify, setFeedBackModify] = useState(false)
+
+  // 댓글 팝업
+  const checkFeedbackMenu = (userId, _id, fbtype) => {
+    handleModal_Menu()
+    if (localStorage.getItem('userid') === userId) {
+      setTypeMenu(
+      <MorePopup 
+        type="myFbMore"
+        fbtype={fbtype}
+        conFirmType="COMMANT" 
+        _id={_id} 
+        handleModal_Menu={() => handleModal_Menu(false)} />
+      );
+    } else {
+      setTypeMenu(
+      <MorePopup 
+      type="userMore"
+      _id={_id}
+      handleModal_Menu={() => handleModal_Menu(false)} 
+      />
+      );
+    }
+  }
 
   useEffect(() => {
     addList();
@@ -283,7 +310,6 @@ const Viewer = ({ boardItem = null, nonError }) => {
       setBoardImg(boardImg);
       setHeartCount(heartCount);
       setIsLoading(false);
-      setGetIndicateDate(writeDate, '');
       setExternalSource(sourceUrl === 'null' ? false : sourceUrl);
 
       // secondAllow
@@ -351,6 +377,9 @@ const Viewer = ({ boardItem = null, nonError }) => {
         checkFbLength,
         data,
         boardImg,
+        // 피드백 수정
+        feedBackModify,
+        setFeedBackModify
       }}
     >
       <Meta meta={metaData} />
@@ -372,6 +401,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
                   userLang={_originalUser}
                   followLang={_followBtn}
                   followOnLang={_followingBtn}
+                  modified={_modified}
                   removedContents={_removedContents}
                   profile={O_profileURL}
                   userData={data}
@@ -388,6 +418,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
                   userData={data}
                   boardUid={boardUid}
                   checkMoreMenuType={checkMoreMenuType}
+                  modified={_modified}
                 />
               </>
             ) : (
@@ -401,6 +432,7 @@ const Viewer = ({ boardItem = null, nonError }) => {
                 userData={data}
                 boardUid={boardUid}
                 checkMoreMenuType={checkMoreMenuType}
+                modified={_modified}
               />
             )}
 
@@ -483,9 +515,16 @@ const Viewer = ({ boardItem = null, nonError }) => {
             {
               renderList &&
                 !isLoading &&
-                renderList.slice(0, prevFb).map((item) => {
-                  return <FB type="Fb" key={item._id} data={item} counting={renderList.length} />;
-                })
+                renderList.slice(0, prevFb).map((item) => ( 
+                  <FB 
+                    type="Fb" 
+                    key={item._id}
+                    id={item._id} 
+                    data={item} 
+                    counting={renderList.length} 
+                    morePopup={checkFeedbackMenu} 
+                  />
+                ))
             }
             <MoreFb
               checkEvent={eventCtrl}
@@ -511,9 +550,16 @@ const Viewer = ({ boardItem = null, nonError }) => {
         </Modal>
       )}
       */}
+      {/* 콘텐츠 더보기 팝업 */}
       {state_MoreMenu && (
         <Modal visible={state_MoreMenu} closable={true} maskClosable={true} onClose={() => toggle_Modal_MoreMenu(false)}>
           {type_MoreMenu}
+        </Modal>
+      )}
+      {/* 피드백 더보기 팝업 */}
+      {isShowing_Menu && (
+        <Modal visible={isShowing_Menu} closable={true} maskClosable={true} onClose={() => handleModal_Menu(false)}>
+          {typeMenu}
         </Modal>
       )}
       {state_React && (

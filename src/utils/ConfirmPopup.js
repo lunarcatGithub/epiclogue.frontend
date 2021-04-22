@@ -297,7 +297,7 @@ const ConfirmInner = styled.div`
   overflow: hidden;
   width: 420px;
   height: auto;
-  border-radius: 12px;
+  border-radius: 0.6em;
   background: ${(props) => props.theme.color.backgroundColor};
   box-shadow: ${(props) => props.theme.boxshadow.popup};
   @media (max-width: 900px) {

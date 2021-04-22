@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import styled, { css } from 'styled-components';
+import React, { useContext, useEffect} from 'react';
+import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
 // 컴포넌트 import
@@ -11,8 +11,14 @@ import AutoHiding from '@utils/autoHiding';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { LanguageContext, AppDataContext } from '@store/App_Store';
 
-const SearchResult = () => {
-  const { setParamsData, paramsData } = useContext(AppDataContext);
+const SearchResult = ({query}) => {
+
+  const {
+    setParamsData,
+    paramsData,
+    setRenderList,
+    setLastContentId
+  } = useContext(AppDataContext);
   const { langState } = useContext(LanguageContext);
   const router = useRouter();
   const { text, type } = router.query;
@@ -34,17 +40,26 @@ const SearchResult = () => {
     { data: 'users', lang: _userTab },
   ];
 
+
+  useEffect(() => {
+    type && setParamsData(type)
+    goURL({ pathname: `/search/[type]`, as: `/search/${type}/${text}`, query: { type, text: text } })
+    setLastContentId(null)
+  }, [type, text])
+
   return (
     <BodyLayout>
       <ContentInner show={show}>
         <MypageTabBox>
-          {navArr.map((nav, i) => (
-            <NavItems key={i} styling={nav.data === type} onClick={() => goURL({ pathname: `/search/[type]`, as: `/search/${nav.data}/${text}`, query: { type: nav.data, text } })}>
-              <SearchTab styling={nav.data === type} onClick={() => setParamsData(nav.data)}>
-                {nav.lang}
-              </SearchTab>
-            </NavItems>
-          ))}
+          {
+            navArr.map((nav, i) => (
+              <NavItems key={i} styling={nav.data === type} onClick={() => goURL({ pathname: `/search/[type]`, as: `/search/${nav.data}/${text}`, query: { type: nav.data, text: text } })}>
+                <SearchTab styling={nav.data === type} onClick={() => setParamsData(nav.data)}>
+                  {nav.lang}
+                </SearchTab>
+              </NavItems>
+            ))
+          }
         </MypageTabBox>
       </ContentInner>
       <BookmarkContents>

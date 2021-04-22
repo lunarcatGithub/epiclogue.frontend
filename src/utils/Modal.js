@@ -73,9 +73,7 @@ const ModalWrapper = styled.section`
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 12px;
-  @media (max-width: 900px) {
-    /* width: 340px; */
-  }
+
 `;
 
 const ModalInner = styled.div`

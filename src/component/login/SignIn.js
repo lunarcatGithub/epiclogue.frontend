@@ -31,15 +31,10 @@ export const SignIn = (props) => {
   const [errorTitle, setErrorTitle] = useState();
   const [goURL] = useUrlMove();
   const [_isShowing, _toggle] = useModal();
-
-  //cookie
-  const [, cookieHandle] = useCookie();
-  const [cookieValue, getCookie] = useCookie();
-  const [testValue, getTestCookie] = useCookie();
-
+  
   // 로그인 에러
   // fetch
-  const [snsLoginListLoding, snsLoginListApi, snsLoginListError, snsLoginFetch] = useAxiosFetch();
+  const [, snsLoginListApi, , snsLoginFetch] = useAxiosFetch();
 
   //언어 변수
   const { selectedLanguage, defaultLanguage } = langState;
@@ -58,6 +53,8 @@ export const SignIn = (props) => {
     _leaveUser = leaveUser[selectedLanguage] || leaveUser[defaultLanguage],
     _lostPassword = lostPassword[selectedLanguage] || lostPassword[defaultLanguage],
     _backLogin = backLogin[selectedLanguage] || backLogin[defaultLanguage];
+  //create cookie
+  const [, devCookieHandle] = useCookie();
 
   // sns 로그인 통신
   const responseSuccess = (res, type) => {
@@ -92,14 +89,16 @@ export const SignIn = (props) => {
 
   useEffect(() => {
     const mergyData = resData || snsLoginListApi;
+    let divied = process.env.NODE_ENV;
     if (mergyData?.result === 'ok') {
-      getTestCookie('CREATE', 'dev', 'test', 1);
+      divied === 'development' && devCookieHandle('CREATE', 'dev', 'test', 1);
+
       setLoginOn(true);
       localStorage.setItem('userNick', mergyData?.nick);
       localStorage.setItem('userid', mergyData?.screenId);
       goURL({ pathname: '/' });
     }
-  }, [resData, snsLoginListApi, testValue]);
+  }, [resData, snsLoginListApi]);
 
   useEffect(() => {
     errors && errorHandle();

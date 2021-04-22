@@ -62,6 +62,6 @@ const MypageGeneral = () => {
       {isLogin && <MypageForm type="mute" />}
     </>
   );
-};
+}; 
 
 export default MypageGeneral;
