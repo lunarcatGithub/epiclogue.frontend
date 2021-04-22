@@ -120,8 +120,8 @@ const Header = () => {
       setClickedIllust(true);
       setLastContentId(null);
     }
-      setRenderList(null)
-      setPage(0)
+      // setRenderList(null)
+      // setPage(0)
   };
 
 
