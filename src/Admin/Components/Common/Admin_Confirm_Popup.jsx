@@ -10,7 +10,7 @@ import {EmailForm} from '../Common/EmailForm_Form';
 import { useToggle } from '@hooks/useToggle';
 
 export function AdminConfirmPopup(props) {
-    const {mainType, type, dataHandler, reportList, closePopup, userData} = props
+    const {mainType, type, dataHandler, reportList, closePopup, listData} = props
 
     const [headerTitle, setHeaderTitle] = useState({});
     const [dataOnChange, dataOnChangeHandler] = useState('스팸성');
@@ -21,7 +21,6 @@ export function AdminConfirmPopup(props) {
 
     // 탭 스타일용
     const [isTab, setIsTab] = useState(1)
-    console.log(type);
 
     const deviedHandler = () => {
         let _type,
@@ -70,7 +69,7 @@ export function AdminConfirmPopup(props) {
             <ConfirmInner>
                 {/* 상단 title */}
                 <ConfirmDivHeader>
-                    {headerTitle.title}
+                    { headerTitle.title }
                 </ConfirmDivHeader>
                 {/* 내용 desc */}
                 <ConfirmDivBody>
@@ -84,8 +83,7 @@ export function AdminConfirmPopup(props) {
                             onClick={() => setIsTab(items.value)} 
                             isSelect={isTab}
                             styling={items.value === isTab}
-                            >{items.name}</PopupTab>
-                            ))
+                            >{items.name}</PopupTab> ) )
                         }
                     </PopupTabWrap>
                     { 
@@ -93,12 +91,12 @@ export function AdminConfirmPopup(props) {
                         <ConfirmInBody>
                             <BlockWrap>
                                 <TextBlock>콘텐츠 정보</TextBlock>
-                                <InformBox>{userData?.title}</InformBox>
+                                <InformBox>{listData?.title}</InformBox>
                             </BlockWrap>
                             {/* 콘텐츠 업로드 유저 */}
                             <BlockWrap>
                             <TextBlock>신고 받은 유저</TextBlock>
-                                <InformBox>{userData?._id}</InformBox>
+                                <InformBox>{listData?._id}</InformBox>
                             </BlockWrap>
                             <BlockWrap>
                             <TextBlock>신고 한 유저</TextBlock>
@@ -121,12 +119,11 @@ export function AdminConfirmPopup(props) {
                                     </ReportBody>
                                 </ReportUserBox>
                             </BlockWrap>
-
                         </ConfirmInBody>
                         :
                         <FormWrap>
                         { 
-                            mainType !== 'COPYRIGHT' ?
+                            type === 'Remove' && mainType !== 'COPYRIGHT' ?
                                 <>
                                 <BlockWrap>
                                     <TextBlock>해당 제재 목록</TextBlock>
@@ -146,7 +143,7 @@ export function AdminConfirmPopup(props) {
                                                     onClick={()=>toggleSelectList(!selectList)} 
                                                     />
                                                     <ListRadioCustom/>
-                                                </ListTxtBox> ))
+                                                </ListTxtBox> ) )
                                             }
                                         </Dropdown>
                                     }
@@ -158,22 +155,31 @@ export function AdminConfirmPopup(props) {
                                     onChange={(e)=>setUserInform(e.target.value)} />
                                 </BlockWrap>
                                 </>
-                                : 
-                                <EmailForm 
-                                    userData={userData}
-                                    mainType={mainType}
-                                />
-                            }
+                                :
+                                null
+                        }
+                        {
+                            type === 'Suspension' || type === 'Withdrawal' || mainType === 'COPYRIGHT' ?
+                            <EmailForm 
+                                listData={listData}
+                                mainType={mainType}
+                            />
+                            :
+                            null
+                        }
                             </FormWrap>
                     }
                     
                     </ConfirmDivBodyInner>
                 </ConfirmDivBody>
                 {/* 하단 title */}
-                <ConfirmDivBottom>
-                    <ConfirmBtn type="confirm">최종확인</ConfirmBtn>
-                    <ConfirmBtn type="cancel" onClick={()=>closePopup(false)}>취소</ConfirmBtn>
-                </ConfirmDivBottom>
+                { 
+                    isTab === 2 &&
+                    <ConfirmDivBottom>
+                        <ConfirmBtn type="confirm">최종확인</ConfirmBtn>
+                        <ConfirmBtn type="cancel" onClick={()=>closePopup(false)}>취소</ConfirmBtn>
+                    </ConfirmDivBottom>
+                }
             </ConfirmInner>
         </ConfirmLayout>
     )
@@ -194,6 +200,7 @@ height: auto;
 border-radius: 0.6em;
 background: ${(props) => props.theme.color.hoverColor};
 box-shadow: ${(props) => props.theme.boxshadow.popup};
+
 @media (max-width: 900px) {
 width: 100%;
 }
@@ -210,11 +217,11 @@ const ConfirmDivHeader = styled.div`
 display:flex;
 width:100%;
 height:100%;
-background: ${(props) => props.theme.color.whiteColor};
 padding:0.8em 1em;
 color:${(props) => props.theme.color.blackColor};
 font-weight:${(props) => props.theme.fontWeight.font700};
 font-size:${(props) => props.theme.fontSize.font18};
+background: ${(props) => props.theme.color.whiteColor};
 `
 // 팝업 body
 const ConfirmDivBody = styled(ConfirmDivHeader)`
@@ -224,11 +231,13 @@ position:relative;
 display:flex;
 flex-direction:column;
 width:100%;
+margin: 0.2em 0;
 `
 const ConfirmInBody = styled.div`
 display:flex;
 flex-direction:column;
 width:100%;
+padding: 2em 0;
 `
 
 // 팝업 body ===> 탭 부문

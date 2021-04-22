@@ -41,11 +41,12 @@ export default function ListForm({ type, contentsData }) {
 
   const typeHandler = () => {
     let arr = [];
+
     userContentsData?.forEach((data, i) => {
-      arr.push({ ...data, isSelect: false });
+      userContentsData.concat({ ...data, isSelect: false });
     });
 
-    setBodyData(arr);
+    setBodyData(userContentsData);
 
     switch (type) {
       case 'CONTENTS':
@@ -83,6 +84,8 @@ export default function ListForm({ type, contentsData }) {
 
   const userSendEmail = (e, type) => {
     setUserEmail({type, bool:true});
+    const {target:value} = e
+    console.log(value)
   }
 
   const allCheckHandle = (e, type) => {
@@ -140,7 +143,7 @@ export default function ListForm({ type, contentsData }) {
               <TopmenuBtn 
               key={i}
               onClick={ e => {
-                btn.value === 'sendMail' ? userSendEmail(e, type) : null
+                btn.value === 'sendMail' && userSendEmail(e, type)
               }}>
                 {btn.title}
               </TopmenuBtn>
@@ -231,7 +234,7 @@ export default function ListForm({ type, contentsData }) {
                           id={content.id}
                           onClick={(e) => {
                             setToggleSelect(e.currentTarget.id);
-                            lastDataConfirm(e, 'Suspension ');
+                            lastDataConfirm(e, 'Suspension');
                           }}
                         >
                           {content.ban ? '해제' : '정지'}
@@ -267,7 +270,7 @@ export default function ListForm({ type, contentsData }) {
               dataHandler={dataHandler}
               reportList={reportList}
               closePopup={setWarnConfirm}
-              userData={selectedData}
+              listData={selectedData}
             />
           </Modal>
         }

@@ -1,7 +1,7 @@
 import React,{useState, useEffect} from 'react'
 import styled, {css} from 'styled-components';
 
-export function EmailForm({userData, mainType}) {
+export function EmailForm({listData, mainType}) {
   const [emailTitle, setEmailTitle] = useState('');
 
   const initValueHandler = () => {
@@ -25,9 +25,27 @@ export function EmailForm({userData, mainType}) {
   return (
     <Layout>
       {/* 보낼 유저 이메일 */}
+      {mainType === 'COPYRIGHT' &&
+      <ReportedLayout>
+        <BlockWrap>
+          <TextBlock>신고한 회원 이메일 (피해)</TextBlock>
+          <InformBox>{listData?.email}</InformBox>
+        </BlockWrap>
+        {/* 이메일 제목 */}
+        <BlockWrap>
+          <TextBlock>이메일 제목</TextBlock>
+          <TextInput value={emailTitle} onChange={e => changeValue(e)} />
+        </BlockWrap>
+        {/* 이메일 설명 */}
+        <BlockWrap>
+          <TextBlock>내용</TextBlock>
+          <TextArea/>
+        </BlockWrap>
+      </ReportedLayout>
+      }
       <BlockWrap>
-      <TextBlock>유저 이메일</TextBlock>
-      <InformBox>{userData?.email}</InformBox>
+      <TextBlock>신고 받은 회원 이메일 (가해)</TextBlock>
+      <InformBox>{listData?.email}</InformBox>
       </BlockWrap>
       {/* 이메일 제목 */}
       <BlockWrap>
@@ -51,6 +69,15 @@ const Layout = styled.div`
 display:flex;
 flex-direction:column;
 width:100%;
+`
+
+const ReportedLayout = styled.div`
+display:flex;
+flex-direction:column;
+width:100%;
+margin: 0.5em 0;
+padding-bottom:0.5em;
+border-bottom:1px solid #999;
 `
 
 // 정보 분리 solid

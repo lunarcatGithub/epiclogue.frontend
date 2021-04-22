@@ -7,10 +7,10 @@ import ListForm from '../Common/List__Form';
 export const AdminReport =()=> {
     //data
     const [userContentsData, setUserContentsData] = useState([
-        {id:1, _id:`@asasdd`,  result:'미정', kind:'대댓글',  date:'2020-11-28', count:5, view:'view', ban:false, hide:false},
-        {id:2, _id:`@adf`, result:'삭제',  kind:'대댓글', date:'2021-01-02', count:2,  view:'hide', ban:true, hide:true},
-        {id:3, _id:`@qwerrt`, result:'숨김', kind:'대댓글', date:'2021-02-28', count:1, view:'hide', ban:false, hide:false},
-        {id:4, _id:`@qwerrt`, result:'숨김', kind:'대댓글', date:'2021-02-28', count:1, view:'view', ban:false, hide:false}
+        {id:1, _id:`@asasdd`, title:'신고받을만한 콘텐츠임니다ㅎ',  result:'미정', kind:'대댓글',  date:'2020-11-28', count:5, view:'view', ban:false, hide:false},
+        {id:2, _id:`@adf`, title:'신고쟁이 ㅎㅎㅋㅎ', result:'삭제',  kind:'대댓글', date:'2021-01-02', count:2,  view:'hide', ban:true, hide:true},
+        {id:3, _id:`@qwerrt`, title:'qwrqsfa', result:'숨김', kind:'대댓글', date:'2021-02-28', count:1, view:'hide', ban:false, hide:false},
+        {id:4, _id:`@qwerrt`, title:'ghhtttt', result:'숨김', kind:'대댓글', date:'2021-02-28', count:1, view:'view', ban:false, hide:false}
     ]);
 
     const categorySelec = [
@@ -51,7 +51,7 @@ export const AdminReport =()=> {
         });
     }  
 
-    const headerArr = ['번호', '아이디', '처리결과', '콘텐츠', '처리일자', '신고횟수', '삭제', '정지', '탈퇴'];
+    const headerArr = ['번호', '아이디', '제목', '처리결과', '콘텐츠', '처리일자', '신고횟수', '삭제', '정지', '탈퇴'];
     const warnBtn = [
         { title: '메일발송', value: 'sendMail' },
         { title: '정지', value: 'ban' },
