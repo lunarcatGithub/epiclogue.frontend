@@ -235,9 +235,16 @@ const Viewer = ({ boardItem, nonError }) => {
       );
     }
   }
+  // 렌더링시 warn fix (차후 작업)
+  const [numReact, setNumReact] = useState(null);
+  const [feedbackLang, setFeedbackLang] = useState([]);
+  const [feedbackPlaceHolder, setFeedbackPlaceHolder] = useState();
 
   useEffect(() => {
     addList();
+    setNumReact(_contentsReact);
+    setFeedbackLang([_feedbackScore, replyList.length, _feedbackScoreEnd]);
+    setFeedbackPlaceHolder(_feedbackPlaceholder)
   }, []);
 
   useEffect(() => {
@@ -454,7 +461,7 @@ const Viewer = ({ boardItem, nonError }) => {
                 <ReactImg />
                 <ReactTitle>
                   {data.reactCount}
-                  {_contentsReact}
+                  {numReact}
                 </ReactTitle>
               </ReactInfoWrap>
               <ReactSelector>
@@ -508,10 +515,10 @@ const Viewer = ({ boardItem, nonError }) => {
               <FeedbackTitle>
                 <FeedbackIcon />
                 <FeedbackText>
-                  {_feedbackScore} {replyList.length} {_feedbackScoreEnd}
+                  {feedbackLang} 
                 </FeedbackText>
               </FeedbackTitle>
-              <WriteFbForm feedbackRef={feedbackRef} type="Fb" feedbackPlaceholder={_feedbackPlaceholder} />
+              <WriteFbForm feedbackRef={feedbackRef} type="Fb" feedbackPlaceholder={feedbackPlaceHolder} />
             </FeedbackWrap>
             {/* 피드백 영역 */}
             {

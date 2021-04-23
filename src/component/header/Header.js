@@ -49,8 +49,6 @@ const Header = () => {
     setUnAuth,
     paramsData,
     setLastContentId,
-    setRenderList,
-    setPage
   } = useContext(AppDataContext);
 
   // 팝업용
@@ -183,7 +181,6 @@ const Header = () => {
               <HeaderInner pathname={pathname.match('/viewer') && 'none'}>
                 <LogoWrap
                   onClick={() => {
-                    setRenderList(null)
                     toggleSearchPop(false);
                     goURL({ pathname: '/' });
                   }}

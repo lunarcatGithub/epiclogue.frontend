@@ -7,7 +7,7 @@ import { LangCommon } from '@language/Lang.Common';
 import { langMymoreMenu, langUsermoreMenu } from '@language/Lang.Viewer';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
-import ReportsPopup from './ReportsPopup';
+import ReportsPopup from '../report/ReportsPopup';
 
 // Hooks&&reducer import
 import { useUrlMove } from '@hooks/useUrlMove';

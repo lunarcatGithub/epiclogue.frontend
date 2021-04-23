@@ -53,7 +53,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
     searchData ? setResultKeyword(searchData) : setResultKeyword(keyword);
   }, [searchData, keyword]);
 
-// 검색시 받는 데이터
+// 초기 데이터
   const contentInitHandler = () => {
     if(initialApi?.data?.length === 0) return;
     if(type === 'MAIN'){
@@ -138,7 +138,8 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
     setUserRender(null)
     setInitRender(null)
     setLastContentId(null)
-  }, [type, searchType, resultKeyword, keyword]);
+    console.log('실행')
+  }, [type, searchType, resultKeyword, keyword, url]);
   
   //  검색 데이터
   useEffect(() => {
