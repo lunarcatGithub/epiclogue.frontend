@@ -147,7 +147,7 @@ export default function ReportLanguage(){
         const agreeList = [
             { id: 'private', title: _privateAgree, isChecked: false },
             { id: 'swear', title: _swearAgree, isChecked: false },
-          ]
+        ]
         
         
         return {

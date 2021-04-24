@@ -40,7 +40,6 @@ const ContextStore = ({ children }) => {
   // set filter
   const [clickedComic, setClickedComic] = useState(true);
   const [clickedIllust, setClickedIllust] = useState(true);
-  const [lastContentId, setLastContentId] = useState(null);
 
   // get Data
   const [searchData, setSearchData] = useState();
@@ -50,7 +49,6 @@ const ContextStore = ({ children }) => {
   const [followButton, setFollowButton] = useState();
 
   // content component
-  const [renderList, setRenderList] = useState([]);
   const [page, setPage] = useState(0);
 
   // initial Login
@@ -111,10 +109,6 @@ const ContextStore = ({ children }) => {
         setFollowData,
         followButton,
         setFollowButton,
-        lastContentId, 
-        setLastContentId,
-        renderList,
-        setRenderList,
         page,
         setPage
       }}

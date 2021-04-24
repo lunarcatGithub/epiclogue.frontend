@@ -48,7 +48,6 @@ const Header = () => {
     loginOn,
     setUnAuth,
     paramsData,
-    setLastContentId,
   } = useContext(AppDataContext);
 
   // 팝업용
@@ -97,7 +96,6 @@ const Header = () => {
         query: { type: 'latest', text: searchBody },
       });
     }
-    setLastContentId(null)
   };
 
   // useEffect(() => {
@@ -116,9 +114,7 @@ const Header = () => {
     if (!clickedComic || !clickedIllust) {
       setClickedComic(true);
       setClickedIllust(true);
-      setLastContentId(null);
     }
-      // setRenderList(null)
       // setPage(0)
   };
 

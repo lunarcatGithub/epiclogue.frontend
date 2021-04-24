@@ -18,10 +18,6 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
     clickedComic,
     clickedIllust,
     myboardData,
-    lastContentId,
-    setLastContentId,
-    renderList,
-    setRenderList,
     page,
     setPage,
   } = useContext(AppDataContext);
@@ -36,6 +32,8 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
   const [initRender, setInitRender] = useState([]);
   const [userRender, setUserRender] = useState([]);
   const [onlyUser, setOnlyUser] = useState([]);
+  const [renderList, setRenderList] = useState([]);
+  const [lastContentId, setLastContentId] = useState(null);
 
   // 유저 설정 가능한 fillter
   // const [items, setItems] = useState(35);
@@ -108,6 +106,10 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
   }
 
   useEffect(() => {
+    setLastContentId(null)
+  }, [url])
+
+  useEffect(() => {
     setPage(0);
     setInitRender(null)
     setLastContentId(null)
@@ -118,7 +120,6 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
     } else {
       setFiltering('')
     }
-
   }, [clickedComic, clickedIllust]);
   
   useEffect(() => {
@@ -137,15 +138,13 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
     setOnlyUser(null)
     setUserRender(null)
     setInitRender(null)
-    setLastContentId(null)
-    console.log('실행')
+    setLastContentId(null);
   }, [type, searchType, resultKeyword, keyword, url]);
   
   //  검색 데이터
-  useEffect(() => {
-    setRenderList(null)
+  useEffect(() => {    
     searchContentsHandler()
-  }, [page, searchType, resultKeyword, filtering])
+  }, [page, searchType, keyword, resultKeyword, filtering])
 
   // 초기 코믹, 일러 필터링
   useEffect(() => {
@@ -211,6 +210,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
         }
         <LayoutInner>
           <MasonryBox >{renderComponent}</MasonryBox>
+          {/* <Test/> */}
         </LayoutInner>
         {
         initDataLoading && (
@@ -224,7 +224,12 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
     </>
   );
 };
-
+  const Test = styled.div`
+  display: flex;
+  height:100em;
+  width:100px;
+  background:#999;
+  `
 const DummyLayout = styled.div`
   display: flex;
   justify-content: center;

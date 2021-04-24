@@ -56,11 +56,11 @@ const HeaderPfPopup = () => {
 
   useEffect(() => {
     if(!profileError) return;
-    if (profileError?.status === 401) {
-      alert(_sessionExpire)
-      logout();
-    }
-    return ()=> logout();
+    // if (profileError?.status === 401) {
+    //   alert(_sessionExpire)
+    //   logout();
+    // }
+    // return ()=> logout();
     
   }, [profileError, loginOn]);
 

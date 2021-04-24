@@ -218,7 +218,7 @@ const Layout = styled.div`
 `;
 const LayoutInner = styled.div`
   width: calc(100% - 65%);
-  min-width: 480px;
+  min-width: 35em;
   height: 100%;
   background: ${(props) => props.theme.color.whiteColor};
 
