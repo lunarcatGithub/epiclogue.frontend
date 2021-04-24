@@ -86,3 +86,106 @@ export const LangReport = {
     }
 };
 
+export const LangCopyRightReport = {
+    privateAgree: {
+        0: '상기의 개인정보, 신고내용에 대한 정보제공을 동의합니다.',
+        1: '上記の個人情報や申告内容に対する情報提供に同意します。',
+        2: 'I agree to provide information on the above personal information and report contents.',
+    },
+    swearAgree: {
+        0: '본인은 위증을 하지 않았고, 확실한 저작권자이며 상기의 내용은 모두 진실임을 동의합니다.',
+        1: '本人は偽証せず、確実な著作権者であり、上記の内容はすべて真実であることに同意します。',
+        2: 'I agree that I have not perjured myself, that I am a clear copyright holder and that all of the above are true.',
+    },
+    privateAlert: {
+        0: '정보제공에 동의하지 않으면 신고하실 수 없습니다',
+        1: '情報提供に同意しなければ、届出を行うことができません',
+        2: `If you don't agree to provide information, you can't report it`,
+    },
+    swearAlert: {
+        0: '위증여부에 동의하지 않으면 신고하실 수 없습니다',
+        1: '偽証可否に同意しないと、申告できません',
+        2: `If you don't agree to perjury, you can't report it`,
+    },
+    nameInput: {
+        0: '성명',
+        1: '名前',
+        2: 'Full name',
+    },
+    corporateName: {
+        0: '회사명',
+        1: '会社名',
+        2: 'Corporate name',
+    },
+    contactInput: {
+        0: '연락처',
+        1: '連絡先',
+        2: 'contact information',
+    },
+    emailInput: {
+        0: '이메일',
+        1: 'メイル',
+        2: 'Email',
+    },
+    nationInput: {
+        0: '국가',
+        1: '国家',
+        2: 'nation',
+    },
+    copyrightReportTitle: {
+        0: '저작권 신고',
+        1: '著作権申告',
+        2: 'Copyright report',
+    },
+    remindCopyright: {
+        0: '신고하기 전에 저작권 정책을 다시 한번 확인해 주세요.',
+        1: '申告する前に著作権ポリシーをもう一度確認してください。',
+        2: 'Please double-check the copyright policy before reporting.',
+    },
+    reporterInfo: {
+        0: '신고자의 정보',
+        1: '届出者の情報',
+        2: `Reporter's Information`,
+    },
+    infringedConfirm: {
+        0: '침해받은 저작물 확인',
+        1: '侵害された著作物の確認',
+        2: 'Check infringed works',
+    },
+    filloutContents: {
+        0: '회원님의 콘텐츠 원본이 있는 사이트를 아래에 작성해 주세요',
+        1: '会員様のコンテンツ原本があるサイトを以下に作成してください',
+        2: 'Please fill out the url below that contains your content source',
+    },
+    proofOrigin: {
+        0: '기타 원작임을 알 수 있는 내용을 자세하게 작성해주세요',
+        1: 'その他の原作であることがわかる内容を詳しく書いてください',
+        2: 'Please write the details that show the original',
+    },
+    violationsDeal: {
+        0: '저작물 위반에 대한 처리 방침',
+        1: '著作物違反に対する処理方針',
+        2: 'a policy to deal with violations of a work',
+    },
+    processDesc: {
+        0: '저희 에픽로그는 신고가 접수되면 해당 게시물을 일시적으로 블라인드 처리합니다. 이후 신고가 사실일 경우 불법 저작물은 삭제됩니다.',
+        1: '当EpicLogueは申告が受け付けられると掲示物を一時的にブラインド処理します。 以降、申告が事実である場合、不法著作物は削除されます。',
+        2: 'Our EpicLogue temporarily blinds the post once the report has been received. If the report is true afterwards, illegal works will be deleted.',
+    },
+    agreeAbove: {
+        0: '상기 내용에 대한 동의',
+        1: '上記内容に対する同意',
+        2: 'Agree with the above',
+    },
+    signatureFill: {
+        0: '본인의 성명을 작성해주세요. 전자서명으로 대체합니다.',
+        1: '本人の氏名を作成してください。 電子署名に置換します。',
+        2: 'Please write your own name. Replace with an electronic signature.',
+    },
+    beforeSubmit: {
+        0: '제출하기 전 본인은 에픽로그 저작권 정책에 동의했음을 다시 한번 확인합니다.',
+        1: '提出する前に、本人はエピローグの著作権ポリシーに同意したことをもう一度確認します。',
+        2: 'Before submitting, I once again confirm that I have agreed to the EpicLog Copyright Policy.',
+    }
+};
+
