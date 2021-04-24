@@ -12,11 +12,10 @@ import useDebounce from '@hooks/useDebounce';
 
 export default function ViewerUserForm(props) {
   const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents, checkMoreMenuType, modified} = props;
-
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
   //fetch
-  const [followLoding, followApi, followError, followFetch] = useAxiosFetch();
+  const [, , , followFetch] = useAxiosFetch();
 
   const [goURL] = useUrlMove();
   const [kindContent, setKindContent] = useState();
@@ -30,8 +29,10 @@ export default function ViewerUserForm(props) {
   const [followMe, setFollowMe] = useState();
   const [indicateDate] = useTimeCalculation(userData?.writeDate);
   const [converted, convert] = useConvertTags();
+
   // debounce 처리
   const [followDebounce, getValue] = useDebounce();
+
   const changeHandler = () => {
     const localScreenId = localStorage.getItem('userid');
 
@@ -71,13 +72,20 @@ export default function ViewerUserForm(props) {
         break;
     }
   };
+
   const submitHandler = () => {
     if (!loginOn) return;
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`;
     followFetch(URL, followDebounce ? 'delete' : 'post', { targetUserId: user_id });
   };
 
-  
+  // 서버 렌더링시 warn fix
+  const [userType, setUserType] = useState();
+
+  useEffect(() => {
+    setUserType(userLang);
+  }, [])
+
   useEffect(() => {
     if (!loginOn) return;
     getValue(follow);
@@ -85,6 +93,7 @@ export default function ViewerUserForm(props) {
 
   useEffect(() => {
     changeHandler();
+    return () => changeHandler()
   }, [type, externalSource, userData]);
 
   return (
@@ -96,7 +105,7 @@ export default function ViewerUserForm(props) {
             {externalSource}
           </SourceLink>
         ) : (
-          <UserUploadInfo>{userLang}</UserUploadInfo>
+          <UserUploadInfo>{userType}</UserUploadInfo>
         )}
       </UserProfileWrap>
       <ProfileImgContent>

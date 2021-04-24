@@ -51,7 +51,7 @@ export const AdminReport =()=> {
         });
     }  
 
-    const headerArr = ['번호', '아이디', '처리결과', '콘텐츠', '처리일자', '신고횟수', '정지', '삭제', '탈퇴'];
+    const headerArr = ['번호', '아이디', '처리결과', '콘텐츠', '처리일자', '신고횟수', '삭제', '정지', '탈퇴'];
     const warnBtn = [
         { title: '메일발송', value: 'sendMail' },
         { title: '정지', value: 'ban' },

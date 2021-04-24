@@ -235,9 +235,16 @@ const Viewer = ({ boardItem, nonError }) => {
       );
     }
   }
+  // 렌더링시 warn fix (차후 작업)
+  const [numReact, setNumReact] = useState(null);
+  const [feedbackLang, setFeedbackLang] = useState([]);
+  const [feedbackPlaceHolder, setFeedbackPlaceHolder] = useState();
 
   useEffect(() => {
     addList();
+    setNumReact(_contentsReact);
+    setFeedbackLang([_feedbackScore, replyList.length, _feedbackScoreEnd]);
+    setFeedbackPlaceHolder(_feedbackPlaceholder)
   }, []);
 
   useEffect(() => {
@@ -377,6 +384,8 @@ const Viewer = ({ boardItem, nonError }) => {
         checkFbLength,
         data,
         boardImg,
+        // 신고하기 팝업
+        toggle_Modal_MoreMenu,
         // 피드백 수정
         feedBackModify,
         setFeedBackModify
@@ -452,7 +461,7 @@ const Viewer = ({ boardItem, nonError }) => {
                 <ReactImg />
                 <ReactTitle>
                   {data.reactCount}
-                  {_contentsReact}
+                  {numReact}
                 </ReactTitle>
               </ReactInfoWrap>
               <ReactSelector>
@@ -506,10 +515,10 @@ const Viewer = ({ boardItem, nonError }) => {
               <FeedbackTitle>
                 <FeedbackIcon />
                 <FeedbackText>
-                  {_feedbackScore} {replyList.length} {_feedbackScoreEnd}
+                  {feedbackLang} 
                 </FeedbackText>
               </FeedbackTitle>
-              <WriteFbForm feedbackRef={feedbackRef} type="Fb" feedbackPlaceholder={_feedbackPlaceholder} />
+              <WriteFbForm feedbackRef={feedbackRef} type="Fb" feedbackPlaceholder={feedbackPlaceHolder} />
             </FeedbackWrap>
             {/* 피드백 영역 */}
             {
@@ -805,7 +814,7 @@ const ShareBtn = styled(BookmarkBtn)`
 
 const GlobeBtn = styled(BookmarkBtn)`
   &::before {
-    background: url(${(props) => (props.globe ? '/static/globe-2.svg' : '/static/globe-1.svg')}) no-repeat center / contain;
+    background: url(${(props) => (props.globe ? '/static/secondary.svg' : '/static/secondary.svg')}) no-repeat center / contain;
   }
   &:active {
     &:after {

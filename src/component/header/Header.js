@@ -48,9 +48,6 @@ const Header = () => {
     loginOn,
     setUnAuth,
     paramsData,
-    setLastContentId,
-    setRenderList,
-    setPage
   } = useContext(AppDataContext);
 
   // 팝업용
@@ -99,7 +96,6 @@ const Header = () => {
         query: { type: 'latest', text: searchBody },
       });
     }
-    setLastContentId(null)
   };
 
   // useEffect(() => {
@@ -118,10 +114,8 @@ const Header = () => {
     if (!clickedComic || !clickedIllust) {
       setClickedComic(true);
       setClickedIllust(true);
-      setLastContentId(null);
     }
-      setRenderList(null)
-      setPage(0)
+      // setPage(0)
   };
 
 
@@ -183,7 +177,6 @@ const Header = () => {
               <HeaderInner pathname={pathname.match('/viewer') && 'none'}>
                 <LogoWrap
                   onClick={() => {
-                    setRenderList(null)
                     toggleSearchPop(false);
                     goURL({ pathname: '/' });
                   }}
