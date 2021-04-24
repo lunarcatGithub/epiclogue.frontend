@@ -4,23 +4,13 @@ import styled from 'styled-components';
 import { ReplyListContext } from './Viewer';
 
 // 컴포넌트 import
-import theme from '../../theme/theme';
-import { LangCommon } from '@language/Lang.Common';
-import { langSharePopup } from '@language/Lang.Viewer';
-import { LanguageContext } from '../../App';
+import ViewerLanguage from './Viewer.Language';
 
 const SharePopup = () => {
   const { toggle_Modal_Share } = useContext(ReplyListContext);
-  const { langState, langPatch } = useContext(LanguageContext);
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { hareText, linkShare } = langSharePopup;
-  const { closeBtn } = LangCommon;
-
-  const _hareText = hareText[selectedLanguage] || hareText[defaultLanguage],
-    _linkShare = linkShare[selectedLanguage] || linkShare[defaultLanguage],
-    _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage];
+  const { _hareText, _linkShare, _closeBtn } =ViewerLanguage();
 
   return (
     <>

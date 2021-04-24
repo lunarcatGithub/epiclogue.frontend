@@ -3,29 +3,24 @@ import styled, { css } from 'styled-components';
 
 // 컴포넌트 import
 import { ReplyListContext } from './Viewer';
-import { langTranslatePopup } from '@language/Lang.Viewer';
-import { LangCommon } from '@language/Lang.Common';
+import ViewerLanguage from './Viewer.Language';
 
 // hooks&reducer
 import { useUrlMove } from '@hooks/useUrlMove';
-import { LanguageContext } from '@store/App_Store';
 
 const TranslatePopup = ({ writer }) => {
-  const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
 
   const { toggle_Modal_Trans, boardUid, data, boardImg } = useContext(ReplyListContext);
   const [originBoardId, setOriginBoardId] = useState();
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { secondaryOpt, useEditor, selfUpload } = langTranslatePopup;
-  const { closeBtn } = LangCommon;
-
-  const _secondaryOpt = secondaryOpt[selectedLanguage] || secondaryOpt[defaultLanguage],
-    _useEditor = useEditor[selectedLanguage] || useEditor[defaultLanguage],
-    _selfUpload = selfUpload[selectedLanguage] || selfUpload[defaultLanguage],
-    _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage];
+  const {
+    _secondaryOpt,
+    _useEditor,
+    _selfUpload,
+    _closeBtn
+  } = ViewerLanguage();
 
   const boardIdDevide = () => {
     if (data.originBoardId) {
