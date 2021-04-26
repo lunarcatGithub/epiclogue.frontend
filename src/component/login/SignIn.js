@@ -9,24 +9,23 @@ import KakaoLogin from 'react-kakao-login';
 
 // 컴포넌트 import
 import { LoginInfoPopup } from './Login_Info_Popup';
+import LoginLanguage from './Login.Language';
+
 // import '../../../styles/App.css';
 
 // hooks&&reducer
 import Modal from '@utils/Modal';
 import { useUrlMove } from '@hooks/useUrlMove';
-import { LangLogin, socialLogin } from '@language/Lang.Login';
 import { ProgressSmall } from '@utils/LoadingProgress';
-import { LanguageContext, AppDataContext } from '@store/App_Store';
+import { AppDataContext, LanguageContext } from '@store/App_Store';
 import { useModal } from '@hooks/useModal';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useForm from '@hooks/useForm';
 import { useCookie } from '@hooks/useCookie';
 
-export const SignIn = (props) => {
-  const { setChangePage } = props;
+export const SignIn = ({ setChangePage }) => {
   const router = useRouter();
   const { main } = router.query;
-  const { langState } = useContext(LanguageContext);
   const { setLoginOn } = useContext(AppDataContext);
   const [errorTitle, setErrorTitle] = useState();
   const [goURL] = useUrlMove();
@@ -37,22 +36,25 @@ export const SignIn = (props) => {
   const [, snsLoginListApi, , snsLoginFetch] = useAxiosFetch();
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { idPlaceHolder, pwPlaceHolder, loginButton, signUpButton, snsLoginDesc, loginFailHolder, leaveUser, lostPassword, backLogin } = LangLogin;
-  const { googleAccount, facebookAccount, kakaoAccount, loginErr } = socialLogin;
-  const _idPlaceHolder = idPlaceHolder[selectedLanguage] || idPlaceHolder[defaultLanguage],
-    _pwPlaceHolder = pwPlaceHolder[selectedLanguage] || pwPlaceHolder[defaultLanguage],
-    _loginButton = loginButton[selectedLanguage] || loginButton[defaultLanguage],
-    _signUpButton = signUpButton[selectedLanguage] || signUpButton[defaultLanguage],
-    _snsLoginDesc = snsLoginDesc[selectedLanguage] || snsLoginDesc[defaultLanguage],
-    _loginFailHolder = loginFailHolder[selectedLanguage] || loginFailHolder[defaultLanguage],
-    _googleAccount = googleAccount[selectedLanguage] || googleAccount[defaultLanguage],
-    _facebookAccount = facebookAccount[selectedLanguage] || facebookAccount[defaultLanguage],
-    _kakaoAccount = kakaoAccount[selectedLanguage] || kakaoAccount[defaultLanguage],
-    _loginErr = loginErr[selectedLanguage] || loginErr[defaultLanguage],
-    _leaveUser = leaveUser[selectedLanguage] || leaveUser[defaultLanguage],
-    _lostPassword = lostPassword[selectedLanguage] || lostPassword[defaultLanguage],
-    _backLogin = backLogin[selectedLanguage] || backLogin[defaultLanguage];
+  const { langState } = useContext(LanguageContext);
+  const { defaultLanguage } = langState;
+
+  const {
+    _idPlaceHolder,
+    _pwPlaceHolder,
+    _loginButton,
+    _signUpButton,
+    _snsLoginDesc,
+    _loginFailHolder,
+    _googleAccount,
+    _facebookAccount,
+    _kakaoAccount,
+    _loginErr,
+    _leaveUser,
+    _lostPassword,
+    _backLogin
+  } = LoginLanguage();
+
   //create cookie
   const [, devCookieHandle] = useCookie();
 

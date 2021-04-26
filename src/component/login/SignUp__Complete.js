@@ -1,42 +1,39 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
-import { langSignUpComplete } from '@language/Lang.Login';
-import { LanguageContext } from '@store/App_Store';
+import LoginLanguage from './Login.Language';
 
-export const SignUpComplete = (props) => {
-  const { langState } = useContext(LanguageContext);
+export const SignUpComplete = ({ email, backToLogin }) => {
 
   const sendEmail = () => {
-    let check1 = props.email.indexOf('@');
-    let check2 = props.email.indexOf('.');
-    let email = props.email.slice(check1 + 1, check2);
-    window.location.href = `http://www.${email}.com`;
+    let check1 = email.indexOf('@');
+    let check2 = email.indexOf('.');
+    let _email = email.slice(check1 + 1, check2);
+    window.location.href = `http://www.${_email}.com`;
   };
+
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { completeTitle, completeTxt, backHome, mailConfirmBtn } = langSignUpComplete;
-  const _completeTitle = completeTitle[selectedLanguage] || completeTitle[defaultLanguage],
-    _completeTxt = completeTxt[selectedLanguage] || completeTxt[defaultLanguage],
-    _backHome = backHome[selectedLanguage] || backHome[defaultLanguage],
-    _mailConfirmBtn = mailConfirmBtn[selectedLanguage] || mailConfirmBtn[defaultLanguage];
+  const {
+    _completeTitle,
+    _completeTxt,
+    _backHome,
+    _mailConfirmBtn,
+  } = LoginLanguage();
 
   return (
-    <>
       <SignUpModal>
         <SignUpCompleteLayout>
           <CompleteInner>
             <SignUpCompleTitle>{_completeTitle}</SignUpCompleTitle>
             <SignUpCompleTxt>{_completeTxt}</SignUpCompleTxt>
             <CompleBtnWrap>
-              <BackPageBtn onClick={props.backToLogin}>{_backHome}</BackPageBtn>
+              <BackPageBtn onClick={backToLogin}>{_backHome}</BackPageBtn>
               <CompleBtn onClick={sendEmail}>{_mailConfirmBtn}</CompleBtn>
             </CompleBtnWrap>
           </CompleteInner>
         </SignUpCompleteLayout>
       </SignUpModal>
-    </>
   );
 };
 

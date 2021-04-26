@@ -4,18 +4,16 @@ import { useRouter } from 'next/router';
 
 // 컴포넌트 import
 import { SignUpComplete } from './SignUp__Complete';
-import { langSignUp, signUpError } from '@language/Lang.Login';
 import { ProgressSmall } from '@utils/LoadingProgress';
+import LoginLanguage from './Login.Language';
 
 // Hooks&&reducer import
-import { LanguageContext } from '@store/App_Store';
 import { useModal } from '@hooks/useModal';
 import useForm from '@hooks/useForm';
+import { LanguageContext } from '@store/App_Store';
 
-export const SignUp = (props) => {
-  const { setChangePage, backToLogin } = props;
+export const SignUp = ({ setChangePage, backToLogin }) => {
   const router = useRouter();
-  const { langState } = useContext(LanguageContext);
 
   const [checked, setChecked] = useState(false);
   const [isShowing, toggle] = useModal();
@@ -26,25 +24,25 @@ export const SignUp = (props) => {
   const [valiNick, setValiNick] = useState('');
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { signUpTitle, signUpEmail, signUpPw, signUpPwConfirm, signUpNick, signUpDesc, agreeButton, signUpButton } = langSignUp;
+  const { langState } = useContext(LanguageContext);
+  const { defaultLanguage } = langState;
 
-  const { emailError, noEmail, dupliEmail, pwError, rePwError, nickError } = signUpError;
-
-  const _signUpTitle = signUpTitle[selectedLanguage] || signUpTitle[defaultLanguage],
-    _signUpEmail = signUpEmail[selectedLanguage] || signUpEmail[defaultLanguage],
-    _signUpPw = signUpPw[selectedLanguage] || signUpPw[defaultLanguage],
-    _signUpPwConfirm = signUpPwConfirm[selectedLanguage] || signUpPwConfirm[defaultLanguage],
-    _signUpNick = signUpNick[selectedLanguage] || signUpNick[defaultLanguage],
-    _signUpDesc = signUpDesc[selectedLanguage] || signUpDesc[defaultLanguage],
-    _agreeButton = agreeButton[selectedLanguage] || agreeButton[defaultLanguage],
-    _signUpButton = signUpButton[selectedLanguage] || signUpButton[defaultLanguage],
-    _emailError = emailError[selectedLanguage] || emailError[defaultLanguage],
-    _noEmail = noEmail[selectedLanguage] || noEmail[defaultLanguage],
-    _dupliEmail = dupliEmail[selectedLanguage] || dupliEmail[defaultLanguage],
-    _pwError = pwError[selectedLanguage] || pwError[defaultLanguage],
-    _rePwError = rePwError[selectedLanguage] || rePwError[defaultLanguage],
-    _nickError = nickError[selectedLanguage] || nickError[defaultLanguage];
+  const {
+    _signUpTitle,
+    _signUpEmail,
+    _signUpPw,
+    _signUpPwConfirm,
+    _signUpNick,
+    _signUpDesc,
+    _agreeButton,
+    _emailError,
+    _noEmail,
+    _dupliEmail,
+    _pwError,
+    _rePwError,
+    _nickError,
+    _signUpButton
+  } = LoginLanguage();
 
   const [values, handleChange, handleSubmit, disabled, resData, errors] = useForm({
     initialValues: { type: 'signUp', email: '', userPw: '', userPwRe: '', userNick: '', userLang: defaultLanguage },
