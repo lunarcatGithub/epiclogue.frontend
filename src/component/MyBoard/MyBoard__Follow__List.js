@@ -1,44 +1,42 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 // import 컴포넌트
+import MyBoardLanguage from './MyBoard.Language';
 
 // hooks&reducer
 import { useToggle } from '@hooks/useToggle';
 import { useUrlMove } from '@hooks/useUrlMove';
-import { LangCommon } from '@language/Lang.Common';
-import { LanguageContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useDebounce from '@hooks/useDebounce';
 
-const MyBoardFollowList = (props) => {
-  const { langState } = useContext(LanguageContext);
+const MyBoardFollowList = ({ data, type }) => {
   const [goURL] = useUrlMove();
   const [follow, toggleFollow] = useToggle();
   const [userData, setUserData] = useState();
+
   //fetch
-  const [followListLoding, followListApi, followListError, followListFetch] = useAxiosFetch();
+  const [, , , followListFetch] = useAxiosFetch();
+
   // debounce 처리
   const [followDebounce, getValue] = useDebounce();
 
+  // 언어 변수
+  const { _followBtn, _followingBtn } = MyBoardLanguage();
   const followSubmit = () => {
     getValue(follow);
     followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: userData?._id });
   };
 
   useEffect(() => {
-    props.type === 'follower' ? setUserData(props.data.userId) : setUserData(props.data.targetUserId);
-  }, [props]);
+    type === 'follower' ? setUserData(data?.userId) : setUserData(data.targetUserId);
+  }, [type]);
 
   useEffect(() => {
-    toggleFollow(props?.data?.following);
+    toggleFollow(data?.following);
   }, []);
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { followBtn, followingBtn } = LangCommon;
-  const _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
-    _followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage];
   return (
     <ContentInner>
       <UserIconNickBox onClick={() => goURL({ pathname: `/myboard/${userData?.screenId}` })}>

@@ -4,11 +4,10 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from 'next/router';
 
 // 컴포넌트 import
-import { LangMyBoard } from '@language/Lang.Myboard';
-import { LangCommon } from '@language/Lang.Common';
 import Contents from '../content/Contents';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
+import MyBoardLanguage from './MyBoard.Language';
 
 // hooks&reducer
 import AutoHiding from '@utils/autoHiding';
@@ -18,7 +17,7 @@ import { useModal } from '@hooks/useModal';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { useDate } from '@hooks/useDate';
 import useAxiosFetch from '@hooks/useAxiosFetch';
-import { LanguageContext, AppDataContext } from '@store/App_Store';
+import { AppDataContext, LanguageContext } from '@store/App_Store';
 import useDebounce from '@hooks/useDebounce';
 import { Meta } from '@utils/MetaTags';
 
@@ -29,7 +28,6 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const { t } = useTranslation("common");
   const router = useRouter()
 
-  const { langState } = useContext(LanguageContext);
   const {
     setMyboardData,
     loginOn,
@@ -38,6 +36,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     setFollowData,
     setFollowButton
   } = useContext(AppDataContext);
+
   const [follow, toggleFollow] = useToggle();
   // console.log(boardItem)
   const [date, setDate] = useState();
@@ -66,18 +65,16 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const [isTab, setIsTab] = useState(router?.query?.tab || 'all');
 
   //언어 변수
+  const { langState } = useContext(LanguageContext);
   const { selectedLanguage, defaultLanguage } = langState;
-  const { signDate, noIntro, allTabs, contentsTabs, bookMarkTabs, secondary } = LangMyBoard;
-  const { followBtn, followingBtn } = LangCommon;
 
-  const _signDate = signDate[selectedLanguage] || signDate[defaultLanguage],
-    _noIntro = noIntro[selectedLanguage] || noIntro[defaultLanguage],
-    _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
-    _followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage],
-    _allTabs = allTabs[selectedLanguage] || allTabs[defaultLanguage],
-    _contentsTabs = contentsTabs[selectedLanguage] || contentsTabs[defaultLanguage],
-    _bookMarkTabs = bookMarkTabs[selectedLanguage] || bookMarkTabs[defaultLanguage],
-    _secondary = secondary[selectedLanguage] || secondary[defaultLanguage];
+  const {
+    navTabArr,
+    _signDate,
+    _noIntro,
+    _followingBtn,
+    _followBtn,
+  } = MyBoardLanguage()
 
   //fetch
   const [, , , followFetch] = useAxiosFetch();
@@ -125,12 +122,6 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     nonError === 404 && toggle_Modal_Confirm(true);
   }, [nonError]);
 
-  const navTabArr = [
-    { link: 'all', title: _allTabs },
-    { link: 'originals', title: _contentsTabs },
-    { link: 'secondaryWorks', title: _secondary },
-    { link: 'bookmarks', title: _bookMarkTabs },
-  ];
 
   const metaData = {
     title: `${boardItem?.data?.nickname}${t('metaBoardTitle')}`,
