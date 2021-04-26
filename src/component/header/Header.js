@@ -6,12 +6,10 @@ import { useRouter } from 'next/router';
 import HeaderPfPopup from './Header__Profile';
 import UserInform from './Header__Inform';
 import SearchPopup from './Header__Search';
-import { LangHeader } from '@language/Lang.Header';
 import AdminFeedback from '@component/develop/AdminFeedback';
-import { LangFeedbackMain } from '@language/Lang.Common';
 import HeaderUnauth from './Header__Unauth';
+import HeaderLanguage from './Header.Language';
 
-// import Xbtn from '../../img/X-mark.png';
 // utils
 import AutoHiding from '@utils/autoHiding';
 import Modal from '@utils/Modal';
@@ -34,7 +32,6 @@ const Header = () => {
 
   //언어 변경
   const {
-    langState,
     langPatch,
     availableLangPatch
   } = useContext(LanguageContext);
@@ -75,12 +72,11 @@ const Header = () => {
   const [preventHeader, setPreventHeader] = useState();
 
   //언어 변수
-  const { fbBtn } = LangFeedbackMain;
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { followsButton, searchPlaceholder } = LangHeader;
-  const _followsButton = followsButton[selectedLanguage] || followsButton[defaultLanguage],
-    _searchPlaceholder = searchPlaceholder[selectedLanguage] || searchPlaceholder[defaultLanguage],
-    _fbBtn = fbBtn[selectedLanguage] || fbBtn[defaultLanguage];
+  const {
+    _followsButton,
+    _searchPlaceholder,
+    _fbBtn,  
+  } = HeaderLanguage();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -115,7 +111,6 @@ const Header = () => {
       setClickedComic(true);
       setClickedIllust(true);
     }
-      // setPage(0)
   };
 
 

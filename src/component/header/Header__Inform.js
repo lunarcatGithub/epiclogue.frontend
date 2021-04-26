@@ -2,17 +2,16 @@ import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
-import { LangHeaderInform } from '@language/Lang.Header';
 import { HeaderDataContext } from './Header';
+import HeaderLanguage from './Header.Language';
 
 // hooks&&reducer
 import { useUrlMove } from '@hooks/useUrlMove';
-import { LanguageContext, AppDataContext } from '@store/App_Store';
+import { AppDataContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
 
 const UserInform = () => {
-  const { langState } = useContext(LanguageContext);
   const { toggleNoti } = useContext(HeaderDataContext);
   const { loginOn } = useContext(AppDataContext);
 
@@ -26,22 +25,22 @@ const UserInform = () => {
   const [page, scroll] = useScroll();
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { headerInfrom, userReactLike, userFeedback, userSecondary, userBookmark, userFollowMe, userReply, dataRemove, feedbackRemove } = LangHeaderInform;
-
-  const _headerInfrom = headerInfrom[selectedLanguage] || headerInfrom[defaultLanguage],
-    _userReactLike = userReactLike[selectedLanguage] || userReactLike[defaultLanguage],
-    _userFeedback = userFeedback[selectedLanguage] || userFeedback[defaultLanguage],
-    _userSecondary = userSecondary[selectedLanguage] || userSecondary[defaultLanguage],
-    _userBookmark = userBookmark[selectedLanguage] || userBookmark[defaultLanguage],
-    _userFollowMe = userFollowMe[selectedLanguage] || userFollowMe[defaultLanguage],
-    _userReply = userReply[selectedLanguage] || userReply[defaultLanguage],
-    _dataRemove = dataRemove[selectedLanguage] || dataRemove[defaultLanguage],
-    _feedbackRemove = feedbackRemove[selectedLanguage] || feedbackRemove[defaultLanguage];
+  const {
+    _headerInfrom,
+    _userReactLike,
+    _userFeedback,
+    _userSecondary,
+    _userBookmark,
+    _userFollowMe,
+    _userReply,
+    _dataRemove,
+    _feedbackRemove,
+  
+  } = HeaderLanguage();
 
   //fetch
-  const [notiLoding, notiApi, notiError, notiFetch] = useAxiosFetch();
-  const [infromLoding, , infromError, infromFetch] = useAxiosFetch();
+  const [, notiApi, , notiFetch] = useAxiosFetch();
+  const [, , , infromFetch] = useAxiosFetch();
 
   useEffect(() => {
     if (!notiApi) return;
