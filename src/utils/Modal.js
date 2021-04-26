@@ -3,21 +3,21 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Portal from './Portal';
 
-function Modal({ className, onClose, maskClosable, closable, visible, children }) {
+function Modal({ onClose, maskClosable, closable, visible, children }) {
   const onMaskClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose(!maskClosable);
     }
   };
 
-  useEffect(() => {
-    document.body.style.cssText = `position: fixed; top: -${window.scrollY}px; width: -webkit-fill-available;`;
-    return () => {
-      const scrollY = document.body.style.top;
-      document.body.style.cssText = `position: ""; top: ""; width:"`;
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
-    };
-  }, []);
+  // useEffect(() => {
+  //   document.body.style.cssText = `position: fixed; top: -${window.scrollY}px; width: -webkit-fill-available;`;
+  //   return () => {
+  //     const scrollY = document.body.style.top;
+  //     document.body.style.cssText = `position: ""; top: ""; width:"`;
+  //     window.scrollTo(0, parseInt(scrollY || '0') * -1);
+  //   };
+  // }, []);
 
   return (
     // <Portal elementId="modal-root">
@@ -28,7 +28,7 @@ function Modal({ className, onClose, maskClosable, closable, visible, children }
     // </Portal>
     <>
       <ModalOverlay visible={true} />
-      <ModalWrapper className={className} tabIndex={-1} visible={visible} onClick={maskClosable ? onMaskClick : null}>
+      <ModalWrapper tabIndex={-1} visible={visible} onClick={maskClosable ? onMaskClick : null}>
         {children}
       </ModalWrapper>
     </>
