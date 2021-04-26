@@ -2,24 +2,22 @@ import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
-import { EditorText } from '@language/Lang.Editor';
+import EditorLanguage from './Editor.Language';
 
 // reducer && context
 import { EditorContext } from './Editor_Store';
-import { LanguageContext } from '@store/App_Store';
 
 export const EditorTextSetting = () => {
   //토글 버튼
   const [textSetting, toggleTextSetting] = useState(false);
-
   const { radioBtn, UseRadioBtn, textBold, toggleBold, textSlope, toggleSlope, textUnderbar, toggleUnderbar, textHeight, setTextHeight, textSpace, setTextSpace } = useContext(EditorContext);
 
-  const { langState } = useContext(LanguageContext);
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { detailText, heightText, spacingText } = EditorText;
-  const _detailText = detailText[selectedLanguage] || detailText[defaultLanguage],
-    _heightText = heightText[selectedLanguage] || heightText[defaultLanguage],
-    _spacingText = spacingText[selectedLanguage] || spacingText[defaultLanguage];
+  // 언어 변수
+  const {
+    _detailText,
+    _heightText,
+    _spacingText,
+  } = EditorLanguage();
 
   const popupHandler = (e) => {
     if (!e) return;

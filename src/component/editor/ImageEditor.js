@@ -11,15 +11,13 @@ import { EditorEyedropper } from './Editor_Eyedropper';
 import { ImageEditorCategory } from './ImageEditor_Category';
 import { ImageSetting } from './Editor_ImageSetting';
 import { EditorMobilePrevent } from './Editor_Mobile_Prevent';
-import { EditorCommon, EditorMain } from '@language/Lang.Editor';
+import EditorLanguage from './Editor.Language';
 
 // reducer && context
 import { EditorContext } from './Editor_Store';
-import { LanguageContext } from '@store/App_Store';
 import { useUrlMove } from '@hooks/useUrlMove';
 
-export const ImageEditor = (props) => {
-  const { image, id } = props;
+export const ImageEditor = ({ image, id }) => {
   const [goURL] = useUrlMove();
 
   const {
@@ -62,16 +60,6 @@ export const ImageEditor = (props) => {
     categoryToggle,
   } = useContext(EditorContext);
 
-  const { langState } = useContext(LanguageContext);
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { colorTxt } = EditorCommon;
-  const { brushTxt, txtSize, outlineTxt, resetConfirm } = EditorMain;
-  const _colorTxt = colorTxt[selectedLanguage] || colorTxt[defaultLanguage],
-    _brushTxt = brushTxt[selectedLanguage] || brushTxt[defaultLanguage],
-    _txtSize = txtSize[selectedLanguage] || txtSize[defaultLanguage],
-    _outlineTxt = outlineTxt[selectedLanguage] || outlineTxt[defaultLanguage],
-    _resetConfirm = resetConfirm[selectedLanguage] || resetConfirm[defaultLanguage];
-
   let undoRedoArr = [];
 
   const containerRef = useRef();
@@ -106,6 +94,16 @@ export const ImageEditor = (props) => {
   const [relativeCoord, setRelativeCoord] = useState({ x: 0, y: 0 });
   const [initScale, setInitScale] = useState(0);
   const [initCoord, setInitCoord] = useState({ x: 0, y: 0 });
+
+  // 언어 변수
+  const {
+    _colorTxt,
+    _brushTxt,
+    _txtSize,
+    _outlineTxt,
+    _resetConfirm,
+  } = EditorLanguage();
+
   // 초기 캔버스 값 세팅
   const initCanvas = (id) => {
     return new fabric.Canvas(id, {

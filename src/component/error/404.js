@@ -1,20 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 
 // 컴포넌트 import
-import { LangError } from '@language/Lang.Error';
-import { LanguageContext } from '@store/App_Store';
+import ErrorLanguage from './Error.Language';
 
 export default function NotFound() {
-  const { langState } = useContext(LanguageContext);
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
+  const {_error404} = ErrorLanguage();
 
-  const { error404 } = LangError;
-
-  const _error404 = error404[selectedLanguage] || error404[defaultLanguage];
 
   return (
     <Layout>
