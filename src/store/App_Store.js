@@ -25,6 +25,8 @@ const combineReducers = (...reducers) => (state, action) => {
   return state;
 };
 
+React.useLayoutEffect = React.useEffect 
+
 // context provider
 const ContextStore = ({ children }) => {
   // router

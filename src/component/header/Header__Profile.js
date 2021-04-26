@@ -12,6 +12,7 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { useCookie } from '@hooks/useCookie';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
+React.useLayoutEffect = React.useEffect
 // 프로필 팝업
 const HeaderPfPopup = () => {
 
@@ -64,6 +65,7 @@ const HeaderPfPopup = () => {
     
   }, [profileError, loginOn]);
 
+  
   useLayoutEffect(() => {
     setProfileImg(profileApi?.data?.profile?.thumbnail);
   }, [profileApi?.data?.profile])

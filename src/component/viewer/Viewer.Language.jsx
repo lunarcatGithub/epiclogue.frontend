@@ -62,8 +62,9 @@ export default function ViewerLanguage(){
     const { secondaryOpt, useEditor, selfUpload } = langTranslatePopup;
     const _secondaryOpt = secondaryOpt[selectedLanguage] || secondaryOpt[defaultLanguage],
         _useEditor = useEditor[selectedLanguage] || useEditor[defaultLanguage],
-        _selfUpload = selfUpload[selectedLanguage] || selfUpload[defaultLanguage];        return {
+        _selfUpload = selfUpload[selectedLanguage] || selfUpload[defaultLanguage];        
         
+    return {
         // 뷰어 body
         _contentsReact,
         _feedbackScore,

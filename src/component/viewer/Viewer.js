@@ -71,7 +71,6 @@ const Viewer = ({ boardItem, nonError }) => {
   const [bookmark, toggleBookmark] = useToggle();
   const [like, toggleLike] = useToggle();
   const [globe, ] = useToggle();
-  const [screenId, setScreenId] = useState();
 
   // 모달 팝업 컨트롤
   const [type_MoreMenu, setType_MoreMenu] = useState();
@@ -83,7 +82,6 @@ const Viewer = ({ boardItem, nonError }) => {
   const [originDeleted, setOriginDeleted] = useModal();
   const [isShowing_Menu, handleModal_Menu] = useModal();
 
-  const [originId, setOriginId] = useState();
   const [secondAllow, setSecondAllow] = useState();
 
   // 외부 출처
@@ -293,9 +291,6 @@ const Viewer = ({ boardItem, nonError }) => {
         allowSecondaryCreation,
       });
 
-      if (originUserId) {
-        setOriginId(originUserId._id);
-      }
       //tag && email convert
       // setBody(boardBody);
       convert(boardBody);
@@ -306,7 +301,6 @@ const Viewer = ({ boardItem, nonError }) => {
       toggleLike(!loginOn ? false : liked);
       setReplyList(replyList);
       setRenderList(replyList);
-      setScreenId(screenId);
       setBoardImg(boardImg);
       setHeartCount(heartCount);
       setIsLoading(false);

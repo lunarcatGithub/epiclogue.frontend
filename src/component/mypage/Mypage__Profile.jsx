@@ -2,8 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
-import { LangMypageProfile } from '@language/Lang.Mypage';
-import { LanguageContext, AlertContext } from '@store/App_Store';
+import { AlertContext } from '@store/App_Store';
+import MypageLanguage from './Mypage.Language';
+
 //utils
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
@@ -18,7 +19,6 @@ import { useValidate } from '@hooks/useValidate';
 
 const MypageProfile = () => {
   const { alertPatch } = useContext(AlertContext);
-  const { langState } = useContext(LanguageContext);
   const [goUrl] = useUrlMove();
 
   // hooks
@@ -55,69 +55,43 @@ const MypageProfile = () => {
   const [noPassword, setNoPassword] = useState();
   const [imgSize, setImgSize] = useState(null);
 
-  // 일단 임시로 넣어둠
-  const [userCountry, setUserCountry] = useState();
-
   // confirm popup
   const [state_Confirm, toggle_Modal_Confirm] = useModal();
   const [accessConfirm, setAccessConfirm] = useState(false);
 
   // fetch useAxiosFetch
-  const [myProfileLoding, myProfileApi, myProfileError, myProfileFetch] = useFetchData();
-  const [imageLoding, imageApi, imageError, imageFetch] = useFetchData();
-  const [pwLoding, pwApi, pwError, pwFetch] = useAxiosFetch();
-  const [leaveLoding, leaveApi, leaveError, leaveFetch] = useAxiosFetch();
-  const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
+  const [, myProfileApi, , myProfileFetch] = useFetchData();
+  const [, , , imageFetch] = useFetchData();
+  const [, , pwError, pwFetch] = useAxiosFetch();
+  const [, leaveApi, leaveError, leaveFetch] = useAxiosFetch();
+  const [, initialApi, , initialFetch] = useAxiosFetch();
 
   // 언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
   const {
-    introPlaceHoder,
-    errorintro,
-    setChange,
-    profileEmail,
-    nickChange,
-    idChange,
-    pwChange,
-    originPw,
-    newPassword,
-    confirmPw,
-    widthDrawl,
-    widthDrawlBtn,
-    widthDrawlAlert,
-    changeSmallBtn,
-    changeNickError,
-    changeIdError,
-    alreadyId,
-    originPwError,
-    changePwError,
-    valiPwError,
-    sizeError,
-  } = LangMypageProfile;
+    _introPlaceHoder,
+    _errorintro,
+    _setChange,
+    _profileEmail,
+    _nickChange,
+    _idChange,
+    _pwChange,
+    _originPw,
+    _newPassword,
+    _confirmPw,
+    _widthDrawl,
+    _widthDrawlBtn,
+    _widthDrawlAlert,
+    _changeSmallBtn,
+    _changeNickError,
+    _changeIdError,
+    _alreadyId,
+    _originPwError,
+    _changePwError,
+    _valiPwError,
+    _sizeError,
+  } = MypageLanguage();
 
-  const _introPlaceHoder = introPlaceHoder[selectedLanguage] || introPlaceHoder[defaultLanguage],
-    _errorintro = errorintro[selectedLanguage] || errorintro[defaultLanguage],
-    _setChange = setChange[selectedLanguage] || setChange[defaultLanguage],
-    _profileEmail = profileEmail[selectedLanguage] || profileEmail[defaultLanguage],
-    _nickChange = nickChange[selectedLanguage] || nickChange[defaultLanguage],
-    _idChange = idChange[selectedLanguage] || idChange[defaultLanguage],
-    _pwChange = pwChange[selectedLanguage] || pwChange[defaultLanguage],
-    _originPw = originPw[selectedLanguage] || originPw[defaultLanguage],
-    _newPassword = newPassword[selectedLanguage] || newPassword[defaultLanguage],
-    _confirmPw = confirmPw[selectedLanguage] || confirmPw[defaultLanguage],
-    _widthDrawl = widthDrawl[selectedLanguage] || widthDrawl[defaultLanguage],
-    _widthDrawlBtn = widthDrawlBtn[selectedLanguage] || widthDrawlBtn[defaultLanguage],
-    _widthDrawlAlert = widthDrawlAlert[selectedLanguage] || widthDrawlAlert[defaultLanguage],
-    _changeSmallBtn = changeSmallBtn[selectedLanguage] || changeSmallBtn[defaultLanguage],
-    _changeNickError = changeNickError[selectedLanguage] || changeNickError[defaultLanguage],
-    _changeIdError = changeIdError[selectedLanguage] || changeIdError[defaultLanguage],
-    _alreadyId = alreadyId[selectedLanguage] || alreadyId[defaultLanguage],
-    _originPwError = originPwError[selectedLanguage] || originPwError[defaultLanguage],
-    _changePwError = changePwError[selectedLanguage] || changePwError[defaultLanguage],
-    _valiPwError = valiPwError[selectedLanguage] || valiPwError[defaultLanguage],
-    _sizeError = sizeError[selectedLanguage] || sizeError[defaultLanguage];
-
-  const validationIDandNick = (e) => {
+  const validationIDandNick = () => {
     // 아이디 -> 띄워쓰기x, min2 max15, 영문만, 중복x, 첫글자 @
     // 닉네임 -> 띄워쓰기x, min2 max30
     const error = {};
@@ -285,7 +259,6 @@ const MypageProfile = () => {
     setUserIntro(profileData?.intro);
     setUserNick(profileData?.nickname);
     setScreenId(profileData?.screenId);
-    setUserCountry(profileData?.country);
     setEmail(profileData?.email);
     // alert(res.data.reason);
   }, [initialApi]);
