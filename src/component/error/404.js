@@ -56,9 +56,7 @@ const Img404 = styled.svg`
     height: 220px;
   }
 `;
-const ErrorBox = styled(Link)`
-  display: flex;
-`;
+
 const ErrorButton = styled.button`
   display: inline-block;
   width: auto;
