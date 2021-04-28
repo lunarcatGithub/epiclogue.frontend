@@ -58,7 +58,7 @@ const ContextStore = ({ children }) => {
   // initial Login
   const [unAuth, setUnAuth] = useState(false);
   const [cookieValue, cookieHandle] = useCookie();
-  
+
   // keep login
   const isLogin = typeof window !== 'undefined' && localStorage.getItem('keepLogin');
   const [loginOn, setLoginOn] = useState(JSON.parse(isLogin) || false);
@@ -83,13 +83,14 @@ const ContextStore = ({ children }) => {
   }, [cookieValue?.length])
 
   useEffect(() => {
-    if (cookieValue?.length < 1 && !loginOn) {
+    if (!loginOn) {
       if (router.pathname.match('/upload') || router.pathname.match('/follow') || router.pathname.match('/editor')) {
+        alert('please SignIn!')
         goURL({ pathname: '/login' });
         return;
       }
     }
-  }, [cookieValue?.length, loginOn]);
+  }, [loginOn]);
 
   return (
     <AppDataContext.Provider
