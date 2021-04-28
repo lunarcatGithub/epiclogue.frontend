@@ -50,7 +50,8 @@ const HeaderPfPopup = () => {
       setLoginOn(false);
       localStorage.removeItem('userNick');
       localStorage.removeItem('userid');
-      
+      localStorage.setItem('keepLogin', false);
+
       goURL({ pathname: '/login' });
   };
 

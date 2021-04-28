@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 
 // 컴포넌트 import
-import EditorLanguage from './Content.Language';
+import ContentLanguage from './Content.Language';
 
 // hooks&reducer
 import { useUrlMove } from '@hooks/useUrlMove';
@@ -20,8 +20,8 @@ export default function MainContent({ contentData }) {
   //언어 변수
   const {
     _originTxt,
-  _reCreateTxt
-  } = EditorLanguage();
+    _reCreateTxt
+  } = ContentLanguage();
 
   return (
     <>

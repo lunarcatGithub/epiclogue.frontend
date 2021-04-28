@@ -30,7 +30,11 @@ const WriteFbForm = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     //비회원 유저가 글쓰고 제출할 때
-    if (!loginOn) setUnAuth(true);
+    if (!loginOn) {
+      setUnAuth(true);
+      return;
+    }
+    
     if (feedbackLoding || reFeedbackLoding) return;
     if (!feedbackBody) return;
     //정상 제출

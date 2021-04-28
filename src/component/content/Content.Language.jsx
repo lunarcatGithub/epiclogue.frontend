@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { LanguageContext } from '@store/App_Store';
 import { LangSearchResult, LangMain } from '@language/Lang.Main';
 
-export default function EditorLanguage(){
+export default function ContentLanguage(){
   const { langState } = useContext(LanguageContext);
 
   // search result

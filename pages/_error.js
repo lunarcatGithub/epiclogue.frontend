@@ -1,5 +1,5 @@
 import React from 'react';
-import ErrorDesc from '@componenet/error/ErrorDesc';
+import ErrorDesc from '@component/error/ErrorDesc';
 export default function Error({ statusCode }) {
   return <ErrorDesc type={ statusCode ? 'server' : 'client' }/>
 }

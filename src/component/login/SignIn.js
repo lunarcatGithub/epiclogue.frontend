@@ -94,10 +94,11 @@ export const SignIn = ({ setChangePage }) => {
     let divied = process.env.NODE_ENV;
     if (mergyData?.result === 'ok') {
       divied === 'development' && devCookieHandle('CREATE', 'dev', 'test', 1);
-
-      setLoginOn(true);
-      localStorage.setItem('userNick', mergyData?.nick);
-      localStorage.setItem('userid', mergyData?.screenId);
+      // 로컬 스토리지에 로그인 유지 저장
+      const isLogin = typeof window !== 'undefined' && localStorage.setItem('keepLogin', true);
+      setLoginOn(isLogin || true);
+      localStorage.setItem('userNick', mergyData?.data?.nick);
+      localStorage.setItem('userid', mergyData?.data?.screenId);
       goURL({ pathname: '/' });
     }
   }, [resData, snsLoginListApi]);
