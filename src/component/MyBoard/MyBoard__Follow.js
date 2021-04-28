@@ -12,20 +12,24 @@ import useScroll from '@hooks/useScroll';
 import { AppDataContext } from '@store/App_Store';
 import { useUrlMove } from '@hooks/useUrlMove';
 
-const MyBoardFollow = ({ routeId, routeTab }) => {
+const MyBoardFollow = () => {
   const router = useRouter();
   const [goURL] = useUrlMove();
 
-  const { followData, followButton, setFollowButton } = useContext(AppDataContext);
+  const { followData, setFollowButton } = useContext(AppDataContext);
   // tab
-  const [followingList, setFollowingList] = useState([]);
-  const [followerList, setFollowerList] = useState([]);
-
+  const [followUserData, setFollowUserData] = useState([]);
+  console.log(followUserData)
   // 팔로우 리스트 무한 스크롤
-  const [items, setItems] = useState(5);
-  const [sliceFollowing, setSliceFollowing] = useState();
-  const [sliceFollower, setSliceFollower] = useState();
   const [page, scroll] = useScroll();
+  const [routerId, setRouterId] = useState();
+  const [routerTab, setRouterTab] = useState();
+
+  useEffect(() => {
+    setRouterId(router?.query?.id)
+    setRouterTab(router.query.tab || 'following')
+  }, [router?.query]);
+
   //fetch
   const [, followListApi, , followListFetch] = useAxiosFetch();
 
@@ -34,26 +38,26 @@ const MyBoardFollow = ({ routeId, routeTab }) => {
 
   const moveFollowList = (type) => {
     setFollowButton(type);
-    goURL({ pathname: `/follows/${routeId}`, query:{tab:type, id:routeId} });
+    goURL({ pathname: `/follows/${routerId}`, query:{tab:type, id:routerId} });
   };
 
-  useEffect(() => {
-    setItems((items) => items + 10);
-    if (routeTab === 'following') {
-      setSliceFollowing(followingList?.slice(0, items));
-    } else {
-      setSliceFollower(followerList?.slice(0, items));
-    }
-  }, [page, followingList, followerList]);
+  console.log(routerTab)
+  console.log(followUserData)
+  console.log(followListApi)
 
   useEffect(() => {
-    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow?screenId=${routeId}&type=${routeTab}`, 'get', null, null, null);
-  }, [routeTab]);
+    if(!routerId) return;
+    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow?screenId=${routerId}&type=${routerTab}`, 'get', null, null, null);
+  }, [routerId, routerTab]);
 
-  useEffect(() => {
-    if (!followListApi) return;
-    routeTab === 'following' ? setFollowingList(followListApi?.data) : setFollowerList(followListApi?.data);
-  }, [followListApi]);
+    useEffect(() => {
+      setFollowUserData(followListApi?.data);
+    }, [followListApi, routerTab]);
+
+    const followTab = [
+      {id:0, title:'Following', value:'following'},
+      {id:1, title:'Follower', value:'follower'}
+    ];
 
   return (
     <Layout>
@@ -62,9 +66,6 @@ const MyBoardFollow = ({ routeId, routeTab }) => {
           {/* 팔로우 헤더 상단 */}
           <HeaderBox show={show}>
             <TopHeaderBox>
-              {/* <Link to={`/myboard/${dataId}`}>
-                  <ArrowBtn />
-                </Link> */}
               <ArrowBtnwrap>
                 <ArrowBtn onClick={() => router.back()} />
               </ArrowBtnwrap>
@@ -74,21 +75,21 @@ const MyBoardFollow = ({ routeId, routeTab }) => {
               </UserPfBox>
             </TopHeaderBox>
             <FollowTabBox>
-              <FollowingTab tabType={routeTab} onClick={() => moveFollowList('following')}>
-                Following
-              </FollowingTab>
-              <FollowerTab tabType={routeTab} onClick={() => moveFollowList('follower')}>
-                Follower
-              </FollowerTab>
+              { followTab.map(({id, title, value}) => (
+                <FollowTab key={id} tabType={routerTab === value} onClick={() => moveFollowList(title)}>
+                  {title}
+                </FollowTab>
+              ) ) }
             </FollowTabBox>
             {/* // 팔로우 헤더 상단 끝*/}
           </HeaderBox>
           {/* 팔로우 본문 */}
           <ContentBox>
             {
-              routeTab === 'following' ? sliceFollowing?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)
+              routerTab === 'following' ? 
+              followUserData?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)
               :
-              sliceFollower?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower" />)
+              followUserData?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower" />)
             }
             {/* // 팔로우 본문 끝 */}
             <Observer {...scroll} />
@@ -197,28 +198,15 @@ const FollowTabBox = styled.div`
   display: flex;
   justify-content: space-around;
 `;
-const FollowingTab = styled.button`
+const FollowTab = styled.button`
   width: 100%;
   height: 46px;
-  color: ${(props) => (props.tabType === 'following' ? props.theme.color.orangeColor : props.theme.color.darkGray)};
+  color: ${(props) => (props.tabType ? props.theme.color.orangeColor : props.theme.color.darkGray)};
   font-size: ${(props) => props.theme.fontSize.font15};
   font-weight: ${(props) => props.theme.fontWeight.font700};
   cursor: pointer;
   padding-bottom: 3px;
-  border-bottom: 3px solid ${(props) => (props.tabType === 'following' ? props.theme.color.softOrangeColor : props.theme.color.softGrayColor)};
-  &:hover {
-    background: ${(props) => props.theme.color.semiOrangeColor};
-  }
-`;
-const FollowerTab = styled.button`
-  width: 100%;
-  height: 46px;
-  color: ${(props) => (props.tabType === 'follower' ? props.theme.color.orangeColor : props.theme.color.darkGray)};
-  font-size: ${(props) => props.theme.fontSize.font15};
-  font-weight: ${(props) => props.theme.fontWeight.font700};
-  cursor: pointer;
-  padding-bottom: 3px;
-  border-bottom: 3px solid ${(props) => (props.tabType === 'follower' ? props.theme.color.softOrangeColor : props.theme.color.softGrayColor)};
+  border-bottom: 3px solid ${(props) => (props.tabType ? props.theme.color.softOrangeColor : props.theme.color.softGrayColor)};
   &:hover {
     background: ${(props) => props.theme.color.semiOrangeColor};
   }

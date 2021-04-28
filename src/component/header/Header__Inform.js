@@ -19,10 +19,11 @@ const UserInform = () => {
   const [goURL] = useUrlMove();
 
   // 알림 스크롤
-  const [items, setItems] = useState(5);
+  const [items, setItems] = useState(13);
   const [sliceData, setSliceData] = useState(null);
   const [tagetUser, setTargetUser] = useState();
   const [page, scroll] = useScroll();
+  const [lastContentId, setLastContentId] = useState(null);
 
   //언어 변수
   const {
@@ -33,14 +34,13 @@ const UserInform = () => {
     _userBookmark,
     _userFollowMe,
     _userReply,
-    _dataRemove,
-    _feedbackRemove,
-  
+    _dataRemove,  
   } = HeaderLanguage();
 
   //fetch
   const [, notiApi, , notiFetch] = useAxiosFetch();
   const [, , , infromFetch] = useAxiosFetch();
+  console.log(notiApi)
 
   useEffect(() => {
     if (!notiApi) return;
@@ -48,16 +48,21 @@ const UserInform = () => {
     setTargetUser(data);
   }, [notiApi]);
 
-  useEffect(() => {
-    setSliceData(tagetUser?.slice(0, items));
-    setItems((items) => items + 15);
-  }, [page, tagetUser]);
-
   // 유저 알림 API
   useEffect(() => {
     if (!loginOn) return;
-    notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, null);
-  }, []);
+    let params = {
+      size:items || 15,
+      latestId:lastContentId || null,
+    }
+
+    notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, params);
+  }, [lastContentId]);
+
+  useEffect(() => {
+    notiApi && setLastContentId(notiApi?.data[notiApi?.data?.length - 1]?._id)
+  }, [page, notiApi]);
+
 
   // 읽음 처리용
   useEffect(() => {

@@ -6,7 +6,6 @@ export default function useScroll() {
   const [page, setPage] = useState(1);
 
   const handleScroll = useCallback(([entry]) => {
-    const { current } = dom;
 
     if (entry.isIntersecting) {
       setPage((page) => page + 1);
