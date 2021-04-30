@@ -22,7 +22,9 @@ const UserInform = () => {
   const [targetUser, setTargetUser] = useState();
 
   //params
-  const [renderParams, setRenderParams] = useState({});
+  const [page, scroll] = useScroll();
+  const [latestId, setLatestId] = useState();
+  const [stopData, setStopData] = useState(true);
 
   //언어 변수
   const {
@@ -37,34 +39,39 @@ const UserInform = () => {
   } = HeaderLanguage();
 
   //fetch
-  const [, notiApi, , notiFetch] = useAxiosFetch();
+  const [notiLoding, notiApi, , notiFetch] = useAxiosFetch();
   const [, , , infromFetch] = useAxiosFetch();
   // 유저 알림 API
 
     //스크롤
-    const handleScroller = (params) => {
+    const handleScroller = () => {
       if (!loginOn) return;
-
-        notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, params);
-      }
-
-    useEffect(() => {
-      let latestId = notiApi?.data[notiApi?.data?.length - 1]?._id
-      if(!latestId) return;
-
-      setParams({
+      const params = {
         size:20,
         latestId
-      })
-    }, [notiApi]);
+      }
+        notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, params);
+    }
 
-    const [scroll, setParams] = useScroll(handleScroller, renderParams);
+    useEffect(()=> {
+      if(!stopData) return;
+      handleScroller()
+    },[page, stopData])
 
+    useEffect(() => {
+      notiApi?.data?.length === 0 && setStopData(false)
+    }, [notiApi])
+
+  // latestId 찾기
+  useEffect(() => {
+    setLatestId(notiApi?.data[notiApi?.data?.length - 1]?._id)
+  }, [notiApi, page]);
 
     useEffect(() => {
       if (!notiApi) return;
       setTargetUser(targetUser ? [...targetUser, ...notiApi?.data] : [...notiApi?.data]);
     }, [notiApi]);
+
 
   // 읽음 처리용
   useEffect(() => {
@@ -130,7 +137,7 @@ const UserInform = () => {
           </ContentBox>
         ))}
 
-        <Observer {...scroll} />
+        { !notiLoding ? <Observer {...scroll} /> : null }
       </InformBodyInner>
     </InformContainer>
   );
