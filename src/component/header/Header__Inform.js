@@ -62,10 +62,10 @@ const UserInform = () => {
       notiApi?.data?.length === 0 && setStopData(false)
     }, [notiApi])
 
-  // latestId 찾기
-  useEffect(() => {
-    setLatestId(notiApi?.data[notiApi?.data?.length - 1]?._id)
-  }, [notiApi, page]);
+    // latestId 찾기
+    useEffect(() => {
+      setLatestId(notiApi?.data[notiApi?.data?.length - 1]?._id)
+    }, [notiApi, page]);
 
     useEffect(() => {
       if (!notiApi) return;
