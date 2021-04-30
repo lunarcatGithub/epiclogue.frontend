@@ -49,7 +49,6 @@ const ContextStore = ({ children }) => {
   const [paramsData, setParamsData] = useState();
   const [myboardData, setMyboardData] = useState([]);
   const [followData, setFollowData] = useState();
-  const [followButton, setFollowButton] = useState();
 
   // content component
   const [renderList, setRenderList] = useState([]);
@@ -110,8 +109,6 @@ const ContextStore = ({ children }) => {
         setParamsData,
         followData,
         setFollowData,
-        followButton,
-        setFollowButton,
         lastContentId, 
         setLastContentId,
         renderList,

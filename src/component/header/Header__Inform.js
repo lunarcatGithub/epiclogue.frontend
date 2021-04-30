@@ -19,11 +19,10 @@ const UserInform = () => {
   const [goURL] = useUrlMove();
 
   // 알림 스크롤
-  const [items, setItems] = useState(13);
-  const [sliceData, setSliceData] = useState(null);
-  const [tagetUser, setTargetUser] = useState();
-  const [page, scroll] = useScroll();
-  const [lastContentId, setLastContentId] = useState(null);
+  const [targetUser, setTargetUser] = useState();
+
+  //params
+  const [renderParams, setRenderParams] = useState({});
 
   //언어 변수
   const {
@@ -40,29 +39,32 @@ const UserInform = () => {
   //fetch
   const [, notiApi, , notiFetch] = useAxiosFetch();
   const [, , , infromFetch] = useAxiosFetch();
-  console.log(notiApi)
-
-  useEffect(() => {
-    if (!notiApi) return;
-    let data = notiApi?.data.map((i) => i).filter((i) => i !== undefined);
-    setTargetUser(data);
-  }, [notiApi]);
-
   // 유저 알림 API
-  useEffect(() => {
-    if (!loginOn) return;
-    let params = {
-      size:items || 15,
-      latestId:lastContentId || null,
-    }
 
-    notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, params);
-  }, [lastContentId]);
+    //스크롤
+    const handleScroller = (params) => {
+      if (!loginOn) return;
 
-  useEffect(() => {
-    notiApi && setLastContentId(notiApi?.data[notiApi?.data?.length - 1]?._id)
-  }, [page, notiApi]);
+        notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, params);
+      }
 
+    useEffect(() => {
+      let latestId = notiApi?.data[notiApi?.data?.length - 1]?._id
+      if(!latestId) return;
+
+      setParams({
+        size:20,
+        latestId
+      })
+    }, [notiApi]);
+
+    const [scroll, setParams] = useScroll(handleScroller, renderParams);
+
+
+    useEffect(() => {
+      if (!notiApi) return;
+      setTargetUser(targetUser ? [...targetUser, ...notiApi?.data] : [...notiApi?.data]);
+    }, [notiApi]);
 
   // 읽음 처리용
   useEffect(() => {
@@ -80,7 +82,7 @@ const UserInform = () => {
         </ClosedBox>
       </InformHeader>
       <InformBodyInner>
-        {sliceData?.map(({ maker, notificationType, read, targetInfo }, key) => (
+        { targetUser?.map(({ maker, notificationType, read, targetInfo }, key) => (
           <ContentBox
             key={key}
             read={read}
@@ -94,7 +96,7 @@ const UserInform = () => {
                 goURL({ pathname: `/viewer/${targetInfo?._id}` });
               }
               toggleNoti();
-            }}
+            } }
           >
             {/* 유저 이미지 */}
             <UserImgWrap>

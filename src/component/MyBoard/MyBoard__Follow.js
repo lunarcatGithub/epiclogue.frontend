@@ -10,25 +10,21 @@ import AutoHiding from '@utils/autoHiding';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
 import { AppDataContext } from '@store/App_Store';
-import { useUrlMove } from '@hooks/useUrlMove';
 
 const MyBoardFollow = () => {
   const router = useRouter();
-  const [goURL] = useUrlMove();
 
-  const { followData, setFollowButton } = useContext(AppDataContext);
+  const { followData, loginOn } = useContext(AppDataContext);
   // tab
-  const [followUserData, setFollowUserData] = useState([]);
-  console.log(followUserData)
+  const [routerTab, setRouterTab] = useState(router.query.tab || 'following');
+
   // 팔로우 리스트 무한 스크롤
-  const [page, scroll] = useScroll();
   const [routerId, setRouterId] = useState();
-  const [routerTab, setRouterTab] = useState();
+  const [targetUser, setTargetUser] = useState([]);
 
   useEffect(() => {
     setRouterId(router?.query?.id)
-    setRouterTab(router.query.tab || 'following')
-  }, [router?.query]);
+  }, []);
 
   //fetch
   const [, followListApi, , followListFetch] = useAxiosFetch();
@@ -36,30 +32,41 @@ const MyBoardFollow = () => {
   // 헤더 스크롤용
   const show = AutoHiding();
 
-  const moveFollowList = (type) => {
-    setFollowButton(type);
-    goURL({ pathname: `/follows/${routerId}`, query:{tab:type, id:routerId} });
-  };
+  // 데이터 호출
+  const handleScroller = (params) => {
+    if(!loginOn) return;
+    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, 'get', null, null, params);
+  }
+  //스크롤
+  //데이터 params 갱신
+  useEffect(() => {
+    let latestId = followListApi?.data[followListApi?.data?.length - 1]?.targetUserId?._id
+    // if (!latestId) return;
+    setParams({
+      size:20,
+      latestId,
+      type:routerTab,
+      screenId:routerId
+    })
+  }, [followListApi, routerTab, routerId])
 
-  console.log(routerTab)
-  console.log(followUserData)
-  console.log(followListApi)
+  const [scroll, setParams] = useScroll(handleScroller);
 
   useEffect(() => {
-    if(!routerId) return;
-    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow?screenId=${routerId}&type=${routerTab}`, 'get', null, null, null);
-  }, [routerId, routerTab]);
+    if (!followListApi) return;
+    setTargetUser(targetUser ? [...targetUser, ...followListApi?.data] : [...followListApi?.data]);
+  }, [followListApi]);
 
-    useEffect(() => {
-      setFollowUserData(followListApi?.data);
-    }, [followListApi, routerTab]);
-
+  useEffect(() => {
+    setTargetUser(null);
+  }, [routerTab, router.query.tab]);
+  
     const followTab = [
       {id:0, title:'Following', value:'following'},
       {id:1, title:'Follower', value:'follower'}
     ];
 
-  return (
+    return (
     <Layout>
       <FollowsLayout>
         <LayoutInner>
@@ -76,7 +83,10 @@ const MyBoardFollow = () => {
             </TopHeaderBox>
             <FollowTabBox>
               { followTab.map(({id, title, value}) => (
-                <FollowTab key={id} tabType={routerTab === value} onClick={() => moveFollowList(title)}>
+                <FollowTab 
+                key={id} 
+                tabType={routerTab === value} 
+                onClick={ () => setRouterTab(value) }>
                   {title}
                 </FollowTab>
               ) ) }
@@ -85,14 +95,10 @@ const MyBoardFollow = () => {
           </HeaderBox>
           {/* 팔로우 본문 */}
           <ContentBox>
-            {
-              routerTab === 'following' ? 
-              followUserData?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)
-              :
-              followUserData?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower" />)
-            }
-            {/* // 팔로우 본문 끝 */}
+            { targetUser?.map((i, index) => (<MyBoardFollowList key={index} data={i} type={routerTab} />) ) }
+            { targetUser?.length < 14 && <Dummy/> }
             <Observer {...scroll} />
+            {/* // 팔로우 본문 끝 */}
           </ContentBox>
         </LayoutInner>
       </FollowsLayout>
@@ -102,7 +108,11 @@ const MyBoardFollow = () => {
 
 /* 마이페이지 스타일링 */
 // 공통 부문
-
+const Dummy = styled.div`
+display:flex;
+width:100%;
+height:100vh;
+`
 //레이아웃
 const Layout = styled.div`
   display: flex;

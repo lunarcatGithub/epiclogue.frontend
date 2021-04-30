@@ -1,16 +1,15 @@
-import { useRef, useCallback, useEffect, useState } from 'react';
+import { useRef, useEffect, useState} from 'react';
 
-export default function useScroll() {
+export default function useScroll(handleScroller) {
+
   const dom = useRef();
-  const [trigger, setTrigger] = useState(false);
-  const [page, setPage] = useState(1);
+  const [params, setParams] = useState();
+  const handleScroll = (entry) => {
 
-  const handleScroll = useCallback(([entry]) => {
-
-    if (entry.isIntersecting) {
-      setPage((page) => page + 1);
+    if (entry[0].isIntersecting) {
+      handleScroller(params);
     }
-  }, []);
+  }
 
   useEffect(() => {
     const { current } = dom;
@@ -25,13 +24,10 @@ export default function useScroll() {
       observer?.observe(current);
       return () => observer?.disconnect();
     }
-  }, [handleScroll]);
+  }, [dom.current, params]);
 
   return [
-    page,
-    {
-      ref: dom,
-      trigger,
-    },
+    { ref: dom },
+    setParams
   ];
 }

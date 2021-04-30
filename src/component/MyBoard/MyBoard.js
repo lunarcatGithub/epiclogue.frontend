@@ -34,7 +34,6 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     setUnAuth,
     followData,
     setFollowData,
-    setFollowButton
   } = useContext(AppDataContext);
 
   const [follow, toggleFollow] = useToggle();
@@ -96,7 +95,6 @@ export default function MyBoard({ boardItem, userId, nonError }) {
       setUnAuth(true);
       return;
     }
-    setFollowButton(type);
     goURL({ pathname: `/follows/[id]`, as:`/follows/${userScreenId}`, query:{tab:type} });
   };
 
