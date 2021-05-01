@@ -29,5 +29,6 @@ export default function useScroll() {
   return [
     page,
     { ref: dom },
+    setPage
   ];
 }

@@ -54,26 +54,20 @@ useEffect(() => {
   }, [followListApi])
 
   useEffect(() => {
-    setStopData(true)
+    setFollowData();
+    setStopData(true);
+    setLatestId(null);
   }, [routerTab])
 
   // 데이터 분리
   useEffect(() => {
     followListApi && setFollowData(followsData ? [...followsData, ...followListApi?.data] : [...followListApi?.data]);
   }, [followListApi]);
-
-  useEffect(() => {
-    setFollowData()
-  }, [routerTab]);
   
   // latestId 찾기
   useEffect(() => {
     setLatestId(followListApi?.data[followListApi?.data?.length - 1]?._id)
   }, [followListApi, page]);
-
-  useEffect(() => {
-    setLatestId(null)
-  }, [routerTab]);
 
   useEffect(() => {
     setFinalRender(followsData?.map((i, index) => (<MyBoardFollowList key={index} data={i} type={routerTab} />) ) )
