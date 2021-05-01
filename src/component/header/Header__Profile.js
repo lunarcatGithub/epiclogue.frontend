@@ -2,16 +2,17 @@ import React, { useContext, useState, useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
-import { LangHeaderProfile } from '@language/Lang.Header';
-import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store';
+import HeaderLanguage from './Header.Language';
 
 // Hook & Context
+import { AlertContext, AppDataContext } from '@store/App_Store';
 import { useToggle } from '@hooks/useToggle';
 import { HeaderDataContext } from './Header';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { useCookie } from '@hooks/useCookie';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
+React.useLayoutEffect = React.useEffect
 // 프로필 팝업
 const HeaderPfPopup = () => {
 
@@ -24,7 +25,6 @@ const HeaderPfPopup = () => {
   const [, testCookieHandle] = useCookie();
 
   const { alertPatch, loginOn } = useContext(AlertContext);
-  const { langState } = useContext(LanguageContext);
   const { setLoginOn } = useContext(AppDataContext);
 
   const { show, profileApi, profileError } = useContext(HeaderDataContext);
@@ -33,15 +33,15 @@ const HeaderPfPopup = () => {
   const [isOpen, setIsOpen] = useToggle();
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { profileSet, goToBookMark, policyInform, changeAccount, logOutTab, sessionExpire } = LangHeaderProfile;
-  const _profileSet = profileSet[selectedLanguage] || profileSet[defaultLanguage],
-    _goToBookMark = goToBookMark[selectedLanguage] || goToBookMark[defaultLanguage],
-    _policyInform = policyInform[selectedLanguage] || policyInform[defaultLanguage],
-    _changeAccount = changeAccount[selectedLanguage] || changeAccount[defaultLanguage],
-    _logOutTab = logOutTab[selectedLanguage] || logOutTab[defaultLanguage],
-    _sessionExpire = sessionExpire[selectedLanguage] || sessionExpire[defaultLanguage];
-
+  const {
+    _profileSet,
+    _goToBookMark,
+    _policyInform,
+    _changeAccount,
+    _logOutTab,
+    _sessionExpire
+  } = HeaderLanguage();
+  
   const logout = () => {
       setIsOpen();
       cookieHandle('DELETE', 'access_token');
@@ -50,7 +50,8 @@ const HeaderPfPopup = () => {
       setLoginOn(false);
       localStorage.removeItem('userNick');
       localStorage.removeItem('userid');
-      
+      localStorage.setItem('keepLogin', false);
+
       goURL({ pathname: '/login' });
   };
 
@@ -64,6 +65,7 @@ const HeaderPfPopup = () => {
     
   }, [profileError, loginOn]);
 
+  
   useLayoutEffect(() => {
     setProfileImg(profileApi?.data?.profile?.thumbnail);
   }, [profileApi?.data?.profile])

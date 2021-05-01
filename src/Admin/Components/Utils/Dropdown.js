@@ -14,7 +14,7 @@ export default function Dropdown({ data, type }) {
       <ButtonLayout onClick={() => setDropOn(!dropOn)} styling={dropOn}>
         {title}
       </ButtonLayout>
-      {dropOn && (
+      { dropOn && (
         <ContentsLayout>
           {
             data?.map(({ title, value }, i) => (
@@ -28,7 +28,7 @@ export default function Dropdown({ data, type }) {
               </ContentBlock> ))
           }
         </ContentsLayout>
-      )}
+      ) }
     </AllLayout>
   );
 }

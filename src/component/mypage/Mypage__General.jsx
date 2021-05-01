@@ -25,6 +25,7 @@ const MypageGeneral = () => {
   //     {id:4, title:'中国-简体', value:'cn-Simplified'},
   //     {id:5, title:'中国-繁體', value:'cn-Traditional'},
   // ]
+  
   const submit = (e, type, data) => {
     e.preventDefault();
 

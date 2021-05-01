@@ -1,10 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'next-i18next'
-
-// 컴포넌트 import
-import { LangPush } from '@language/Lang.Common';
-import { LangMypageGene, LangMypageInform } from '@language/Lang.Mypage';
+import MypageLanguage from './Mypage.Language';
 
 // hooks&&reducer
 import { MypageContext } from './Mypage';
@@ -15,7 +12,7 @@ export default function MypageForm(props) {
   const { type, formDatas } = props;
   const { i18n } = useTranslation()
   // contextAPI
-  const { LanguageList, interestedList } = useContext(MypageContext);
+  const { LanguageList } = useContext(MypageContext);
   const { langState, langPatch, availableLanguage } = useContext(LanguageContext);
 
   const { selectedLanguage, defaultLanguage } = langState;
@@ -26,6 +23,7 @@ export default function MypageForm(props) {
     { id: 2, title: '日本語', value: 1, isChecked: false },
     { id: 3, title: 'English', value: 2, isChecked: false },
   ]);
+
   let language;
   // 언어 변수 설정
   const [langTitle, setLangTitle] = useState();
@@ -33,24 +31,19 @@ export default function MypageForm(props) {
   const [langBtn, setLangBtn] = useState();
 
   // 언어 변수
-  const { notServicePush } = LangPush;
-
-  const { contrySetting, viewLanguage, InterestLanguage, InterestLangDesc, muteSetting, muteSetDesc, changeBtn } = LangMypageGene;
-
-  const { pushSetting, pushSetDesc, generalSetting, generalSetDesc } = LangMypageInform;
-
-  const _contrySetting = contrySetting[selectedLanguage] || contrySetting[defaultLanguage],
-    _viewLanguage = viewLanguage[selectedLanguage] || viewLanguage[defaultLanguage],
-    _InterestLanguage = InterestLanguage[selectedLanguage] || InterestLanguage[defaultLanguage],
-    _InterestLangDesc = InterestLangDesc[selectedLanguage] || InterestLangDesc[defaultLanguage],
-    _muteSetting = muteSetting[selectedLanguage] || muteSetting[defaultLanguage],
-    _muteSetDesc = muteSetDesc[selectedLanguage] || muteSetDesc[defaultLanguage],
-    _changeBtn = changeBtn[selectedLanguage] || changeBtn[defaultLanguage],
-    _notServicePush = notServicePush[selectedLanguage] || notServicePush[defaultLanguage],
-    _pushSetting = pushSetting[selectedLanguage] || pushSetting[defaultLanguage],
-    _pushSetDesc = pushSetDesc[selectedLanguage] || pushSetDesc[defaultLanguage],
-    _generalSetting = generalSetting[selectedLanguage] || generalSetting[defaultLanguage],
-    _generalSetDesc = generalSetDesc[selectedLanguage] || generalSetDesc[defaultLanguage];
+  const {
+    _viewLanguage,
+    _InterestLanguage,
+    _InterestLangDesc,
+    _muteSetting,
+    _muteSetDesc,
+    _changeBtn,
+    _notServicePush,
+    _pushSetting,
+    _pushSetDesc,
+    _generalSetting,
+    _generalSetDesc
+  } = MypageLanguage();
 
   const dataOnChangeHandler = (e, type) => {
     if(type === 'LANGUAGE'){

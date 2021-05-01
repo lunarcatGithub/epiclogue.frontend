@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import { langUploadCategory } from '@language/Lang.Upload';
 
 // Hooks&&reducer
 import { useToggle } from '@hooks/useToggle';
-import { LanguageContext } from '@store/App_Store';
 import { uploadContext } from './UploadCategory';
+import UploadLanguage from './Upload.Language';
 
 export default function UploadCategoryForm({ type, initialNum }) {
   const { setPublic, setSecondCreate, setSendLang, setCategory } = useContext(uploadContext);
@@ -20,49 +19,27 @@ export default function UploadCategoryForm({ type, initialNum }) {
   const [languageTxt, setlanguageTxt] = useState();
 
   //언어 변수
-  const { langState } = useContext(LanguageContext);
-  const { selectedLanguage, defaultLanguage } = langState;
   const {
-    thisComic,
-    thisIllust,
-    comicFillterCategory,
-    comicFillterDesc,
-    thisPublic,
-    thisSecret,
-    publicCategory,
-    publicDesc,
-    reCreateAllow,
-    reCreateDisallow,
-    reCreateCategory,
-    reCreateDesc,
-    koreanSet,
-    japaneseSet,
-    englishSet,
-    thisLanguage,
-    thisLanguageEnd,
-    languageCategory,
-    languageDesc,
-  } = langUploadCategory;
-
-  const _thisComic = thisComic[selectedLanguage] || thisComic[defaultLanguage],
-    _thisIllust = thisIllust[selectedLanguage] || thisIllust[defaultLanguage],
-    _comicFillterCategory = comicFillterCategory[selectedLanguage] || comicFillterCategory[defaultLanguage],
-    _comicFillterDesc = comicFillterDesc[selectedLanguage] || comicFillterDesc[defaultLanguage],
-    _thisPublic = thisPublic[selectedLanguage] || thisPublic[defaultLanguage],
-    _thisSecret = thisSecret[selectedLanguage] || thisSecret[defaultLanguage],
-    _publicCategory = publicCategory[selectedLanguage] || publicCategory[defaultLanguage],
-    _publicDesc = publicDesc[selectedLanguage] || publicDesc[defaultLanguage],
-    _reCreateAllow = reCreateAllow[selectedLanguage] || reCreateAllow[defaultLanguage],
-    _reCreateDisallow = reCreateDisallow[selectedLanguage] || reCreateDisallow[defaultLanguage],
-    _reCreateCategory = reCreateCategory[selectedLanguage] || reCreateCategory[defaultLanguage],
-    _reCreateDesc = reCreateDesc[selectedLanguage] || reCreateDesc[defaultLanguage],
-    _koreanSet = koreanSet[selectedLanguage] || koreanSet[defaultLanguage],
-    _japaneseSet = japaneseSet[selectedLanguage] || japaneseSet[defaultLanguage],
-    _englishSet = englishSet[selectedLanguage] || englishSet[defaultLanguage],
-    _thisLanguage = thisLanguage[selectedLanguage] || thisLanguage[defaultLanguage],
-    _thisLanguageEnd = thisLanguageEnd[selectedLanguage] || thisLanguageEnd[defaultLanguage],
-    _languageCategory = languageCategory[selectedLanguage] || languageCategory[defaultLanguage],
-    _languageDesc = languageDesc[selectedLanguage] || languageDesc[defaultLanguage];
+    _thisComic,
+    _thisIllust,
+    _comicFillterCategory,
+    _comicFillterDesc,
+    _thisPublic,
+    _thisSecret,
+    _publicCategory,
+    _publicDesc,
+    _reCreateAllow,
+    _reCreateDisallow,
+    _reCreateCategory,
+    _reCreateDesc,
+    _koreanSet,
+    _japaneseSet,
+    _englishSet,
+    _thisLanguage,
+    _thisLanguageEnd,
+    _languageCategory,
+    _languageDesc,
+  } = UploadLanguage();
 
   const typeHandler = () => {
     switch (type) {

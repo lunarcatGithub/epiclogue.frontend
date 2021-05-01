@@ -68,6 +68,7 @@ export default function ViewerUserForm(props) {
         setUser_id(userData?.originUserId?._id);
 
         break;
+
       default:
         break;
     }
@@ -125,14 +126,7 @@ export default function ViewerUserForm(props) {
               followMe && loginOn && (
                 <UserFollowTxt
                   styling={follow}
-                  onClick={() => {
-                    if (!loginOn) {
-                      setUnAuth(true);
-                      return;
-                    }
-                    toggleFollow();
-                    submitHandler();
-                  }}
+                  onClick={() => { loginOn ? [toggleFollow(), submitHandler()] : setUnAuth(true) }}
                 >
                   {follow ? followOnLang : followLang}
                 </UserFollowTxt> )
@@ -150,22 +144,25 @@ export default function ViewerUserForm(props) {
           <OriginalContent>{title}</OriginalContent>
           <TextContent>{converted}</TextContent>
           <BottomWrap>
-            {type !== 'ORIGIN' && <PostedTime>Posted by {indicateDate}</PostedTime>}
-            {userData?.edited && <ModifyText>{modified}</ModifyText>}
+            { type !== 'ORIGIN' && <PostedTime>Posted by {indicateDate}</PostedTime> }
+            { userData?.edited && <ModifyText>{modified}</ModifyText> }
           </BottomWrap>
-          {originUserData && (
-            <ContentImgWrap styling={originUserData}>
-              {originUserData ? (
-                <ContentImgBox onClick={() => goURL({ pathname: `/viewer/${originUserData._id}` })}>
-                  <ContentImg thumNail={originUserData.boardImg[0]} />
-                </ContentImgBox>
-              ) : (
-                <ContentImgBox>
-                  <NullContent>{removedContents}</NullContent>
-                </ContentImgBox>
-              )}
-            </ContentImgWrap>
-          )}
+          {
+            originUserData && (
+              <ContentImgWrap styling={originUserData}>
+                {
+                  originUserData ? (
+                    <ContentImgBox onClick={() => goURL({ pathname: `/viewer/${originUserData._id}` })}>
+                      <ContentImg thumNail={ originUserData.boardImg[0] } />
+                    </ContentImgBox>
+                  ) : (
+                    <ContentImgBox>
+                      <NullContent>{ removedContents }</NullContent>
+                    </ContentImgBox>
+                  )
+                }
+              </ContentImgWrap> )
+          }
         </UserProfileContentsBox>
       </ProfileImgContent>
     </UserForm>

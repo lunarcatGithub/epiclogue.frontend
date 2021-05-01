@@ -1,19 +1,16 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 
 // 컴포넌트 import
-import { LangMain } from '@language/Lang.Main';
+import ContentLanguage from './Content.Language';
 
 // hooks&reducer
-import { LanguageContext } from '@store/App_Store';
 import { useUrlMove } from '@hooks/useUrlMove';
 
-export default function MainContent(props) {
-  const { contentData } = props;
+export default function MainContent({ contentData }) {
   const { category, originUserId } = contentData;
   const [contents, setContents] = useState();
-  const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
 
   useEffect(() => {
@@ -21,10 +18,10 @@ export default function MainContent(props) {
   }, [contentData]);
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { originTxt, reCreateTxt } = LangMain;
-  const _originTxt = originTxt[selectedLanguage] || originTxt[defaultLanguage],
-    _reCreateTxt = reCreateTxt[selectedLanguage] || reCreateTxt[defaultLanguage];
+  const {
+    _originTxt,
+    _reCreateTxt
+  } = ContentLanguage();
 
   return (
     <>

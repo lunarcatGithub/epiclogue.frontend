@@ -10,61 +10,81 @@ import AutoHiding from '@utils/autoHiding';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
 import { AppDataContext } from '@store/App_Store';
-import { useUrlMove } from '@hooks/useUrlMove';
 
-const MyBoardFollow = ({ routeId, routeTab }) => {
+const MyBoardFollow = () => {
   const router = useRouter();
-  const [goURL] = useUrlMove();
 
-  const { followData, followButton, setFollowButton } = useContext(AppDataContext);
+  const { followData, loginOn } = useContext(AppDataContext);
   // tab
-  const [followingList, setFollowingList] = useState([]);
-  const [followerList, setFollowerList] = useState([]);
+  const [routerTab, setRouterTab] = useState(router.query.tab || 'following');
 
   // 팔로우 리스트 무한 스크롤
-  const [items, setItems] = useState(5);
-  const [sliceFollowing, setSliceFollowing] = useState();
-  const [sliceFollower, setSliceFollower] = useState();
-  const [page, scroll] = useScroll();
+  const [followsData, setFollowData] = useState(null);
+  const [finalRender, setFinalRender] = useState([]);
+  const [latestId, setLatestId] = useState();
+  const [stopData, setStopData] = useState(true);
+
   //fetch
-  const [, followListApi, , followListFetch] = useAxiosFetch();
+  const [followLoding, followListApi, , followListFetch] = useAxiosFetch();
 
   // 헤더 스크롤용
   const show = AutoHiding();
+  const [page, scroll] = useScroll();
 
-  const moveFollowList = (type) => {
-    setFollowButton(type);
-    goURL({ pathname: `/follows/${routeId}`, query:{tab:type, id:routeId} });
-  };
-
-  useEffect(() => {
-    setItems((items) => items + 10);
-    if (routeTab === 'following') {
-      setSliceFollowing(followingList?.slice(0, items));
-    } else {
-      setSliceFollower(followerList?.slice(0, items));
+  // 데이터 호출 함수
+  const handleScroller = () => {
+    const params = {
+      size:20,
+      type:routerTab,
+      screenId:router?.query?.id,
+      latestId,
     }
-  }, [page, followingList, followerList]);
+    if(!loginOn) return;
+    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, 'get', null, null, params)
+  }
+
+  // 데이터 호출
+useEffect(() => {
+  if(!stopData) return;
+  handleScroller();
+}, [page, routerTab, stopData])
 
   useEffect(() => {
-    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow?screenId=${routeId}&type=${routeTab}`, 'get', null, null, null);
-  }, [routeTab]);
+    followListApi?.data?.length === 0 && setStopData(false)
+  }, [followListApi])
 
   useEffect(() => {
-    if (!followListApi) return;
-    routeTab === 'following' ? setFollowingList(followListApi?.data) : setFollowerList(followListApi?.data);
+    setFollowData();
+    setStopData(true);
+    setLatestId(null);
+  }, [routerTab])
+
+  // 데이터 분리
+  useEffect(() => {
+    followListApi && setFollowData(followsData ? [...followsData, ...followListApi?.data] : [...followListApi?.data]);
   }, [followListApi]);
+  
+  // latestId 찾기
+  useEffect(() => {
+    setLatestId(followListApi?.data[followListApi?.data?.length - 1]?._id)
+  }, [followListApi, page]);
 
-  return (
+  useEffect(() => {
+    setFinalRender(followsData?.map((i, index) => (<MyBoardFollowList key={index} data={i} type={routerTab} />) ) )
+  }, [routerTab, followsData]);
+    
+  const followTab = [
+      {id:0, title:'Following', value:'following'},
+      {id:1, title:'Follower', value:'follower'}
+    ];
+
+    return (
     <Layout>
       <FollowsLayout>
         <LayoutInner>
           {/* 팔로우 헤더 상단 */}
           <HeaderBox show={show}>
             <TopHeaderBox>
-              {/* <Link to={`/myboard/${dataId}`}>
-                  <ArrowBtn />
-                </Link> */}
               <ArrowBtnwrap>
                 <ArrowBtn onClick={() => router.back()} />
               </ArrowBtnwrap>
@@ -74,24 +94,23 @@ const MyBoardFollow = ({ routeId, routeTab }) => {
               </UserPfBox>
             </TopHeaderBox>
             <FollowTabBox>
-              <FollowingTab tabType={routeTab} onClick={() => moveFollowList('following')}>
-                Following
-              </FollowingTab>
-              <FollowerTab tabType={routeTab} onClick={() => moveFollowList('follower')}>
-                Follower
-              </FollowerTab>
+              { followTab.map(({id, title, value}) => (
+                <FollowTab 
+                key={id} 
+                tabType={routerTab === value} 
+                onClick={ () => setRouterTab(value) }>
+                  {title}
+                </FollowTab>
+              ) ) }
             </FollowTabBox>
             {/* // 팔로우 헤더 상단 끝*/}
           </HeaderBox>
           {/* 팔로우 본문 */}
           <ContentBox>
-            {
-              routeTab === 'following' ? sliceFollowing?.map((i, index) => <MyBoardFollowList key={index} data={i} type="following" />)
-              :
-              sliceFollower?.map((i, index) => <MyBoardFollowList key={index} data={i} type="follower" />)
-            }
+            { finalRender }
+            
+            {!followLoding ? <Observer {...scroll} /> : null}
             {/* // 팔로우 본문 끝 */}
-            <Observer {...scroll} />
           </ContentBox>
         </LayoutInner>
       </FollowsLayout>
@@ -197,28 +216,15 @@ const FollowTabBox = styled.div`
   display: flex;
   justify-content: space-around;
 `;
-const FollowingTab = styled.button`
+const FollowTab = styled.button`
   width: 100%;
   height: 46px;
-  color: ${(props) => (props.tabType === 'following' ? props.theme.color.orangeColor : props.theme.color.darkGray)};
+  color: ${(props) => (props.tabType ? props.theme.color.orangeColor : props.theme.color.darkGray)};
   font-size: ${(props) => props.theme.fontSize.font15};
   font-weight: ${(props) => props.theme.fontWeight.font700};
   cursor: pointer;
   padding-bottom: 3px;
-  border-bottom: 3px solid ${(props) => (props.tabType === 'following' ? props.theme.color.softOrangeColor : props.theme.color.softGrayColor)};
-  &:hover {
-    background: ${(props) => props.theme.color.semiOrangeColor};
-  }
-`;
-const FollowerTab = styled.button`
-  width: 100%;
-  height: 46px;
-  color: ${(props) => (props.tabType === 'follower' ? props.theme.color.orangeColor : props.theme.color.darkGray)};
-  font-size: ${(props) => props.theme.fontSize.font15};
-  font-weight: ${(props) => props.theme.fontWeight.font700};
-  cursor: pointer;
-  padding-bottom: 3px;
-  border-bottom: 3px solid ${(props) => (props.tabType === 'follower' ? props.theme.color.softOrangeColor : props.theme.color.softGrayColor)};
+  border-bottom: 3px solid ${(props) => (props.tabType ? props.theme.color.softOrangeColor : props.theme.color.softGrayColor)};
   &:hover {
     background: ${(props) => props.theme.color.semiOrangeColor};
   }

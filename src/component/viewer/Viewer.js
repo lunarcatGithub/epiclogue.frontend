@@ -10,13 +10,12 @@ import ReactPopup from './ReactPopup';
 import MorePopup from './MoreMenuPopup';
 import TranslatePopup from './TranslatePopup';
 import { ProgressSmall } from '@utils/LoadingProgress';
-import { langViewer, langViewerUser } from '@language/Lang.Viewer';
-import { LangCommon } from '@language/Lang.Common';
 import { Meta } from '@utils/MetaTags';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
 import Contents from '../content/Contents';
 import ViewerUserForm from './Viewer__UserForm';
+import ViewerLanguage from './Viewer.Language';
 
 // Hooks&&reducer
 import { useModal } from '@hooks/useModal';
@@ -26,7 +25,7 @@ import { useConvertURL } from '@hooks/useConvertURL';
 import usePublic from '@hooks/usePublic';
 import { useConvertTags } from '@hooks/useConvertTags';
 import useAxiosFetch from '@hooks/useAxiosFetch';
-import { LanguageContext, AlertContext, AppDataContext } from '@store/App_Store';
+import { AlertContext, AppDataContext } from '@store/App_Store';
 
 export const ReplyListContext = React.createContext();
 
@@ -34,11 +33,28 @@ const Viewer = ({ boardItem, nonError }) => {
   const router = useRouter();
   const boardUid = router?.query?.id;
   const { t } = useTranslation("common");
+  
+  // 뷰어 언어
+  const {
+    _contentsReact,
+    _feedbackScore,
+    _feedbackScoreEnd,
+    _feedbackPlaceholder,
+    _moreFeedback,
+    _firstFeedback,
+    _foldFeedback,
+    _moreContents,
+    _originalUser,
+    _recreateUser,
+    _removedContents,
+    _followBtn,
+    _followingBtn,
+    _modified
+  } = ViewerLanguage();
 
   const { alertPatch } = useContext(AlertContext);
   const [profileURL, , convertProfileIamge] = useConvertURL();
   const [O_profileURL, , convertO_ProfileIamge] = useConvertURL();
-  const { langState } = useContext(LanguageContext);
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
   const [goURL] = useUrlMove();
@@ -55,7 +71,6 @@ const Viewer = ({ boardItem, nonError }) => {
   const [bookmark, toggleBookmark] = useToggle();
   const [like, toggleLike] = useToggle();
   const [globe, ] = useToggle();
-  const [screenId, setScreenId] = useState();
 
   // 모달 팝업 컨트롤
   const [type_MoreMenu, setType_MoreMenu] = useState();
@@ -67,7 +82,6 @@ const Viewer = ({ boardItem, nonError }) => {
   const [originDeleted, setOriginDeleted] = useModal();
   const [isShowing_Menu, handleModal_Menu] = useModal();
 
-  const [originId, setOriginId] = useState();
   const [secondAllow, setSecondAllow] = useState();
 
   // 외부 출처
@@ -100,7 +114,6 @@ const Viewer = ({ boardItem, nonError }) => {
   // 토글 submit 전용
   const [ , likeApi, , likeFetch] = useAxiosFetch();
   const [, , , bookmarkFetch] = useAxiosFetch();
-  // const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
 
   //피드백 팝업
   const [typeMenu, setTypeMenu] = useState();
@@ -108,28 +121,6 @@ const Viewer = ({ boardItem, nonError }) => {
   // ref
   const feedbackRef = useRef();
 
-  //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-
-  const { contentsReact, feedbackScore, feedbackScoreEnd, feedbackPlaceholder, moreFeedback, firstFeedback, foldFeedback, moreContents, modified } = langViewer;
-
-  const { originalUser, recreateUser, removedContents } = langViewerUser;
-
-  const { followBtn, followingBtn } = LangCommon;
-  const _contentsReact = contentsReact[selectedLanguage] || contentsReact[defaultLanguage],
-    _feedbackScore = feedbackScore[selectedLanguage] || feedbackScore[defaultLanguage],
-    _feedbackScoreEnd = feedbackScoreEnd[selectedLanguage] || feedbackScoreEnd[defaultLanguage],
-    _feedbackPlaceholder = feedbackPlaceholder[selectedLanguage] || feedbackPlaceholder[defaultLanguage],
-    _moreFeedback = moreFeedback[selectedLanguage] || moreFeedback[defaultLanguage],
-    _firstFeedback = firstFeedback[selectedLanguage] || firstFeedback[defaultLanguage],
-    _foldFeedback = foldFeedback[selectedLanguage] || foldFeedback[defaultLanguage],
-    _moreContents = moreContents[selectedLanguage] || moreContents[defaultLanguage],
-    _originalUser = originalUser[selectedLanguage] || originalUser[defaultLanguage],
-    _recreateUser = recreateUser[selectedLanguage] || recreateUser[defaultLanguage],
-    _removedContents = removedContents[selectedLanguage] || removedContents[defaultLanguage],
-    _followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage],
-    _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
-    _modified = modified[selectedLanguage] || modified[defaultLanguage];
 
   const addList = () => {
     setFbLoading(true);
@@ -300,9 +291,6 @@ const Viewer = ({ boardItem, nonError }) => {
         allowSecondaryCreation,
       });
 
-      if (originUserId) {
-        setOriginId(originUserId._id);
-      }
       //tag && email convert
       // setBody(boardBody);
       convert(boardBody);
@@ -313,7 +301,6 @@ const Viewer = ({ boardItem, nonError }) => {
       toggleLike(!loginOn ? false : liked);
       setReplyList(replyList);
       setRenderList(replyList);
-      setScreenId(screenId);
       setBoardImg(boardImg);
       setHeartCount(heartCount);
       setIsLoading(false);

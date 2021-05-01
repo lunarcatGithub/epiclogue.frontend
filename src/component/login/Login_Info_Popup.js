@@ -3,35 +3,27 @@ import styled from 'styled-components';
 import { useChange } from '@hooks/useChange';
 
 // 컴포넌트 import
-import { langSignInPopup } from '@language/Lang.Login';
-import { LangCommon } from '@language/Lang.Common';
-import { LanguageContext, AlertContext } from '@store/App_Store';
-import { signUpError } from '@language/Lang.Login';
+import { AlertContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
+import LoginLanguage from './Login.Language';
 
-export const LoginInfoPopup = (props) => {
-  const { handleModal } = props;
+export const LoginInfoPopup = ({ handleModal }) => {
 
   const { alertPatch } = useContext(AlertContext);
-  const { langState } = useContext(LanguageContext);
 
   const [values, handleChange] = useChange({ email: '' });
   const [errPlaceHolder, setErrPlaceHolder] = useState('');
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { lostTitle, inputEmail, sendButton } = langSignInPopup;
-  const { emailError, noEmail } = signUpError;
+  const {
+    _lostTitle,
+    _inputEmail,
+    _sendButton,
+    _closeBtn,
+    _noEmail,
+  } = LoginLanguage();
 
-  const { closeBtn } = LangCommon;
-
-  const _lostTitle = lostTitle[selectedLanguage] || lostTitle[defaultLanguage],
-    _inputEmail = inputEmail[selectedLanguage] || inputEmail[defaultLanguage],
-    _sendButton = sendButton[selectedLanguage] || sendButton[defaultLanguage],
-    _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage],
-    _emailError = emailError[selectedLanguage] || emailError[defaultLanguage],
-    _noEmail = noEmail[selectedLanguage] || noEmail[defaultLanguage];
   // fetch
-  const [pwLoding, pwApi, pwError, pwFetch] = useAxiosFetch();
+  const [, pwApi, , pwFetch] = useAxiosFetch();
 
   // 비밀번호 찾기
   const handleSubmit = (e) => {

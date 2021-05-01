@@ -4,23 +4,24 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from 'next/router';
 
 // 컴포넌트 import
-import { LangMyBoard } from '@language/Lang.Myboard';
-import { LangCommon } from '@language/Lang.Common';
-import Contents from '../content/Contents';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
+import MyBoardLanguage from './MyBoard.Language';
+import { Progress } from '@utils/LoadingProgress';
+import AutoHiding from '@utils/autoHiding';
+import MainContent from '../content/Contents__Form';
 
 // hooks&reducer
-import AutoHiding from '@utils/autoHiding';
 import { useToggle } from '@hooks/useToggle';
 import { useConvertTags } from '@hooks/useConvertTags';
 import { useModal } from '@hooks/useModal';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { useDate } from '@hooks/useDate';
 import useAxiosFetch from '@hooks/useAxiosFetch';
-import { LanguageContext, AppDataContext } from '@store/App_Store';
+import { AppDataContext, LanguageContext } from '@store/App_Store';
 import useDebounce from '@hooks/useDebounce';
 import { Meta } from '@utils/MetaTags';
+import useScroll from '@hooks/useScroll';
 
 // 아이콘 import
 
@@ -29,15 +30,14 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const { t } = useTranslation("common");
   const router = useRouter()
 
-  const { langState } = useContext(LanguageContext);
   const {
     setMyboardData,
     loginOn,
     setUnAuth,
     followData,
     setFollowData,
-    setFollowButton
   } = useContext(AppDataContext);
+
   const [follow, toggleFollow] = useToggle();
   // console.log(boardItem)
   const [date, setDate] = useState();
@@ -65,23 +65,28 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   //tab
   const [isTab, setIsTab] = useState(router?.query?.tab || 'all');
 
-  //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { signDate, noIntro, allTabs, contentsTabs, bookMarkTabs, secondary } = LangMyBoard;
-  const { followBtn, followingBtn } = LangCommon;
+  // 콘텐츠 렌더링
+  const [initRender, setInitRender] = useState([]);
+  const [renderComponent, setRenderComponent] = useState();
 
-  const _signDate = signDate[selectedLanguage] || signDate[defaultLanguage],
-    _noIntro = noIntro[selectedLanguage] || noIntro[defaultLanguage],
-    _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
-    _followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage],
-    _allTabs = allTabs[selectedLanguage] || allTabs[defaultLanguage],
-    _contentsTabs = contentsTabs[selectedLanguage] || contentsTabs[defaultLanguage],
-    _bookMarkTabs = bookMarkTabs[selectedLanguage] || bookMarkTabs[defaultLanguage],
-    _secondary = secondary[selectedLanguage] || secondary[defaultLanguage];
+  // scroll
+  const [page, scroll] = useScroll();
+
+  //언어 변수
+  const { langState } = useContext(LanguageContext);
+  const { selectedLanguage, defaultLanguage } = langState;
+
+  const {
+    navTabArr,
+    _signDate,
+    _noIntro,
+    _followingBtn,
+    _followBtn,
+  } = MyBoardLanguage()
 
   //fetch
   const [, , , followFetch] = useAxiosFetch();
-  const [boardDataLoding, boardDataApi, boardDataError, boardDataFetch] = useAxiosFetch();
+  const [boardDataLoding, boardDataApi, , boardDataFetch] = useAxiosFetch();
 
   const submitHandler = () => {
     if (!loginOn) return;
@@ -99,7 +104,6 @@ export default function MyBoard({ boardItem, userId, nonError }) {
       setUnAuth(true);
       return;
     }
-    setFollowButton(type);
     goURL({ pathname: `/follows/[id]`, as:`/follows/${userScreenId}`, query:{tab:type} });
   };
 
@@ -125,12 +129,18 @@ export default function MyBoard({ boardItem, userId, nonError }) {
     nonError === 404 && toggle_Modal_Confirm(true);
   }, [nonError]);
 
-  const navTabArr = [
-    { link: 'all', title: _allTabs },
-    { link: 'originals', title: _contentsTabs },
-    { link: 'secondaryWorks', title: _secondary },
-    { link: 'bookmarks', title: _bookMarkTabs },
-  ];
+  useEffect(() => {
+    boardDataApi && setInitRender(initRender ? [...initRender, ...boardDataApi?.data] : [...boardDataApi?.data])
+  }, [boardDataApi])
+
+  useEffect(() => {
+    setInitRender([])
+  }, [isTab])
+
+  useEffect(() => {
+    setRenderComponent(initRender?.map((item, index) => <MainContent key={index} contentData={item} />));
+    return () => setRenderComponent()
+  }, [initRender])
 
   const metaData = {
     title: `${boardItem?.data?.nickname}${t('metaBoardTitle')}`,
@@ -229,9 +239,18 @@ export default function MyBoard({ boardItem, userId, nonError }) {
           </NavBar>
           {/* 작품 콘텐츠 시작 */}
           <ContentsBox myboardData={boardDataApi?.data.length}>
-            <ContentsInner>
-              <Contents type="MYBOARD" boardItem={boardDataApi?.data} />
-            </ContentsInner>
+            <ContentsLayout>
+              <ContentsInner>
+                <MasonryBox>{renderComponent}</MasonryBox>
+              </ContentsInner>
+              {
+              boardDataLoding && (
+                <DummyLayout>
+                  <Progress />
+                </DummyLayout> )
+              }
+              {!boardDataLoding ? <RefLayout {...scroll} /> : null}
+              </ContentsLayout>
           </ContentsBox>
         </LayoutInner>
       </Layout>
@@ -545,6 +564,19 @@ const NavItem = styled.button`
 `;
 
 // 본문 콘텐츠
+const ContentsLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 0.5em;
+`
+
+const RefLayout = styled.div`
+  display:flex;
+  color:#222;
+  width: 200px;
+  height: 50px;
+`;
 
 const ContentsBox = styled.div`
   display: flex;
@@ -556,4 +588,31 @@ const ContentsInner = styled.div`
   width: 100%;
   height: 100%;
   background: ${(props) => props.theme.color.backgroundColor};
+`;
+
+const MasonryBox = styled.section`
+  display: grid;
+  justify-content: center;
+  height: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(14%, 1fr));
+  column-gap: 0.4em;
+  padding: 0.8em;
+  @media (max-width: 1280px) {
+    grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
+  }
+  @media (max-width: 980px) {
+    grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
+  }
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
+  }
+  @media (max-width: 380px) {
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+  }`;
+
+const DummyLayout = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `;
