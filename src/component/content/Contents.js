@@ -72,20 +72,22 @@ import useScroll from '@hooks/useScroll';
   const searchStore = () => {
     if(!resultKeyword) return;
     const params = {
-      type:null,
+      type:'Board',
       size:35,
       latestId:lastContentId,
+      category:null,
       q:resultKeyword
     }
 
     if (searchType === 'trend') {
-      params.type = 'Board'
+      alert('서비스 개발 중이에요 (Preparing to open the service)')
+      return;
     } else if(searchType === 'latest'){
-      params.type = filtering || 'Board'
+      params.category = filtering
     } else if(searchType === 'users'){
       params.type = 'User'
     } else return;
-
+    
     initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, 'get', null, null, params);
   }
 
