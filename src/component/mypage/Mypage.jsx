@@ -1,21 +1,20 @@
- import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import MypageLanguage from './Mypage.Language';
 
 // 컴포넌트 import
 import MypageProfile from './Mypage__Profile';
 import MypageInform from './Mypage__Inform';
 import MypageGeneral from './Mypage__General';
-import { LangMypage } from '@language/Lang.Mypage';
 
 // Hooks&&reducer import
-import { LanguageContext, AppDataContext } from '@store/App_Store';
+import { AppDataContext } from '@store/App_Store';
 import { useUrlMove } from '@hooks/useUrlMove';
 
 export const MypageContext = React.createContext();
 
 const Mypage = () => {
-  const { langState } = useContext(LanguageContext);
   const { loginOn } = useContext(AppDataContext);
   const router = useRouter();
   const { tab } = router.query;
@@ -23,14 +22,11 @@ const Mypage = () => {
   const [isLogin, setIsLogin] = useState();
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-
-  const { settingProfile, profileTab, pushSetTab, generalSetTab } = LangMypage;
-
-  const _settingProfile = settingProfile[selectedLanguage] || settingProfile[defaultLanguage],
-    _profileTab = profileTab[selectedLanguage] || profileTab[defaultLanguage],
-    _pushSetTab = pushSetTab[selectedLanguage] || pushSetTab[defaultLanguage],
-    _generalSetTab = generalSetTab[selectedLanguage] || generalSetTab[defaultLanguage];
+ const {
+  _settingProfile,
+  _generalSetTab,
+  navArr
+ } = MypageLanguage();
 
   const list = [
     { id: 1, title: 'profile', contents: <MypageProfile /> },
@@ -54,12 +50,6 @@ const Mypage = () => {
     { id: 3, title: 'English', value: 'english', tagId: 'english' },
     // {id:4, title:'中国-简体', value:'simpleChinese', tagId:"simpleChinese"},
     // {id:5, title:'中国-繁體', value:'traditionChinese', tagId:"traditionChinese"},
-  ];
-
-  const navArr = [
-    { name: 'profile', lang: _profileTab },
-    { name: 'inform', lang: _pushSetTab },
-    { name: 'setting', lang: _generalSetTab },
   ];
 
   useEffect(() => {

@@ -38,6 +38,8 @@ export const useTimeCalculation = (_Date) => {
       setCurrentTime(`${betweenTimeDay}${_dayAgo}`);
     } else if (betweenTimeWeek < 4) {
       setCurrentTime(`${betweenTimeWeek}${_weekAgo}`);
+    } else if (betweenTimeMonth < 12) {
+      setCurrentTime(`${betweenTimeMonth}${_monthAgo}`);
     } else {
       if (selectedLanguage === 0) {
         setCurrentTime(`${spiteYear}년 ${timeValue.getMonth() + 1}월 ${timeValue.getDate()}일`);

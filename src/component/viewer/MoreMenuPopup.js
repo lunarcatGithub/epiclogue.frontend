@@ -3,20 +3,17 @@ import styled, { css } from 'styled-components';
 
 // 컴포넌트 import
 import { ReplyListContext } from './Viewer';
-import { LangCommon } from '@language/Lang.Common';
-import { langMymoreMenu, langUsermoreMenu } from '@language/Lang.Viewer';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
-import ReportsPopup from './ReportsPopup';
+import ReportsPopup from '../report/ReportsPopup';
+import ViewerLanguage from './Viewer.Language';
 
 // Hooks&&reducer import
 import { useUrlMove } from '@hooks/useUrlMove';
 import { useModal } from '@hooks/useModal';
 import useAxiosFetch from '@hooks/useAxiosFetch';
-import { LanguageContext } from '@store/App_Store';
 
 const MorePopup = (props) => {
-  const { langState } = useContext(LanguageContext);
   const { _id, conFirmType, type, handleModal_Menu, onUpdate, fbtype, fbUid} = props;
   const { boardUid, setReplyList, setRenderList, setFbReList, fbReList, ReFbUid } = useContext(ReplyListContext);
 
@@ -27,17 +24,14 @@ const MorePopup = (props) => {
   const [, removeReFbFbApi, , removeReFbFetch] = useAxiosFetch();
 
   // 언어변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { closeBtn } = LangCommon;
-  const { myOptions, modifyContent, deleteContent } = langMymoreMenu;
-  const { userOptions, sendDm, reportUser, muteUser, moreContents } = langUsermoreMenu;
-
-  const _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage],
-    _myOptions = myOptions[selectedLanguage] || myOptions[defaultLanguage],
-    _modifyContent = modifyContent[selectedLanguage] || modifyContent[defaultLanguage],
-    _deleteContent = deleteContent[selectedLanguage] || deleteContent[defaultLanguage],
-    _userOptions = userOptions[selectedLanguage] || userOptions[defaultLanguage],
-    _reportUser = reportUser[selectedLanguage] || reportUser[defaultLanguage];
+  const {
+    _modifyContent,
+    _deleteContent,
+    _userOptions,
+    _reportUser,
+    _closeBtn,
+    _myOptions,
+  } = ViewerLanguage();
 
   const [goURL] = useUrlMove();
   const [state_Confirm, toggle_Modal_Confirm] = useModal();
@@ -90,20 +84,21 @@ const MorePopup = (props) => {
   return (
     <>
       <MyPopupInner>
-        <MyTitleBox>{type === 'myMore' || type === 'myFbMore' ? _myOptions : _userOptions}</MyTitleBox>
+        <MyTitleBox>{ type === 'myMore' || type === 'myFbMore' ? _myOptions : _userOptions }</MyTitleBox>
         <MyTabBox>
         {
           type === 'myMore' || type === 'myFbMore' ? 
           <>
-            {type !== 'myFbMore' && <MyTab
-                onClick={() => {
-                  onUpdate();
-                  // setFeedBackModify(true)
-                  handleModal_Menu();
-                }}
-              >
-                {_modifyContent}
-              </MyTab>}
+            {
+              type !== 'myFbMore' && <MyTab
+                  onClick={() => {
+                    onUpdate();
+                    // setFeedBackModify(true)
+                    handleModal_Menu();
+                  }} >
+                  {_modifyContent}
+                </MyTab>
+              }
               <MyTab 
                 onClick={() => {
                 toggle_Modal_Confirm();
@@ -141,18 +136,7 @@ const PositionCenter = css`
 `;
 
 // 레이아웃
-const PopupLayout = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: ${(props) => props.theme.color.popupColor};
-  z-index: 99999;
-  @media (max-width: 900px) {
-    top: 54px;
-  }
-`;
+
 const MyPopupInner = styled.div`
   ${PositionCenter};
   display: flex;

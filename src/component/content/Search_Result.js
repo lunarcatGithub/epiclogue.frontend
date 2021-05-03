@@ -4,47 +4,32 @@ import { useRouter } from 'next/router';
 
 // 컴포넌트 import
 import Contents from './Contents';
-import { LangSearchResult } from '@language/Lang.Main';
+import EditorLanguage from './Content.Language';
 
 // hooks&reducer
 import AutoHiding from '@utils/autoHiding';
 import { useUrlMove } from '@hooks/useUrlMove';
-import { LanguageContext, AppDataContext } from '@store/App_Store';
+import { AppDataContext } from '@store/App_Store';
 
-const SearchResult = ({query}) => {
-
+const SearchResult = () => {
   const {
     setParamsData,
     paramsData,
-    setRenderList,
-    setLastContentId
   } = useContext(AppDataContext);
-  const { langState } = useContext(LanguageContext);
+
   const router = useRouter();
   const { text, type } = router.query;
   const [goURL] = useUrlMove();
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { popularTab, latestTab, userTab } = LangSearchResult;
-  const _popularTab = popularTab[selectedLanguage] || popularTab[defaultLanguage],
-    _latestTab = latestTab[selectedLanguage] || latestTab[defaultLanguage],
-    _userTab = userTab[selectedLanguage] || userTab[defaultLanguage];
+  const {navArr} = EditorLanguage();
 
   // 헤더 스크롤용
   const show = AutoHiding();
 
-  const navArr = [
-    { data: 'trend', lang: _popularTab },
-    { data: 'latest', lang: _latestTab },
-    { data: 'users', lang: _userTab },
-  ];
-
-
   useEffect(() => {
     type && setParamsData(type)
     goURL({ pathname: `/search/[type]`, as: `/search/${type}/${text}`, query: { type, text: text } })
-    setLastContentId(null)
   }, [type, text])
 
   return (

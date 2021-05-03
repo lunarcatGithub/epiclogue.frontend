@@ -12,7 +12,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 const ReFeedback = (props) => {
   const { fbReList, setFbReList, boardUid, fbUid } = useContext(ReplyListContext);
   const { data, onClose, morePopup } = props;
-  const [replyLoding, replyApi, replyError, replyFetch] = useAxiosFetch();
+  const [replyLoding, replyApi, , replyFetch] = useAxiosFetch();
 
   useEffect(() => {
     replyFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${fbUid}/reply`, 'get', null, null);

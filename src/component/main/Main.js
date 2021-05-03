@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import styled from 'styled-components';
 import { useTranslation } from "next-i18next";
 
@@ -8,8 +8,10 @@ import { Meta } from '@utils/MetaTags';
 
 // Hooks&&reducer import
 import { useUrlMove } from '@hooks/useUrlMove';
+import { AppDataContext } from '@store/App_Store';
 
 const Main = ({ metaLang }) => {
+  const { loginOn, setUnAuth } = useContext(AppDataContext);
   const [goURL] = useUrlMove();
   const { t } = useTranslation("common");
 
@@ -29,7 +31,15 @@ const Main = ({ metaLang }) => {
       <Layout>
         <Contents type="MAIN" />
         {/*업로드 버튼*/}
-        <UploadButton onClick={() => goURL({ pathname: '/upload', query:{_type:'upload'} })}>
+        <UploadButton onClick={() => {
+          if(!loginOn){
+          setUnAuth(true);
+          return;
+        } else {
+          goURL({ pathname: '/upload', query:{_type:'upload'} })
+        }
+          
+          }}>
           <UploadSvg />
         </UploadButton>
       </Layout>

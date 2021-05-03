@@ -1,14 +1,13 @@
 import React, { useState, useCallback, useContext, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { langUpload } from '@language/Lang.Upload';
 
 // 컴포넌트 import
 import Slider from '@utils/Slider';
 import UploadCategory from './UploadCategory';
 import SliderEmpty from '@utils/Slider__Empty';
+import UploadLanguage from './Upload.Language';
 
 // Hooks & Reducer
-import { LanguageContext } from '@store/App_Store';
 
 const UploadFile = ({type, editData, boardUid}) => {
   const [dragging, toggleDragging] = useState(false);
@@ -17,10 +16,7 @@ const UploadFile = ({type, editData, boardUid}) => {
   const [initialData, setInitialData] = useState([]);
   const [indexNum, setIndexNum] = useState(0)
   // 언어 변수
-  const { langState } = useContext(LanguageContext);
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { dropImage } = langUpload;
-  const _dropImage = dropImage[selectedLanguage] || dropImage[defaultLanguage];
+  const {_dropImage} = UploadLanguage()
   // convert
   const handleDragEnter = (e) => {
     e.preventDefault();

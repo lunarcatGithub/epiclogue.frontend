@@ -1,7 +1,7 @@
-import { useRouter } from 'next/router';
-
+import React from 'react';
+import ErrorDesc from '@component/error/ErrorDesc';
 export default function Error({ statusCode }) {
-  return <div>{statusCode ? 'server error' : 'client error'}</div>;
+  return <ErrorDesc type={ statusCode ? 'server' : 'client' }/>
 }
 
 Error.getInitialProps = ({ res, err }) => {

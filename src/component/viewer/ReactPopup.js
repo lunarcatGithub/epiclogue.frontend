@@ -3,34 +3,28 @@ import styled, { css } from 'styled-components';
 
 // 컴포넌트 import
 import { ReplyListContext } from './Viewer';
-import { langReactPopup } from '@language/Lang.Viewer';
-import { LangCommon } from '@language/Lang.Common';
+import ViewerLanguage from './Viewer.Language';
 
 // Hooks&&reducer
 import useAxiosFetch from '@hooks/useAxiosFetch';
-import { LanguageContext } from '@store/App_Store';
 
 const ReactPopup = () => {
-  const { langState } = useContext(LanguageContext);
 
   const [reactData, setReactData] = useState([]);
-
   const { boardUid, toggle_Modal_React } = useContext(ReplyListContext);
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { reactTxt, reactShare, reactLike, reactBookmark, reactFeedback, noReact } = langReactPopup;
-  const { closeBtn } = LangCommon;
+  const {
+    _reactTxt,
+    _reactShare,
+    _reactLike,
+    _reactBookmark,
+    _reactFeedback,
+    _noReact,
+    _closeBtn
+  } = ViewerLanguage();
 
-  const _reactTxt = reactTxt[selectedLanguage] || reactTxt[defaultLanguage],
-    _reactShare = reactShare[selectedLanguage] || reactShare[defaultLanguage],
-    _reactLike = reactLike[selectedLanguage] || reactLike[defaultLanguage],
-    _reactBookmark = reactBookmark[selectedLanguage] || reactBookmark[defaultLanguage],
-    _reactFeedback = reactFeedback[selectedLanguage] || reactFeedback[defaultLanguage],
-    _noReact = noReact[selectedLanguage] || noReact[defaultLanguage],
-    _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage];
-
-  const [initialLoding, initialApi, initialError, initialFetch] = useAxiosFetch();
+  const [, initialApi, , initialFetch] = useAxiosFetch();
 
   useEffect(() => {
     initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/react`, 'get', null, null);
@@ -167,20 +161,7 @@ const PopupTitle = styled.span`
   font-size: ${(props) => props.theme.fontSize.font18};
   font-weight: ${(props) => props.theme.fontWeight.font700};
 `;
-// 모바일 전용 닫기 버튼
-const PopupMbClose = styled.button.attrs({ type: 'button' })`
-  position: absolute;
-  top: 0;
-  right: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  cursor: pointer;
-`;
-const CloseIcon = styled.span`
-  ${(props) => props.theme.closeBtn};
-`;
+
 // 탭 유저 프로필 이미지
 const PopupTabBox = styled.div`
   display: flex;

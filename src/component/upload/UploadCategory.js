@@ -6,10 +6,10 @@ import { useRouter } from 'next/router';
 import OriginUserForm from './Upload__OriginUser';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { ProgressSmall } from '@utils/LoadingProgress';
-import { langUploadCategory } from '@language/Lang.Upload';
 import { LanguageContext, AlertContext } from '@store/App_Store';
 import UploadCategoryForm from './UploadCategory_Form';
 import OriginUserSource from './Upload__Source';
+import UploadLanguage from './Upload.Language';
 
 // Hooks&&reducer import
 import useFetchData from '@hooks/useFetchData';
@@ -24,7 +24,6 @@ const UploadCategory = (props) => {
   const { data, boardUid, _type } = router.query;
 
   const { alertPatch } = useContext(AlertContext);
-  const { langState } = useContext(LanguageContext);
 
   // 카테고리 선택 데이터
   const [boardTitle, setBoardTitle] = useState();
@@ -54,7 +53,7 @@ const UploadCategory = (props) => {
   const [disabled, setDisabled] = useState(false);
 
   //fetch
-  const [uploadError, uploadApi, ,uploadFetch] = useFetchData();
+  const [, uploadApi, ,uploadFetch] = useFetchData();
 
   useEffect(() => {
     
@@ -87,15 +86,18 @@ const UploadCategory = (props) => {
   // }, [router, editorData, data]);
 
   //언어 변수
+  const { langState } = useContext(LanguageContext);
   const { selectedLanguage, defaultLanguage } = langState;
-  const { titlePlaceholder, alertPlaceholder, descPlaceholder, uploadBtn, fileSizeErr, sourceAlert } = langUploadCategory;
 
-  const _titlePlaceholder = titlePlaceholder[selectedLanguage] || titlePlaceholder[defaultLanguage],
-    _alertPlaceholder = alertPlaceholder[selectedLanguage] || titlePlaceholder[defaultLanguage],
-    _descPlaceholder = descPlaceholder[selectedLanguage] || descPlaceholder[defaultLanguage],
-    _uploadBtn = uploadBtn[selectedLanguage] || uploadBtn[defaultLanguage],
-    _fileSizeErr = fileSizeErr[selectedLanguage] || fileSizeErr[defaultLanguage],
-    _sourceAlert = sourceAlert[selectedLanguage] || sourceAlert[defaultLanguage];
+  const {
+    _titlePlaceholder,
+    _alertPlaceholder,
+    _descPlaceholder,
+    _uploadBtn,
+    _fileSizeErr,
+    _sourceAlert
+
+  } = UploadLanguage()
 
   const changeBoardTitle = (e) => {
     setBoardTitle(e.target.value);

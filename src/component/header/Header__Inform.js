@@ -2,17 +2,16 @@ import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
-import { LangHeaderInform } from '@language/Lang.Header';
 import { HeaderDataContext } from './Header';
+import HeaderLanguage from './Header.Language';
 
 // hooks&&reducer
 import { useUrlMove } from '@hooks/useUrlMove';
-import { LanguageContext, AppDataContext } from '@store/App_Store';
+import { AppDataContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
 
 const UserInform = () => {
-  const { langState } = useContext(LanguageContext);
   const { toggleNoti } = useContext(HeaderDataContext);
   const { loginOn } = useContext(AppDataContext);
 
@@ -20,45 +19,59 @@ const UserInform = () => {
   const [goURL] = useUrlMove();
 
   // 알림 스크롤
-  const [items, setItems] = useState(5);
-  const [sliceData, setSliceData] = useState(null);
-  const [tagetUser, setTargetUser] = useState();
+  const [targetUser, setTargetUser] = useState();
+
+  //params
   const [page, scroll] = useScroll();
+  const [latestId, setLatestId] = useState();
+  const [stopData, setStopData] = useState(true);
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { headerInfrom, userReactLike, userFeedback, userSecondary, userBookmark, userFollowMe, userReply, dataRemove, feedbackRemove } = LangHeaderInform;
-
-  const _headerInfrom = headerInfrom[selectedLanguage] || headerInfrom[defaultLanguage],
-    _userReactLike = userReactLike[selectedLanguage] || userReactLike[defaultLanguage],
-    _userFeedback = userFeedback[selectedLanguage] || userFeedback[defaultLanguage],
-    _userSecondary = userSecondary[selectedLanguage] || userSecondary[defaultLanguage],
-    _userBookmark = userBookmark[selectedLanguage] || userBookmark[defaultLanguage],
-    _userFollowMe = userFollowMe[selectedLanguage] || userFollowMe[defaultLanguage],
-    _userReply = userReply[selectedLanguage] || userReply[defaultLanguage],
-    _dataRemove = dataRemove[selectedLanguage] || dataRemove[defaultLanguage],
-    _feedbackRemove = feedbackRemove[selectedLanguage] || feedbackRemove[defaultLanguage];
+  const {
+    _headerInfrom,
+    _userReactLike,
+    _userFeedback,
+    _userSecondary,
+    _userBookmark,
+    _userFollowMe,
+    _userReply,
+    _dataRemove,  
+  } = HeaderLanguage();
 
   //fetch
-  const [notiLoding, notiApi, notiError, notiFetch] = useAxiosFetch();
-  const [infromLoding, , infromError, infromFetch] = useAxiosFetch();
-
-  useEffect(() => {
-    if (!notiApi) return;
-    let data = notiApi?.data.map((i) => i).filter((i) => i !== undefined);
-    setTargetUser(data);
-  }, [notiApi]);
-
-  useEffect(() => {
-    setSliceData(tagetUser?.slice(0, items));
-    setItems((items) => items + 15);
-  }, [page, tagetUser]);
-
+  const [notiLoding, notiApi, , notiFetch] = useAxiosFetch();
+  const [, , , infromFetch] = useAxiosFetch();
   // 유저 알림 API
-  useEffect(() => {
-    if (!loginOn) return;
-    notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, null);
-  }, []);
+
+    //스크롤
+    const handleScroller = () => {
+      if (!loginOn) return;
+      const params = {
+        size:20,
+        latestId
+      }
+        notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, params);
+    }
+
+    useEffect(()=> {
+      if(!stopData) return;
+      handleScroller()
+    },[page, stopData])
+
+    useEffect(() => {
+      notiApi?.data?.length === 0 && setStopData(false)
+    }, [notiApi])
+
+    // latestId 찾기
+    useEffect(() => {
+      setLatestId(notiApi?.data[notiApi?.data?.length - 1]?._id)
+    }, [notiApi, page]);
+
+    useEffect(() => {
+      if (!notiApi) return;
+      setTargetUser(targetUser ? [...targetUser, ...notiApi?.data] : [...notiApi?.data]);
+    }, [notiApi]);
+
 
   // 읽음 처리용
   useEffect(() => {
@@ -76,7 +89,7 @@ const UserInform = () => {
         </ClosedBox>
       </InformHeader>
       <InformBodyInner>
-        {sliceData?.map(({ maker, notificationType, read, targetInfo }, key) => (
+        { targetUser?.map(({ maker, notificationType, read, targetInfo }, key) => (
           <ContentBox
             key={key}
             read={read}
@@ -90,7 +103,7 @@ const UserInform = () => {
                 goURL({ pathname: `/viewer/${targetInfo?._id}` });
               }
               toggleNoti();
-            }}
+            } }
           >
             {/* 유저 이미지 */}
             <UserImgWrap>
@@ -124,7 +137,7 @@ const UserInform = () => {
           </ContentBox>
         ))}
 
-        <Observer {...scroll} />
+        { !notiLoding ? <Observer {...scroll} /> : null }
       </InformBodyInner>
     </InformContainer>
   );

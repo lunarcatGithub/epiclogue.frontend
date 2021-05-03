@@ -1,20 +1,17 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-
 import { uploadContext } from './UploadCategory';
-import { langUploadSource } from '@language/Lang.Upload';
-import { LanguageContext } from '@store/App_Store';
+import UploadLanguage from './Upload.Language';
 
 export default function OriginUserSource() {
   const { sourceToggleOn, setSourceToggleOn, setSourceHref, sourceHref } = useContext(uploadContext);
-
-  const { langState } = useContext(LanguageContext);
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { externalSource, uploadPermission } = langUploadSource;
-  const _externalSource = externalSource[selectedLanguage] || externalSource[defaultLanguage],
-    _uploadPermission = uploadPermission[selectedLanguage] || uploadPermission[defaultLanguage];
-
   const inputRef = useRef(null);
+  
+  // 언어 변수
+  const {
+    _externalSource,
+    _uploadPermission,
+  } = UploadLanguage();
 
   useEffect(() => {
     inputRef?.current?.focus();

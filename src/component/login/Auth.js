@@ -1,32 +1,30 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useRouter } from 'next/router';
 
 // 컴포넌트 import
-import { LanguageContext } from '@store/App_Store';
-import { authPage } from '@language/Lang.Login';
 import { useUrlMove } from '@hooks/useUrlMove';
+import LoginLanguage from './Login.Language';
 
 // Hooks&&reducer import
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 export function Auth() {
-  const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
   const [authState, setAuthState] = useState();
   const router = useRouter();
 
   //fetch
-  const [authLoding, authApi, authError, authFetch] = useAxiosFetch();
+  const [, authApi, , authFetch] = useAxiosFetch();
 
   //언어 변수
-  const { selectedLanguage, defaultLanguage } = langState;
-  const { authTitle, authSubTitle, authFailTitle, authFailSub, contact } = authPage;
-  const _authTitle = authTitle[selectedLanguage] || authTitle[defaultLanguage],
-    _authSubTitle = authSubTitle[selectedLanguage] || authSubTitle[defaultLanguage],
-    _authFailTitle = authFailTitle[selectedLanguage] || authFailTitle[defaultLanguage],
-    _authFailSub = authFailSub[selectedLanguage] || authFailSub[defaultLanguage],
-    _contact = contact[selectedLanguage] || contact[defaultLanguage];
+  const {
+    _authTitle,
+    _authSubTitle,
+    _authFailTitle,
+    _authFailSub,
+    _contact,
+  } = LoginLanguage();
 
   useEffect(() => {
     const { email, token } = router.query;

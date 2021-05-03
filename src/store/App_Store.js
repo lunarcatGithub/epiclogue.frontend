@@ -25,6 +25,8 @@ const combineReducers = (...reducers) => (state, action) => {
   return state;
 };
 
+React.useLayoutEffect = React.useEffect 
+
 // context provider
 const ContextStore = ({ children }) => {
   // router
@@ -47,31 +49,32 @@ const ContextStore = ({ children }) => {
   const [paramsData, setParamsData] = useState();
   const [myboardData, setMyboardData] = useState([]);
   const [followData, setFollowData] = useState();
-  const [followButton, setFollowButton] = useState();
 
   // content component
   const [renderList, setRenderList] = useState([]);
   const [page, setPage] = useState(0);
 
   // initial Login
-  // let login = typeof window !== 'undefined' && localStorage.getItem('loginOn');
   const [unAuth, setUnAuth] = useState(false);
   const [cookieValue, cookieHandle] = useCookie();
-  const [loginOn, setLoginOn] = useState(false);
+
+  // keep login
+  const isLogin = typeof window !== 'undefined' && localStorage.getItem('keepLogin');
+  const [loginOn, setLoginOn] = useState(JSON.parse(isLogin) || false);
 
   // 개발 & 프로덕션 로그인 분기처리
   const devProductionHandle = () => {
     let divied = process.env.NODE_ENV;
-
-      cookieHandle('GET', 'access_token');
-      if(divied === 'production'){
-        if(cookieValue?.length > 1) { // 쿠키값이 있다면 로그인 상태로 반환
-          setLoginOn(true)
-        }
-      } else {
-        setLoginOn(true)
-      }
- 
+      // cookieHandle('GET', 'access_token');
+      // if(divied === 'production'){
+      //   if(cookieValue?.length > 1) { // 쿠키값이 있다면 로컬스토리지 갱신
+      //     localStorage.setItem('keepLogin', true);
+      //     setLoginOn(true)
+      //   }
+      // } else { // 푸시 전에 주석처리
+      //   localStorage.setItem('keepLogin', true);
+      //   setLoginOn(true)
+      // }
     }
 
   useLayoutEffect(() => {
@@ -79,17 +82,14 @@ const ContextStore = ({ children }) => {
   }, [cookieValue?.length])
 
   useEffect(() => {
-    if (cookieValue?.length < 1 && !loginOn) {
+    if (!loginOn) {
       if (router.pathname.match('/upload') || router.pathname.match('/follow') || router.pathname.match('/editor')) {
+        alert('please SignIn!')
         goURL({ pathname: '/login' });
         return;
-      } else {
-        return;
       }
-    } else {
-      return;
     }
-  }, [cookieValue?.length, loginOn]);
+  }, [loginOn]);
 
   return (
     <AppDataContext.Provider
@@ -109,8 +109,6 @@ const ContextStore = ({ children }) => {
         setParamsData,
         followData,
         setFollowData,
-        followButton,
-        setFollowButton,
         lastContentId, 
         setLastContentId,
         renderList,
