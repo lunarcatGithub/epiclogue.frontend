@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import styled,{css} from 'styled-components';
 
 //component
-import {EmailForm} from '../Common/EmailForm_Form';
-
+import {AdminConfirmEmail} from './Admin_Confirm_EmailForm';
+import {ConfirmReportPopup} from './Admin_Confirm_Report';
+import {AdminConfirmInform} from './Admin_Confirm_Inform';
+import {AdminConfirmTurnBack} from './Admin_Confirm_TurnBack'
 // utils
 
 // hook
@@ -14,10 +16,10 @@ export function AdminConfirmPopup(props) {
 
     const [headerTitle, setHeaderTitle] = useState({});
     const [dataOnChange, dataOnChangeHandler] = useState('스팸성');
-    const [selectReport, setSelectReport] = useState();
-    const [selectList, toggleSelectList] = useToggle(false);
     const [userInform, setUserInform] = useState('');
-    const [emailDevide, setEmailDevide] = useState();
+    const [dataSendComponent, setDataSendComponent] = useState();
+    console.log('mainType', mainType);
+    console.log('type', type);
 
     // 탭 스타일용
     const [isTab, setIsTab] = useState(1)
@@ -40,7 +42,10 @@ export function AdminConfirmPopup(props) {
                 setHeaderTitle({title:'콘텐츠 삭제'});
                 _type = '삭제되';
                 break;
-
+            case 'Restore':
+                setHeaderTitle({title:'콘텐츠 복구'});
+                _type = '삭제되';
+                break;
             default:
                 break;
         }
@@ -50,139 +55,76 @@ export function AdminConfirmPopup(props) {
     useEffect(()=> {
         deviedHandler();
     },[type, dataOnChange])
-    const popupTab = [
-        {id:1, value:1, name:'신고정보'},
-        {id:2, value:2, name:'제재하기'}
-    ]
 
-    const sampleUser = [
-        {id:1, _id:'@adassasdasdasadsaaaf', date:'2020-06-20', report:'혐오'},
-        {id:2, _id:'@123ㅁㄴㅊ', date:'2020-06-20', report:'혐오'},
-        {id:3, _id:'@124flllv', date:'2020-06-20', report:'그냥'},
-        {id:4, _id:'@124flllv', date:'2020-06-20', report:'그냥'},
-        {id:5, _id:'@124flllv', date:'2020-06-20', report:'그냥'},
-        {id:6, _id:'@124flllv', date:'2020-06-20', report:'그냥'},
-        {id:7, _id:'@124flllv', date:'2020-06-20', report:'그냥'},
-    ]
-    return (
-        <ConfirmLayout>
-            <ConfirmInner>
-                {/* 상단 title */}
-                <ConfirmDivHeader>
-                    { headerTitle.title }
-                </ConfirmDivHeader>
-                {/* 내용 desc */}
-                <ConfirmDivBody>
-                    <ConfirmDivBodyInner>
-                        {/* 탭 부문 */}
-                    <PopupTabWrap>
-                        {
-                            popupTab.map( items => (
-                            <PopupTab 
-                            key={items.id} 
-                            onClick={() => setIsTab(items.value)} 
-                            isSelect={isTab}
-                            styling={items.value === isTab}
-                            >{items.name}</PopupTab> ) )
-                        }
-                    </PopupTabWrap>
-                    { 
-                        isTab === 1 ? 
-                        <ConfirmInBody>
-                            <BlockWrap>
-                                <TextBlock>콘텐츠 정보</TextBlock>
-                                <InformBox>{listData?.title}</InformBox>
-                            </BlockWrap>
-                            {/* 콘텐츠 업로드 유저 */}
-                            <BlockWrap>
-                            <TextBlock>신고 받은 유저</TextBlock>
-                                <InformBox>{listData?._id}</InformBox>
-                            </BlockWrap>
-                            <BlockWrap>
-                            <TextBlock>신고 한 유저</TextBlock>
-                                <ReportUserBox>
-                                    <ReportHeader>
-                                        <ReportHeaderTab>유저 아이디</ReportHeaderTab>
-                                        <ReportHeaderTab>신고 내용</ReportHeaderTab>
-                                        <ReportHeaderTab>신고 날짜</ReportHeaderTab>
-                                    </ReportHeader>
-                                    <ReportBody>
-                                        {
-                                            sampleUser.map(({id, _id, report, date}) => (
-                                                <ReportBodyInner key={id}>
-                                                    <ReportBodyDevide type={'id'}>{_id}</ReportBodyDevide>
-                                                    <ReportBodyDevide>{report}</ReportBodyDevide>
-                                                    <ReportBodyDevide>{date}</ReportBodyDevide>
-                                                </ReportBodyInner>
-                                            ))
-                                        }
-                                    </ReportBody>
-                                </ReportUserBox>
-                            </BlockWrap>
-                        </ConfirmInBody>
-                        :
-                        <FormWrap>
-                        { 
-                            type === 'Remove' && mainType !== 'COPYRIGHT' ?
-                                <>
-                                <BlockWrap>
-                                    <TextBlock>해당 제재 목록</TextBlock>
-                                    <DropdownBtn onClick={()=>toggleSelectList(!selectList)}>{dataOnChange}</DropdownBtn>
-                                    { 
-                                        selectList &&
-                                        <Dropdown>
-                                            {
-                                                reportList?.map( list => (
-                                                <ListTxtBox key={list.id}>
-                                                    <TextList>{list.title}</TextList>
-                                                    <ListTxtRadio
-                                                    readOnly 
-                                                    value={list.id}
-                                                    checked={list.title === dataOnChange}
-                                                    onChange={() => dataOnChangeHandler(list.title)}
-                                                    onClick={()=>toggleSelectList(!selectList)} 
-                                                    />
-                                                    <ListRadioCustom/>
-                                                </ListTxtBox> ) )
-                                            }
-                                        </Dropdown>
-                                    }
-                                </BlockWrap>
-                                <BlockWrap>
-                                <TextBlock>유저 알림 메시지</TextBlock>
-                                    <AdminWarnMessage 
-                                    value={userInform}
-                                    onChange={(e)=>setUserInform(e.target.value)} />
-                                </BlockWrap>
-                                </>
-                                :
-                                null
-                        }
-                        {
-                            type === 'Suspension' || type === 'Withdrawal' || mainType === 'COPYRIGHT' ?
-                            <EmailForm 
-                                listData={listData}
-                                mainType={mainType}
-                            />
-                            :
-                            null
-                        }
-                            </FormWrap>
-                    }
-                    
-                    </ConfirmDivBodyInner>
-                </ConfirmDivBody>
-                {/* 하단 title */}
-                { 
-                    isTab === 2 &&
-                    <ConfirmDivBottom>
-                        <ConfirmBtn type="confirm">최종확인</ConfirmBtn>
-                        <ConfirmBtn type="cancel" onClick={()=>closePopup(false)}>취소</ConfirmBtn>
-                    </ConfirmDivBottom>
-                }
-            </ConfirmInner>
-        </ConfirmLayout>
-    )
+
+    useEffect(() => {
+      if(type === 'Remove' || type === 'Restore'){
+        setDataSendComponent(<AdminConfirmInform type={type} reportList={reportList}/>)
+      } else if(type === 'Suspension' || type === 'Withdrawal'){
+        setDataSendComponent(<AdminConfirmEmail listData={listData} mainType={mainType} />)
+      } else if(type === 'TurnBack'){
+        setDataSendComponent(<AdminConfirmTurnBack/>)
+      };
+    }, [type])
+
+    const popupTab = [
+      {id:1, value:1, name:'신고정보'},
+      {id:2, value:2, name: type === 'Restore' ? '복구하기' : '제재하기'}
+  ]
+  return (
+    <ConfirmLayout>
+      <ConfirmInner>
+          {/* 상단 title */}
+        <ConfirmDivHeader>
+            { headerTitle.title }
+        </ConfirmDivHeader>
+          {/* 내용 desc */}
+        <ConfirmDivBody>
+            <ConfirmDivBodyInner>
+                {/* 탭 부문 */}
+            <PopupTabWrap>
+              { popupTab.map( items => (
+                <PopupTab 
+                key={items.id} 
+                onClick={() => setIsTab(items.value)} 
+                isSelect={isTab}
+                styling={items.value === isTab}
+                >{items.name}
+                </PopupTab>
+              ) ) }
+            </PopupTabWrap>
+            { isTab === 1 ? 
+              <ConfirmInBody>
+                  <BlockWrap>
+                      <TextBlock>콘텐츠 정보</TextBlock>
+                      <InformBox>{listData?.title}</InformBox>
+                  </BlockWrap>
+                  {/* 콘텐츠 업로드 유저 */}
+                  <BlockWrap>
+                  <TextBlock>신고 받은 유저</TextBlock>
+                      <InformBox>{listData?._id}</InformBox>
+                  </BlockWrap>
+                  <BlockWrap>
+                    <ConfirmReportPopup />
+                  </BlockWrap>
+              </ConfirmInBody>
+              :
+              <FormWrap>
+                {dataSendComponent}
+              </FormWrap> }
+            </ConfirmDivBodyInner>
+        </ConfirmDivBody>
+        {/* 하단 title */}
+        { 
+          isTab === 2 &&
+          <ConfirmDivBottom>
+              <ConfirmBtn type="confirm">최종확인</ConfirmBtn>
+              <ConfirmBtn type="cancel" onClick={()=>closePopup(false)}>취소</ConfirmBtn>
+          </ConfirmDivBottom>
+        }
+        </ConfirmInner>
+    </ConfirmLayout>
+  )
 }
 const TextSize15 = css`
 color:${(props) => props.theme.color.blackColor};
@@ -289,130 +231,11 @@ font-weight:${(props) => props.theme.fontWeight.font500};
 `
 
 // 신고한 유저 목록용
-const ReportUserBox = styled(InformBox)`
-position: relative;
-display:flex;
-flex-direction:column;
-min-height:5em;
-max-height:15em;
-`
-const ReportHeader = styled.div`
-position:absolute;
-top:0;
-left:0;
-display:flex;
-width:100%;
-height:2em;
-`
-const ReportHeaderTab = styled.div`
-display:flex;
-flex-wrap:nowrap;
-width:100%;
-justify-content:center;
-align-items:center;
-${TextSize15};
-`
-const ReportBody = styled.div`
-display:flex;
-flex-direction:column;
-width:100%;
-padding-top:1.5em;
-`
-const ReportBodyInner = styled(ReportBody)`
-display:flex;
-flex-direction:row;
-padding:0.5em 0;
-`
-const ReportBodyDevide = styled(ReportHeaderTab)`
-font-weight:${(props) => props.theme.fontWeight.font500};
-
-`
-
-// hidden contents 영역 - 라디오 버튼
-const ListRadioCustom = styled.label`
-    position: relative;
-    width: 1em;
-    height: 1em;
-    border-radius: 50%;
-    border: 1px solid ${(props) => props.theme.color.hoverColor};
-    margin-right: 0.4em;
-    cursor:pointer;
-    `;
-
-const ListTxtRadio = styled.input.attrs({ type: 'radio' })`
-    display: none;
-    &:checked + ${ListRadioCustom} {
-    border: 1px solid ${(props) => props.theme.color.orangeColor};
-    &::before {
-    content: '';
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    display: inline-block;
-    height: 0.8em;
-    width: 0.8em;
-    border-radius: 50%;
-    background: ${(props) => props.theme.color.orangeColor};
-    }
-    }
-`;
-const ListTxtBox = styled.label.attrs({})`
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    border-bottom: 2px solid ${(props) => props.theme.color.hoverColor};
-    cursor: pointer;
-    padding: 0.5em 0;
-    margin-bottom: 4px;
-    transition: all 0.2s ease;
-    &:hover {
-        background: ${(props) => props.theme.color.microOrangeColor};
-    }
-`;
-const TextList = styled.span`
-    font-size: ${(props) => props.theme.fontSize.font14};
-    font-weight: ${(props) => props.theme.fontWeight.font300};
-    color: ${(props) => props.theme.color.blackColor};
-    padding: 0 4px;
-`;
 
 const TextBlock = styled.span`
 display:flex;
 ${TextSize15};
 margin-bottom:0.7em;
-`
-
-const DropdownBtn = styled.div`
-padding:0.4em 1em;
-width:100%;
-border:1px solid #999;
-border-radius:0.3em;
-cursor:pointer;
-${TextSize15};
-font-weight:${(props) => props.theme.fontWeight.font500};
-`
-
-const Dropdown = styled.div`
-position:absolute;
-display:flex;
-flex-direction:column;
-width:100%;
-height:10em;
-overflow-x: scroll;
-overflow-x: hidden;
-top:7.3em;
-left:0;
-padding:1em 0.5em;
-background:${(props) => props.theme.color.whiteColor};
-box-shadow: ${(props) => props.theme.boxshadow.popup};
-`
-
-const AdminWarnMessage = styled.textarea`
-width:100%;
-height:5em;
-border:1px solid #999;
-border-radius:0.5em;
-padding:0.5em;
 `
 
 // 버튼

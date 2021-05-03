@@ -10,6 +10,10 @@ import { Dashboard } from '../Dashboard/Dashboard';
 import { AdminContents } from '../Contents/AdminContents';
 import { AdminReport } from '../Report/AdminReport';
 import { AdminCopyright } from '../Copyright/Copyright';
+import { AdminReportResult } from '../Report/AdminReport_Result';
+import {CopyRightReportResult} from '../Copyright/Copyright_Result';
+
+
 import GNB from '@Component/GNB/Gnb';
 import { Nav } from '@Component/NAV/Nav';
 
@@ -17,7 +21,6 @@ export const AdmimMain = () => {
   const router = useRouter();
 
   const [viewTab, setViewTab] = useState();
-
   useEffect(() => {
     if (router.query.tab === 'dashboard') {
       setViewTab(<Dashboard />);
@@ -27,8 +30,12 @@ export const AdmimMain = () => {
       setViewTab(<AdminUsers />);
     } else if (router.query.tab === 'reports') {
       setViewTab(<AdminReport />);
-    }else if (router.query.tab === 'copyright') {
+    } else if (router.query.tab === 'copyright') {
       setViewTab(<AdminCopyright />);
+    } else if (router.query.tab === 'copyrightresult') {
+      setViewTab(<CopyRightReportResult/>);
+    }else if (router.query.tab === 'reportsresult') {
+      setViewTab(<AdminReportResult/>);
     }
   }, [router.query]);
 
@@ -36,7 +43,7 @@ export const AdmimMain = () => {
     <Layout>
       <GNB />
       <LayoutDivision>
-        <Nav />
+        <Nav routeCheck={router.query.tab} />
         <LayoutInner>{viewTab}</LayoutInner>
       </LayoutDivision>
     </Layout>

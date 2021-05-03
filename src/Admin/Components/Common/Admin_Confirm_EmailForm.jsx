@@ -1,7 +1,7 @@
 import React,{useState, useEffect} from 'react'
 import styled, {css} from 'styled-components';
 
-export function EmailForm({listData, mainType}) {
+export function AdminConfirmEmail({listData, mainType}) {
   const [emailTitle, setEmailTitle] = useState('');
 
   const initValueHandler = () => {

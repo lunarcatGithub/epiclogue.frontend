@@ -23,9 +23,9 @@ export default function ListForm({ type, contentsData }) {
     //remove
     toggleSelect,
     setUserContentsData,
-    warnBtn
+    buttonType
   } = contentsData;
-
+  
   const {reportList} = useContext(AdminContext);
 
   const [dropDown1, setDropDown1] = useState([]);
@@ -34,7 +34,7 @@ export default function ListForm({ type, contentsData }) {
   const [bodyData, setBodyData] = useState([]);
 
   const [selectedData, setSelectedData] = useState([]);
-
+ 
   // confirm
   const [warnConfrim, setWarnConfirm] = useState({type:null, bool:false});
   const [userEmail, setUserEmail] = useState({type:null, bool:false});
@@ -42,11 +42,11 @@ export default function ListForm({ type, contentsData }) {
   const typeHandler = () => {
     let arr = [];
 
-    userContentsData?.forEach((data, i) => {
-      userContentsData.concat({ ...data, isSelect: false });
+    userContentsData?.map((data, i) => {
+      arr.push({ ...data, btnArr:buttonType, isSelect: false });
     });
-
-    setBodyData(userContentsData);
+    console.log(arr)
+    setBodyData(arr);
 
     switch (type) {
       case 'CONTENTS':
@@ -76,7 +76,7 @@ export default function ListForm({ type, contentsData }) {
         break;
     }
   };
-
+  console.log(type)
   const lastDataConfirm = (e, type) => {
     setWarnConfirm({type, bool:true});
     bodyData?.filter( uid => uid.id === Number(e.target.id) && setSelectedData(uid))
@@ -105,13 +105,16 @@ export default function ListForm({ type, contentsData }) {
     userContentsData?.forEach((_contentsData) => {
       if (Number(toggleSelect) === _contentsData.id) {
         let data = userContentsData;
+
         if(type === 'REPORT'){
           if (subType === 'main') {
             data.splice(Number(toggleSelect) - 1, 1);
             setUserContentsData(data);
+
           } else if (subType === 'sub') {
             if (userContentsData.hide === true) {
               data.hide = false;
+
             } else {
               data.hide = true;
             }
@@ -138,17 +141,7 @@ export default function ListForm({ type, contentsData }) {
       <TopLayout>
         {/* 상단 좌측 레이아웃 */}
         <TopLeftLayout>
-          {
-            warnBtn?.map((btn, i) => (
-              <TopmenuBtn 
-              key={i}
-              onClick={ e => {
-                btn.value === 'sendMail' && userSendEmail(e, type)
-              }}>
-                {btn.title}
-              </TopmenuBtn>
-            ))
-          }
+
         </TopLeftLayout>
         {/* 상단 중앙 레이아웃 */}
         <TopCenterLayout>
@@ -203,58 +196,25 @@ export default function ListForm({ type, contentsData }) {
                   </TableDataBox>
                   <TableDataBox >{content.id}</TableDataBox>
                   <TableDataBox>{content._id}</TableDataBox>
-                  {content.email && <TableDataBox>{content.email}</TableDataBox>}
                   {content.type && <TableDataBox>{content.type}</TableDataBox>}
                   {content.join && <TableDataBox>{content.join}</TableDataBox>}
-                  {content.title && <TableDataBox>{content.title}</TableDataBox>}
                   {content.category && <TableDataBox>{content.category}</TableDataBox>}
-                  {content.result && <TableDataBox type={'result'}>{content.result}</TableDataBox>}
                   {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
                   {content.content && <TableDataBox>{content.content}</TableDataBox>}
-                  {content.date && <TableDataBox>{content.date}</TableDataBox>}
                   {content.count && <TableDataBox>{content.count}</TableDataBox>}
-                  {
-                    type !== 'USERS' && (
-                      <TableDataBox type='btn' >
-                        <AllButton
-                          id={content.id}
-                          onClick={(e) => {
-                            setToggleSelect(e.currentTarget.id);
-                            lastDataConfirm(e, 'Remove');
-                          }}
-                        >
-                          삭제
-                        </AllButton>
-                      </TableDataBox> )
-                  }
-                  {
-                    type !== 'CONTENTS' && (
-                      <TableDataBox type='btn' >
-                        <AllButton
-                          id={content.id}
-                          onClick={(e) => {
-                            setToggleSelect(e.currentTarget.id);
-                            lastDataConfirm(e, 'Suspension');
-                          }}
-                        >
-                          {content.ban ? '해제' : '정지'}
-                        </AllButton>
-                      </TableDataBox> )
-                  }
-                  {
-                    type !== 'CONTENTS' && (
-                      <TableDataBox type='btn' >
-                        <AllButton
-                          id={content.id}
-                          onClick={(e) => {
-                            setToggleSelect(e.currentTarget.id);
-                            lastDataConfirm(e, 'Withdrawal');
-                          }}
-                        >
-                          탈퇴
-                        </AllButton>
-                      </TableDataBox> )
-                  }
+                  {content.result && <TableDataBox>{content.result}</TableDataBox>}
+                  {content.date && <TableDataBox>{content.date}</TableDataBox>}
+                  { content.btnArr?.map(({title, value}, key) => (
+                    <TableDataBox type='btn' key={key} >
+                    <AllButton
+                      value={content.id}
+                      onClick={(e) => {
+                        setToggleSelect(e.currentTarget.id);
+                        lastDataConfirm(e, value);
+                      } } > {title}
+                    </AllButton>
+                  </TableDataBox>
+                  ) ) }
                 </TableRowBox> ))
             }
           </TableBody>
@@ -298,19 +258,6 @@ const Dummy = styled.div`
 const Dummy2 = styled(Dummy)`
   display: flex;
   width: 2em;
-`;
-
-const Layout = styled.div`
-  width: 100%;
-  height: 100%;
-  margin-top: 2em;
-`;
-
-const LayoutInner = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
 `;
 
 // 상단 레이아웃
@@ -380,9 +327,13 @@ const TableHeadLine = styled.th`
 `;
 const TableRowBox = styled.tr`
   background: ${(props) => props.theme.adminColor.whiteColor};
+  &:hover {
+    background: ${(props) => props.theme.adminColor.semiOrangeColor};
+
+  }
 `;
 const TableDataBox = styled.td`
-  width:${props => props.type === 'btn' && props.type === 'result' && '3.5em'};
+  width:${props => props.type === 'btn' && '4.5em'};
   text-align: center;
   padding: 0.8em 0.5em;
 `;
