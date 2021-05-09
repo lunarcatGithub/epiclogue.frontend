@@ -20,7 +20,7 @@ const Main = ({ metaLang }) => {
     title: t('metaMainTitle'),
     contentsTitle:t('metaContentTitle'),
     description: t('metaMainDesc'),
-    image: ['/static/logo192.svg'],
+    image: ["<%= require('/static/logo192.svg') %>"],
     canonical: ``,
     lang:metaLang
   };

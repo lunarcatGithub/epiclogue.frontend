@@ -118,6 +118,10 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   }, [boardItem, countryResult]);
 
   useEffect(() => {
+    const params = {
+      
+    }
+
     userScreenId && boardDataFetch(`${process.env.NEXT_PUBLIC_API_URL}/myboard/${userScreenId}/${isTab}`, 'get', null);
   }, [isTab, userScreenId]);
 
