@@ -21,6 +21,9 @@ export function AdminConfirmPopup(props) {
     // contents type
     const [currentType, setCurrentType] = useState();
 
+    // type button
+    const [decision, setDecision] = useState([]);
+
     // 탭 스타일용
     const [isTab, setIsTab] = useState(1)
 
@@ -51,7 +54,7 @@ export function AdminConfirmPopup(props) {
                 _type = '회원 탈퇴되';
                 break;
             case 'Restore':
-                setHeaderTitle({title:'콘텐츠 복구'});
+                setHeaderTitle({title:'신고 복구'});
                 _type = '복구되';
                 break;
 
@@ -81,17 +84,27 @@ export function AdminConfirmPopup(props) {
       {id:2, value:2, name: type === 'Restore' ? '복구하기' : '제재하기'}
     ]
 
-    // 일반신고 or 저작권 신고에 따른 devide
-    // buttonType 이용
     // 신고 or 복구 하기
-    const processingBtn = [
-      {title:'삭제', value:'Remove'},
-      {title:'정지', value:'Suspension'},
-      {title:'탈퇴', value:'Leave'},
-      {title:'반려', value:'TurnBack'},
-    ];
+    useEffect(() => {
+      const processingBtn = [
+        {title:'삭제', value:'Remove'},
+        {title:'정지', value:'Suspension'},
+        {title:'탈퇴', value:'Leave'},
+        {title:'반려', value:'TurnBack'},
+      ];
 
-  return (
+      const restoreBtn = [
+        {title:'복구', value:'Restore'},
+      ];
+
+      if(type === 'Restore'){
+        setDecision(restoreBtn)
+      } else {
+        setDecision(processingBtn)
+      }
+    }, [type]);
+
+    return (
     <ConfirmLayout>
       <ConfirmInner>
           {/* 상단 title */}
@@ -145,21 +158,23 @@ export function AdminConfirmPopup(props) {
         
           <ConfirmDivBottom>
           { 
-          isTab === 1 &&
-            processingBtn.map(({title, value},index) => (
+            isTab === 1 &&
+            decision.map( ( { title, value },index ) => (
               <ConfirmBtn 
               key={index} 
               type={value} 
-              onClick={ () => { setIsTab(2); setCurrentType(value); }}
-              >{title}</ConfirmBtn>
+              onClick={ () => {
+                setIsTab(2);
+                setCurrentType(value);
+              } } >{title}</ConfirmBtn>
             ) )
           }
           { 
-          isTab === 2 &&
-          <>
-            <ConfirmBtn type="confirm">최종확인</ConfirmBtn>
-            <ConfirmBtn type="cancel" onClick={()=>closePopup(false)}>취소</ConfirmBtn>
-          </>
+            isTab === 2 &&
+            <>
+              <ConfirmBtn type="confirm">최종확인</ConfirmBtn>
+              <ConfirmBtn type="cancel" onClick={()=>closePopup(false)}>취소</ConfirmBtn>
+            </>
           }
           </ConfirmDivBottom>
         
