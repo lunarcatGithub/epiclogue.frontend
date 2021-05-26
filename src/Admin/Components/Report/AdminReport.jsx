@@ -26,10 +26,7 @@ export const AdminReport =()=> {
       {title:'제목', value:'title'}];
     
     const buttonType = [
-      {title:'삭제', value:'Remove'},
-      {title:'정지', value:'Suspension'},
-      {title:'탈퇴', value:'Withdrawal'},
-      {title:'반려', value:'TurnBack'},
+      {title:'처리', value:'SanctionsHandle'},
     ]   
 
     const [toggleSelect, setToggleSelect] = useState();
@@ -58,7 +55,7 @@ export const AdminReport =()=> {
       });
     }  
 
-    const headerArr = ['번호', '아이디', '콘텐츠', '신고횟수', '삭제', '정지', '탈퇴', '반려'];
+    const headerArr = ['번호', '아이디', '콘텐츠', '신고횟수', '처리하기'];
 
 
     return (

@@ -59,7 +59,7 @@ export const AdminContents = () => {
     });
   };
 
-  const headerArr = ['번호', '이메일', '아이디', '제목', '카테고리', '작성일', '삭제'];
+  const headerArr = ['번호', '이메일', '아이디', '제목', '카테고리', '작성일', '제재'];
 
 
   return (

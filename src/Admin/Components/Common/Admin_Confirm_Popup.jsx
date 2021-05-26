@@ -18,8 +18,8 @@ export function AdminConfirmPopup(props) {
     const [dataOnChange, dataOnChangeHandler] = useState('스팸성');
     const [userInform, setUserInform] = useState('');
     const [dataSendComponent, setDataSendComponent] = useState();
-    console.log('mainType', mainType);
-    console.log('type', type);
+    // contents type
+    const [currentType, setCurrentType] = useState();
 
     // 탭 스타일용
     const [isTab, setIsTab] = useState(1)
@@ -27,25 +27,34 @@ export function AdminConfirmPopup(props) {
     const deviedHandler = () => {
         let _type,
             postType = '댓글';
-            
-        switch (type) {
+
+            switch (currentType) {
             case 'Suspension':
                 setHeaderTitle({title:'유저 정지'})
                 _type = '정지 처리';
                 // setEmailDevide(<EmailForm/>)
                 break;
-            case 'Hide':
-                setHeaderTitle({title:'콘텐츠 블라인드'})
-                _type = '블라인드 처리';
-                break;
+            // case 'Hide':
+            //     setHeaderTitle({title:'콘텐츠 블라인드'})
+            //     _type = '블라인드 처리';
+            //     break;
             case 'Remove':
                 setHeaderTitle({title:'콘텐츠 삭제'});
                 _type = '삭제되';
                 break;
+            case 'TurnBack':
+                setHeaderTitle({title:'신고 반려'});
+                _type = '';
+                break;
+            case 'Leave':
+                setHeaderTitle({title:'회원 탈퇴'});
+                _type = '회원 탈퇴되';
+                break;
             case 'Restore':
                 setHeaderTitle({title:'콘텐츠 복구'});
-                _type = '삭제되';
+                _type = '복구되';
                 break;
+
             default:
                 break;
         }
@@ -54,29 +63,47 @@ export function AdminConfirmPopup(props) {
 
     useEffect(()=> {
         deviedHandler();
-    },[type, dataOnChange])
+    },[currentType, dataOnChange])
 
 
     useEffect(() => {
-      if(type === 'Remove' || type === 'Restore'){
+      if(currentType === 'Hide' || currentType === 'Remove'){
         setDataSendComponent(<AdminConfirmInform type={type} reportList={reportList}/>)
-      } else if(type === 'Suspension' || type === 'Withdrawal'){
+      } else if(currentType === 'Suspension' || currentType === 'Leave'){
         setDataSendComponent(<AdminConfirmEmail listData={listData} mainType={mainType} />)
-      } else if(type === 'TurnBack'){
+      } else if(currentType === 'TurnBack'){
         setDataSendComponent(<AdminConfirmTurnBack/>)
       };
-    }, [type])
+    }, [currentType])
 
     const popupTab = [
       {id:1, value:1, name:'신고정보'},
       {id:2, value:2, name: type === 'Restore' ? '복구하기' : '제재하기'}
-  ]
+    ]
+
+    // 일반신고 or 저작권 신고에 따른 devide
+    // buttonType 이용
+    // 신고 or 복구 하기
+    const processingBtn = [
+      {title:'삭제', value:'Remove'},
+      {title:'정지', value:'Suspension'},
+      {title:'탈퇴', value:'Leave'},
+      {title:'반려', value:'TurnBack'},
+    ];
+
   return (
     <ConfirmLayout>
       <ConfirmInner>
           {/* 상단 title */}
         <ConfirmDivHeader>
-            { headerTitle.title }
+          { isTab === 2 &&
+          <BackBtn 
+          onClick={ () => {
+            setIsTab(1)
+            setCurrentType('')
+            } } >Back</BackBtn>
+          }
+          <HeaderText>{ headerTitle.title }</HeaderText>
         </ConfirmDivHeader>
           {/* 내용 desc */}
         <ConfirmDivBody>
@@ -85,10 +112,10 @@ export function AdminConfirmPopup(props) {
             <PopupTabWrap>
               { popupTab.map( items => (
                 <PopupTab 
-                key={items.id} 
-                onClick={() => setIsTab(items.value)} 
-                isSelect={isTab}
-                styling={items.value === isTab}
+                  key={items.id} 
+                  // onClick={() => setIsTab(items.value)} 
+                  isSelect={isTab}
+                  styling={items.value === isTab}
                 >{items.name}
                 </PopupTab>
               ) ) }
@@ -115,13 +142,27 @@ export function AdminConfirmPopup(props) {
             </ConfirmDivBodyInner>
         </ConfirmDivBody>
         {/* 하단 title */}
-        { 
-          isTab === 2 &&
+        
           <ConfirmDivBottom>
-              <ConfirmBtn type="confirm">최종확인</ConfirmBtn>
-              <ConfirmBtn type="cancel" onClick={()=>closePopup(false)}>취소</ConfirmBtn>
+          { 
+          isTab === 1 &&
+            processingBtn.map(({title, value},index) => (
+              <ConfirmBtn 
+              key={index} 
+              type={value} 
+              onClick={ () => { setIsTab(2); setCurrentType(value); }}
+              >{title}</ConfirmBtn>
+            ) )
+          }
+          { 
+          isTab === 2 &&
+          <>
+            <ConfirmBtn type="confirm">최종확인</ConfirmBtn>
+            <ConfirmBtn type="cancel" onClick={()=>closePopup(false)}>취소</ConfirmBtn>
+          </>
+          }
           </ConfirmDivBottom>
-        }
+        
         </ConfirmInner>
     </ConfirmLayout>
   )
@@ -159,14 +200,26 @@ const ConfirmDivHeader = styled.div`
 display:flex;
 width:100%;
 height:100%;
-padding:0.8em 1em;
+padding:1em 2em;
+background: ${(props) => props.theme.color.whiteColor};
+align-items: center;
+
+`
+
+// header
+const HeaderText = styled.span`
 color:${(props) => props.theme.color.blackColor};
 font-weight:${(props) => props.theme.fontWeight.font700};
 font-size:${(props) => props.theme.fontSize.font18};
-background: ${(props) => props.theme.color.whiteColor};
-`
+`;
+
 // 팝업 body
-const ConfirmDivBody = styled(ConfirmDivHeader)`
+const ConfirmDivBody = styled.div`
+display:flex;
+width:100%;
+height:100%;
+padding:1em 2em;
+background: ${(props) => props.theme.color.whiteColor};
 `
 const ConfirmDivBodyInner = styled.div`
 position:relative;
@@ -183,7 +236,7 @@ padding: 2em 0;
 `
 
 // 팝업 body ===> 탭 부문
-const PopupTabWrap = styled.div`
+const PopupTabWrap = styled.span`
 display:flex;
 width:100%;
 margin-bottom:0.8em;
@@ -198,11 +251,7 @@ color:${props => props.styling ? props.theme.color.orangeColor : props.theme.col
 font-weight:${(props) => props.theme.fontWeight.font700};
 font-size:${(props) => props.theme.fontSize.font16};
 border-bottom: 2px solid ${props => props.styling ? props.theme.color.orangeColor : props.theme.color.hoverColor};
-cursor:pointer;
 
-&:hover {
-    background: ${props => props.theme.color.microOrangeColor};
-}
 `
 
 const ConfirmDivBottom = styled(ConfirmDivHeader)`
@@ -244,6 +293,7 @@ display:flex;
 align-items:center;
 justify-content:center;
 padding:0.4em 0.8em;
+margin:0 0.3em;
 border-radius:0.4em;
 margin-right:${(props) => props.type === 'confirm' && `0.8em`};
 background: ${(props) => props.type === 'confirm' ? props.theme.color.pinkColor : props.theme.color.popupColor };
@@ -251,4 +301,11 @@ color:${(props) => props.theme.color.whiteColor};
 font-weight:${(props) => props.theme.fontWeight.font700};
 font-size:${(props) => props.theme.fontSize.font15};
 cursor:pointer;
-`
+`;
+
+const BackBtn = styled.button`
+width:30px;
+height:30px;
+border-radius:50%;
+background:#999;
+`;

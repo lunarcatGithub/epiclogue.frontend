@@ -25,7 +25,8 @@ export default function ListForm({ type, contentsData }) {
     setUserContentsData,
     buttonType
   } = contentsData;
-  
+  console.log(buttonType);
+
   const {reportList} = useContext(AdminContext);
 
   const [dropDown1, setDropDown1] = useState([]);
@@ -45,7 +46,7 @@ export default function ListForm({ type, contentsData }) {
     userContentsData?.map((data, i) => {
       arr.push({ ...data, btnArr:buttonType, isSelect: false });
     });
-    console.log(arr)
+
     setBodyData(arr);
 
     switch (type) {
@@ -148,16 +149,14 @@ export default function ListForm({ type, contentsData }) {
           <Dropdown data={viewNum} />
           <Dummy2 />
           <Dropdown data={dropDown1} type={type} />
-          {
-            type !== 'USERS' && (
-              <>
-                <Dummy />
-                <Dropdown
-                data={dropDown2} 
-                type={type} 
-                />
-              </> )
-          }
+          { type !== 'USERS' && (
+            <>
+              <Dummy />
+              <Dropdown
+              data={dropDown2} 
+              type={type} 
+              />
+            </> ) }
         </TopCenterLayout>
         <TopRightLayout>
           <Dropdown data={dropDown3} type={type} />
@@ -170,7 +169,7 @@ export default function ListForm({ type, contentsData }) {
         {/* 본문 테이블 */}
         <TableBox ref={tableRef}>
           <TableHead>
-            <TableRowBox>
+            <TableRowBox styling="header" >
               {/*  테이블 헤더 */}
               <TableHeadLine>
                 <CheckBox onChange={(e) => allCheckHandle(e, 'all')} />
@@ -196,16 +195,16 @@ export default function ListForm({ type, contentsData }) {
                   </TableDataBox>
                   <TableDataBox >{content.id}</TableDataBox>
                   <TableDataBox>{content._id}</TableDataBox>
-                  {content.type && <TableDataBox>{content.type}</TableDataBox>}
-                  {content.join && <TableDataBox>{content.join}</TableDataBox>}
-                  {content.category && <TableDataBox>{content.category}</TableDataBox>}
-                  {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
-                  {content.content && <TableDataBox>{content.content}</TableDataBox>}
-                  {content.count && <TableDataBox>{content.count}</TableDataBox>}
-                  {content.result && <TableDataBox>{content.result}</TableDataBox>}
-                  {content.date && <TableDataBox>{content.date}</TableDataBox>}
-                  { content.btnArr?.map(({title, value}, key) => (
-                    <TableDataBox type='btn' key={key} >
+                    {content.type && <TableDataBox>{content.type}</TableDataBox>}
+                    {content.join && <TableDataBox>{content.join}</TableDataBox>}
+                    {content.category && <TableDataBox>{content.category}</TableDataBox>}
+                    {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
+                    {content.content && <TableDataBox>{content.content}</TableDataBox>}
+                    {content.count && <TableDataBox>{content.count}</TableDataBox>}
+                    {content.result && <TableDataBox>{content.result}</TableDataBox>}
+                    {content.date && <TableDataBox>{content.date}</TableDataBox>}
+                    { content.btnArr?.map(({title, value}, key) => (
+                  <TableDataBox type='btn' key={key} >
                     <AllButton
                       value={content.id}
                       onClick={(e) => {
@@ -325,18 +324,25 @@ const TableHeadLine = styled.th`
   padding: 0.8em 1em;
   border-bottom: 2px solid ${(props) => props.theme.adminColor.hoverColor};
 `;
+
 const TableRowBox = styled.tr`
   background: ${(props) => props.theme.adminColor.whiteColor};
   &:hover {
-    background: ${(props) => props.theme.adminColor.semiOrangeColor};
+    background: ${
+    (props) => props.styling !== "header" ?
+    props.theme.adminColor.semiOrangeColor
+    :
+    null
+  };
 
   }
 `;
+
 const TableDataBox = styled.td`
-  width:${props => props.type === 'btn' && '4.5em'};
   text-align: center;
   padding: 0.8em 0.5em;
 `;
+
 // 본문 레이아웃 - 헤더 UI
 const CheckBox = styled.input.attrs({
   type: 'checkbox',
