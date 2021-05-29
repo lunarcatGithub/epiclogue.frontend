@@ -25,7 +25,6 @@ export default function ListForm({ type, contentsData }) {
     setUserContentsData,
     buttonType
   } = contentsData;
-  console.log(buttonType);
 
   const {reportList} = useContext(AdminContext);
 
@@ -77,7 +76,7 @@ export default function ListForm({ type, contentsData }) {
         break;
     }
   };
-  console.log(type)
+
   const lastDataConfirm = (e, type) => {
     setWarnConfirm({type, bool:true});
     bodyData?.filter( uid => uid.id === Number(e.target.id) && setSelectedData(uid))
@@ -125,6 +124,11 @@ export default function ListForm({ type, contentsData }) {
       } else return;
       
     });
+  };
+
+  // 최종 확인
+  const dangerConfirm = () => {
+
   };
 
   useEffect(() => {
@@ -230,6 +234,7 @@ export default function ListForm({ type, contentsData }) {
               reportList={reportList}
               closePopup={setWarnConfirm}
               listData={selectedData}
+              dangerConfirm={dangerConfirm}
             />
           </Modal>
         }

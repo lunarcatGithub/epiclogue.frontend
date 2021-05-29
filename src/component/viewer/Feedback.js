@@ -20,6 +20,7 @@ import { useUrlMove } from '@hooks/useUrlMove';
 // porps.data._id 는 댓글  uid, writer._id = 작성자의 uid
 const FB = (props) => {
   const {data, type, morePopup, refbUid} = props
+
   const {
     feedbackBody,
     heartCount,
@@ -131,11 +132,11 @@ const FB = (props) => {
           </FeedbackProfile>
         </FeedbackProfileWrap>
         {
-            <FdMoreMenuAnchor
-              onClick={() => loginOn ? morePopup(writer.screenId, _id, type) : setUnAuth(true) }
-            >
-              <MoreMenuDot />
-            </FdMoreMenuAnchor> 
+          <FdMoreMenuAnchor
+            onClick={() => loginOn ? morePopup(writer.screenId, _id, type) : setUnAuth(true) }
+          >
+            <MoreMenuDot />
+          </FdMoreMenuAnchor> 
         }
             <FeedbackContentBox>
               <FeedbackContentInner modify={feedBackModify}>

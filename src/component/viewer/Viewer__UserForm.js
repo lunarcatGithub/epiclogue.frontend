@@ -137,7 +137,7 @@ export default function ViewerUserForm(props) {
             <UserIdInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>{screenId}</UserIdInfo>
           </UserProfileId>
           {/* 메뉴 더보기 */}
-          <FdMoreMenuAnchor onClick={() => checkMoreMenuType(screenId)}>
+          <FdMoreMenuAnchor onClick={() => checkMoreMenuType(screenId, 'Board', user_id)}>
             <MoreMenuDot />
           </FdMoreMenuAnchor>
           {/* 콘텐츠 */}

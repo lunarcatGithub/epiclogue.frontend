@@ -9,10 +9,8 @@ import {AdminConfirmTurnBack} from './Admin_Confirm_TurnBack'
 // utils
 
 // hook
-import { useToggle } from '@hooks/useToggle';
-
 export function AdminConfirmPopup(props) {
-    const {mainType, type, dataHandler, reportList, closePopup, listData} = props
+    const {mainType, type, dataHandler, reportList, closePopup, listData, dangerConfirm} = props
 
     const [headerTitle, setHeaderTitle] = useState({});
     const [dataOnChange, dataOnChangeHandler] = useState('스팸성');
@@ -172,7 +170,7 @@ export function AdminConfirmPopup(props) {
           { 
             isTab === 2 &&
             <>
-              <ConfirmBtn type="confirm">최종확인</ConfirmBtn>
+              <ConfirmBtn type="confirm" onClick={dangerConfirm} >최종확인</ConfirmBtn>
               <ConfirmBtn type="cancel" onClick={()=>closePopup(false)}>취소</ConfirmBtn>
             </>
           }

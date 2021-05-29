@@ -28,24 +28,22 @@ const ReFeedback = (props) => {
   return (
     <FeedbackLayout>
       <FBheader>
-        <FBheaderInner>
           <ClosedBox>
             <ClosedBtn onClick={onClose} />
           </ClosedBox>
-        </FBheaderInner>
       </FBheader>
 
       {/* 원 댓글  */}
       <OriginUserBox>
         <OriginFeedback>
-          <FB type="popupFb" key={data?._id} data={data} morePopup={morePopup} />
+          <FB type="popupFb" reportType="Feedback" key={data?._id} data={data} morePopup={morePopup} />
         </OriginFeedback>
       </OriginUserBox>
       {/* 대댓글  */}
       <FBcontent>
         <FeedbackInner>{
         !replyLoding && fbReList ? fbReList.map((item) => 
-        <FB type="ReFb" key={item._id} data={item} counting={fbReList.length} morePopup={morePopup} refbUid={item._id} />) 
+        <FB type="ReFb" reportType="Reply" key={item._id} data={item} counting={fbReList.length} morePopup={morePopup} refbUid={item._id} />) 
         :
         <ProgressSmall />
         }</FeedbackInner>
@@ -83,20 +81,17 @@ const FeedbackLayout = styled.section`
 // 피드백 팝업 헤더
 const FBheader = styled.article`
   width: 100%;
-  height: 3em;
+  height: 5.2em;
   margin-bottom: 0.1em;
   background: ${(props) => props.theme.color.whiteColor};
   box-shadow: ${(props) => props.theme.boxshadow.nav};
-`;
-
-const FBheaderInner = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  width: 100%;
-  height: 100%;
   padding: 0 1em;
 `;
+
+
 // 헤더 유저 닉네임
 
 // 팝업 닫기 버튼
