@@ -1,10 +1,14 @@
-import React,{ useState } from 'react'
+import React,{ useState, useEffect } from 'react'
 import styled from 'styled-components';
 
 // 컴포넌트 import
 import ListForm from '../Common/List__Form';
 
+// hooks
+import useAxiosFetch from '../../../hooks/useAxiosFetch';
+
 export const AdminReport =()=> {
+
     //data
     const [userContentsData, setUserContentsData] = useState([
       {id:1, _id:`@asasdd`, title:'신고받을만한 콘텐츠임니다ㅎ', kind:'대댓글', count:5},
@@ -29,11 +33,14 @@ export const AdminReport =()=> {
       {title:'처리', value:'SanctionsHandle'},
     ]   
 
+  // fetch
+    const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
+
     const [toggleSelect, setToggleSelect] = useState();
 
     const dataHadler = (e, type) => {
       userContentsData?.forEach(_contentsData => {
-        if(Number(toggleSelect) === _contentsData.id){
+        if( Number(toggleSelect) === _contentsData.id ){
           let data = userContentsData
           if(type === 'main'){
             // 회원 탈퇴
@@ -53,8 +60,19 @@ export const AdminReport =()=> {
             return;
         }
       });
-    }  
+    } 
 
+    useEffect(() => {
+    const params = {
+      size:30,
+      page:0,
+    }
+    reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'get', null, null, params)
+    }, []);
+
+    console.log(reportApi)
+    console.log(reportError)
+    
     const headerArr = ['번호', '아이디', '콘텐츠', '신고횟수', '처리하기'];
 
 
