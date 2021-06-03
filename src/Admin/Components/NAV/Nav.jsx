@@ -2,10 +2,9 @@ import React, { useState, createContext } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 
-export const Nav = () => {
+export const Nav = ({routeCheck}) => {
     // create context
     const AdminContext = createContext({});
-
     // tab controls
     const [adminTab, setAdminTab] = useState('DASHBOARD');
 
@@ -14,30 +13,29 @@ export const Nav = () => {
         { id:1, title:'콘텐츠관리', href:'contents', method:'CONTENTS' },
         { id:2, title:'회원관리', href:'users', method:'USERS' },
         { id:3, title:'신고관리', href:'reports', method:'REPORTS' },
-        { id:4, title:'저작권 신고', href:'copyright', method:'COPYRIGHT' },
+        { id:4, title:'신고 처리 결과', href:'reportsresult', method:'REPORTSRESULT' },
+        { id:5, title:'저작권 신고', href:'copyright', method:'COPYRIGHT' },
+        { id:6, title:'저작권 처리 결과', href:'copyrightresult', method:'COPYRIGHTRESULT' },
     ]
 
     return (
-        <AdminContext.Provider value={{adminTab, setAdminTab}}>
-            <Layout>
-                <LayoutInner>
-                    {/* NAV 상단 */}
-                    <InnerTop>
-                        {
-                        NavArr.map(({id, title, href, method})=> (
-                            <Link key={id} href={`/epicadmin/${href}`} >
-                                <NavItemTxt onClick={()=>setAdminTab(method)} >{title}</NavItemTxt>
-                            </Link> ))
-                        }
-                    </InnerTop>
-                    <Dummy/>
-                        {/* NAV 하단 */}
-                    <InnerBottom>
-
-                    </InnerBottom>
-                </LayoutInner>
-            </Layout>
-        </AdminContext.Provider>
+      <AdminContext.Provider value={{adminTab, setAdminTab}}>
+        <Layout>
+          <LayoutInner>
+            {/* NAV 상단 */}
+            <InnerTop>
+            { NavArr.map(({id, title, href, method})=> (
+                <Link key={id} href={`/epicadmin/${href}`} >
+                    <NavItemTxt onClick={()=>setAdminTab(method)} styling={routeCheck === href} >{title}</NavItemTxt>
+                </Link> ) ) }
+            </InnerTop>
+            <Dummy/>
+                {/* NAV 하단 */}
+            <InnerBottom>
+            </InnerBottom>
+          </LayoutInner>
+        </Layout>
+      </AdminContext.Provider>
     )
 }
 
@@ -85,20 +83,7 @@ const InnerBottom = styled(InnerTop)`
 const NavItemTxt = styled.h2`
 color:${props => props.theme.adminColor.whiteColor};
 font-size:${props => props.theme.fontSize.font15};
-font-weight:${props => props.theme.fontWeight.font500};
+font-weight:${props => props.styling ? props.theme.fontWeight.font700 : props.theme.fontWeight.font300};
 margin:20px 0%;
 cursor:pointer;
 `
-
-const NavItem = styled.span`
-display:flex;
-align-items:center;
-justify-content:center;
-width:100%;
-height:auto;
-padding:1.2em 0;
-&:active {
-    font-weight:${props => props.theme.fontWeight.font700};
-}
-`
-

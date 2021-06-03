@@ -176,7 +176,8 @@ const Viewer = ({ boardItem, nonError }) => {
   }, [likeApi]);
 
   // 회원 유저
-  const checkMoreMenuType = (userId) => {
+  const checkMoreMenuType = (screenId, reportType, userId) => {
+
     // 비회원 유저
     if (!loginOn) {
       setUnAuth(true);
@@ -185,19 +186,23 @@ const Viewer = ({ boardItem, nonError }) => {
 
     // 콘텐츠 팝업
     toggle_Modal_MoreMenu();
-    if (userId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
+    if (screenId === localStorage.getItem('userid') || localStorage.getItem('userid') === '@380ce98e6124ad') {
       setType_MoreMenu(
         <MorePopup 
           type="myMore" 
           conFirmType="CONFIRM" 
           onUpdate={() => goUploadUpdate({pathname:`/upload`, as:`/upload`, query:{_type:'modify', boardUid}})} 
-          handleModal_Menu={() => toggle_Modal_MoreMenu(false)} 
+          handleModal_Menu={() => toggle_Modal_MoreMenu(false)}
         />);
     } else {
       setType_MoreMenu(
         <MorePopup 
-        type="userMore" 
-        handleModal_Menu={() => toggle_Modal_MoreMenu(false)} 
+          type="userMore"
+          reportType={reportType}
+          reportUserId={userId}
+          handleModal_Menu={() => toggle_Modal_MoreMenu(false)} 
+          
+        // currentUserId={}
       />);
     }
   };
@@ -205,9 +210,9 @@ const Viewer = ({ boardItem, nonError }) => {
   const [feedBackModify, setFeedBackModify] = useState(false)
 
   // 댓글 팝업
-  const checkFeedbackMenu = (userId, _id, fbtype) => {
+  const checkFeedbackMenu = (screenId, _id, fbtype) => {
     handleModal_Menu()
-    if (localStorage.getItem('userid') === userId) {
+    if (localStorage.getItem('userid') === screenId) {
       setTypeMenu(
       <MorePopup 
         type="myFbMore"
@@ -219,9 +224,10 @@ const Viewer = ({ boardItem, nonError }) => {
     } else {
       setTypeMenu(
       <MorePopup 
-      type="userMore"
-      _id={_id}
-      handleModal_Menu={() => handleModal_Menu(false)} 
+        type="userMore"
+        reportType={fbtype}
+        _id={_id}
+        handleModal_Menu={() => handleModal_Menu(false)} 
       />
       );
     }
@@ -250,6 +256,7 @@ const Viewer = ({ boardItem, nonError }) => {
       const boardData = initialData.data;
       const replyList = initialData.data.feedbacks;
       const writer = initialData.data.writer;
+      // isMe 여부 체크하기
       const {
         boardTitle,
         boardBody,
@@ -376,8 +383,7 @@ const Viewer = ({ boardItem, nonError }) => {
         // 피드백 수정
         feedBackModify,
         setFeedBackModify
-      }}
-    >
+      } } >
       <Meta meta={metaData} />
       {/* 작품 뷰어 부분*/}
       <ViewerPortWrap>
@@ -510,17 +516,17 @@ const Viewer = ({ boardItem, nonError }) => {
             {/* 피드백 영역 */}
             {
               renderList &&
-                !isLoading &&
-                renderList.slice(0, prevFb).map((item) => ( 
-                  <FB 
-                    type="Fb" 
-                    key={item._id}
-                    id={item._id} 
-                    data={item} 
-                    counting={renderList.length} 
-                    morePopup={checkFeedbackMenu} 
-                  />
-                ))
+              !isLoading &&
+              renderList.slice(0, prevFb).map((item) => ( 
+                <FB 
+                  type="Fb" 
+                  key={item._id}
+                  id={item._id} 
+                  data={item} 
+                  counting={renderList.length} 
+                  morePopup={checkFeedbackMenu} 
+                />
+              ))
             }
             <MoreFb
               checkEvent={eventCtrl}

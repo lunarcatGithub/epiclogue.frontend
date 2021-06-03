@@ -1,80 +1,97 @@
-import React,{ useState } from 'react'
+import React,{ useState, useEffect } from 'react'
 import styled from 'styled-components';
 
 // 컴포넌트 import
 import ListForm from '../Common/List__Form';
 
+// hooks
+import useAxiosFetch from '../../../hooks/useAxiosFetch';
+
 export const AdminReport =()=> {
+
     //data
     const [userContentsData, setUserContentsData] = useState([
-        {id:1, _id:`@asasdd`,  result:'미정', kind:'대댓글',  date:'2020-11-28', count:5, view:'view', ban:false, hide:false},
-        {id:2, _id:`@adf`, result:'삭제',  kind:'대댓글', date:'2021-01-02', count:2,  view:'hide', ban:true, hide:true},
-        {id:3, _id:`@qwerrt`, result:'숨김', kind:'대댓글', date:'2021-02-28', count:1, view:'hide', ban:false, hide:false},
-        {id:4, _id:`@qwerrt`, result:'숨김', kind:'대댓글', date:'2021-02-28', count:1, view:'view', ban:false, hide:false}
+      {id:1, _id:`@asasdd`, title:'신고받을만한 콘텐츠임니다ㅎ', kind:'대댓글', count:5},
+      {id:2, _id:`@adf`, title:'신고쟁이 ㅎㅎㅋㅎ',  kind:'대댓글',  count:2},
+      {id:3, _id:`@qwerrt`, title:'qwrqsfa', kind:'대댓글', count:1},
+      {id:4, _id:`@qwerrt`, title:'ghhtttt',  kind:'대댓글',  count:1, }
     ]);
 
     const categorySelec = [
-        {title:'전체', value:'all'},
-        {title:'정상', value:'green'},
-        {title:'정지', value:'banned'},
-        {title:'탈퇴', value:'leave'}];
+      {title:'전체', value:'all'},
+      {title:'정상', value:'green'},
+      {title:'정지', value:'banned'},
+      {title:'탈퇴', value:'leave'}];
 
     const searchFilter = [
-        {title:'전체', value:'all'},
-        {title:'이메일', value:'email'},
-        {title:'아이디', value:'id'},
-        {title:'제목', value:'title'}];
+      {title:'전체', value:'all'},
+      {title:'이메일', value:'email'},
+      {title:'아이디', value:'id'},
+      {title:'제목', value:'title'}];
     
+    const buttonType = [
+      {title:'처리', value:'SanctionsHandle'},
+    ]   
+
+  // fetch
+    const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
+
     const [toggleSelect, setToggleSelect] = useState();
 
     const dataHadler = (e, type) => {
-        userContentsData?.forEach(_contentsData => {
-            if(Number(toggleSelect) === _contentsData.id){
-                let data = userContentsData
-                if(type === 'main'){
-                    // 회원 탈퇴
-                    data.splice(Number(toggleSelect)-1, 1)
-                    setUserContentsData(data);
-                    
-                } else if( type === 'sub'){
-                    // 회원 정지
-                    if(userContentsData.hide === true){
-                        data.hide = false
-                    }else {
-                        data.hide = true
-                    }
-                    setUserContentsData(data)
-                }
-            } else {
-                return;
+      userContentsData?.forEach(_contentsData => {
+        if( Number(toggleSelect) === _contentsData.id ){
+          let data = userContentsData
+          if(type === 'main'){
+            // 회원 탈퇴
+            data.splice(Number(toggleSelect)-1, 1)
+            setUserContentsData(data);
+            
+          } else if( type === 'sub'){
+            // 회원 정지
+            if(userContentsData.hide === true){
+                data.hide = false
+            }else {
+                data.hide = true
             }
-        });
-    }  
+            setUserContentsData(data)
+          }
+        } else {
+            return;
+        }
+      });
+    } 
 
-    const headerArr = ['번호', '아이디', '처리결과', '콘텐츠', '처리일자', '신고횟수', '삭제', '정지', '탈퇴'];
-    const warnBtn = [
-        { title: '메일발송', value: 'sendMail' },
-        { title: '정지', value: 'ban' },
-        { title: '탈퇴', value: 'leave' },
-        { title: '삭제', value: 'remove' },
-    ]
+    useEffect(() => {
+    const params = {
+      size:30,
+      page:0,
+    }
+    reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'get', null, null, params)
+    }, []);
+
+    console.log(reportApi)
+    console.log(reportError)
+    
+    const headerArr = ['번호', '아이디', '콘텐츠', '신고횟수', '처리하기'];
+
 
     return (
-        <Layout>
-            <LayoutInner>
-                    <ListForm 
-                    type='REPORT' 
-                    contentsData={{
-                        headerArr,
-                        categorySelec,
-                        userContentsData,
-                        searchFilter,
-                        dataHadler,
-                        setToggleSelect,
-                        warnBtn
-                        }} />
-            </LayoutInner>
-        </Layout>
+      <Layout>
+        <LayoutInner>
+          <ListForm 
+          type='REPORT' 
+          contentsData={{
+            headerArr,
+            categorySelec,
+            userContentsData,
+            searchFilter,
+            dataHadler,
+            setToggleSelect,
+            buttonType
+          }} />
+        </LayoutInner>
+      </Layout>
     )
 }
 

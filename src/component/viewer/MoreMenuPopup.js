@@ -14,7 +14,7 @@ import { useModal } from '@hooks/useModal';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 const MorePopup = (props) => {
-  const { _id, conFirmType, type, handleModal_Menu, onUpdate, fbtype, fbUid} = props;
+  const { _id, conFirmType, type, handleModal_Menu, onUpdate, fbtype, fbUid, reportType, reportUserId} = props;
   const { boardUid, setReplyList, setRenderList, setFbReList, fbReList, ReFbUid } = useContext(ReplyListContext);
 
   const [accessConfirm, setAccessConfirm] = useState(false);
@@ -50,6 +50,7 @@ const MorePopup = (props) => {
   const removeBoardHandler = () => {
     removeBoardFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}`, 'delete', null, null, null);
   };
+
   useEffect(() => {
     // * 삭제 확인 이후 로직 실행
     if (accessConfirm) {
@@ -111,16 +112,21 @@ const MorePopup = (props) => {
         </MyTabBox>
         <PopupClose onClick={() => handleModal_Menu()}>{_closeBtn}</PopupClose>
       </MyPopupInner>
-      {state_Confirm && (
+      { state_Confirm && (
         <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
           <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={setAccessConfirm} type={conFirmType} />
         </Modal>
-      )}
-      {handleReport && (
+      ) }
+      { handleReport && (
         <Modal visible={handleReport} closable={true} maskClosable={true} onClose={() => setHandleReport(false)}>
-          <ReportsPopup closeModal={() => setHandleReport(false)} />
+          <ReportsPopup 
+            closeModal={() => setHandleReport(false)}
+            reportUserId={reportUserId}
+            reportType={ reportType }
+            boardUid={ boardUid }
+          />
         </Modal>
-      )}
+      ) }
     </>
   );
 };

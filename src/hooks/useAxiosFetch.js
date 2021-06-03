@@ -7,6 +7,7 @@ export default function useAxiosFetch() {
   const [error, setError] = useState();
 
   const submit = async (url, type, data = null, body = null, params = null) => {
+
     setLoding(true);
     await axios({
       url,
@@ -18,11 +19,11 @@ export default function useAxiosFetch() {
       params,
     })
       .then((res) => {
-        // console.log(res)
+        console.log(res)
         setResult(res?.data);
       })
       .catch((err) => {
-        // console.log(err.response);
+        console.log(err.response);
         setError(err.response);
       });
     setLoding(false);

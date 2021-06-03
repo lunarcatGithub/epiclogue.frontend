@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import ReportLanguage from './Report_Language';
 
@@ -6,13 +6,23 @@ import ReportLanguage from './Report_Language';
 // hooks&reducer
 import { useUrlMove } from '@hooks/useUrlMove';
 import { AlertContext } from '@store/App_Store';
+import useAxiosFetch from '@hooks/useAxiosFetch';
 
-const ReportsPopup = (props) => {
+const ReportsPopup = ({closeModal, reportType, reportUserId, boardUid}) => {
+  console.log(reportUserId, boardUid)
+  // fetch Data
+  const [ , reportData, , reportFetch] = useAxiosFetch();
+
   const { alertPatch } = useContext(AlertContext);
   // const { toggle_Modal_MoreMenu } = useContext(ReplyListContext);
   const [goURL] = useUrlMove();
+
+  // type
+  const [currentReportType, setCurrentReportType] = useState();
+
   // 선택한 값
-  const [selectValue, setSelectValue] = useState();
+  const [selectValue, setSelectValue] = useState(0);
+
   // 언어 import
   const {
         _closeBtn,
@@ -23,13 +33,43 @@ const ReportsPopup = (props) => {
         reportList
         } = ReportLanguage();
 
-  const reportSub = (e) => {
+    const reportSub = (e) => {
     e.preventDefault();
+    
+    
     alertPatch({ type: 'REPORT_SUBMIT', payload: true });
-    console.log(selectValue)
-    // props.closeModal();
+    // const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/${type}`;
+    let bodyData = {
+      reportType:selectValue,
+      suspectUserId:reportUserId,
+      contentId:boardUid,
+      contentType:currentReportType
+    };
+
+    if(reportType === 'Board'){
+      console.log(bodyData)
+      reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'post', bodyData, null);
+    } else if(reportType === 'Fb' || reportType === 'popupFb'){
+      return;
+    } else {
+      return;
+    }
+
+    closeModal();
     // toggle_Modal_MoreMenu(false);
   };
+
+  useEffect(()=> {
+
+    if(reportType === 'Board'){
+      setCurrentReportType('Board');
+    } else if(reportType === 'Fb' || reportType === 'popupFb'){
+      setCurrentReportType('Feedback');
+    } else {
+      setCurrentReportType('Reply');
+    }
+    
+  }, [reportType]);
 
   return (
     <ContentPopupInner>
@@ -41,14 +81,14 @@ const ReportsPopup = (props) => {
         <ReportTabBox onClick={(e) => e.stopPropagation()}>
           {
             reportList.map((item, index) => (
-              <ReportTab key={index}>
+              <ReportTab key={item.id}>
                 <ReportTxtWrap>
                   <ReportTxt>{item.title}</ReportTxt>
                   <ReportScript>{item.desc}</ReportScript>
                 </ReportTxtWrap>
                 <ListTxtRadio 
                 name="report" 
-                value={item.value} 
+                value={item.id} 
                 defaultChecked={index === 0}
                 onChange={e => setSelectValue(e.target.value)}
                 />
@@ -65,7 +105,7 @@ const ReportsPopup = (props) => {
       </SendForm>
       <PopupClose
         onClick={() => {
-          props.closeModal();
+          closeModal();
         }}
       >
         {_closeBtn}
