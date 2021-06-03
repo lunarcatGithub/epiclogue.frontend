@@ -11,6 +11,7 @@ import { appWithTranslation } from "next-i18next";
 import {AdminContextStore} from '../src/Admin/Components/Store/Admin_Context';
 // hooks & reducer
 import { ContextStore } from '@store/App_Store';
+import ViewerStore from '@store/ViewerStore';
 import '../i18n';
 
 function MyApp({ Component, pageProps }) {
@@ -23,8 +24,10 @@ function MyApp({ Component, pageProps }) {
         <AdminContextStore>
         {!router.asPath.match('/epicadmin/') && <Helmet />}
         {!router.asPath.match('/epicadmin/') && <Header />}
+        <ViewerStore>
         <Component {...pageProps} />
         <InteractTab />
+        </ViewerStore>
         </AdminContextStore>
       </ContextStore>
     </ThemeProvider>
