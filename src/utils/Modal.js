@@ -27,7 +27,7 @@ function Modal({ onClose, maskClosable, closable, visible, children }) {
     //     </ModalWrapper>
     // </Portal>
     <>
-      <ModalOverlay visible={true} />
+      <ModalOverlay visible={visible} />
       <ModalWrapper tabIndex={-1} visible={visible} onClick={maskClosable ? onMaskClick : null}>
         {children}
       </ModalWrapper>

@@ -9,11 +9,32 @@ export const ViewerContext = React.createContext(null);
 export default function ViewerStore({ children }) {
   const [ viewerData, setViewerData ] = useState(null);
 
+  // user popup ctrl
+  const [ userPopup, setUserPopup ] = useState(false);
+  const [ typeMenuPopup, setTypeMenuPopup ] = useState(null);
+  const [ popupType, setPopupType ] = useState('');
+
+  // target data
+  const [ targetBoardUid, setTargetBoardUid ] = useState();
+
+  useEffect(() => {
+    if(!userPopup) setTypeMenuPopup(null)
+  }, [userPopup]);
+
   return (
     <ViewerContext.Provider 
     value={ {
       viewerData,
-      setViewerData
+      setViewerData,
+      // popup
+      userPopup,
+      setUserPopup,
+      typeMenuPopup,
+      setTypeMenuPopup,
+      popupType,
+      setPopupType,
+      targetBoardUid,
+      setTargetBoardUid
     } } >
       { children }
     </ViewerContext.Provider>

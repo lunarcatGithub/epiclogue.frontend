@@ -8,8 +8,8 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { AlertContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
-const ReportsPopup = ({closeModal, reportType, reportUserId, boardUid}) => {
-  console.log(reportUserId, boardUid)
+const ReportsPopup = ({ onClose }) => {
+
   // fetch Data
   const [ , reportData, , reportFetch] = useAxiosFetch();
 
@@ -55,21 +55,21 @@ const ReportsPopup = ({closeModal, reportType, reportUserId, boardUid}) => {
       return;
     }
 
-    closeModal();
+    onClose(false);
     // toggle_Modal_MoreMenu(false);
   };
 
-  useEffect(()=> {
+  // useEffect(()=> {
 
-    if(reportType === 'Board'){
-      setCurrentReportType('Board');
-    } else if(reportType === 'Fb' || reportType === 'popupFb'){
-      setCurrentReportType('Feedback');
-    } else {
-      setCurrentReportType('Reply');
-    }
+  //   if(reportType === 'Board'){
+  //     setCurrentReportType('Board');
+  //   } else if(reportType === 'Fb' || reportType === 'popupFb'){
+  //     setCurrentReportType('Feedback');
+  //   } else {
+  //     setCurrentReportType('Reply');
+  //   }
     
-  }, [reportType]);
+  // }, [reportType]);
 
   return (
     <ContentPopupInner>
@@ -103,12 +103,8 @@ const ReportsPopup = ({closeModal, reportType, reportUserId, boardUid}) => {
           </ReportTab>
         </ReportTabBox>
       </SendForm>
-      <PopupClose
-        onClick={() => {
-          closeModal();
-        }}
-      >
-        {_closeBtn}
+      <PopupClose onClick={ () => onClose(false) } >
+        { _closeBtn }
       </PopupClose>
     </ContentPopupInner>
   );

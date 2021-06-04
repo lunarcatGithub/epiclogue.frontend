@@ -19,11 +19,11 @@ export default function useAxiosFetch() {
       params,
     })
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         setResult(res?.data);
       })
       .catch((err) => {
-        console.log(err.response);
+        // console.log(err.response);
         setError(err.response);
       });
     setLoding(false);

@@ -22,7 +22,7 @@ import ViewerLanguage from './Viewer.Language';
 
 
 export default function ViewerUserForm(props) {
-  const { type } = props;
+  const { type, contentPopup } = props;
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   const { viewerData } = useContext(ViewerContext);
 
@@ -55,22 +55,23 @@ export default function ViewerUserForm(props) {
   // follow
   const [follow, toggleFollow] = useToggle();
   const [followMe, setFollowMe] = useState();
-  const [indicateDate] = useTimeCalculation();
 
   // tag convert
   const [converted, convert] = useConvertTags();
-
+  
   // debounce 처리
   const [followDebounce, getValue] = useDebounce();
 
-  // const submitHandler = () => {
-  //   if (!loginOn) return;
-  //   const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`;
-  //   followFetch(URL, followDebounce ? 'delete' : 'post', { targetUserId: user_id });
-  // };
+  const submitHandler = () => { // follow fetch
+    if (!loginOn) return;
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`;
+    followFetch(URL, followDebounce ? 'delete' : 'post', { targetUserId: user_id });
+  };
 
-  const { sourceUrl, originUserId, originBoardId, writer, boardTitle, boardBody } = viewerData;
-
+  const { sourceUrl, originUserId, originBoardId, writer, boardTitle, boardBody, writeDate } = viewerData;
+  
+  // date
+  const [indicateDate] = useTimeCalculation(writeDate);
 
   useEffect(() => {
     const localScreenId = localStorage.getItem('userid');
@@ -91,12 +92,20 @@ export default function ViewerUserForm(props) {
     setUserNick(type === 'ORIGIN' ? originUserId?.nickname : writer?.nickname);
     setFollowMe(type === 'ORIGIN' ? localScreenId !== originUserId?.screenId : localScreenId !== writer?.screenId);
     setTitle(type === 'ORIGIN' ? originBoardId?.boardTitle : boardTitle);
+    setUser_id(type === 'ORIGIN' ? originUserId?._id : writer._id);
+
     // 다시 한번 확인하기
     convert(type === 'ORIGIN' ? originBoardId?.boardBody : boardBody);
     setOriginUserImage(type === 'ORIGIN' ? originBoardId : null);
   }, []);
+  
+  // follow debounce
+  useEffect(() => {
+    if (!loginOn) return;
+    getValue(follow);
+  }, [follow]);
 
-  console.log(converted)
+
   return (
     <UserForm>
       <UserProfileWrap>
@@ -137,18 +146,18 @@ export default function ViewerUserForm(props) {
             <UserIdInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>@{screenId}</UserIdInfo>
           </UserProfileId>
           {/* 메뉴 더보기 */}
-          <FdMoreMenuAnchor onClick={() => checkMoreMenuType(screenId, 'Board', user_id)}>
+          <FdMoreMenuAnchor onClick={() => contentPopup(screenId, user_id)}>
             <MoreMenuDot />
           </FdMoreMenuAnchor>
           {/* 콘텐츠 */}
-          <OriginalContent>{ title }</OriginalContent>
-          <TextContent>{ converted }</TextContent>
+          { title && <OriginalContent>{ title }</OriginalContent> }
+          { converted.length !== 0 && <TextContent>{ converted }</TextContent> }
           <BottomWrap>
-            { type !== 'ORIGIN' && <PostedTime>Posted by {indicateDate}</PostedTime> }
+            { type !== 'ORIGIN' && <PostedTime>Posted by { indicateDate }</PostedTime> }
             {/* { userData?.edited && <ModifyText>{modified}</ModifyText> } */}
           </BottomWrap>
           {
-            originUserImage && (
+            type === 'ORIGIN' && (
               <ContentImgWrap>
                 {
                   originUserImage ? (
