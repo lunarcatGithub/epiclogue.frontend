@@ -1,4 +1,4 @@
-import React,{ useState, useEffect } from 'react'
+import React,{ useState, useEffect, useContext } from 'react'
 import styled from 'styled-components';
 
 // 컴포넌트 import
@@ -7,8 +7,12 @@ import ListForm from '../Common/List__Form';
 // hooks
 import useAxiosFetch from '../../../hooks/useAxiosFetch';
 
-export const AdminReport =()=> {
+// reduce
+import { AdminContext } from '../Store/Admin_Context';
 
+export const AdminReport =()=> {
+    const { setReportData, reportData } = useContext(AdminContext);
+  console.log(reportData)
     //data
     const [userContentsData, setUserContentsData] = useState([
       {id:1, _id:`@asasdd`, title:'신고받을만한 콘텐츠임니다ㅎ', kind:'대댓글', count:5},
@@ -70,18 +74,21 @@ export const AdminReport =()=> {
     reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'get', null, null, params)
     }, []);
 
-    console.log(reportApi)
-    console.log(reportError)
+    useEffect(() => {
+      setReportData(reportApi?.data);
+      return () => setReportData(null);
+
+    }, [reportApi])
     
-    const headerArr = ['번호', '아이디', '콘텐츠', '신고횟수', '처리하기'];
+    const headerArr = ['번호', '아이디', '콘텐츠', '신고횟수', '신고날짜', '처리하기'];
 
 
     return (
       <Layout>
         <LayoutInner>
           <ListForm 
-          type='REPORT' 
-          contentsData={{
+            type='REPORT' 
+            contentsData={{
             headerArr,
             categorySelec,
             userContentsData,
@@ -89,7 +96,7 @@ export const AdminReport =()=> {
             dataHadler,
             setToggleSelect,
             buttonType
-          }} />
+          } } />
         </LayoutInner>
       </Layout>
     )

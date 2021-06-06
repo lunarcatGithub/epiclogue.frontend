@@ -8,7 +8,7 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { AlertContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
-const ReportsPopup = ({ onClose }) => {
+const ReportsPopup = ({ onClose, reportType, boardUid, reportUserId }) => {
 
   // fetch Data
   const [ , reportData, , reportFetch] = useAxiosFetch();
@@ -43,12 +43,16 @@ const ReportsPopup = ({ onClose }) => {
       reportType:selectValue,
       suspectUserId:reportUserId,
       contentId:boardUid,
-      contentType:currentReportType
+      contentType:'Board',
+      isCopyright:false
     };
-
+    // /submittedReports?contentId=&contentType=&isCopyright=
     if(reportType === 'Board'){
-      console.log(bodyData)
+      console.log(bodyData);
+      
       reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'post', bodyData, null);
+
+      // reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'post', bodyData, null);
     } else if(reportType === 'Fb' || reportType === 'popupFb'){
       return;
     } else {

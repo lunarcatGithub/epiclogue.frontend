@@ -26,7 +26,13 @@ export default function ListForm({ type, contentsData }) {
     buttonType
   } = contentsData;
 
-  const {reportList} = useContext(AdminContext);
+  const { reportList, reportData, setCurrentTargetData } = useContext(AdminContext);
+
+  // console.log(reportData[0]?.suspactUserInfo[0])
+
+  // data 분류
+  const [ listData, setListData ] = useState(null);
+  // const [ suspectScreenId, setSuspectScreenId ] = useState();
 
   const [dropDown1, setDropDown1] = useState([]);
   const [dropDown2, setDropDown2] = useState([]);
@@ -65,6 +71,7 @@ export default function ListForm({ type, contentsData }) {
         setDropDown1('');
         setDropDown2('');
         setDropDown3('');
+        setListData(reportData)
         break;
 
       case 'COPYRIGHT':
@@ -79,7 +86,8 @@ export default function ListForm({ type, contentsData }) {
 
   const lastDataConfirm = (e, type) => {
     setWarnConfirm({type, bool:true});
-    bodyData?.filter( uid => uid.id === Number(e.target.id) && setSelectedData(uid))
+    listData?.filter( uid => uid._id === Number(e.target.id) && setSelectedData(uid));
+    setCurrentTargetData()
   };
 
   const userSendEmail = (e, type) => {
@@ -133,7 +141,7 @@ export default function ListForm({ type, contentsData }) {
 
   useEffect(() => {
     contentsData && typeHandler();
-  }, [type]);
+  }, [type, reportData]);
 
   const viewNum = [
     { title: '10개', value: 10 },
@@ -180,14 +188,14 @@ export default function ListForm({ type, contentsData }) {
               </TableHeadLine>
               {
                 headerArr?.map((item, key) => (
-                  <TableHeadLine key={key}>{item}</TableHeadLine> ))
+                <TableHeadLine key={key}>{item}</TableHeadLine> ))
               }
             </TableRowBox>
           </TableHead>
           {/*  테이블 본문 시작 */}
           <TableBody>
             {
-              bodyData?.map((content, i) => (
+              listData?.map((content, i) => (
                 <TableRowBox key={i}>
                   <TableDataBox>
                     <CheckBox
@@ -197,27 +205,25 @@ export default function ListForm({ type, contentsData }) {
                       defaultChecked={content.isSelect}
                     />
                   </TableDataBox>
-                  <TableDataBox >{content.id}</TableDataBox>
-                  <TableDataBox>{content._id}</TableDataBox>
-                    {content.type && <TableDataBox>{content.type}</TableDataBox>}
-                    {content.join && <TableDataBox>{content.join}</TableDataBox>}
-                    {content.category && <TableDataBox>{content.category}</TableDataBox>}
-                    {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
-                    {content.content && <TableDataBox>{content.content}</TableDataBox>}
-                    {content.count && <TableDataBox>{content.count}</TableDataBox>}
-                    {content.result && <TableDataBox>{content.result}</TableDataBox>}
-                    {content.date && <TableDataBox>{content.date}</TableDataBox>}
-                    { content.btnArr?.map(({title, value}, key) => (
-                  <TableDataBox type='btn' key={key} >
-                    <AllButton
-                      value={content.id}
-                      onClick={(e) => {
-                        setToggleSelect(e.currentTarget.id);
-                        lastDataConfirm(e, value);
-                      } } > {title}
-                    </AllButton>
-                  </TableDataBox>
-                  ) ) }
+                  <TableDataBox >{i}</TableDataBox>
+                    <TableDataBox>{content?.suspactUserInfo[0]?.nickname}</TableDataBox>
+                      {content?._contentType && <TableDataBox>{content?._contentType}</TableDataBox>}
+                      {content.join && <TableDataBox>{content.join}</TableDataBox>}
+                      {content.category && <TableDataBox>{content.category}</TableDataBox>}
+                      {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
+                      {content.content && <TableDataBox>{content.content}</TableDataBox>}
+                      {content.count && <TableDataBox>{content.count}</TableDataBox>}
+                      {content.result && <TableDataBox>{content.result}</TableDataBox>}
+                      {content.date && <TableDataBox>{content.date}</TableDataBox>}
+                      <TableDataBox type='btn' >
+                      <AllButton
+                        value={content._id}
+                        onClick={(e) => {
+                          setToggleSelect(e.currentTarget.id);
+                          lastDataConfirm(e);
+                        } } > 처리
+                      </AllButton>
+                    </TableDataBox>
                 </TableRowBox> ))
             }
           </TableBody>

@@ -59,19 +59,19 @@ export const AdminReportResult =()=> {
 
     return (
         <Layout>
-            <LayoutInner>
-                    <ListForm 
-                    type='REPORTSRESULT' 
-                    contentsData={{
-                        headerArr,
-                        categorySelec,
-                        userContentsData,
-                        searchFilter,
-                        dataHadler,
-                        setToggleSelect,
-                        buttonType
-                        }} />
-            </LayoutInner>
+          <LayoutInner>
+          <ListForm 
+            type='REPORTSRESULT' 
+            contentsData={{
+            headerArr,
+            categorySelec,
+            userContentsData,
+            searchFilter,
+            dataHadler,
+            setToggleSelect,
+            buttonType
+            }} />
+          </LayoutInner>
         </Layout>
     )
 }
