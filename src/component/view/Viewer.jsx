@@ -8,6 +8,8 @@ import MorePopup from './MoreMenuPopup';
 import ReportsPopup from '../report/ReportsPopup';
 import ViewerReact from './Viewer__React';
 import TranslatePopup from './TranslatePopup';
+import ViewerWriteFeedbak from './Viewer__WriteFeedbak';
+import FeedbackForm from './Feedback';
 
 // Hooks
 import { useModal } from '@hooks/useModal';
@@ -134,8 +136,16 @@ export default function Viewer({ boardItem, nonError }) {
           <MobileViewerPort>
             { boardImage.map((item, index) => <ViewImg key={index} src={item} /> ) }
           </MobileViewerPort>
+
           { /* 반응 탭 */}
             <ViewerReact />
+
+          {/* 유저 피드백 */}
+            <ViewerWriteFeedbak/> 
+
+          {/* 피드백 영역 */}
+          <FeedbackForm type="Feedback" />
+
           </UserComment>
         </UserCommentWrap>
       </ViewerPortWrap>

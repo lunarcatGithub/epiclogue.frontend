@@ -17,6 +17,8 @@ export default function ViewerStore({ children }) {
   // target data
   const [ targetBoardUid, setTargetBoardUid ] = useState();
 
+  // feedback list
+  const [ feedbackRenderList, setFeedbackRenderList ] = useState([]);
   useEffect(() => {
     if(!userPopup) setTypeMenuPopup(null)
   }, [userPopup]);
@@ -34,7 +36,10 @@ export default function ViewerStore({ children }) {
       popupType,
       setPopupType,
       targetBoardUid,
-      setTargetBoardUid
+      setTargetBoardUid,
+      // feedback
+      feedbackRenderList,
+      setFeedbackRenderList
     } } >
       { children }
     </ViewerContext.Provider>
