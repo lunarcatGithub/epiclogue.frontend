@@ -16,6 +16,7 @@ const TranslatePopup = () => {
   const [boardId, setBoardId] = useState();
 
   const { originBoardId, _id, boardImg, writer } = viewerData;
+  
   //언어 변수
   const {
     _secondaryOpt,
@@ -26,7 +27,7 @@ const TranslatePopup = () => {
 
   const boardIdDevide = () => {
     if (originBoardId) {
-      setBoardId(originBoardId._id);
+      setBoardId(originBoardId?._id);
     } else {
       setBoardId(_id);
     }
@@ -43,12 +44,15 @@ const TranslatePopup = () => {
         <UserContentTab
           onClick={() => {
             setUserPopup(false);
-            goURL({ pathname: `/editor/${boardId}`, query: { writer, _id, data: JSON.stringify(viewerData), boardImg } });
+            goURL({ pathname: `/editor/${boardId}`, query: { writer, boardUid:boardId, data: JSON.stringify(viewerData), boardImg } });
           }}
         >
           {_useEditor}
         </UserContentTab>
-        <UserContentTab onClick={() => goURL({ pathname: `/upload`, query: { writer, _id, data: JSON.stringify(viewerData), _type:'noneEditor'} })}>{_selfUpload}</UserContentTab>
+        <UserContentTab 
+        onClick={ () => 
+          goURL( { pathname: `/upload`, query: { writer, boardUid:boardId, data: JSON.stringify(viewerData), _type:'noneEditor'} } )
+        } >{_selfUpload}</UserContentTab>
       </UserContentTabBox>
       <PopupClose onClick={() => setUserPopup(false)}>{_closeBtn}</PopupClose>
     </UserContentPopupInner>

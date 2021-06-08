@@ -14,7 +14,7 @@ export default function ViewerLanguage(){
 
     const { selectedLanguage, defaultLanguage } = langState;
 
-    const { contentsReact, feedbackScore, feedbackScoreEnd, feedbackPlaceholder, moreFeedback, firstFeedback, foldFeedback, moreContents, modified } = langViewer;
+    const { contentsReact, feedbackScore, feedbackScoreEnd, feedbackPlaceholder, replyPlaceholder, moreFeedback, firstFeedback, foldFeedback, moreContents, modified } = langViewer;
 
     const { originalUser, recreateUser, removedContents } = langViewerUser;
 
@@ -23,6 +23,7 @@ export default function ViewerLanguage(){
         _feedbackScore = feedbackScore[selectedLanguage] || feedbackScore[defaultLanguage],
         _feedbackScoreEnd = feedbackScoreEnd[selectedLanguage] || feedbackScoreEnd[defaultLanguage],
         _feedbackPlaceholder = feedbackPlaceholder[selectedLanguage] || feedbackPlaceholder[defaultLanguage],
+        _replyPlaceholder = replyPlaceholder[selectedLanguage] || replyPlaceholder[defaultLanguage],
         _moreFeedback = moreFeedback[selectedLanguage] || moreFeedback[defaultLanguage],
         _firstFeedback = firstFeedback[selectedLanguage] || firstFeedback[defaultLanguage],
         _foldFeedback = foldFeedback[selectedLanguage] || foldFeedback[defaultLanguage],
@@ -34,6 +35,7 @@ export default function ViewerLanguage(){
         _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
         _modified = modified[selectedLanguage] || modified[defaultLanguage],
         _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage];
+    
     // More menu popup
     const { myOptions, modifyContent, deleteContent } = langMymoreMenu;
     const { userOptions, sendDm, reportUser, muteUser } = langUsermoreMenu;
@@ -70,6 +72,7 @@ export default function ViewerLanguage(){
         _feedbackScore,
         _feedbackScoreEnd,
         _feedbackPlaceholder,
+        _replyPlaceholder,
         _moreFeedback,
         _firstFeedback,
         _foldFeedback,

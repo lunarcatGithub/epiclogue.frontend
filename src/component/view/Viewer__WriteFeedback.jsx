@@ -13,7 +13,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 // reduce
 import { ViewerContext } from '../../store/ViewerStore';
 
-export default function ViewerWriteFeedbak() {
+export default function ViewerWriteFeedback() {
   const { viewerData, setFeedbackRenderList } = useContext(ViewerContext);
 
   // fetch
@@ -33,8 +33,8 @@ export default function ViewerWriteFeedbak() {
   }
 
   useEffect(() => {
-    setFeedbackRenderList(viewerData?.feedbacks);
-  }, []);
+    setFeedbackRenderList(feedbackApi?.data);
+  }, [feedbackApi]);
 
     return (
       <FeedbackWrap>
@@ -46,7 +46,7 @@ export default function ViewerWriteFeedbak() {
           </FeedbackText>
         </FeedbackTitle>
         <WriteInputForm 
-          type="Feeback" 
+          type="Feedback" 
           getText={getFeedback}
           _placeholder={_feedbackPlaceholder}
           loding={feedbackLoding}

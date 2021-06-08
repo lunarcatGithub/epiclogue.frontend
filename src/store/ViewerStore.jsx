@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useTranslation } from "next-i18next";
@@ -19,6 +19,11 @@ export default function ViewerStore({ children }) {
 
   // feedback list
   const [ feedbackRenderList, setFeedbackRenderList ] = useState([]);
+
+  // feedback popup Ctrl
+  const [ feedbackModalCtrl, setFeedbackModalCtrl ] = useState(false);
+  const [ feedbackPopupType, setFeedbackPopupType ] = useState('');
+
   useEffect(() => {
     if(!userPopup) setTypeMenuPopup(null)
   }, [userPopup]);
@@ -39,7 +44,11 @@ export default function ViewerStore({ children }) {
       setTargetBoardUid,
       // feedback
       feedbackRenderList,
-      setFeedbackRenderList
+      setFeedbackRenderList,
+      feedbackModalCtrl,
+      setFeedbackModalCtrl,
+      feedbackPopupType,
+      setFeedbackPopupType
     } } >
       { children }
     </ViewerContext.Provider>

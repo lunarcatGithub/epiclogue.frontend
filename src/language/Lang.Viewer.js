@@ -19,6 +19,11 @@ export const langViewer = {
     0: '이 작품은 어떤가요?',
     1: 'この作品はどうですか',
   },
+  replyPlaceholder: {
+    2: `Let's reply to this feedback`,
+    0: '이 피드백에 답글을 달아보세요',
+    1: 'このフィードバックに返事をつけてみましょ',
+  },
   moreFeedback: {
     2: 'More Feedback',
     0: '더 많은 피드백 보기',

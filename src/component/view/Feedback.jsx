@@ -1,35 +1,37 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
-// 컴포넌트 import
-import { AppDataContext } from '@store/App_Store';
-// import ReFeedback from './Feedback__ReFb';
-import Modal from '@utils/Modal';
+// component import
+import FeedbackReply from './Feedback__Reply';
 import ViewerLanguage from './Viewer.Language';
 
-// Hooks & context import
+// Hooks
 import { useToggle } from '@hooks/useToggle';
-import { useModal } from '@hooks/useModal';
-import { ReplyListContext } from './Viewer';
 import { useTimeCalculation } from '@hooks/useTimeCalculation';
-import { useConvertURL } from '@hooks/useConvertURL';
 import { useConvertTags } from '@hooks/useConvertTags';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { useUrlMove } from '@hooks/useUrlMove';
 
+// reduce
+import { ViewerContext } from '@store/ViewerStore';
+import { AppDataContext } from '@store/App_Store';
+
+
 // porps.data._id 는 댓글  uid, writer._id = 작성자의 uid
-const FeedBackForm = ({ type }) => {
+const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup }) => {
 
   // 피드백 언어
-  const {
-    _followBtn,
-    _followingBtn
-  } = ViewerLanguage();
+  const { _followBtn, _followingBtn } = ViewerLanguage();
 
   // reduce
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
-  const [isShowing_ReFb, handleModal_ReFb] = useModal();
+  const {
+    setTypeMenuPopup,
+    setUserPopup,
+    setPopupType
+  } = useContext(ViewerContext);
+  
   const [getIndicateDate, setGetIndicateDate] = useState();
   const [indicateDate] = useTimeCalculation(getIndicateDate);
 
@@ -37,9 +39,14 @@ const FeedBackForm = ({ type }) => {
   const [like, toggle_like] = useToggle();
   const [comment, toggle_comment] = useToggle();
 
+  const [profileImg, setProfileImg] = useState();
+  const [nickName, setNickName] = useState();
+  const [screenId, setScreenId] = useState();
+  const [followMe, setFollowMe] = useState();
+
   // 태그 및 하이퍼링크 convert
   const [converted, convert] = useConvertTags();
-  const [reConverted, reConvert] = useConvertTags();
+  // const [reConverted, reConvert] = useConvertTags();
 
   // ============================
   const [_heartCount, setHeartCount] = useState();
@@ -56,84 +63,100 @@ const FeedBackForm = ({ type }) => {
     e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
-  const submitHandler = (e, type) => {
+  const submitHandler = (e, _type) => {
     e.preventDefault();
-    const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/${type}`;
-    if (type === 'follow') {
-      feedbackFetch(URL, follow ? 'post' : 'delete', { targetUserId: writer._id }, null);
-    } else if (type === 'like') {
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/${_type}`;
+    if (_type === 'follow') {
+      feedbackFetch(URL, follow ? 'post' : 'delete', { targetUserId: FeedbackData?.writer?._id }, null);
+    } else if (_type === 'like') {
       likeFetch(
         URL,
         like ? 'post' : 'delete',
         {
-          targetInfo: _id,
-          targetType: fbUid && type === 'ReFb' ? 'Reply' : 'Feedback',
+          targetInfo: FeedbackData?._id,
+          targetType: type === 'popupReply' ? 'Reply' : 'Feedback',
         },
         null
       );
     }
   };
 
-  // useEffect(() => {
-  //   likeApi && setHeartCount(likeApi?.data?.heartCount);
-  // }, [likeApi]);
+  const replyPopupCtrl = () => {
+    setUserPopup(true);
+    setPopupType('');
+    setTypeMenuPopup(
+      <FeedbackReply 
+        boardUid={FeedbackData?.boardId} 
+        feedbackUid={FeedbackData?._id}
+        FeedbackData={FeedbackData}
+      />
+    );
+  };
+  console.log(FeedbackData)
+  useEffect(() => { // 뷰어와 피드백 팝업 분기점
+    const { screenId, following, nickname, profile } = FeedbackData?.writer;
 
-  // useEffect(() => {
-  //   convert(feedbackBody);
-  //   reConvert(replyBody);
-  // }, []);
-
-  // useEffect(() => {
-  //   setGetIndicateDate(writeDate, '');
-  //   convertProfileIamge(writer?.profile?.thumbnail);
-  // }, [setFbUid, fbUid]);
-
-
+    convert(FeedbackData?.feedbackBody || FeedbackData?.replyBody);
+    setHeartCount();
+    setGetIndicateDate(FeedbackData?.writeDate);
+    toggle_follow(FeedbackData?.following);
+    toggle_like(FeedbackData?.liked);
+    setScreenId(screenId);
+    setProfileImg(profile);
+    setNickName(nickname);
+    setFollowMe(following === 'me');
+  }, []);
 
   return (
       <FeedbackUserWrap>
-        <UserLink onClick={() => goURL({ pathname: `/myboard/${writer.screenId}` })}>
+        <UserLink onClick={() => goURL({ pathname: `/myboard/${screenId}` })}>
           <ProfileImgBox>
-            <FeedbackProfileImg profile={''} />
+            <FeedbackProfileImg profile={profileImg} />
           </ProfileImgBox>
         </UserLink>
         <FeedbackProfileWrap>
           <FeedbackProfile>
-            <UserLink onClick={() => goURL({ pathname: `/myboard/${writer?.screenId}` })}>
-              <FeedbackNickInfo>{'writer?.nickname'}</FeedbackNickInfo>
+            <UserLink onClick={() => goURL({ pathname: `/myboard/${screenId}` })}>
+              <FeedbackNickInfo>{nickName}</FeedbackNickInfo>
             </UserLink>
             {
-              'writer?.following' !== 'me' && loginOn && (
+              !followMe && loginOn && (
                 <form action="" method="post" onSubmit={(e) => submitHandler(e, 'follow')}>
                   <FeedbackFollowTxt clickState={follow} onClick={() => toggle_follow()}>
-                    {follow ? _followingBtn : _followBtn}
+                    { follow ? _followingBtn : _followBtn }
                   </FeedbackFollowTxt>
                 </form> )
             }
           </FeedbackProfile>
           <FeedbackProfile>
-            <UserLink onClick={() => goURL({ pathname: `/myboard/${writer?.screenId}` })}>
-              <FeedbackIdInfo>{'writer?.screenId'}</FeedbackIdInfo>
+            <UserLink onClick={() => goURL({ pathname: `/myboard/${screenId}` })} >
+              <FeedbackIdInfo>@{screenId}</FeedbackIdInfo>
             </UserLink>
           </FeedbackProfile>
         </FeedbackProfileWrap>
-        {
+        { type !== 'popupFeedback' && 
           <FdMoreMenuAnchor
-            // onClick={() => loginOn ? morePopup(writer.screenId, _id, type) : setUnAuth(true) }
-          >
+            onClick={ () => {
+              if(loginOn){
+                if(type === 'Feedback'){
+                  contentPopup(screenId, '');
+                } else {
+                  feedbackReplyPopup(FeedbackData._id, screenId);
+                }
+              } else {
+                setUnAuth(true)
+              } } } >
             <MoreMenuDot />
           </FdMoreMenuAnchor> 
         }
             <FeedbackContentBox>
-              <FeedbackContentInner modify={'feedBackModify'}>
+              <FeedbackContentInner modify={false}>
                 
                   <ModifiForm>
-                    { type === 'Feedback' && <FeedbackTextContent>{converted}</FeedbackTextContent>}
-                    { type === 'popupFb' && <FeedbackTextContent>{converted}</FeedbackTextContent>}
-                    { type === 'ReFb' && <FeedbackTextContent>{reConverted}</FeedbackTextContent>}
+                    <FeedbackTextContent>{converted}</FeedbackTextContent>
+                    {/* { type === 'ReFb' && <FeedbackTextContent>{reConverted}</FeedbackTextContent>} */}
                     <FeedbackPostedTime>{`Posted by ${indicateDate}`}</FeedbackPostedTime>
                   </ModifiForm>
-                
               </FeedbackContentInner>
             </FeedbackContentBox> 
         <FeedbackBtnWrap>
@@ -141,8 +164,8 @@ const FeedBackForm = ({ type }) => {
             {/* 피드백 좋아요 버튼 */}
             <ReactBtnWrap>
               <LikeFbBtn
-              heart={like}
-              onClick={() =>  loginOn ? toggle_like() : setUnAuth(true) }
+                heart={like}
+                onClick={() =>  loginOn ? toggle_like() : setUnAuth(true) }
               />
               <LikeFbScore>{_heartCount && _heartCount}</LikeFbScore>
             </ReactBtnWrap>
@@ -150,30 +173,16 @@ const FeedBackForm = ({ type }) => {
           <ReactBtnWrap>
 
           {
-            type === 'ReFb' && 
-              <ReReFbBtn />
-          }
-          {
-            type === 'Fb' && 
+            type === 'popupReply' || type === 'popupFeedback' ?
+            <ReReFbBtn />
+            :
             <ReFbBtn
               comment={comment}
-              onClick={() => {
-                toggle_comment(false);
-                comment ? setFbUid(undefined) : setFbUid(_id);
-                handleModal_ReFb(true);
-              }}
+              onClick={ () => replyPopupCtrl() }
             />
           }
           </ReactBtnWrap>
         </FeedbackBtnWrap>
-
-        {/* Modal */}
-        {/* { isShowing_ReFb && (
-          <Modal visible={isShowing_ReFb} closable={true} maskClosable={true} onClose={() => handleModal_ReFb(false)}>
-            <ReFeedback data={''} onClose={() => handleModal_ReFb(false)} type="ReFb" morePopup={morePopup} />
-          </Modal>
-        ) } */}
-
       </FeedbackUserWrap>
   );
 };
@@ -508,4 +517,4 @@ const CheckBtn = styled(CloseBtn)`
   }
 `;
 
-export default React.memo(FeedBackForm);
+export default React.memo(FeedBack);

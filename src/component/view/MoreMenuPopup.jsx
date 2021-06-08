@@ -2,25 +2,16 @@ import React, { useEffect, useContext, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 // 컴포넌트 import
-import ConfirmPopup from '@utils/ConfirmPopup';
 import ViewerLanguage from './Viewer.Language';
 
 // Hooks&&reducer import
 import { useUrlMove } from '@hooks/useUrlMove';
-import { useModal } from '@hooks/useModal';
-import useAxiosFetch from '@hooks/useAxiosFetch';
 import { ViewerContext } from '@store/ViewerStore';
 
-const MorePopup = (props) => {
-  const { type } = props;
-  const { viewerData, setUserPopup, typeMenuPopup, setTypeMenuPopup, setPopupType } = useContext(ViewerContext);
+const MorePopup = ({ type, doType }) => {
+  const { setUserPopup, setPopupType, setFeedbackModalCtrl, setFeedbackPopupType } = useContext(ViewerContext);
 
-  const [accessConfirm, setAccessConfirm] = useState(false);
-
-  // fetch 
-  const [ , removeBoardApi, , removeBoardFetch ] = useAxiosFetch();
-  const [ , removeFbFbApi, , removeFbFetch ] = useAxiosFetch();
-  const [ , removeReFbFbApi, , removeReFbFetch ] = useAxiosFetch();
+  console.log(doType)
 
   // desc
   const [ descript, setDescript ] = useState({});
@@ -35,44 +26,37 @@ const MorePopup = (props) => {
     _myOptions,
   } = ViewerLanguage();
 
-  const [goURL] = useUrlMove();
-
-  // const type = props.conFirmType;
-
-  // const deleteFb = () => {
-  //   removeFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}`, 'delete', null, null, null);
-  // };
-
-  // const deleteFbRe = () => {
-  //   removeReFbFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${_id}/reply/${ReFbUid}`, 'delete', null, null, null);
-  // };
-
-
   const reportOrModify = () => {
     if(type === 'MyContentPopup'){ // 수정하기
       setPopupType('ContentModify');
+
     } else { // 신고하기
       setPopupType('ContentReport');
     }
   };
 
   // confirm popup ctrl
-  const confirmPopup = () => {
-    setPopupType('ContentRemove');
+  const confirmPopup = (e) => {
+    e.stopPropagation();
+    if(doType === 'PopupFeedback'){
+      setFeedbackPopupType('PopupFeedbackRemove');
+    } else {
+      setPopupType('ContentRemove');
+
+    }
   }
 
   const typeDivide = () => {
-
     switch (type) {
       case 'MyContentPopup':
         setDescript({
           title:_myOptions, script1:_modifyContent, script2:_deleteContent
-        });
+        } );
         break;
       case 'UserContentPopup':
         setDescript({
           title:_userOptions, script1:_reportUser, script2:null
-        });
+        } );
         break;
       default:
         break;
@@ -83,46 +67,22 @@ const MorePopup = (props) => {
     typeDivide(); 
   }, [type])
 
-  useEffect(() => {
-    // * 삭제 확인 이후 로직 실행
-    if (accessConfirm) {
-      if (fbtype === 'Fb' || fbtype === 'popupFb') {
-        deleteFb();
-      } else if (type === 'myMore') {
-        removeBoardHandler();
-      } else {
-        deleteFbRe();
-      }
-    }
-  }, [accessConfirm]);
-
-  useEffect(() => {
-    if (!removeBoardApi) return;
-    goURL({ pathname: '/' });
-    handleModal_Menu();
-  }, [removeBoardApi]);
-
-  useEffect(() => {
-    if (!removeFbFbApi) return;
-    // setRenderList(removeFbFbApi?.data);
-    // setReplyList(removeFbFbApi?.data);
-    handleModal_Menu();
-  }, [removeFbFbApi]);
-
-  useEffect(() => {
-    if (!removeReFbFbApi) return;
-    // setFbReList(fbReList.filter((item) => item._id !== ReFbUid));
-  }, [removeReFbFbApi]);
-
   return (
     <>
-      <MyPopupInner>
+      <MyPopupInner >
         <MyTitleBox>{ descript.title }</MyTitleBox>
         <MyTabBox>
             <MyTab onClick={()=> reportOrModify()}>{ descript.script1 }</MyTab>
-          { descript.script2 && <MyTab onClick={()=> confirmPopup()}>{ descript.script2 }</MyTab> }
+          { descript.script2 &&
+            <MyTab onClick={confirmPopup}>{ descript.script2 }</MyTab>
+          }
         </MyTabBox>
-        <PopupClose onClick={() => setUserPopup(false)}>{_closeBtn}</PopupClose>
+        <PopupClose onClick={ () => {
+          if(doType === 'PopupFeedback'){
+            setFeedbackModalCtrl(false); // reply 팝업 쪽
+          } else {
+            setUserPopup(false); // viewer 쪽
+          } } } >{ _closeBtn }</PopupClose>
       </MyPopupInner>
     </>
   );

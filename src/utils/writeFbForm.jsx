@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 //컴포넌트 import
@@ -8,11 +8,8 @@ import { ProgressSmall } from '@utils/LoadingProgress';
 import { AlertContext, AppDataContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { useChange } from '@hooks/useChange';
-import { ViewerContext } from '../store/ViewerStore';
 
-let fbCnt = 10;
-
-export default function WriteInputForm({ type, getText, _placeholder, loding }){
+export default function WriteInputForm({ getText, _placeholder, loading }){
   const { alertPatch } = useContext(AlertContext);
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
@@ -20,7 +17,6 @@ export default function WriteInputForm({ type, getText, _placeholder, loding }){
   
 
   //fetch
-  const [reFeedbackLoding, reFeedbackApi, , reFeedbackFetch] = useAxiosFetch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -30,33 +26,22 @@ export default function WriteInputForm({ type, getText, _placeholder, loding }){
       return;
     }
     
-    if (loding) return;
+    if (loading) return;
     if (!feedbackBody) return;
     //정상 제출
     if (feedbackBody.length <= 1) {
       return alertPatch({ type: 'FEEDBACK_TWO', payload: true });
     } else {
-      if (type === 'Feeback') {
-        getText(feedbackBody);
+      // if (type === 'Feedback') {
+      //   getText(feedbackBody);
 
-      } else if (type === 'ReFb') {
-        reFeedbackFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${fbUid}/reply`, 'post', { replyBody: feedbackBody }, null);
-      }
+      // } else if (type === 'RePly') {
+      //   getText(feedbackBody);
+      // }
+      getText(feedbackBody);
       resetValue();
     }
   };
-
-  // useEffect(() => {
-  //   if (feedbackApi?.result === 'ok') {
-  //     if (feedbackApi?.data.length + 1 <= fbCnt) {
-  //       setRenderList(feedbackApi?.data);
-  //     } else {
-  //       setReplyList(feedbackApi?.data);
-  //     }
-  //     // checkFbLength(data.data.length);
-  //     resetValue();
-  //   }
-  // }, [feedbackApi]);
 
   // useEffect(() => {
   //   if (!reFeedbackApi) return;
@@ -69,8 +54,8 @@ export default function WriteInputForm({ type, getText, _placeholder, loding }){
     <form action="" method="post" onSubmit={handleSubmit} autoComplete="off">
       <FeedbackInputWrap>
         <FeedbackInput onChange={handleChange} value={feedbackBody} placeholder={_placeholder} />
-        <InputSendBtn loading={loding} feedbackBody={feedbackBody.length > 1}>
-          { !loding ? <InputSendImg imgOn={feedbackBody.length > 1} /> : <ProgressSmall /> }
+        <InputSendBtn loading={loading} feedbackBody={feedbackBody.length > 1}>
+          { !loading ? <InputSendImg imgOn={feedbackBody.length > 1} /> : <ProgressSmall /> }
         </InputSendBtn>
       </FeedbackInputWrap>
     </form>

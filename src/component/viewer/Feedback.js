@@ -155,8 +155,8 @@ const FB = (props) => {
             {/* 피드백 좋아요 버튼 */}
             <ReactBtnWrap>
               <LikeFbBtn
-              heart={like}
-              onClick={() =>  loginOn ? toggle_like() : setUnAuth(true) }
+                heart={like}
+                onClick={() =>  loginOn ? toggle_like() : setUnAuth(true) }
               />
               <LikeFbScore>{_heartCount && _heartCount}</LikeFbScore>
             </ReactBtnWrap>
