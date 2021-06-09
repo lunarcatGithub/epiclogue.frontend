@@ -43,7 +43,7 @@ import useScroll from '@hooks/useScroll';
 
   // fetch
   const [initDataLoading, initialApi, , initialFetch] = useAxiosFetch();
-  console.log(initialApi)
+
   // scroll
   const [page, scroll] = useScroll();
 

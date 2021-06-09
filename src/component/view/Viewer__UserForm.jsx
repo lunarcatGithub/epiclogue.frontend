@@ -24,7 +24,7 @@ import ViewerLanguage from './Viewer.Language';
 export default function ViewerUserForm(props) {
   const { type, contentPopup } = props;
   const { loginOn, setUnAuth } = useContext(AppDataContext);
-  const { viewerData } = useContext(ViewerContext);
+  const { viewerData, setTargetUser_Type } = useContext(ViewerContext);
 
     // 뷰어 언어
     const {
@@ -68,7 +68,15 @@ export default function ViewerUserForm(props) {
     followFetch(URL, followDebounce ? 'delete' : 'post', { targetUserId: user_id });
   };
 
-  const { sourceUrl, originUserId, originBoardId, writer, boardTitle, boardBody, writeDate } = viewerData;
+  const {
+    sourceUrl,
+    originUserId,
+    originBoardId,
+    writer,
+    boardTitle,
+    boardBody,
+    writeDate
+  } = viewerData;
   
   // date
   const [indicateDate] = useTimeCalculation(writeDate);
@@ -138,7 +146,8 @@ export default function ViewerUserForm(props) {
                   onClick={() => { loginOn ? [toggleFollow(), submitHandler()] : setUnAuth(true) }}
                 >
                   { follow ? _followingBtn : _followBtn }
-                </UserFollowTxt> )
+                </UserFollowTxt> 
+              )
             }
           </UserProfileInfo>
           {/* 유저 아이디 */}
@@ -146,7 +155,10 @@ export default function ViewerUserForm(props) {
             <UserIdInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>@{screenId}</UserIdInfo>
           </UserProfileId>
           {/* 메뉴 더보기 */}
-          <FdMoreMenuAnchor onClick={() => contentPopup(screenId, user_id)}>
+          <FdMoreMenuAnchor onClick={ () => {
+            contentPopup(screenId, user_id, 'Viewer');
+            setTargetUser_Type('Board');
+            } }>
             <MoreMenuDot />
           </FdMoreMenuAnchor>
           {/* 콘텐츠 */}
@@ -221,10 +233,6 @@ const UserUploadInfoImg = styled.svg`
   width: 1.2em;
   height: 1.2em;
   min-width: 1.2em;
-`;
-const UserTransImg = styled(UserUploadInfoImg)`
-  width: 1.1em;
-  height: 1.1em;
 `;
 
 const UserUploadInfo = styled.span`

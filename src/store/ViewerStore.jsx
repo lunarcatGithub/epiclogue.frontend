@@ -16,6 +16,8 @@ export default function ViewerStore({ children }) {
 
   // target data
   const [ targetBoardUid, setTargetBoardUid ] = useState();
+  const [ targetUser_Id, setTargetUser_Id ] = useState('');
+  const [ targetUser_Type, setTargetUser_Type ] = useState('');
 
   // feedback list
   const [ feedbackRenderList, setFeedbackRenderList ] = useState([]);
@@ -26,6 +28,7 @@ export default function ViewerStore({ children }) {
 
   useEffect(() => {
     if(!userPopup) setTypeMenuPopup(null)
+    
   }, [userPopup]);
 
   return (
@@ -33,6 +36,14 @@ export default function ViewerStore({ children }) {
     value={ {
       viewerData,
       setViewerData,
+
+      //target
+      targetUser_Id,
+      setTargetUser_Id,
+      targetBoardUid,
+      setTargetBoardUid,
+      targetUser_Type,
+      setTargetUser_Type,
       // popup
       userPopup,
       setUserPopup,
@@ -40,8 +51,7 @@ export default function ViewerStore({ children }) {
       setTypeMenuPopup,
       popupType,
       setPopupType,
-      targetBoardUid,
-      setTargetBoardUid,
+
       // feedback
       feedbackRenderList,
       setFeedbackRenderList,

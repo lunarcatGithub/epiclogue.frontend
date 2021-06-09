@@ -15,7 +15,7 @@ import { ViewerContext } from '@store/ViewerStore';
 export default function ConfirmPopup({ handleModal, setAccessConfirm, type, doType }) {
   const { alertPatch } = useContext(AlertContext);
   const router = useRouter();
-  const { setUserPopup, setFeedbackModalCtrl, setTypeMenuPopup } = useContext(ViewerContext);
+  const { setUserPopup, setFeedbackModalCtrl, setTypeMenuPopup, setPopupType } = useContext(ViewerContext);
 
   const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
@@ -227,6 +227,7 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type, doTy
                         } else {
                           setUserPopup(false);
                           setTypeMenuPopup(null);
+                          setPopupType('');
                         }
                       } } >
                     {_cancleBtn}
@@ -262,8 +263,7 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type, doTy
                   <ConfirmBtn
                     onClick={() => {
                       handleModal();
-                    }}
-                  >
+                    } } >
                     { confirmBtn }
                   </ConfirmBtn>
                 : null

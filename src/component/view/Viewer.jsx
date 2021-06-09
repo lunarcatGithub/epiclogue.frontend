@@ -37,7 +37,10 @@ export default function Viewer({ boardItem, nonError }) {
     setTypeMenuPopup,
     popupType,
     setPopupType,
-    feedbackRenderList
+    feedbackRenderList,
+    setTargetUser_Id,
+    targetUser_Type
+
   } = useContext(ViewerContext);
 
   // 뷰어 언어
@@ -54,19 +57,24 @@ export default function Viewer({ boardItem, nonError }) {
   const [ boardImage, setBoardImage ] = useState([]);
   const [ category, setCategory ] = useState();
   const [ devidedBoard, setDevidedBoard ] = useState();
-  const [ isPublic, setIsPublic ] = useState();
+  // const [ isPublic, setIsPublic ] = useState();
 
+  // remove ctrl value
   const [ accessConfirm, setAccessConfirm ] = useState(false);
+  const [ feedbackRemove, setFeedbackRemoveConfirm ] = useState(false);
+
   // feedback
+  const [ initalFeedback, setInitialFeedback ] = useState([]);
   const [ feedbackData, setFeedbackData ] = useState([]);
   const [ feedbackSliceData, setFeedbackSliceData ] = useState([]);
-  const [feedbackTxt, setFeedbackTxt] = useState('');
-  const [FbLoading, setFbLoading] = useState('');
-  const [prevFeeback, setPrevFeeback] = useState(5);
-  const [feedbackEventCtrl, setFeedbackEventCtrl] = useState(false);
-
+  const [ feedbackTxt, setFeedbackTxt ] = useState('');
+  const [ FbLoading, setFbLoading ] = useState('');
+  const [ prevFeeback, setPrevFeeback ] = useState(5);
+  const [ feedbackEventCtrl, setFeedbackEventCtrl ] = useState(false);
+  const [ feedbackUid, setFeedbackUid ] = useState('');
   // fetch
   const [ , dataApi, dataLoading, dataFetch ] = useAxiosFetch();
+  const [ , feedbackApi, feedbackLoading, FeedbackFetch ] = useAxiosFetch();
 
   // Add feedback list
   const addFeedbackList = () => {
@@ -94,10 +102,11 @@ export default function Viewer({ boardItem, nonError }) {
     }
   };
 
-
   // interation user popup
-  const contentPopup = (screenId, user_id) => {
-    setUserPopup(true)
+  const contentPopup = (screenId, user_id, fbUid) => {
+    setUserPopup(true);
+    setTargetUser_Id(user_id);
+    setFeedbackUid(fbUid);
     if (localStorage.getItem('userid') === screenId) {
       setTypeMenuPopup( <MorePopup type="MyContentPopup" /> );
 
@@ -108,13 +117,16 @@ export default function Viewer({ boardItem, nonError }) {
 
   const reportOrRemoveOrModifyOrTrans = () => { // useEffect에서 popup 관리
     if(popupType === 'ContentReport'){
-      setTypeMenuPopup(<ReportsPopup onClose={setUserPopup} />);
+      setTypeMenuPopup(<ReportsPopup onClose={setUserPopup} contentType="Board" contentId={viewerData._id} suspectUserId={''} />);
     } else if(popupType === 'ContentModify'){
       return
     } else if (popupType === 'ContentRemove'){
-      setTypeMenuPopup(<ConfirmPopup type="CONFIRM" setAccessConfirm={setAccessConfirm} />)
+      setTypeMenuPopup(<ConfirmPopup type="CONFIRM" setAccessConfirm={setAccessConfirm} />);
 
-    } else if (popupType === 'WorkSecondary'){
+    } else if(popupType === 'FeedbackRemove'){
+      setTypeMenuPopup(<ConfirmPopup type="CONFIRM" setAccessConfirm={setFeedbackRemoveConfirm} />);
+
+    }else if (popupType === 'WorkSecondary'){
       setTypeMenuPopup(<TranslatePopup />)
 
     } else if (popupType === 'RemovedBoard'){ // 작품이 삭제되고 그걸 2차 창작하려 할 때 발생
@@ -130,6 +142,11 @@ export default function Viewer({ boardItem, nonError }) {
     dataFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${viewerData._id}`, 'delete', null, null, null);
   }
 
+  // remove feedback
+  const removeFeedback = () => {
+    FeedbackFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${viewerData._id}/feedback/${feedbackUid}`, 'delete', null, null, null);
+  }
+
   useEffect(() => {
     if (!boardItem) return;
     const boardData = boardItem.data;
@@ -138,9 +155,9 @@ export default function Viewer({ boardItem, nonError }) {
     setViewerData(boardData);
     
     // local data
-    setBoardImage(boardData.boardImg);
-    setCategory(Number(boardData.category));
-
+    setBoardImage(boardData?.boardImg);
+    setCategory(Number(boardData?.category));
+    setInitialFeedback(boardData?.feedbacks)
     // content devide
     if(boardData.originUserId){
       setDevidedBoard(
@@ -150,13 +167,13 @@ export default function Viewer({ boardItem, nonError }) {
         </>
       )
     } else {
-      setDevidedBoard( <ViewerUserForm type="NOSEC OND" contentPopup={contentPopup} /> )
+      setDevidedBoard( <ViewerUserForm type="NOSECOND" contentPopup={contentPopup} /> )
     }
   }, [boardItem]);
 
   useEffect(() => {
     reportOrRemoveOrModifyOrTrans();
-    if(popupType === 'ContentRemove'){
+    if(popupType === 'ContentRemove' || popupType === 'FeedbackRemove'){
       return;
     } else { // popupType이 바뀔 때 마다, popup => close 할 때 빈값으로 변경
       setPopupType('');
@@ -164,28 +181,41 @@ export default function Viewer({ boardItem, nonError }) {
   }, [popupType, userPopup]);
 
   useEffect(() => {
-    // 콘텐츠 삭제
-    if(accessConfirm && popupType === 'ContentRemove'){
+    if(accessConfirm && popupType === 'ContentRemove'){ // 작품 삭제
       removeBoard();
       setAccessConfirm(false);
-      setUserPopup(false);
-      setPopupType('');
-      goBack({ pathname:'/' })
-    }
-  }, [accessConfirm]);
+      goBack({ pathname:'/' });
 
-  useEffect(() => { // 초기 피드백과 이후 피드백 업로드 할 때 다시 렌더링
-    let feedbackList = feedbackRenderList || viewerData?.feedbacks;
-    feedbackList.reverse();
-    setFeedbackData(feedbackList);
-  }, [feedbackRenderList, viewerData]);
+    } else if(feedbackRemove && popupType === 'FeedbackRemove'){ // feedback 삭제
+      removeFeedback();
+      setFeedbackRemoveConfirm(false);
+
+    }
+
+    setUserPopup(false);
+    setPopupType(''); // reportOrRemoveOrModifyOrTrans 렌더링 순서 때문에 여기서 처리함
+
+  }, [accessConfirm, feedbackRemove]);
+
+  useEffect(() => { // 초기 피드백 렌더링
+    setFeedbackData(initalFeedback);
+  }, [initalFeedback, boardItem]);
+
+  useEffect(() => { // 피드백 업로드 할 때 다시 렌더링
+    if(feedbackRenderList?.length === 0 || feedbackRenderList === undefined) return;
+    setFeedbackData(feedbackRenderList);
+  }, [feedbackRenderList]);
+
+  useEffect(() => { // 피드백 삭제 이후 다시 렌더링
+    if(!feedbackApi) return;
+    setFeedbackData(feedbackApi?.data);
+  }, [feedbackApi]);
 
   useEffect(() => {
-    setFeedbackSliceData(feedbackData.slice(0, prevFeeback));
+    setFeedbackSliceData(feedbackData?.slice(0, prevFeeback));
     // checkFbLength(feedbackData.length);
-    fbMoreText(feedbackData.length)
-    
-  }, [prevFeeback, feedbackData])
+    fbMoreText(feedbackData?.length)
+  }, [prevFeeback, feedbackData, feedbackApi])
 
   return (
   <>
@@ -223,15 +253,13 @@ export default function Viewer({ boardItem, nonError }) {
           { /* 피드백 추가 버튼 */}
           <MoreFb
             fbLoding={FbLoading}
-            checkEvent={null}
+            checkEvent={feedbackEventCtrl}
             onClick={() => {
               addFeedbackList();
               // fbTxt === _firstFeedback && feedbackRef.current.focus();
             } } >
-            {/* <MoreFbTxt>{fbLoading ? <ProgressSmall /> : fbTxt}</MoreFbTxt> */}
             <MoreFbTxt>{ FbLoading ? <ProgressSmall /> : feedbackTxt }</MoreFbTxt>
           </MoreFb>
-
           </UserComment>
         </UserCommentWrap>
       </ViewerPortWrap>

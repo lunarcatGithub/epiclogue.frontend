@@ -7,18 +7,19 @@ import ReportLanguage from './Report_Language';
 import { useUrlMove } from '@hooks/useUrlMove';
 import { AlertContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
+import { ViewerContext } from '@store/ViewerStore';
 
-const ReportsPopup = ({ onClose, reportType, boardUid, reportUserId }) => {
+const ReportsPopup = ({ onClose = null, contentId }) => {
+  const { setFeedbackModalCtrl, setFeedbackPopupType, targetUser_Id, targetUser_Type } = useContext(ViewerContext);
 
   // fetch Data
   const [ , reportData, , reportFetch] = useAxiosFetch();
 
   const { alertPatch } = useContext(AlertContext);
-  // const { toggle_Modal_MoreMenu } = useContext(ReplyListContext);
+  // const { toggle_Modal_MoreMenu } = useContext(ReplyListContext); 
   const [goURL] = useUrlMove();
 
   // type
-  const [currentReportType, setCurrentReportType] = useState();
 
   // 선택한 값
   const [selectValue, setSelectValue] = useState(0);
@@ -36,69 +37,59 @@ const ReportsPopup = ({ onClose, reportType, boardUid, reportUserId }) => {
     const reportSub = (e) => {
     e.preventDefault();
     
-    
-    alertPatch({ type: 'REPORT_SUBMIT', payload: true });
     // const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/${type}`;
     let bodyData = {
       reportType:selectValue,
-      suspectUserId:reportUserId,
-      contentId:boardUid,
-      contentType:'Board',
-      isCopyright:false
+      suspectUserId: targetUser_Id,
+      contentId,
+      contentType: targetUser_Type,
+      isCopyright: false
     };
-    // /submittedReports?contentId=&contentType=&isCopyright=
-    if(reportType === 'Board'){
-      console.log(bodyData);
-      
-      reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'post', bodyData, null);
 
-      // reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'post', bodyData, null);
-    } else if(reportType === 'Fb' || reportType === 'popupFb'){
-      return;
-    } else {
-      return;
-    }
+    reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'post', bodyData, null);
 
-    onClose(false);
-    // toggle_Modal_MoreMenu(false);
+    closeHandler(); // 전송 후 팝업 닫기
   };
 
-  // useEffect(()=> {
+  const closeHandler = () => {
+    if(targetUser_Type === 'Reply'){ // feedback popup에서 신고하기 팝업 띄웠을 때
+      setFeedbackModalCtrl(false);
+      setFeedbackPopupType('');
+    } else {
+      onClose(false);
+    }
+  }
 
-  //   if(reportType === 'Board'){
-  //     setCurrentReportType('Board');
-  //   } else if(reportType === 'Fb' || reportType === 'popupFb'){
-  //     setCurrentReportType('Feedback');
-  //   } else {
-  //     setCurrentReportType('Reply');
-  //   }
-    
-  // }, [reportType]);
+    useEffect(() => {
+      if(!reportData) return;
+      reportData?.result === 'ok' && alertPatch({ type: 'REPORT_SUBMIT', payload: true });
+      
+    }, [reportData])
 
   return (
     <ContentPopupInner>
       <SendForm action="" method="post" onSubmit={reportSub}>
         <BtnWrap onClick={(e) => e.stopPropagation()}>
-          <ContentTitleBox>{_doReport}</ContentTitleBox>
-          <PwChangeBtn>{_reportSubReport}</PwChangeBtn>
+          <ContentTitleBox>{ _doReport }</ContentTitleBox>
+          <PwChangeBtn>{ _reportSubReport }</PwChangeBtn>
         </BtnWrap>
         <ReportTabBox onClick={(e) => e.stopPropagation()}>
           {
-            reportList.map((item, index) => (
+            reportList.map( (item, index) => (
               <ReportTab key={item.id}>
                 <ReportTxtWrap>
                   <ReportTxt>{item.title}</ReportTxt>
                   <ReportScript>{item.desc}</ReportScript>
                 </ReportTxtWrap>
                 <ListTxtRadio 
-                name="report" 
-                value={item.id} 
-                defaultChecked={index === 0}
-                onChange={e => setSelectValue(e.target.value)}
+                  name="report" 
+                  value={item.id} 
+                  defaultChecked={index === 0}
+                  onChange={e => setSelectValue(e.target.value)}
                 />
                 <ListRadioCustom />
               </ReportTab>
-            ))
+            ) )
           }
           <ReportTab onClick={() => goURL({ pathname: '/report' })}>
             <ReportTxtWrap>
@@ -107,7 +98,7 @@ const ReportsPopup = ({ onClose, reportType, boardUid, reportUserId }) => {
           </ReportTab>
         </ReportTabBox>
       </SendForm>
-      <PopupClose onClick={ () => onClose(false) } >
+      <PopupClose onClick={ () => closeHandler() } >
         { _closeBtn }
       </PopupClose>
     </ContentPopupInner>

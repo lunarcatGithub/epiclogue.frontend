@@ -9,7 +9,13 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { ViewerContext } from '@store/ViewerStore';
 
 const MorePopup = ({ type, doType }) => {
-  const { setUserPopup, setPopupType, setFeedbackModalCtrl, setFeedbackPopupType } = useContext(ViewerContext);
+  const {
+    setUserPopup,
+    setPopupType,
+    targetUser_Type,
+    setFeedbackModalCtrl,
+    setFeedbackPopupType
+  } = useContext(ViewerContext);
 
   // desc
   const [ descript, setDescript ] = useState({});
@@ -25,11 +31,17 @@ const MorePopup = ({ type, doType }) => {
   } = ViewerLanguage();
 
   const reportOrModify = () => {
-    if(type === 'MyContentPopup'){ // 수정하기
-      setPopupType('ContentModify');
+    if( doType === 'PopupFeedback' ){
+      setFeedbackPopupType('PopupFeedbackReport');
 
-    } else { // 신고하기
-      setPopupType('ContentReport');
+    } else {
+      if(type === 'MyContentPopup'){ // 수정하기
+        setPopupType('ContentModify');
+  
+      } else { // 신고하기
+        setPopupType('ContentReport');
+
+      }
     }
   };
 
@@ -39,8 +51,11 @@ const MorePopup = ({ type, doType }) => {
     if(doType === 'PopupFeedback'){
       setFeedbackPopupType('PopupFeedbackRemove');
     } else {
-      setPopupType('ContentRemove');
-
+      if(targetUser_Type === 'Feedback'){
+        setPopupType('FeedbackRemove');
+      } else {
+        setPopupType('ContentRemove');
+      }
     }
   }
 
@@ -78,14 +93,13 @@ const MorePopup = ({ type, doType }) => {
         <PopupClose onClick={ () => {
           if(doType === 'PopupFeedback'){
             setFeedbackModalCtrl(false); // reply 팝업 쪽
-          } else {
-            setUserPopup(false); // viewer 쪽
+          } else { // viewer 쪽
+            setUserPopup(false);
           } } } >{ _closeBtn }</PopupClose>
       </MyPopupInner>
     </>
   );
 };
-
 //공통
 
 const PositionCenter = css`

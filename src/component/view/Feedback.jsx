@@ -19,7 +19,7 @@ import { AppDataContext } from '@store/App_Store';
 
 // porps.data._id 는 댓글  uid, writer._id = 작성자의 uid
 const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetScreenIdMention }) => {
-  
+
   // 피드백 언어
   const { _followBtn, _followingBtn } = ViewerLanguage();
 
@@ -29,7 +29,8 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
   const {
     setTypeMenuPopup,
     setUserPopup,
-    setPopupType
+    setPopupType,
+    setTargetUser_Type
   } = useContext(ViewerContext);
   
   const [getIndicateDate, setGetIndicateDate] = useState();
@@ -94,7 +95,7 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
   };
 
   useEffect(() => { // 뷰어와 피드백 팝업 분기점
-    const { screenId, following, nickname, profile } = FeedbackData?.writer;
+    const { screenId, following, nickname, profile, _id } = FeedbackData?.writer;
 
     convert(FeedbackData?.feedbackBody || FeedbackData?.replyBody);
     setHeartCount();
@@ -105,6 +106,7 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
     setProfileImg(profile?.thumbnail);
     setNickName(nickname);
     setFollowMe(following === 'me');
+
   }, []);
 
   return (
@@ -139,9 +141,11 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
             onClick={ () => {
               if(loginOn){
                 if(type === 'Feedback'){
-                  contentPopup(screenId, '');
+                  contentPopup(screenId, FeedbackData?.writer?._id, FeedbackData._id);
+                  setTargetUser_Type('Feedback');
                 } else {
-                  feedbackReplyPopup(FeedbackData._id, screenId);
+                  feedbackReplyPopup(FeedbackData._id, screenId, FeedbackData?.writer?._id);
+                  setTargetUser_Type('Reply');
                 }
               } else {
                 setUnAuth(true)

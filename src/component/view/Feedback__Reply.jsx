@@ -7,6 +7,7 @@ import { ProgressSmall } from '@utils/LoadingProgress';
 import WriteInputForm from '@utils/WriteFbForm';
 import ViewerLanguage from './Viewer.Language';
 import MorePopup from './MoreMenuPopup';
+import ReportsPopup from '../report/ReportsPopup';
 
 // Hooks
 import useAxiosFetch from '@hooks/useAxiosFetch';
@@ -30,7 +31,8 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
     feedbackModalCtrl,
     setFeedbackModalCtrl,
     feedbackPopupType,
-    setFeedbackPopupType
+    setFeedbackPopupType,
+    setTargetUser_Id
   } = useContext(ViewerContext);
 
   const [ replyData, setReplyData ] = useState([]);
@@ -38,6 +40,7 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
   const [ accessConfirm, setAccessConfirm ] = useState(false);
   const [ targetReply, setTargetReply ] = useState();
   const [ screenId, setScreenId ] = useState();
+  const [ feedbackUserId, setFeedbackUserId ] = useState();
   
   // 뷰어 언어
   const { _replyPlaceholder } = ViewerLanguage();
@@ -45,9 +48,10 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
 
     // interation user popup
 
-    const feedbackReplyPopup = (replyId, screenId) => {
+    const feedbackReplyPopup = (replyId, screenId, feedbackUserId) => {
       setFeedbackModalCtrl(true);
       setTargetReply(replyId) // reply ID 저장 remove 할 때 이용
+      setTargetUser_Id(feedbackUserId)
       setFeedbackPopupType('');
       if (localStorage.getItem('userid') === screenId) {
         setMoreMenu( <MorePopup type="MyContentPopup" doType="PopupFeedback" /> );
@@ -55,7 +59,6 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
         setMoreMenu( <MorePopup type="UserContentPopup" doType="PopupFeedback" /> );
       }
     };
-
     const tagetScreenIdMention = (screenId) => {
       targetRef.current.focus();
       setScreenId(screenId);
@@ -64,13 +67,15 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
     useEffect(() => {
       if(feedbackPopupType === 'PopupFeedbackRemove'){
         setMoreMenu(<ConfirmPopup type="CONFIRM" setAccessConfirm={setAccessConfirm} doType="PopupFeedback" />)
+      } else {
+        setMoreMenu(<ReportsPopup contentType="Reply" contentId={targetReply} suspectUserId={feedbackUserId} />)
       }
     }, [feedbackPopupType]);
 
     useEffect(() => { // reply 삭제
     if(accessConfirm && feedbackPopupType === 'PopupFeedbackRemove'){
       feedbackRemoveFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${feedbackUid}/reply/${targetReply}`, 'delete', null, null, null);
-      setReplyData(null);
+      // setReplyData(null);
       setAccessConfirm(false);
       setFeedbackModalCtrl(false);
       setFeedbackPopupType('')
@@ -122,9 +127,9 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
       <FBcontent>
         <FeedbackInner>
           { 
-            replyData ? replyData.map(( items ) => (
+            replyData ? replyData.map(( items, index ) => (
             <FeedBack 
-              key={items?.id} 
+              key={index} 
               FeedbackData={items}
               boardUid={boardUid}
               feedbackUid={feedbackUid}
