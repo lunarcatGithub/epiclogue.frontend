@@ -212,6 +212,7 @@ export default function Viewer({ boardItem, nonError }) {
   }, [feedbackApi]);
 
   useEffect(() => {
+    feedbackData.reverse();
     setFeedbackSliceData(feedbackData?.slice(0, prevFeeback));
     // checkFbLength(feedbackData.length);
     fbMoreText(feedbackData?.length)

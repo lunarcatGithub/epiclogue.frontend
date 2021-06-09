@@ -1,27 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 // component import
 import FeedbackReply from './Feedback__Reply';
-import ViewerLanguage from './Viewer.Language';
 
 // Hooks
 import { useToggle } from '@hooks/useToggle';
 import { useTimeCalculation } from '@hooks/useTimeCalculation';
 import { useConvertTags } from '@hooks/useConvertTags';
-import useAxiosFetch from '@hooks/useAxiosFetch';
 import { useUrlMove } from '@hooks/useUrlMove';
 
 // reduce
 import { ViewerContext } from '@store/ViewerStore';
 import { AppDataContext } from '@store/App_Store';
 
+// utils
+import LikeFetch from '@utils/LikeFetch';
+import IsFollowFetch from '@utils/isFollowFetch';
 
 // porps.data._id 는 댓글  uid, writer._id = 작성자의 uid
 const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetScreenIdMention }) => {
-
-  // 피드백 언어
-  const { _followBtn, _followingBtn } = ViewerLanguage();
 
   // reduce
   const { loginOn, setUnAuth } = useContext(AppDataContext);
@@ -36,14 +34,12 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
   const [getIndicateDate, setGetIndicateDate] = useState();
   const [indicateDate] = useTimeCalculation(getIndicateDate);
 
-  const [follow, toggle_follow] = useToggle();
-  const [like, toggle_like] = useToggle();
   const [comment, toggle_comment] = useToggle();
 
   const [profileImg, setProfileImg] = useState();
-  const [nickName, setNickName] = useState();
-  const [screenId, setScreenId] = useState();
-  const [followMe, setFollowMe] = useState();
+  const [nickName, setNickName] = useState('');
+  const [screenId, setScreenId] = useState('');
+  const [followMe, setFollowMe] = useState('');
 
   // 태그 및 하이퍼링크 convert
   const [converted, convert] = useConvertTags();
@@ -53,33 +49,10 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
   const [_heartCount, setHeartCount] = useState();
   const [goURL] = useUrlMove();
   
-  //언어 변수
-
-  // fetch
-  const [, , , feedbackFetch] = useAxiosFetch();
-  const [, likeApi, , likeFetch] = useAxiosFetch();
 
   const handleKeyDown = (e) => {
     e.target.style.height = 'inherit';
     e.target.style.height = `${e.target.scrollHeight}px`;
-  };
-
-  const submitHandler = (e, _type) => {
-    e.preventDefault();
-    const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/${_type}`;
-    if (_type === 'follow') {
-      feedbackFetch(URL, follow ? 'post' : 'delete', { targetUserId: FeedbackData?.writer?._id }, null);
-    } else if (_type === 'like') {
-      likeFetch(
-        URL,
-        like ? 'post' : 'delete',
-        {
-          targetInfo: FeedbackData?._id,
-          targetType: type === 'popupReply' ? 'Reply' : 'Feedback',
-        },
-        null
-      );
-    }
   };
 
   const replyPopupCtrl = () => {
@@ -93,15 +66,13 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
       />
     );
   };
-
+  console.log(FeedbackData)
   useEffect(() => { // 뷰어와 피드백 팝업 분기점
-    const { screenId, following, nickname, profile, _id } = FeedbackData?.writer;
+    const { screenId, following, nickname, profile } = FeedbackData?.writer;
 
     convert(FeedbackData?.feedbackBody || FeedbackData?.replyBody);
     setHeartCount();
     setGetIndicateDate(FeedbackData?.writeDate);
-    toggle_follow(FeedbackData?.following);
-    toggle_like(FeedbackData?.liked);
     setScreenId(screenId);
     setProfileImg(profile?.thumbnail);
     setNickName(nickname);
@@ -122,12 +93,7 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
               <FeedbackNickInfo>{nickName}</FeedbackNickInfo>
             </UserLink>
             {
-              !followMe && loginOn && (
-                <form action="" method="post" onSubmit={(e) => submitHandler(e, 'follow')}>
-                  <FeedbackFollowTxt clickState={follow} onClick={() => toggle_follow()}>
-                    { follow ? _followingBtn : _followBtn }
-                  </FeedbackFollowTxt>
-                </form> )
+              !followMe && loginOn && <IsFollowFetch _id={FeedbackData?.writer?._id} initFollow={FeedbackData?.following} />
             }
           </FeedbackProfile>
           <FeedbackProfile>
@@ -153,27 +119,22 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
             <MoreMenuDot />
           </FdMoreMenuAnchor> 
         }
-            <FeedbackContentBox>
-              <FeedbackContentInner modify={false}>
-                
-                  <ModifiForm>
-                    <FeedbackTextContent>{converted}</FeedbackTextContent>
-                    {/* { type === 'ReFb' && <FeedbackTextContent>{reConverted}</FeedbackTextContent>} */}
-                    <FeedbackPostedTime>{`Posted by ${indicateDate}`}</FeedbackPostedTime>
-                  </ModifiForm>
-              </FeedbackContentInner>
-            </FeedbackContentBox> 
+          <FeedbackContentBox>
+            <FeedbackContentInner modify={false}>
+              
+                <ModifiForm>
+                  <FeedbackTextContent>{converted}</FeedbackTextContent>
+                  <FeedbackPostedTime>{`Posted by ${indicateDate}`}</FeedbackPostedTime>
+                </ModifiForm>
+            </FeedbackContentInner>
+          </FeedbackContentBox> 
         <FeedbackBtnWrap>
-          <form onSubmit={(e) => submitHandler(e, 'like')}>
-            {/* 피드백 좋아요 버튼 */}
-            <ReactBtnWrap>
-              <LikeFbBtn
-                heart={like}
-                onClick={() =>  loginOn ? toggle_like() : setUnAuth(true) }
-              />
-              <LikeFbScore>{_heartCount && _heartCount}</LikeFbScore>
-            </ReactBtnWrap>
-          </form>
+          <LikeFetch 
+            _id={FeedbackData?._id} 
+            initLike={FeedbackData?.liked}
+            initialCount={FeedbackData?.heartCount}
+            type={ type === 'popupReply' ? 'Reply' : 'Feedback' }
+          />
           <ReactBtnWrap>
           {
             type === 'popupReply' || type === 'popupFeedback' ? <></>
@@ -189,25 +150,6 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
       </FeedbackUserWrap>
   );
 };
-
-/* 애니메이션 */
-
-const Following = keyframes`
-from{
-  color:rgba(164, 159, 186, 1);
-}
-to{
-  color:rgba(241, 173, 57, 0.8);
-}
-`;
-const UnFollowing = keyframes`
-from{
-  color:rgba(241, 173, 57, 0.8);
-}
-to{
-  color:rgba(164, 159, 186, 1);
-}
-`;
 
 //버튼
 const MoreMenuDot = styled.span`
@@ -250,17 +192,6 @@ const FeedbackUserWrap = styled.div`
   background: ${(props) => props.theme.color.whiteColor};
 `;
 
-// 더보기 메뉴
-
-// 프로필 이미지
-const FollowTxt = css`
-  white-space: nowrap;
-  margin-right: 58px;
-  margin-top: 5px;
-  font-weight: ${(props) => props.theme.fontWeight.font700};
-  cursor: pointer;
-  font-size: ${(props) => props.theme.fontSize.font14};
-`;
 const TimePost = css`
   margin: 8px 0 3px 6px;
   font-weight: ${(props) => props.theme.fontWeight.font300};
@@ -321,13 +252,6 @@ const FeedbackNickInfo = styled.span`
   cursor: pointer;
 `;
 
-const FeedbackFollowTxt = styled.button.attrs({
-  type: 'submit',
-})`
-  ${FollowTxt};
-  flex-shrink: 0;
-  animation: ${(props) => (props.clickState ? Following : UnFollowing)} 0.3s ease forwards;
-`;
 
 // 유저 아이디
 const FeedbackIdInfo = styled.span`
@@ -415,42 +339,6 @@ const ReFbBtn = styled.button.attrs({ type: 'button' })`
       border-radius: 50%;
     }
   }
-`;
-
-const ReReFbBtn = styled(ReFbBtn)`
-  &::before {
-    background: url('/static/atIcon.svg') no-repeat center / contain;
-  }
-  &:active {
-    &:after {
-      width: 32px;
-      height: 32px;
-      background: ${(props) => props.theme.color.opacitySkyColor};
-    }
-  }
-`;
-
-const ReFbScore = styled.span`
-  margin-left: 6px;
-  margin-top: 2px;
-  margin-right: 60px;
-  color: ${(props) => props.theme.color.softBlackColor};
-  font-size: ${(props) => props.theme.fontSize.font14};
-`;
-
-const LikeFbBtn = styled(ReFbBtn).attrs({ type: 'submit' })`
-  &::before {
-    background: url(${(props) => (props.heart ? '/static/heart-2.svg' : '/static/heart-1.svg')}) no-repeat center / contain;
-  }
-  &:active {
-    &:after {
-      background: ${(props) => props.theme.color.softPinkColor};
-    }
-  }
-`;
-
-const LikeFbScore = styled(ReFbScore)`
-  margin-left: 4px;
 `;
 
 // 수정하기 스타일링
