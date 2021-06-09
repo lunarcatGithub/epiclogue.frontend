@@ -16,7 +16,7 @@ const TranslatePopup = () => {
   const [boardId, setBoardId] = useState();
 
   const { originBoardId, _id, boardImg, writer } = viewerData;
-  
+
   //언어 변수
   const {
     _secondaryOpt,
@@ -35,18 +35,23 @@ const TranslatePopup = () => {
 
   useEffect(() => {
     boardIdDevide();
-  }, []);
+  }, [viewerData]);
 
   return (
     <UserContentPopupInner>
       <UserContentTitleBox>{_secondaryOpt}</UserContentTitleBox>
       <UserContentTabBox>
         <UserContentTab
-          onClick={() => {
+          onClick={ () => {
             setUserPopup(false);
-            goURL({ pathname: `/editor/${boardId}`, query: { writer, boardUid:boardId, data: JSON.stringify(viewerData), boardImg } });
-          }}
-        >
+            goURL( { 
+              pathname: `/editor/${boardId}`, 
+              query: { 
+                writer, boardUid:boardId, 
+                data: JSON.stringify(viewerData), 
+                boardImg:originBoardId?.boardImg
+              } } );
+          } } >
           {_useEditor}
         </UserContentTab>
         <UserContentTab 

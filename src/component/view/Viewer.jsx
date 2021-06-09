@@ -115,7 +115,7 @@ export default function Viewer({ boardItem, nonError }) {
       setTypeMenuPopup(<ConfirmPopup type="CONFIRM" setAccessConfirm={setAccessConfirm} />)
 
     } else if (popupType === 'WorkSecondary'){
-      setTypeMenuPopup(<TranslatePopup/>)
+      setTypeMenuPopup(<TranslatePopup />)
 
     } else if (popupType === 'RemovedBoard'){ // 작품이 삭제되고 그걸 2차 창작하려 할 때 발생
       setTypeMenuPopup(<ConfirmPopup type="REMOVEORIGIN" handleModal={() => setUserPopup(false)} />)

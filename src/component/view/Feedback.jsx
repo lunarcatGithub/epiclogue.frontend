@@ -18,8 +18,8 @@ import { AppDataContext } from '@store/App_Store';
 
 
 // porps.data._id 는 댓글  uid, writer._id = 작성자의 uid
-const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup }) => {
-
+const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetScreenIdMention }) => {
+  
   // 피드백 언어
   const { _followBtn, _followingBtn } = ViewerLanguage();
 
@@ -92,7 +92,7 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup }) => {
       />
     );
   };
-  console.log(FeedbackData)
+
   useEffect(() => { // 뷰어와 피드백 팝업 분기점
     const { screenId, following, nickname, profile } = FeedbackData?.writer;
 
@@ -102,7 +102,7 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup }) => {
     toggle_follow(FeedbackData?.following);
     toggle_like(FeedbackData?.liked);
     setScreenId(screenId);
-    setProfileImg(profile);
+    setProfileImg(profile?.thumbnail);
     setNickName(nickname);
     setFollowMe(following === 'me');
   }, []);
@@ -171,10 +171,9 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup }) => {
             </ReactBtnWrap>
           </form>
           <ReactBtnWrap>
-
           {
-            type === 'popupReply' || type === 'popupFeedback' ?
-            <ReReFbBtn />
+            type === 'popupReply' || type === 'popupFeedback' ? <></>
+            // <ReReFbBtn onClick={() => tagetScreenIdMention(screenId)} />
             :
             <ReFbBtn
               comment={comment}
@@ -294,6 +293,7 @@ const ProfileImgBox = styled.div`
 
 const FeedbackProfileImg = styled.span`
   background: ${(props) => (props.profile ? `url(${props.profile}) no-repeat center center / cover` : `${props.theme.color.hoverColor}`)};
+  /* background: ${(props) => `${props.theme.color.hoverColor}`}; */
   width: 100%;
   height: 100%;
 `;

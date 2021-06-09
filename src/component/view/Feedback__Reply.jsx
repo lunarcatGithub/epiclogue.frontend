@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
@@ -19,6 +19,8 @@ import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
 
 const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
+  const targetRef = useRef();
+
   const [ replyLoding, replyApi, , replyFetch ] = useAxiosFetch();
   const [ reFeedbackLoding, reFeedbackApi, , reFeedbackFetch ] = useAxiosFetch();
   const [, feedbackRemoveApi, , feedbackRemoveFetch] = useAxiosFetch();
@@ -29,12 +31,14 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
     setFeedbackModalCtrl,
     feedbackPopupType,
     setFeedbackPopupType
- } = useContext(ViewerContext);
+  } = useContext(ViewerContext);
 
- const [ replyData, setReplyData ] = useState([]);
-  const [moreMenu, setMoreMenu] = useState();
+  const [ replyData, setReplyData ] = useState([]);
+  const [ moreMenu, setMoreMenu] = useState();
   const [ accessConfirm, setAccessConfirm ] = useState(false);
   const [ targetReply, setTargetReply ] = useState();
+  const [ screenId, setScreenId ] = useState();
+  
   // 뷰어 언어
   const { _replyPlaceholder } = ViewerLanguage();
 
@@ -51,6 +55,11 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
         setMoreMenu( <MorePopup type="UserContentPopup" doType="PopupFeedback" /> );
       }
     };
+
+    const tagetScreenIdMention = (screenId) => {
+      targetRef.current.focus();
+      setScreenId(screenId);
+    }
 
     useEffect(() => {
       if(feedbackPopupType === 'PopupFeedbackRemove'){
@@ -94,9 +103,9 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
     <>
     <FeedbackLayout>
       <FBheader>
-          <ClosedBox onClick={() => setUserPopup(false)} >
-            <ClosedBtn />
-          </ClosedBox>
+        <ClosedBox onClick={() => setUserPopup(false)} >
+          <ClosedBtn />
+        </ClosedBox>
       </FBheader>
 
       {/* 원 댓글  */}
@@ -105,6 +114,7 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
           <FeedBack 
             type="popupFeedback" 
             FeedbackData={FeedbackData}
+            tagetScreenIdMention={tagetScreenIdMention}
           />
         </OriginFeedback>
       </OriginUserBox>
@@ -119,6 +129,7 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
               boardUid={boardUid}
               feedbackUid={feedbackUid}
               feedbackReplyPopup={feedbackReplyPopup}
+              tagetScreenIdMention={tagetScreenIdMention}
               type="popupReply"
             /> ) )
             :
@@ -132,6 +143,8 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
           getText={getText}
           _placeholder={_replyPlaceholder}
           loading={reFeedbackLoding}
+          targetRef={targetRef}
+          screenId={screenId}
         />
       </FBform>
     </FeedbackLayout>

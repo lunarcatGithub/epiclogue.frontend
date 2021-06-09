@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 //컴포넌트 import
@@ -6,17 +6,33 @@ import { ProgressSmall } from '@utils/LoadingProgress';
 
 // hooks&&reducer
 import { AlertContext, AppDataContext } from '@store/App_Store';
-import useAxiosFetch from '@hooks/useAxiosFetch';
 import { useChange } from '@hooks/useChange';
 
-export default function WriteInputForm({ getText, _placeholder, loading }){
+export default function WriteInputForm({ getText, _placeholder, loading, targetRef, screenId }){
   const { alertPatch } = useContext(AlertContext);
   const { loginOn, setUnAuth } = useContext(AppDataContext);
 
-  const [feedbackBody, handleChange, resetValue] = useChange('');
-  
+  const [ feedbackBody, handleChange, resetValue ] = useChange('');
+  const [ targetMergeData, setTargetMergeData ] = useState('');
+
+  const [ textValue, setTextValue ] = useState('');
 
   //fetch
+  // const textMerge = (e) => {
+  //   // setTextValue('');
+  //   let value = e.target.value;
+  //   console.log(value)
+  //   let txt = targetRef.current.value;
+  //   let idx = txt.indexOf('test');
+  //   console.log(idx)
+  //   if(idx >= 0) {
+  //     let newText = [txt.substring(0, idx), <strong>{txt.substring(idx, idx + value.length)}</strong>, txt.substring(idx + value.length)];
+  //     console.log(newText)
+  //     setTextValue({inputValue: value, text: newText});
+  //   } else {
+  //     setTextValue({inputValue: value, text: ''});
+  //   }    
+  // }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -32,35 +48,27 @@ export default function WriteInputForm({ getText, _placeholder, loading }){
     if (feedbackBody.length <= 1) {
       return alertPatch({ type: 'FEEDBACK_TWO', payload: true });
     } else {
-      // if (type === 'Feedback') {
-      //   getText(feedbackBody);
-
-      // } else if (type === 'RePly') {
-      //   getText(feedbackBody);
-      // }
       getText(feedbackBody);
       resetValue();
     }
   };
 
   // useEffect(() => {
-  //   if (!reFeedbackApi) return;
-  //   resetValue();
-  //   setFbReList(reFeedbackApi?.data);
-  // }, [reFeedbackApi]);
+  //   setTargetMergeData(screenId);
+  // }, [feedbackBody, screenId])
 
   // 댓글 전송 버튼
   return (
     <form action="" method="post" onSubmit={handleSubmit} autoComplete="off">
       <FeedbackInputWrap>
-        <FeedbackInput onChange={handleChange} value={feedbackBody} placeholder={_placeholder} />
+        <FeedbackInput ref={targetRef} onChange={handleChange} value={feedbackBody} placeholder={_placeholder} />
         <InputSendBtn loading={loading} feedbackBody={feedbackBody.length > 1}>
           { !loading ? <InputSendImg imgOn={feedbackBody.length > 1} /> : <ProgressSmall /> }
         </InputSendBtn>
       </FeedbackInputWrap>
     </form>
   );
-};
+}
 
 // 피드백 input 영역
 

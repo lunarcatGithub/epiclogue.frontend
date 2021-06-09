@@ -11,8 +11,6 @@ import { ViewerContext } from '@store/ViewerStore';
 const MorePopup = ({ type, doType }) => {
   const { setUserPopup, setPopupType, setFeedbackModalCtrl, setFeedbackPopupType } = useContext(ViewerContext);
 
-  console.log(doType)
-
   // desc
   const [ descript, setDescript ] = useState({});
   
