@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import styled from 'styled-components';
 
 // Hooks
@@ -8,53 +8,46 @@ import { useToggle } from '@hooks/useToggle';
 // reduce
 import { AppDataContext } from '@store/App_Store';
 
-export default function LikeFetch({ _id, initLike, initialCount, type }) {
+export default function BookmarkFetch({ _id, initToggle }) {
   // fetch
-  const [ , likeApi, , likeFetch] = useAxiosFetch();
+  const [ , , , bookmarkFetch] = useAxiosFetch();
 
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   
-  const [ heartCount, setHeartCount ] = useState(initialCount);
+
   // toggle
-  const [like, toggle_like] = useToggle();
+  const [bookmark, toggleBookmark] = useToggle();
 
   const submitHandler = (e) => {
     e.preventDefault();
-    const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/like`;
-      likeFetch(
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/bookmark`;
+    bookmarkFetch(
         URL,
-        like ? 'post' : 'delete',
+        bookmark ? 'post' : 'delete',
         {
-          targetInfo: _id,
-          targetType: type,
+          boardId: _id,
         },
         null
       );
   };
 
   useEffect(() => {
-    toggle_like(initLike);
+    toggleBookmark(initToggle);
   }, []);
 
-  useEffect(() => {
-    if(likeApi?.result === 'ok'){
-      setHeartCount(likeApi?.data?.heartCount);
-    }
-  }, [likeApi]);
 
 
   return (
     <form onSubmit={submitHandler}>
-      <ReactBtnWrap type={type} >
-        <LikeFbBtn
-          heart={like}
+      <ReactBtnWrap>
+        <BookmarkBtn
+          bookmark={bookmark}
           onClick={ () =>  
             loginOn ? 
-            toggle_like() 
+            toggleBookmark() 
             :
             setUnAuth(true)
           } />
-        <LikeFbScore>{ heartCount }</LikeFbScore>
       </ReactBtnWrap>
     </form>
   );
@@ -65,10 +58,9 @@ const ReactBtnWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: ${props => props.type === 'Board' ? 0 : `4em`};
 `;
 
-const LikeFbBtn = styled.button.attrs({ type: 'submit' })`
+const BookmarkBtn = styled.button.attrs({ type: 'submit' })`
   position: relative;
   width: 36px;
   height: 36px;
@@ -77,7 +69,7 @@ const LikeFbBtn = styled.button.attrs({ type: 'submit' })`
   cursor: pointer;
   &::before {
     content: '';
-    background: url(${(props) => (props.heart ? '/static/heart-2.svg' : '/static/heart-1.svg')}) no-repeat center / contain;
+    background: url(${(props) => (props.bookmark ? '/static/bookmark-2.svg' : '/static/bookmark-1.svg')}) no-repeat center / contain;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -88,7 +80,6 @@ const LikeFbBtn = styled.button.attrs({ type: 'submit' })`
   &:active {
     transform: scale(1.3);
     transition: all 0.2s ease-in-out;
-    background: ${(props) => props.theme.color.softSkyColor};
     &::after {
       content: '';
       position: absolute;
@@ -98,14 +89,7 @@ const LikeFbBtn = styled.button.attrs({ type: 'submit' })`
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: ${(props) => props.theme.color.softPinkColor};
+      background: ${(props) => props.theme.color.orangeOpacityColor};
     }
   }
-`;
-
-const LikeFbScore = styled.span`
-  margin-left: 4px;
-  margin-top: 2px;
-  color: ${(props) => props.theme.color.softBlackColor};
-  font-size: ${(props) => props.theme.fontSize.font14};
 `;

@@ -1,12 +1,13 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import styled from 'styled-components';
 
 // reduce
 import { ViewerContext } from '@store/ViewerStore';
 import { AppDataContext, AlertContext } from '@store/App_Store';
 
-// hooks
-import { useToggle } from '@hooks/useToggle';
+// utils
+import BookmarkFetch from '@utils/BookmarkFetch';
+import LikeFetch from '@utils/LikeFetch';
 
 import ViewerLanguage from './Viewer.Language';
 
@@ -15,38 +16,34 @@ export default function ViewerReact() {
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   const { alertPatch } = useContext(AlertContext);
 
-
-  // toggle
-  const [bookmark, toggleBookmark] = useToggle();
-  const [like, toggleLike] = useToggle();
-
-  // data
-  const [ reactData, setReactData ] = useState(null);
+  // data rendering
+  const [ reactData, setReactData ] = useState();
 
     // 뷰어 언어
     const { _contentsReact } = ViewerLanguage();
-    
 
-    const submitHandler = (e, type) => {
-      e.preventDefault();
+    const submitHandler = (type) => {
       unAuthBanned(); // unAuth
 
-      if(type === 'share'){ // share일 경우 clipboard
+      if(type === 'Share'){ // share일 경우 clipboard
         clipboardShare();
         return;
       }
 
-      if(type === 'globe'){ // globe
+      if(type === 'Globe'){ // globe
         setUserPopup(true);
-        if (reactData.originUserId && !reactData.originBoardId) {
+        if (reactData?.originUserId && !reactData?.originBoardId) {
           setPopupType('RemovedBoard');
         } else {
           reactData?.allowSecondaryCreation === 0 ? setPopupType('BannedSecondary') : setPopupType('WorkSecondary');
         }
       }
+    }
 
-      const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/${type}`;
-
+    const openReactPopupHandler = () => {
+      unAuthBanned();
+      setUserPopup(true);
+      setPopupType('ReactPopup');
     }
 
     const unAuthBanned = () => {
@@ -56,16 +53,10 @@ export default function ViewerReact() {
       }
     }
     
-
     useEffect(() => {
       setReactData(viewerData);
+      return () => setReactData(null);
     }, [viewerData]);
-
-    useEffect(() => {
-      toggleBookmark(!loginOn ? false : reactData?.bookmarked);
-      toggleLike(!loginOn ? false : reactData?.liked)
-    }, []);
-
 
     // 공유하기 클립보드
     const clipboardShare = () => {
@@ -82,16 +73,9 @@ export default function ViewerReact() {
       alertPatch({ type: 'SHARE', payload: true });
     };
 
-    const buttonData = [
-      { id:0, type: 'bookmark', toggle:<BookmarkBtn bookmark={bookmark} />, count:null },
-      { id:1, type: 'like', toggle:<LikeBtn heart={like} />, count:reactData?.heartCount },
-      { id:2, type: 'share', toggle:<ShareBtn />, count:null },
-      { id:3, type: 'globe', toggle:<GlobeBtn />, count:null }
-    ];
-
     return (
       <ReactTab>
-        <ReactInfoWrap onClick={ () => unAuthBanned() }>
+        <ReactInfoWrap onClick={ () => openReactPopupHandler() }>
           <ReactImg />
           <ReactTitle>
             { reactData?.reactCount }
@@ -99,18 +83,26 @@ export default function ViewerReact() {
           </ReactTitle>
         </ReactInfoWrap>
         <ReactSelector>
-        { buttonData.map( ({ id, type, toggle, count }) => (
-          <form key={id} onSubmit={ (e) => submitHandler(e, type) }>
-            <BtnBox
-              onClick={ () => unAuthBanned() } >
-              { toggle }
-              { count && <ReactScore>{ count }</ReactScore> }
-            </BtnBox>
-          </form>
-        ) ) }
+          <BookmarkFetch
+            _id={reactData?._id}
+            initToggle={reactData?.bookmarked}
+          />
+          <LikeFetch
+            _id={reactData?._id}
+            initLike={reactData?.liked}
+            initialCount={reactData?.heartCount}
+            type="Board"
+          />
+          <BtnBox onClick={ () => submitHandler('Share') } >
+            <ShareBtn />
+          </BtnBox>
+          <BtnBox onClick={ () => submitHandler('Globe') } >
+            <GlobeBtn />
+          </BtnBox>
+
         </ReactSelector>
       </ReactTab>
-    )
+    );
   }
 
 
@@ -156,7 +148,7 @@ const ReactSelector = styled.div`
   height: auto;
   padding-top: 10px;
 `;
-const BtnBox = styled.div`
+const BtnBox = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -195,16 +187,6 @@ const BookmarkBtn = styled.button.attrs({ type: 'submit' })`
     }
   }
 `;
-const LikeBtn = styled(BookmarkBtn)`
-  &::before {
-    background: url(${(props) => (props.heart ? `/static/heart-2.svg` : `/static/heart-1.svg`)}) no-repeat center / contain;
-  }
-  &:active {
-    &:after {
-      background: ${(props) => props.theme.color.softPinkColor};
-    }
-  }
-`;
 
 const ShareBtn = styled(BookmarkBtn)`
   &::before {
@@ -227,10 +209,4 @@ const GlobeBtn = styled(BookmarkBtn)`
       background: ${(props) => props.theme.color.softGreenColor};
     }
   }
-`;
-const ReactScore = styled.span`
-  margin-left: 6px;
-  font-size: ${(props) => props.theme.fontSize.font14};
-  color: ${(props) => props.theme.color.softBlackColor};
-  font-weight: ${(props) => props.theme.fontWeight.font300};
 `;

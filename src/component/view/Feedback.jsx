@@ -18,7 +18,6 @@ import { AppDataContext } from '@store/App_Store';
 import LikeFetch from '@utils/LikeFetch';
 import IsFollowFetch from '@utils/isFollowFetch';
 
-// porps.data._id 는 댓글  uid, writer._id = 작성자의 uid
 const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetScreenIdMention }) => {
 
   // reduce
@@ -121,7 +120,6 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
         }
           <FeedbackContentBox>
             <FeedbackContentInner modify={false}>
-              
                 <ModifiForm>
                   <FeedbackTextContent>{converted}</FeedbackTextContent>
                   <FeedbackPostedTime>{`Posted by ${indicateDate}`}</FeedbackPostedTime>
@@ -139,6 +137,7 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
           {
             type === 'popupReply' || type === 'popupFeedback' ? <></>
             // <ReReFbBtn onClick={() => tagetScreenIdMention(screenId)} />
+            // 향후 멘션 기능 도입
             :
             <ReFbBtn
               comment={comment}

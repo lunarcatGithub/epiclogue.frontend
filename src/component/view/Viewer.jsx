@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from "next-i18next";
 
 // componenets
 import ViewerUserForm from './Viewer__UserForm';
@@ -11,11 +12,10 @@ import ViewerWriteFeedback from './Viewer__WriteFeedback';
 import FeedBack from './Feedback';
 import ViewerLanguage from './Viewer.Language';
 import Contents from '../content/Contents';
+import ViewerReactPopup from './Viewer__ReactPopup';
 
 // Hooks
-import { useModal } from '@hooks/useModal';
 import useAxiosFetch from '@hooks/useAxiosFetch';
-import { useToggle } from '@hooks/useToggle';
 import { useUrlMove } from '@hooks/useUrlMove';
 
 // reduce
@@ -28,6 +28,8 @@ import ConfirmPopup from '@utils/ConfirmPopup';
 import { ProgressSmall } from '@utils/LoadingProgress';
 
 export default function Viewer({ boardItem, nonError }) {
+  const { t } = useTranslation("common");
+
   const {
     viewerData,
     setViewerData,
@@ -39,8 +41,6 @@ export default function Viewer({ boardItem, nonError }) {
     setPopupType,
     feedbackRenderList,
     setTargetUser_Id,
-    targetUser_Type
-
   } = useContext(ViewerContext);
 
   // 뷰어 언어
@@ -51,7 +51,9 @@ export default function Viewer({ boardItem, nonError }) {
     _moreContents
   } = ViewerLanguage();
 
+  // router
   const [goBack] = useUrlMove();
+  const [goUploadUpdate] = useUrlMove();
 
   // board content script
   const [ boardImage, setBoardImage ] = useState([]);
@@ -114,12 +116,12 @@ export default function Viewer({ boardItem, nonError }) {
       setTypeMenuPopup( <MorePopup type="UserContentPopup" /> );
     }
   };
-
+  console.log(popupType)
   const reportOrRemoveOrModifyOrTrans = () => { // useEffect에서 popup 관리
     if(popupType === 'ContentReport'){
       setTypeMenuPopup(<ReportsPopup onClose={setUserPopup} contentType="Board" contentId={viewerData._id} suspectUserId={''} />);
     } else if(popupType === 'ContentModify'){
-      return
+      goUploadUpdate({pathname:`/upload`, as:`/upload`, query:{_type:'modify', boardUid:viewerData._id}})
     } else if (popupType === 'ContentRemove'){
       setTypeMenuPopup(<ConfirmPopup type="CONFIRM" setAccessConfirm={setAccessConfirm} />);
 
@@ -134,17 +136,19 @@ export default function Viewer({ boardItem, nonError }) {
 
     } else if (popupType === 'BannedSecondary'){ // 2차 창작 불허
       setTypeMenuPopup(<ConfirmPopup type="TRANS" handleModal={() => setUserPopup(false)} />)
+    } else if (popupType === 'ReactPopup'){ // 작품 반응
+      setTypeMenuPopup(<ViewerReactPopup boardUid={viewerData?._id} />);
     }
   };
 
   // remove board
   const removeBoard = () => {
-    dataFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${viewerData._id}`, 'delete', null, null, null);
+    dataFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${viewerData?._id}`, 'delete', null, null, null);
   }
 
   // remove feedback
   const removeFeedback = () => {
-    FeedbackFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${viewerData._id}/feedback/${feedbackUid}`, 'delete', null, null, null);
+    FeedbackFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${viewerData?._id}/feedback/${feedbackUid}`, 'delete', null, null, null);
   }
 
   useEffect(() => {
@@ -218,9 +222,23 @@ export default function Viewer({ boardItem, nonError }) {
     fbMoreText(feedbackData?.length)
   }, [prevFeeback, feedbackData, feedbackApi])
 
+    // Meta 전용
+    // let metaBoardBody = boardItem?.data?.boardBody;
+  console.log(viewerData)
+    const metaData = {
+      title: `${boardItem?.data?.writer?.nickname}${t('metaViewerTitle')}${boardItem?.data?.boardTitle}`,
+      description: viewerData?.boardBody?.length !== 0 
+      ? 
+      viewerData?.boardBody 
+      : 
+      `${t('boardDescFirst')} ${viewerData?.writer?.screenId}${t('boardDescSecond')}`,
+      image: viewerData?.boardImg,
+      canonical: `viewer/${viewerData?._id}`,
+    };
+
   return (
   <>
-    {/* <Meta meta={''} /> */}
+    <Meta meta={metaData} />
       <ViewerPortWrap>
       {/* 뷰어 콘텐츠 레이아웃 */}
         <ContentsAllView>
@@ -240,7 +258,7 @@ export default function Viewer({ boardItem, nonError }) {
             <ViewerReact />
 
           {/* 유저 피드백 */}
-            <ViewerWriteFeedback/> 
+            <ViewerWriteFeedback /> 
 
           {/* 피드백 영역 */}
           { feedbackSliceData?.map( ( items ) => (

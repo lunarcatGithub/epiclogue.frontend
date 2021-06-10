@@ -75,9 +75,10 @@ export default function ViewerUserForm(props) {
     writer,
     boardTitle,
     boardBody,
-    writeDate
+    writeDate,
+    edited
   } = viewerData;
-  
+
   // date
   const [indicateDate] = useTimeCalculation(writeDate);
 
@@ -166,7 +167,7 @@ export default function ViewerUserForm(props) {
           { converted.length !== 0 && <TextContent>{ converted }</TextContent> }
           <BottomWrap>
             { type !== 'ORIGIN' && <PostedTime>Posted by { indicateDate }</PostedTime> }
-            {/* { userData?.edited && <ModifyText>{modified}</ModifyText> } */}
+            { edited && <ModifyText>{ _modified }</ModifyText> }
           </BottomWrap>
           {
             type === 'ORIGIN' && (
@@ -401,6 +402,6 @@ const ModifyText = styled.span`
   border-radius: 25px;
   background: ${(props) => props.theme.color.orangeColor};
   font-weight: ${(props) => props.theme.fontWeight.font500};
-  font-size: ${(props) => props.theme.fontSize.font13};
+  font-size: ${(props) => props.theme.fontSize.font12};
   color: ${(props) => props.theme.color.whiteColor};
 `;

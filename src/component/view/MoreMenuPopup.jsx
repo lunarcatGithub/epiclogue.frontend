@@ -5,7 +5,6 @@ import styled, { css } from 'styled-components';
 import ViewerLanguage from './Viewer.Language';
 
 // Hooks&&reducer import
-import { useUrlMove } from '@hooks/useUrlMove';
 import { ViewerContext } from '@store/ViewerStore';
 
 const MorePopup = ({ type, doType }) => {
@@ -79,13 +78,17 @@ const MorePopup = ({ type, doType }) => {
   useEffect(() => {
     typeDivide(); 
   }, [type])
-
+  console.log(doType)
   return (
     <>
       <MyPopupInner >
         <MyTitleBox>{ descript.title }</MyTitleBox>
         <MyTabBox>
+          {  doType !== 'PopupFeedback' || targetUser_Type === 'Board' ?
             <MyTab onClick={()=> reportOrModify()}>{ descript.script1 }</MyTab>
+            :
+            null
+          }
           { descript.script2 &&
             <MyTab onClick={confirmPopup}>{ descript.script2 }</MyTab>
           }

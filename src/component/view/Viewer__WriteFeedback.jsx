@@ -25,7 +25,7 @@ export default function ViewerWriteFeedback() {
     _feedbackPlaceholder,
     _feedbackScoreEnd
   } = ViewerLanguage();
-  
+
   const getFeedback = (text) => {
     // input utill에서 받아온 데이터
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/boards/${viewerData?._id}/feedback`
@@ -41,8 +41,7 @@ export default function ViewerWriteFeedback() {
         <FeedbackTitle>
           <FeedbackIcon />
           <FeedbackText>
-            {_feedbackScore} 0 
-            {_feedbackScoreEnd} 
+            {_feedbackScore} {viewerData?.feedbackCount}{_feedbackScoreEnd} 
           </FeedbackText>
         </FeedbackTitle>
         <WriteInputForm 

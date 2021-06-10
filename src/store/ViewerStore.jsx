@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/router';
-import { useTranslation } from "next-i18next";
-
 
 export const ViewerContext = React.createContext(null);
 
@@ -16,8 +12,8 @@ export default function ViewerStore({ children }) {
 
   // target data
   const [ targetBoardUid, setTargetBoardUid ] = useState();
-  const [ targetUser_Id, setTargetUser_Id ] = useState('');
-  const [ targetUser_Type, setTargetUser_Type ] = useState('');
+  const [ targetUser_Id, setTargetUser_Id ] = useState(''); // user 고유 id
+  const [ targetUser_Type, setTargetUser_Type ] = useState(''); // 선택하는 더보기 팝업이 board, feedback, reply
 
   // feedback list
   const [ feedbackRenderList, setFeedbackRenderList ] = useState([]);
