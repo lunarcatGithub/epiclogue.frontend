@@ -28,10 +28,21 @@ export const LangPush = {
     0: '작품이 투고되었어요',
     1: '作品投稿が完了しました',
   },
+  uploadedFeedback: {
+    2: 'Feedback completed',
+    0: '피드백이 등록되었어요',
+    1: 'フィードバック登録完了',
+  },
+
   uploadedUpdatePush: {
     2: 'Your work has been revised',
     0: '작품이 수정되었어요',
     1: '作品が修正されました',
+  },
+  feedbackUpdatePush: {
+    2: 'Your Feedback has been revised',
+    0: '피드백이 수정되었어요',
+    1: 'フィードバックが修正されました',
   },
   sharePush: {
     2: 'Link Copy Completed',

@@ -3,11 +3,10 @@ import styled, { css } from 'styled-components';
 
 // component import
 import FeedbackReply from './Feedback__Reply';
+import FeedbackModify from './Feedback__Modify';
 
 // Hooks
 import { useToggle } from '@hooks/useToggle';
-import { useTimeCalculation } from '@hooks/useTimeCalculation';
-import { useConvertTags } from '@hooks/useConvertTags';
 import { useUrlMove } from '@hooks/useUrlMove';
 
 // reduce
@@ -27,11 +26,11 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
     setTypeMenuPopup,
     setUserPopup,
     setPopupType,
-    setTargetUser_Type
+    setTargetUser_Type,
+    feedbackModifyMode,
+    setFeedbackUid,
+    setFeedbackModifyMode
   } = useContext(ViewerContext);
-  
-  const [getIndicateDate, setGetIndicateDate] = useState();
-  const [indicateDate] = useTimeCalculation(getIndicateDate);
 
   const [comment, toggle_comment] = useToggle();
 
@@ -40,19 +39,11 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
   const [screenId, setScreenId] = useState('');
   const [followMe, setFollowMe] = useState('');
 
-  // 태그 및 하이퍼링크 convert
-  const [converted, convert] = useConvertTags();
   // const [reConverted, reConvert] = useConvertTags();
 
   // ============================
-  const [_heartCount, setHeartCount] = useState();
   const [goURL] = useUrlMove();
-  
 
-  const handleKeyDown = (e) => {
-    e.target.style.height = 'inherit';
-    e.target.style.height = `${e.target.scrollHeight}px`;
-  };
 
   const replyPopupCtrl = () => {
     setUserPopup(true);
@@ -65,13 +56,10 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
       />
     );
   };
-  console.log(FeedbackData)
+
   useEffect(() => { // 뷰어와 피드백 팝업 분기점
     const { screenId, following, nickname, profile } = FeedbackData?.writer;
 
-    convert(FeedbackData?.feedbackBody || FeedbackData?.replyBody);
-    setHeartCount();
-    setGetIndicateDate(FeedbackData?.writeDate);
     setScreenId(screenId);
     setProfileImg(profile?.thumbnail);
     setNickName(nickname);
@@ -104,6 +92,8 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
         { type !== 'popupFeedback' && 
           <FdMoreMenuAnchor
             onClick={ () => {
+              setFeedbackUid(FeedbackData?._id);
+              setFeedbackModifyMode(false)
               if(loginOn){
                 if(type === 'Feedback'){
                   contentPopup(screenId, FeedbackData?.writer?._id, FeedbackData._id);
@@ -119,14 +109,10 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
           </FdMoreMenuAnchor> 
         }
           <FeedbackContentBox>
-            <FeedbackContentInner modify={false}>
-                <ModifiForm>
-                  <FeedbackTextContent>{converted}</FeedbackTextContent>
-                  <FeedbackPostedTime>{`Posted by ${indicateDate}`}</FeedbackPostedTime>
-                </ModifiForm>
-            </FeedbackContentInner>
+            <FeedbackModify FeedbackData={FeedbackData} />
           </FeedbackContentBox> 
-        <FeedbackBtnWrap>
+        { !feedbackModifyMode && // 수정하기 모드일 경우에는 임시 제거
+          <FeedbackBtnWrap>
           <LikeFetch 
             _id={FeedbackData?._id} 
             initLike={FeedbackData?.liked}
@@ -146,6 +132,7 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
           }
           </ReactBtnWrap>
         </FeedbackBtnWrap>
+        }
       </FeedbackUserWrap>
   );
 };
@@ -189,13 +176,6 @@ const FeedbackUserWrap = styled.div`
   max-height: 400px;
   margin-bottom: 3px;
   background: ${(props) => props.theme.color.whiteColor};
-`;
-
-const TimePost = css`
-  margin: 8px 0 3px 6px;
-  font-weight: ${(props) => props.theme.fontWeight.font300};
-  font-size: ${(props) => props.theme.fontSize.font14};
-  color: ${(props) => props.theme.color.softBlackColor};
 `;
 
 // 반응 탭
@@ -268,28 +248,7 @@ const FeedbackContentBox = styled.div`
   display: flex;
   width: 100%;
 `;
-const FeedbackContentInner = styled.div`
-  display: flex;
-  width: 100%;
-  flex-flow: column;
-  margin-top: 6px;
-  margin-right: 1em;
-  margin-left: ${props => props.modify ? `0em` : `3.5em`};
-  
-`;
-const FeedbackContent = styled.span`
-  margin-left: 6px;
-  font-weight: ${(props) => props.theme.fontWeight.font300};
-  line-height: 20px;
-  font-size: ${(props) => props.theme.fontSize.font15};
-  color: ${(props) => props.theme.color.blackColor};
-`;
-const FeedbackPostedTime = styled.span`
-  ${TimePost};
-`;
-const FeedbackTextContent = styled(FeedbackContent)`
-  margin: 8px 5px;
-`;
+
 // 피드백 대댓글 버튼 및 좋아요
 
 const FeedbackBtnWrap = styled.div`
@@ -337,74 +296,6 @@ const ReFbBtn = styled.button.attrs({ type: 'button' })`
       height: 32px;
       border-radius: 50%;
     }
-  }
-`;
-
-// 수정하기 스타일링
-const ModifiForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  resize: none;
-`;
-const ModifiWrap = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  @media (max-width: 900px) {
-    margin-bottom: 10px;
-  }
-`;
-const TextAreaForm = styled.textarea.attrs({
-  autoFocus: 'autofocus',
-})`
-  display: block;
-  resize: none;
-  border-bottom: 2px solid ${(props) => props.theme.color.hoverColor};
-  margin: 12px 0 0 58px;
-  padding: 4px 8px 0 6px;
-  background: ${(props) => props.theme.color.backgroundColor};
-  font-size: ${(props) => props.theme.fontSize.font15};
-  transition: all 0.2s ease;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  &:focus {
-    border-bottom: 2px solid ${(props) => props.theme.color.orangeColor};
-  }
-`;
-
-const BtnWrap = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin-top: 4px;
-  padding-right: 26px;
-`;
-
-const CloseBtn = styled.button`
-  display: flex;
-  width: auto;
-  padding: 6px 14px;
-  border: 1px solid ${(props) => props.theme.color.softBlackColor};
-  border-radius: 8px;
-  font-size: ${(props) => props.theme.fontSize.font14};
-  color: ${(props) => props.theme.color.softBlackColor};
-  font-weight: ${(props) => props.theme.fontWeight.font300};
-  transition: all 0.3s ease;
-  cursor: pointer;
-  &:hover {
-    background: ${(props) => props.theme.color.softGrayColor};
-  }
-`;
-
-const CheckBtn = styled(CloseBtn)`
-  border: 1px solid ${(props) => props.theme.color.skyColor};
-  color: ${(props) => props.theme.color.whiteColor};
-  background: ${(props) => props.theme.color.skyColor};
-  font-weight: ${(props) => props.theme.fontWeight.font700};
-  margin-left: 8px;
-  &:hover {
-    background: ${(props) => props.theme.color.softSkyColor};
   }
 `;
 

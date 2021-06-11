@@ -104,6 +104,7 @@ const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
     setReplyData(feedbackRemoveApi?.data);
   }, [feedbackRemoveApi]);
 
+
   return (
     <>
     <FeedbackLayout>

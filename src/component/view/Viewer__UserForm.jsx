@@ -156,12 +156,14 @@ export default function ViewerUserForm(props) {
             <UserIdInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>@{screenId}</UserIdInfo>
           </UserProfileId>
           {/* 메뉴 더보기 */}
-          <FdMoreMenuAnchor onClick={ () => {
-            contentPopup(screenId, user_id, 'Viewer');
-            setTargetUser_Type('Board');
-            } }>
-            <MoreMenuDot />
-          </FdMoreMenuAnchor>
+          { type !== 'ORIGIN' &&
+              <FdMoreMenuAnchor onClick={ () => {
+                contentPopup(screenId, user_id, 'Viewer');
+                setTargetUser_Type('Board');
+              } } >
+              <MoreMenuDot />
+            </FdMoreMenuAnchor>
+          }
           {/* 콘텐츠 */}
           { title && <OriginalContent>{ title }</OriginalContent> }
           { converted.length !== 0 && <TextContent>{ converted }</TextContent> }

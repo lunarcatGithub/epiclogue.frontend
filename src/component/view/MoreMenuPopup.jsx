@@ -13,7 +13,8 @@ const MorePopup = ({ type, doType }) => {
     setPopupType,
     targetUser_Type,
     setFeedbackModalCtrl,
-    setFeedbackPopupType
+    setFeedbackPopupType,
+    setFeedbackModifyMode
   } = useContext(ViewerContext);
 
   // desc
@@ -29,18 +30,31 @@ const MorePopup = ({ type, doType }) => {
     _myOptions,
   } = ViewerLanguage();
 
-  const reportOrModify = () => {
-    if( doType === 'PopupFeedback' ){
-      setFeedbackPopupType('PopupFeedbackReport');
+  const reportOrModify = () => { // Board 전용
+    if(type === 'MyContentPopup'){ // Board 수정하기
+      setPopupType('ContentModify');
 
-    } else {
-      if(type === 'MyContentPopup'){ // 수정하기
-        setPopupType('ContentModify');
-  
+    } else { // Board 신고하기
+      setPopupType('ContentReport');
+    }
+  };
+
+  const feedbackReportOrModify = () => { // 피드백 전용 함수
+      if(type === 'MyContentPopup') { // 피드백 수정하기
+        setFeedbackModifyMode(true);
+        setPopupType('')
+        setUserPopup(false)
       } else { // 신고하기
         setPopupType('ContentReport');
-
       }
+  };
+
+  const replyReportOrModify = () => { // reply 전용 함수
+    if(type === 'MyContentPopup') { 
+      return;
+
+    } else { // 신고하기
+      setFeedbackPopupType('PopupFeedbackReport');
     }
   };
 
@@ -59,35 +73,44 @@ const MorePopup = ({ type, doType }) => {
   }
 
   const typeDivide = () => {
-    switch (type) {
-      case 'MyContentPopup':
+    if(type === 'MyContentPopup'){
+      if(doType === 'PopupFeedback'){
+        setDescript({
+          title:_myOptions, script1:null, script2:_deleteContent
+        } );
+      } else {
         setDescript({
           title:_myOptions, script1:_modifyContent, script2:_deleteContent
         } );
-        break;
-      case 'UserContentPopup':
-        setDescript({
-          title:_userOptions, script1:_reportUser, script2:null
-        } );
-        break;
-      default:
-        break;
+
+      }
+    } else {
+      setDescript({
+        title:_userOptions, script1:_reportUser, script2:null
+      });
     }
   }
 
   useEffect(() => {
     typeDivide(); 
-  }, [type])
-  console.log(doType)
+  }, [type]);
+
   return (
     <>
       <MyPopupInner >
         <MyTitleBox>{ descript.title }</MyTitleBox>
         <MyTabBox>
-          {  doType !== 'PopupFeedback' || targetUser_Type === 'Board' ?
-            <MyTab onClick={()=> reportOrModify()}>{ descript.script1 }</MyTab>
-            :
-            null
+          { descript.script1 &&
+            <MyTab onClick={()=> {
+              if(targetUser_Type === 'Feedback'){ // feedback 전용 함수
+              feedbackReportOrModify();
+              } else if (targetUser_Type === 'Board'){ // board 전용 함수
+                reportOrModify();
+              } else { // reply 전용 함수
+                replyReportOrModify();
+              }
+              
+            }}>{ descript.script1 }</MyTab>
           }
           { descript.script2 &&
             <MyTab onClick={confirmPopup}>{ descript.script2 }</MyTab>

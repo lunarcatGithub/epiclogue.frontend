@@ -16,6 +16,7 @@ export const InteractTab = () => {
   const {
     errorPush,
     uploadedPush,
+    uploadedFeedback,
     sharePush,
     tryAgainPush,
     notServicePush,
@@ -24,6 +25,7 @@ export const InteractTab = () => {
     twoWords,
     uploadError,
     uploadedUpdatePush,
+    feedbackUpdatePush,
     authFail,
     introUpdatePush,
     passwordUpdatePush,
@@ -35,9 +37,12 @@ export const InteractTab = () => {
     successLang,
     failLang
   } = LangPush;
+  
   const _errorPush = errorPush[selectedLanguage] || errorPush[defaultLanguage],
     _uploadedPush = uploadedPush[selectedLanguage] || uploadedPush[defaultLanguage],
+    _uploadedFeedback = uploadedFeedback[selectedLanguage] || uploadedFeedback[defaultLanguage],
     _uploadedUpdatePush = uploadedUpdatePush[selectedLanguage] || uploadedUpdatePush[defaultLanguage],
+    _feedbackUpdatePush = feedbackUpdatePush[selectedLanguage] || feedbackUpdatePush[defaultLanguage],
     _sharePush = sharePush[selectedLanguage] || sharePush[defaultLanguage],
     _tryAgainPush = tryAgainPush[selectedLanguage] || tryAgainPush[defaultLanguage],
     _notServicePush = notServicePush[selectedLanguage] || notServicePush[defaultLanguage],
@@ -83,9 +88,20 @@ export const InteractTab = () => {
         setAlert(_uploadedPush);
         setColor(`#ECA62C`);
         break;
+      // 피드백 업로드가 완료되었음
+      case 'FEEDBACK':
+        setAlert(_uploadedFeedback);
+        setColor(`#ECA62C`);
+        break;
+
       // 투고 수정이 완료되었음
       case 'UPLOADED_UPDATE':
         setAlert(_uploadedUpdatePush);
+        setColor(`#ECA62C`);
+        break;
+      // 피드백 수정이 완료되었음
+      case 'FEEDBACK_UPDATE':
+        setAlert(_feedbackUpdatePush);
         setColor(`#ECA62C`);
         break;
       // 작품 이미지가 빠져있음
@@ -150,7 +166,6 @@ export const InteractTab = () => {
         setAlert(`${_pwChange}🖐️`);
         setColor(`#ECA62C`);
         break;
-
       // 유저 선호 언어 변경 성공
       case 'SUCCESS_LANGUAGE_UPDATE':
         setAlert(`${_successLang}`);

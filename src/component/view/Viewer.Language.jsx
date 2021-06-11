@@ -7,6 +7,7 @@ import { langMymoreMenu, langUsermoreMenu } from '@language/Lang.Viewer';
 import { langReactPopup } from '@language/Lang.Viewer';
 import { langSharePopup } from '@language/Lang.Viewer';
 import { langTranslatePopup } from '@language/Lang.Viewer';
+import { LangConfirm } from '@language/Lang.Confirm';
 
 export default function ViewerLanguage(){
       //언어 변수
@@ -14,11 +15,25 @@ export default function ViewerLanguage(){
 
     const { selectedLanguage, defaultLanguage } = langState;
 
-    const { contentsReact, feedbackScore, feedbackScoreEnd, feedbackPlaceholder, replyPlaceholder, moreFeedback, firstFeedback, foldFeedback, moreContents, modified } = langViewer;
+    const {
+        contentsReact,
+        feedbackScore,
+        feedbackScoreEnd,
+        feedbackPlaceholder,
+        replyPlaceholder,
+        moreFeedback,
+        firstFeedback,
+        foldFeedback,
+        moreContents,
+        modified
+    } = langViewer;
 
     const { originalUser, recreateUser, removedContents } = langViewerUser;
 
     const { followBtn, followingBtn, closeBtn } = LangCommon;
+
+    const { confirmTxt, cancleBtn } = LangConfirm;
+
     const _contentsReact = contentsReact[selectedLanguage] || contentsReact[defaultLanguage],
         _feedbackScore = feedbackScore[selectedLanguage] || feedbackScore[defaultLanguage],
         _feedbackScoreEnd = feedbackScoreEnd[selectedLanguage] || feedbackScoreEnd[defaultLanguage],
@@ -34,7 +49,9 @@ export default function ViewerLanguage(){
         _followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage],
         _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
         _modified = modified[selectedLanguage] || modified[defaultLanguage],
-        _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage];
+        _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage],
+        _confirmTxt = confirmTxt[selectedLanguage] || confirmTxt[defaultLanguage],
+        _cancleBtn = cancleBtn[selectedLanguage] || cancleBtn[defaultLanguage];
     
     // More menu popup
     const { myOptions, modifyContent, deleteContent } = langMymoreMenu;
@@ -107,6 +124,10 @@ export default function ViewerLanguage(){
         // 번역하기 팝업
         _secondaryOpt,
         _useEditor,
-        _selfUpload
+        _selfUpload,
+
+        // 피드백 수정
+        _confirmTxt,
+        _cancleBtn
     }
 }

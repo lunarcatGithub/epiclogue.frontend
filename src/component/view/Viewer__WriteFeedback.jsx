@@ -12,8 +12,11 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 
 // reduce
 import { ViewerContext } from '../../store/ViewerStore';
+import { AlertContext } from '@store/App_Store';
 
 export default function ViewerWriteFeedback() {
+  const { alertPatch } = useContext(AlertContext);
+
   const { viewerData, setFeedbackRenderList } = useContext(ViewerContext);
 
   // fetch
@@ -30,6 +33,8 @@ export default function ViewerWriteFeedback() {
     // input utill에서 받아온 데이터
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/boards/${viewerData?._id}/feedback`
     feedbackFetch(URL, 'post', { feedbackBody:text }, null);
+    alertPatch({ type: 'FEEDBACK', payload: true });
+
   }
 
   useEffect(() => {

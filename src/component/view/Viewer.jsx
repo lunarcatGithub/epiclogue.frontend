@@ -41,6 +41,7 @@ export default function Viewer({ boardItem, nonError }) {
     setPopupType,
     feedbackRenderList,
     setTargetUser_Id,
+    modifiedFeedbackData
   } = useContext(ViewerContext);
 
   // 뷰어 언어
@@ -116,7 +117,7 @@ export default function Viewer({ boardItem, nonError }) {
       setTypeMenuPopup( <MorePopup type="UserContentPopup" /> );
     }
   };
-  console.log(popupType)
+
   const reportOrRemoveOrModifyOrTrans = () => { // useEffect에서 popup 관리
     if(popupType === 'ContentReport'){
       setTypeMenuPopup(<ReportsPopup onClose={setUserPopup} contentType="Board" contentId={viewerData._id} suspectUserId={''} />);
@@ -214,29 +215,33 @@ export default function Viewer({ boardItem, nonError }) {
     if(!feedbackApi) return;
     setFeedbackData(feedbackApi?.data);
   }, [feedbackApi]);
+  console.log(modifiedFeedbackData)
+  useEffect(() => { // 피드백 수정 이후 다시 렌더링
+    if(modifiedFeedbackData.length === 0) return;
+    setFeedbackData(modifiedFeedbackData?.data);
+  }, [modifiedFeedbackData])
 
   useEffect(() => {
-    feedbackData.reverse();
+    feedbackData?.reverse();
     setFeedbackSliceData(feedbackData?.slice(0, prevFeeback));
     // checkFbLength(feedbackData.length);
     fbMoreText(feedbackData?.length)
-  }, [prevFeeback, feedbackData, feedbackApi])
+  }, [prevFeeback, feedbackData, feedbackApi, modifiedFeedbackData])
 
     // Meta 전용
-    // let metaBoardBody = boardItem?.data?.boardBody;
-  console.log(viewerData)
+
     const metaData = {
       title: `${boardItem?.data?.writer?.nickname}${t('metaViewerTitle')}${boardItem?.data?.boardTitle}`,
-      description: viewerData?.boardBody?.length !== 0 
+      description: boardItem?.data?.boardBody?.length !== 0 
       ? 
-      viewerData?.boardBody 
+      boardItem?.data?.boardBody 
       : 
-      `${t('boardDescFirst')} ${viewerData?.writer?.screenId}${t('boardDescSecond')}`,
-      image: viewerData?.boardImg,
-      canonical: `viewer/${viewerData?._id}`,
+      `${t('boardDescFirst')} ${boardItem?.data?.writer?.screenId}${t('boardDescSecond')}`,
+      image: boardItem?.data?.boardImg,
+      canonical: `viewer/${boardItem?.data?._id}`,
     };
 
-  return (
+    return (
   <>
     <Meta meta={metaData} />
       <ViewerPortWrap>

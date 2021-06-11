@@ -22,6 +22,11 @@ export default function ViewerStore({ children }) {
   const [ feedbackModalCtrl, setFeedbackModalCtrl ] = useState(false);
   const [ feedbackPopupType, setFeedbackPopupType ] = useState('');
 
+    // feedback modify
+    const [ feedbackModifyMode, setFeedbackModifyMode ] = useState(false);
+    const [ feedbackUid, setFeedbackUid ] = useState('');
+    const [ modifiedFeedbackData, setModifiedFeedbackData ] = useState([]);
+
   useEffect(() => {
     if(!userPopup) setTypeMenuPopup(null)
     
@@ -54,7 +59,15 @@ export default function ViewerStore({ children }) {
       feedbackModalCtrl,
       setFeedbackModalCtrl,
       feedbackPopupType,
-      setFeedbackPopupType
+      setFeedbackPopupType,
+
+      // feedback modify
+      feedbackModifyMode,
+      setFeedbackModifyMode,
+      feedbackUid,
+      setFeedbackUid,
+      modifiedFeedbackData,
+      setModifiedFeedbackData
     } } >
       { children }
     </ViewerContext.Provider>

@@ -213,11 +213,11 @@ const UploadCategory = (props) => {
     if (uploadApi) {
       if (uploadApi?.result === 'ok') {
         alertPatch({ type: 'UPLOADED_UPDATE', payload: true });
-        goViewer(`/viewer/${uploadApi?.data._id}`);
+        goViewer(`/viewer/${uploadApi?.data?._id}`);
         alertPatch({ type: 'LOADING_PUSH', payload: false });
       } else {
         alertPatch({ type: 'UPLOADED', payload: true });
-        goViewer(`/viewer/${uploadApi?.data._id}`);
+        goViewer(`/viewer/${uploadApi?.data?._id}`);
       }
     } else if (uploadApi?.result === 'error') {
       alertPatch({ type: 'UPLOADED_FAIL', payload: true });
