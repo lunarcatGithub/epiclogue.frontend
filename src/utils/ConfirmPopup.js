@@ -9,20 +9,21 @@ import { signUpError } from '@language/Lang.Login';
 
 // hooks & reducer
 import { LanguageContext, AlertContext } from '@store/App_Store';
-import { useChange } from '@hooks/useChange';
 import useAxiosFetch from '@hooks/useAxiosFetch';
+import { ViewerContext } from '@store/ViewerStore';
 
-export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
+export default function ConfirmPopup({ handleModal, setAccessConfirm, type, doType }) {
   const { alertPatch } = useContext(AlertContext);
   const router = useRouter();
+  const { setUserPopup, setFeedbackModalCtrl, setTypeMenuPopup, setPopupType } = useContext(ViewerContext);
 
   const { langState } = useContext(LanguageContext);
   const [goURL] = useUrlMove();
 
   // 유저 정보
   const { email, token } = router.query;
-  const [userPwNew, handleuserPwNew] = useChange();
-  const [userPwNewRe, handleUserPwNewRe] = useChange();
+  // const [userPwNew, handleuserPwNew] = useChange('');
+  // const [userPwNewRe, handleUserPwNewRe] = useChange('');
 
   // 유효성
   const [valiPw, setValiPw] = useState('');
@@ -162,6 +163,7 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
         break;
     }
   };
+
   const passwordChange = () => {
     let pattern1 = /[0-9]/; // 숫자
     let pattern2 = /[a-zA-Z]/; // 영문
@@ -208,7 +210,8 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
                       {valiPw && <PlaceHolderTxt>{valiPw}</PlaceHolderTxt>}
                       <PasswordInput placeholder={_newPwConfirm} onChange={handleUserPwNewRe} />
                       {valiRePw && <PlaceHolderTxt>{valiRePw}</PlaceHolderTxt>}
-                    </> )
+                    </> 
+                  )
                 }
               </form>
             </ContentsDesc>
@@ -218,9 +221,15 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
                 type !== 'PWCHANGE' && type !== 'GOBACK' && type !== 'REMOVE' && type !== 'REMOVE_USER' && type !== 'TRANS' && type !== 'REMOVEORIGIN' && (
                   <CancelBtn
                     onClick={() => {
-                      handleModal();
-                    }}
-                  >
+                      // handleModal();
+                        if(doType === 'PopupFeedback'){
+                          setFeedbackModalCtrl(false);
+                        } else {
+                          setUserPopup(false);
+                          setTypeMenuPopup(null);
+                          setPopupType('');
+                        }
+                      } } >
                     {_cancleBtn}
                   </CancelBtn> )
               }
@@ -228,10 +237,9 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
               {
                 type === 'GOBACK' || type === 'REMOVE' || type === 'REMOVE_USER' ? (
                   <ConfirmBtn
-                    onClick={() => {
+                    onClick={ () => {
                       setAccessConfirm({ pathname: '/' });
-                    }}
-                  >
+                    } } >
                     {confirmBtn}
                   </ConfirmBtn>
                 ) : null
@@ -239,11 +247,10 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
               {
                 type === 'INACTIVE' || type === 'COMMANT' || type === 'CONFIRM' ? (
                   <ConfirmBtn
-                    onClick={() => {
-                      handleModal();
+                    onClick={ () => {
+                      // handleModal();
                       setAccessConfirm(true);
-                    }}
-                  >
+                    } } >
                     {/*  확인 버튼으로 클릭시 true 값 반환 */}
                     {confirmBtn}
                     {/* 비밀번호 변경시 나타나는 버튼 */}
@@ -256,9 +263,8 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
                   <ConfirmBtn
                     onClick={() => {
                       handleModal();
-                    }}
-                  >
-                    {confirmBtn}
+                    } } >
+                    { confirmBtn }
                   </ConfirmBtn>
                 : null
               }
@@ -266,11 +272,10 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type }) {
               {
                 type === 'PWCHANGE' ? (
                   <ConfirmBtn
-                    onClick={() => {
+                    onClick={ () => {
                       passwordChange();
-                    }}
-                  >
-                    {confirmBtn}
+                    } } >
+                    { confirmBtn }
                   </ConfirmBtn>
                 ) : null
               }

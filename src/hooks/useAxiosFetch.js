@@ -7,6 +7,7 @@ export default function useAxiosFetch() {
   const [error, setError] = useState();
 
   const submit = async (url, type, data = null, body = null, params = null) => {
+
     setLoding(true);
     await axios({
       url,

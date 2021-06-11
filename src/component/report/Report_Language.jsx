@@ -99,37 +99,37 @@ export default function ReportLanguage(){
 
         // 일반 신고 리스트
         const reportList = [
-            {
+            {   id: 0,
                 title: _spamReport,
                 desc: _spamDescReport,
                 value: 'spam',
             },
-            {
+            {   id: 1,
                 title: _obsceneReport,
                 desc: _obsceneDescReport,
                 value: 'obscene',
             },
-            {
+            {   id: 2,
                 title: _disgustReport,
                 desc: _disgustDescReport,
                 value: 'disgust',
             },
-            {
+            {   id: 3,
                 title: _violentReport,
                 desc: _violentDescReport,
                 value: 'violence',
             },
-            {
+            {   id: 4,
                 title: _invalidReport,
                 desc: _invalidDescReport,
                 value: 'untruth',
             },
-            {
+            {   id: 5,
                 title: _disputeReport,
                 desc: _disputeDescReport,
                 value: 'dispute',
             },
-            {
+            {   id: 6,
                 title: _illegalReport,
                 desc: _illegalDescReport,
                 value: 'illegality',

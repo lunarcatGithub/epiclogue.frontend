@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 
 // create context
 const AdminContext = createContext({});
@@ -11,6 +11,9 @@ const combineReducers = (...reducers) => (state, action) => {
 
 // context provider
 const AdminContextStore = ({ children }) => {
+  const [ reportData, setReportData ] = useState();
+  const [ currentTargetData, setCurrentTargetData ] = useState();
+
   const reportList = [
     { id: 0, title: '스팸성', value: 'spam'},
     { id: 1, title: '음란물', value: 'adult'},
@@ -26,7 +29,11 @@ const AdminContextStore = ({ children }) => {
   return (
     <AdminContext.Provider
       value={{
-        reportList
+        reportList,
+        reportData,
+        setReportData,
+        currentTargetData,
+        setCurrentTargetData
       }}
     >{children}
 

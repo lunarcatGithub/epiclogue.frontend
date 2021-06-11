@@ -1,31 +1,38 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 //컴포넌트 import
-import { ReplyListContext } from './Viewer';
 import { ProgressSmall } from '@utils/LoadingProgress';
-import ViewerLanguage from './Viewer.Language';
 
 // hooks&&reducer
 import { AlertContext, AppDataContext } from '@store/App_Store';
-import useAxiosFetch from '@hooks/useAxiosFetch';
 import { useChange } from '@hooks/useChange';
 
-let fbCnt = 10;
-
-const WriteFbForm = (props) => {
-  const { type, setFbReList, feedbackRef } = props;
+export default function WriteInputForm({ getText, _placeholder, loading, targetRef, screenId }){
   const { alertPatch } = useContext(AlertContext);
   const { loginOn, setUnAuth } = useContext(AppDataContext);
-  const [feedbackBody, handleChange, resetValue] = useChange('');
-  const { boardUid, fbUid, setReplyList, setRenderList } = useContext(ReplyListContext);
-  
-  //언어 변수
-  const {_feedbackPlaceholder} = ViewerLanguage();
+
+  const [ feedbackBody, handleChange, resetValue ] = useChange('');
+  const [ targetMergeData, setTargetMergeData ] = useState('');
+
+  const [ textValue, setTextValue ] = useState('');
 
   //fetch
-  const [feedbackLoding, feedbackApi, , feedbackFetch] = useAxiosFetch();
-  const [reFeedbackLoding, reFeedbackApi, , reFeedbackFetch] = useAxiosFetch();
+  // const textMerge = (e) => {
+  //   // setTextValue('');
+  //   let value = e.target.value;
+  //   console.log(value)
+  //   let txt = targetRef.current.value;
+  //   let idx = txt.indexOf('test');
+  //   console.log(idx)
+  //   if(idx >= 0) {
+  //     let newText = [txt.substring(0, idx), <strong>{txt.substring(idx, idx + value.length)}</strong>, txt.substring(idx + value.length)];
+  //     console.log(newText)
+  //     setTextValue({inputValue: value, text: newText});
+  //   } else {
+  //     setTextValue({inputValue: value, text: ''});
+  //   }    
+  // }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,50 +42,33 @@ const WriteFbForm = (props) => {
       return;
     }
     
-    if (feedbackLoding || reFeedbackLoding) return;
+    if (loading) return;
     if (!feedbackBody) return;
     //정상 제출
     if (feedbackBody.length <= 1) {
       return alertPatch({ type: 'FEEDBACK_TWO', payload: true });
     } else {
-      if (type === 'Fb') {
-        feedbackFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback`, 'post', { feedbackBody }, null);
-      } else if (type === 'ReFb') {
-        reFeedbackFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/feedback/${fbUid}/reply`, 'post', { replyBody: feedbackBody }, null);
-      }
+      getText(feedbackBody);
+      resetValue();
     }
   };
 
-  useEffect(() => {
-    if (feedbackApi?.result === 'ok') {
-      if (feedbackApi?.data.length + 1 <= fbCnt) {
-        setRenderList(feedbackApi?.data);
-      } else {
-        setReplyList(feedbackApi?.data);
-      }
-      // checkFbLength(data.data.length);
-      resetValue();
-    }
-  }, [feedbackApi]);
-
-  useEffect(() => {
-    if (!reFeedbackApi) return;
-    resetValue();
-    setFbReList(reFeedbackApi?.data);
-  }, [reFeedbackApi]);
+  // useEffect(() => {
+  //   setTargetMergeData(screenId);
+  // }, [feedbackBody, screenId])
 
   // 댓글 전송 버튼
   return (
     <form action="" method="post" onSubmit={handleSubmit} autoComplete="off">
       <FeedbackInputWrap>
-        <FeedbackInput ref={feedbackRef} name="replyBody" onChange={handleChange} value={feedbackBody} placeholder={_feedbackPlaceholder} />
-        <InputSendBtn loading={String(feedbackLoding || reFeedbackLoding)} feedbackBody={feedbackBody.length > 1}>
-          { !feedbackLoding ? <InputSendImg imgOn={feedbackBody.length > 1} /> : <ProgressSmall /> }
+        <FeedbackInput ref={targetRef} onChange={handleChange} value={feedbackBody} placeholder={_placeholder} />
+        <InputSendBtn loading={loading} feedbackBody={feedbackBody.length > 1}>
+          { !loading ? <InputSendImg imgOn={feedbackBody.length > 1} /> : <ProgressSmall /> }
         </InputSendBtn>
       </FeedbackInputWrap>
     </form>
   );
-};
+}
 
 // 피드백 input 영역
 
@@ -126,4 +116,3 @@ const InputSendImg = styled.svg`
   z-index: 999;
 `;
 
-export default WriteFbForm;

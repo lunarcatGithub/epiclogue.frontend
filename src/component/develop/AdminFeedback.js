@@ -27,19 +27,21 @@ export default function AdminFeedback({ toggleIsOpen }) {
     e.preventDefault();
     setLoading(true);
     if (textLimit.length < 29 && textLimit.length > 1) {
-      emailjs.sendForm(process.env.EMAILJS_FIRST, process.env.EMAILJS_SECOND, e.target, process.env.EMAILJS_THIRD).then(
+      emailjs.sendForm(process.env.NEXT_PUBLIC_EMAILJS_FIRST, process.env.NEXT_PUBLIC_EMAILJS_SECOND, e.target, process.env.NEXT_PUBLIC_EMAILJS_THIRD).then(
         (result) => {
           setOpenFb(false);
           setTextLimit('');
           alertPatch({ type: 'FEEDBACK_THANKS', payload: true });
           setLoading(false);
         },
-        (error) => {}
+        (error) => {console.log(error)}
       );
     } else {
       setAlert(true);
       setLoading(false);
     }
+    setLoading(false);
+
   };
 
   //언어 변수

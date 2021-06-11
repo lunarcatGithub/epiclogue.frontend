@@ -9,9 +9,9 @@ import ListForm from '../Common/List__Form';
 export const AdminCopyright = () => {
   //data
   const [userContentsData, setUserContentsData] = useState([
-    { id: 1, email: 'asd@ads.com', _id: `@asasdd`, title: 'adasd', result:'미정', date: '2020-11-28', ban: false },
-    { id: 2, email: 'ascvcvd@xcvx.com', _id: `@adf`, title: '1234', result:'삭제', date: '2021-01-02', ban: true },
-    { id: 3, email: 'asxzcvzxd@ads.com', _id: `@qwerrt`, title: 'qqqqq', result:'미정', date: '2021-02-28', ban: false },
+    { id: 1, email: 'asd@ads.com', _id: `@asasdd`, title: 'adasd', date: '2020-11-28', ban: false },
+    { id: 2, email: 'ascvcvd@xcvx.com', _id: `@adf`, title: '1234', date: '2021-01-02', ban: true },
+    { id: 3, email: 'asxzcvzxd@ads.com', _id: `@qwerrt`, title: 'qqqqq', date: '2021-02-28', ban: false },
   ]);
 
   const categorySelec = [
@@ -53,13 +53,10 @@ export const AdminCopyright = () => {
     });
   };
 
-  const headerArr = ['번호', '아이디', '이메일', '제목', '처리결과', '신고날짜', '삭제', '정지', '탈퇴'];
-  const warnBtn = [
-    { title: '메일발송', value: 'sendMail' },
-    { title: '정지', value: 'ban' },
-    { title: '탈퇴', value: 'leave' },
-    { title: '삭제', value: 'remove' },
-]
+  const headerArr = ['번호', '아이디', '신고날짜', '처리하기'];
+  const buttonType = [
+    {title:'처리', value:'SanctionsHandle'}
+]   
   return (
     <Layout>
       <LayoutInner>
@@ -72,7 +69,7 @@ export const AdminCopyright = () => {
             searchFilter,
             dataHadler,
             setToggleSelect,
-            warnBtn
+            buttonType
           }}
         />
       </LayoutInner>

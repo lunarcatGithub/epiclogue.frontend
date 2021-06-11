@@ -14,8 +14,14 @@ export function alertReducer(state, { type, payload }) {
     case 'UPLOADED': {
       return { ...state, kind: 'UPLOADED', bool: payload };
     }
+    case 'FEEDBACK': {
+      return { ...state, kind: 'FEEDBACK', bool: payload };
+    }
     case 'UPLOADED_UPDATE': {
       return { ...state, kind: 'UPLOADED_UPDATE', bool: payload };
+    }
+    case 'FEEDBACK_UPDATE': {
+      return { ...state, kind: 'FEEDBACK_UPDATE', bool: payload };
     }
     case 'UPLOADED_IMAGE': {
       return { ...state, kind: 'UPLOADED_FAIL', bool: payload };

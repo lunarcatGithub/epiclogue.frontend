@@ -73,12 +73,6 @@ const LogoRotate = styled.svg`
   animation: ${Rotate} 3s infinite linear;
 `;
 
-const InformTxt = styled.span`
-  font-size: ${(props) => props.theme.fontSize.font18};
-  font-weight: ${(props) => props.theme.fontWeight.font500};
-  color: ${(props) => props.theme.color.darkGray};
-  margin-top: 8px;
-`;
 
 const ProgressSmall = ({ disabled }) => {
   return (

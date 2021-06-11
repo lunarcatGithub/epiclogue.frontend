@@ -7,11 +7,18 @@ import ViewerLanguage from './Viewer.Language';
 
 // Hooks&&reducer
 import useAxiosFetch from '@hooks/useAxiosFetch';
+import { ViewerContext } from '@store/ViewerStore';
 
-const ReactPopup = () => {
+export default function ViewerReactPopup({ boardUid }){
+  const {
+    setUserPopup,
+    setPopupType,
+    targetUser_Type,
+    setFeedbackModalCtrl,
+    setFeedbackPopupType
+  } = useContext(ViewerContext);
 
   const [reactData, setReactData] = useState([]);
-  const { boardUid, toggle_Modal_React } = useContext(ReplyListContext);
 
   //언어 변수
   const {
@@ -44,42 +51,43 @@ const ReactPopup = () => {
           </PopupTitle>
         </PopupTitleBox>
       </PopupTabTitle>
-      <PopupTabBox onClick={(e) => e.stopPropagation()}>
-        {reactData.length !== 0 ? (
-          reactData.map((item, index) => {
-            return (
-              <PopupTab key={index}>
-                <UserProfileImgWrap>
-                  <UserProfileImg profile={item?.user?.profile?.thumbnail} />
-                </UserProfileImgWrap>
-                <RecreateImgBox>
-                  {item.type === 'secondary' && <RecreateImg reactImg={'/static/globe-2.svg'} />}
-                  {item.type === 'like' && <LikeImg reactImg={'/static/heart-2.svg'} />}
-                  {item.type === 'bookmark' && <BookmarkImg reactImg={'/static/bookmark-2.svg'} />}
-                  {item.type === 'comment' && <FeedbackImg reactImg={'/static/comment-2.svg'} />}
-                </RecreateImgBox>
-                <UserProfile>
-                  <TabUserNick>{item.user.nickname}</TabUserNick>
-                  {item.type === 'share' && <UserStateRecre>{_reactShare}</UserStateRecre>}
-                  {item.type === 'like' && <UserStateRecre>{_reactLike}</UserStateRecre>}
-                  {item.type === 'bookmark' && <UserStateRecre>{_reactBookmark}</UserStateRecre>}
-                  {item.type === 'comment' && <UserStateRecre>{_reactFeedback}</UserStateRecre>}
-                  <StatedTime>{item.reactTime}</StatedTime>
-                </UserProfile>
-                <TabUserId>{item.user._id}</TabUserId>
-              </PopupTab>
-            );
-          })
-        ) : (
-          <NoDataLayout>
-            {/* 데이터가 없을 경우 */}
-            <NoDataImg />
-            <NoDataTxt>{_noReact}</NoDataTxt>
-          </NoDataLayout>
-        )}
+      <PopupTabBox onClick={ e => e.stopPropagation() }>
+      {
+        reactData.length !== 0 ? (
+        reactData.map( ( item, index ) => {
+          return (
+            <PopupTab key={index}>
+              <UserProfileImgWrap>
+                <UserProfileImg profile={item?.user?.profile?.thumbnail} />
+              </UserProfileImgWrap>
+              <RecreateImgBox>
+                {item.type === 'secondary' && <RecreateImg reactImg={'/static/globe-2.svg'} />}
+                {item.type === 'like' && <LikeImg reactImg={'/static/heart-2.svg'} />}
+                {item.type === 'bookmark' && <BookmarkImg reactImg={'/static/bookmark-2.svg'} />}
+                {item.type === 'comment' && <FeedbackImg reactImg={'/static/comment-2.svg'} />}
+              </RecreateImgBox>
+              <UserProfile>
+                <TabUserNick>{item.user.nickname}</TabUserNick>
+                {item.type === 'share' && <UserStateRecre>{_reactShare}</UserStateRecre>}
+                {item.type === 'like' && <UserStateRecre>{_reactLike}</UserStateRecre>}
+                {item.type === 'bookmark' && <UserStateRecre>{_reactBookmark}</UserStateRecre>}
+                {item.type === 'comment' && <UserStateRecre>{_reactFeedback}</UserStateRecre>}
+                <StatedTime>{item.reactTime}</StatedTime>
+              </UserProfile>
+              <TabUserId>{item.user._id}</TabUserId>
+            </PopupTab>
+          ) } ) )
+          :
+          (
+        <NoDataLayout>
+          {/* 데이터가 없을 경우 */}
+          <NoDataImg />
+          <NoDataTxt>{_noReact}</NoDataTxt>
+        </NoDataLayout>
+      ) }
       </PopupTabBox>
       <PopupCloseBox>
-        <PopupClose onClick={() => toggle_Modal_React()}>{_closeBtn}</PopupClose>
+        <PopupClose onClick={() => setUserPopup(false)}>{_closeBtn}</PopupClose>
       </PopupCloseBox>
     </PopupInner>
   );
@@ -137,9 +145,8 @@ const PopupTabTitle = styled.div`
   flex-flow: column;
   justify-content: center;
   position: relative;
-  padding-left: 12px;
+  padding: 1em;
   width: 100%;
-  height: 52px;
   margin-bottom: 3px;
   background: ${(props) => props.theme.color.whiteColor};
 `;
@@ -180,9 +187,8 @@ const PopupTabBox = styled.div`
 `;
 const PopupTab = styled(PopupTabTitle)`
   position: relative;
-  padding: 7px 4px;
+  padding: 1em;
   width: 100%;
-  height: 4em;
   margin-bottom: 3px;
   background: ${(props) => props.theme.color.whiteColor};
 `;
@@ -193,7 +199,7 @@ const UserProfileImgWrap = styled.div`
   justify-content: center;
   position: absolute;
   top: 50%;
-  left: 20px;
+  left: 1.2em;
   transform: translate(0, -50%);
   min-width: 42px;
   width: 42px;
@@ -252,7 +258,7 @@ const FeedbackImg = styled(RecreateImg)`
 const UserProfile = styled.div`
   display: flex;
   min-width: 0;
-  padding-left: 4.5em;
+  padding-left: 4em;
 `;
 const TabUserNick = styled.span`
   ${(props) => props.theme.textTwoLine};
@@ -277,7 +283,7 @@ const TabUserId = styled.span`
   font-size: ${(props) => props.theme.fontSize.font15};
   color: ${(props) => props.theme.color.darkGray};
   font-weight: ${(props) => props.theme.fontWeight.font300};
-  padding-left: 4.5em;
+  padding-left: 4em;
   padding-right: 1em;
   margin: 0.3em 0;
 `;
@@ -308,4 +314,3 @@ const NoDataTxt = styled.span`
   }
 `;
 
-export default ReactPopup;

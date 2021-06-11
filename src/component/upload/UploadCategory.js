@@ -194,9 +194,10 @@ const UploadCategory = (props) => {
         return;
       }
 
-      // for (let [key, value] of _uploadData.entries()) {
-      //   console.log(key, value);
-      // }
+      for (let [key, value] of _uploadData.entries()) { // 전송 전 데이터 검사
+        console.log(key, value);
+      }
+      console.log(uploadType)
       if (uploadType === 'modify') {
         uploadFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/edit`, 'post', null, _uploadData);
       } else if (uploadType === 'noneEditor' || uploadType === 'editor') {
@@ -212,11 +213,11 @@ const UploadCategory = (props) => {
     if (uploadApi) {
       if (uploadApi?.result === 'ok') {
         alertPatch({ type: 'UPLOADED_UPDATE', payload: true });
-        goViewer(`/viewer/${uploadApi?.data._id}`);
+        goViewer(`/viewer/${uploadApi?.data?._id}`);
         alertPatch({ type: 'LOADING_PUSH', payload: false });
       } else {
         alertPatch({ type: 'UPLOADED', payload: true });
-        goViewer(`/viewer/${uploadApi?.data._id}`);
+        goViewer(`/viewer/${uploadApi?.data?._id}`);
       }
     } else if (uploadApi?.result === 'error') {
       alertPatch({ type: 'UPLOADED_FAIL', payload: true });

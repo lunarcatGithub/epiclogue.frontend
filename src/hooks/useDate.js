@@ -1,14 +1,18 @@
 import { useState } from 'react';
 
-export function useDate() {
+export function useDate(type) {
   const [getDate, setGetDate] = useState();
   const [countryDivided, setCountryDivided] = useState();
 
   const signUpdate = new Date(getDate);
-  let year = signUpdate.getFullYear();
+  const year = signUpdate.getFullYear();
   let month = signUpdate.getMonth() + 1;
   let day = signUpdate.getDate();
 
+  const hours = signUpdate.getHours();
+  const minutes = signUpdate.getMinutes();
+
+  
   let countryResult;
 
   if (month < 10) {
@@ -23,6 +27,8 @@ export function useDate() {
   } else {
     countryResult = `${year}-${month}-${day}`;
   }
+
+  if(type === 'Admin') countryResult = `${year}-${month}-${day}/${hours}:${minutes}`;
 
   return [setGetDate, setCountryDivided, countryResult];
 }

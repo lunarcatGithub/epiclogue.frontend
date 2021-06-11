@@ -1,118 +1,136 @@
 import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 
-// Hooks&&reducer
+//component
+
+// reduce
+import { ViewerContext } from '@store/ViewerStore';
+import { AppDataContext } from '@store/App_Store';
+
+// utils
+
+// Hooks
 import { useToggle } from '@hooks/useToggle';
 import { useUrlMove } from '@hooks/useUrlMove';
-import { AppDataContext } from '@store/App_Store';
 import { useConvertTags } from '@hooks/useConvertTags';
 import { useTimeCalculation } from '@hooks/useTimeCalculation';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useDebounce from '@hooks/useDebounce';
 
+// lang
+import ViewerLanguage from './Viewer.Language';
+
+
 export default function ViewerUserForm(props) {
-  const { type, externalSource, userLang, profile, userData, boardUid, followOnLang, followLang, removedContents, checkMoreMenuType, modified} = props;
+  const { type, contentPopup } = props;
   const { loginOn, setUnAuth } = useContext(AppDataContext);
+  const { viewerData, setTargetUser_Type } = useContext(ViewerContext);
+
+    // 뷰어 언어
+    const {
+      _originalUser,
+      _recreateUser,
+      _removedContents,
+      _followBtn,
+      _followingBtn,
+      _modified
+    } = ViewerLanguage();
 
   //fetch
   const [, , , followFetch] = useAxiosFetch();
 
+  // hooks
   const [goURL] = useUrlMove();
-  const [kindContent, setKindContent] = useState();
-  const [screenId, setScreenId] = useState();
-  const [originUserData, setOriginUserData] = useState();
-  const [title, setTitle] = useState();
-  const [user_id, setUser_id] = useState();
+
+  // data
+  const [ kindContent, setKindContent ] = useState();
+  const [ screenId, setScreenId ] = useState('');
+  const [ userNick, setUserNick ] = useState('');
+  const [ title, setTitle ] = useState();
+  const [ user_id, setUser_id ] = useState();
+  const [ userType, setUserType ] = useState();
+  const [ profileImage, setProfileImage ] = useState();
+  const [ originUserImage, setOriginUserImage ] = useState();
 
   // follow
   const [follow, toggleFollow] = useToggle();
   const [followMe, setFollowMe] = useState();
-  const [indicateDate] = useTimeCalculation(userData?.writeDate);
-  const [converted, convert] = useConvertTags();
 
+  // tag convert
+  const [converted, convert] = useConvertTags();
+  
   // debounce 처리
   const [followDebounce, getValue] = useDebounce();
 
-  const changeHandler = () => {
-    const localScreenId = localStorage.getItem('userid');
-
-    switch (type) {
-      case 'NOSECOND':
-        setKindContent(<UserUploadInfoImg image={externalSource ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />);
-        setScreenId(userData?.writer?.screenId);
-        setFollowMe(localScreenId !== userData?.screenId);
-        toggleFollow(userData?.writer?.following);
-        setTitle(userData?.boardTitle);
-        convert(userData?.boardBody);
-        setUser_id(userData?._id);
-        break;
-
-      case 'SECOND':
-        setKindContent(<UserUploadInfoImg image={'/static/trans.svg'} />);
-        setScreenId(userData?.writer?.screenId);
-        setFollowMe(localScreenId !== userData?.screenId);
-        toggleFollow(userData?.writer?.following);
-        setTitle(userData?.boardTitle);
-        convert(userData?.boardBody);
-        setUser_id(userData?._id);
-        break;
-
-      case 'ORIGIN':
-        setKindContent(<UserUploadInfoImg image={externalSource ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />);
-        setScreenId(userData?.originUserId?.screenId);
-        setOriginUserData(userData?.originBoardId);
-        setFollowMe(localScreenId !== userData?.originUserId?.screenId);
-        toggleFollow(userData?.originUserId?.following);
-        setTitle(userData?.originBoardId?.boardTitle);
-        convert(userData?.originBoardId?.boardBody);
-        setUser_id(userData?.originUserId?._id);
-
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  const submitHandler = () => {
+  const submitHandler = () => { // follow fetch
     if (!loginOn) return;
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`;
     followFetch(URL, followDebounce ? 'delete' : 'post', { targetUserId: user_id });
   };
 
-  // 서버 렌더링시 warn fix
-  const [userType, setUserType] = useState();
+  const {
+    sourceUrl,
+    originUserId,
+    originBoardId,
+    writer,
+    boardTitle,
+    boardBody,
+    writeDate,
+    edited
+  } = viewerData;
+
+  // date
+  const [indicateDate] = useTimeCalculation(writeDate);
 
   useEffect(() => {
-    setUserType(userLang);
-  }, [])
+    const localScreenId = localStorage.getItem('userid');
 
+    if(type === 'SECOND'){
+      setKindContent(<UserUploadInfoImg image={'/static/trans.svg'} />);
+      setUserType(_recreateUser);
+    } else {
+      // type === NOSECOND, ORIGIN
+      setKindContent(<UserUploadInfoImg image={sourceUrl ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />);
+      setUserType(_originalUser);
+    }
+
+    // profile image
+    setProfileImage(type === 'ORIGIN' ? originUserId?.profile?.thumbnail : writer?.profile?.thumbnail);
+    setScreenId(type === 'ORIGIN' ? originUserId?.screenId : writer?.screenId);
+    toggleFollow(type === 'ORIGIN' ? originUserId?.following : writer?.following);
+    setUserNick(type === 'ORIGIN' ? originUserId?.nickname : writer?.nickname);
+    setFollowMe(type === 'ORIGIN' ? localScreenId !== originUserId?.screenId : localScreenId !== writer?.screenId);
+    setTitle(type === 'ORIGIN' ? originBoardId?.boardTitle : boardTitle);
+    setUser_id(type === 'ORIGIN' ? originUserId?._id : writer._id);
+
+    // 다시 한번 확인하기
+    convert(type === 'ORIGIN' ? originBoardId?.boardBody : boardBody);
+    setOriginUserImage(type === 'ORIGIN' ? originBoardId : null);
+  }, []);
+  
+  // follow debounce
   useEffect(() => {
     if (!loginOn) return;
     getValue(follow);
   }, [follow]);
 
-  useEffect(() => {
-    changeHandler();
-    return () => changeHandler()
-  }, [type, externalSource, userData]);
 
   return (
     <UserForm>
       <UserProfileWrap>
-        {kindContent}
-        {externalSource ? (
-          <SourceLink href={`${externalSource}`} target="_blank">
-            {externalSource}
+        { kindContent }
+        { sourceUrl ? (
+          <SourceLink href={`${sourceUrl}`} target="_blank">
+            { sourceUrl }
           </SourceLink>
         ) : (
-          <UserUploadInfo>{userType}</UserUploadInfo>
-        )}
+          <UserUploadInfo>{ userType }</UserUploadInfo>
+        ) }
       </UserProfileWrap>
       <ProfileImgContent>
         {/* 프로필 박스 */}
         <ProfileImgBox>
-          <ProfileImg profile={profile} />
+          <ProfileImg profile={profileImage} />
         </ProfileImgBox>
         {/* 유저 프로필 콘텐츠 박스 */}
         <UserProfileContentsBox>
@@ -120,7 +138,7 @@ export default function ViewerUserForm(props) {
           <UserProfileInfo>
             {/* 유저 닉네임 팔로잉 */}
             <UserNickInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>
-              {type === 'ORIGIN' ? userData?.originUserId?.nickname : userData?.nickname}
+              { userNick }
             </UserNickInfo>
             {
               followMe && loginOn && (
@@ -128,36 +146,42 @@ export default function ViewerUserForm(props) {
                   styling={follow}
                   onClick={() => { loginOn ? [toggleFollow(), submitHandler()] : setUnAuth(true) }}
                 >
-                  {follow ? followOnLang : followLang}
-                </UserFollowTxt> )
+                  { follow ? _followingBtn : _followBtn }
+                </UserFollowTxt> 
+              )
             }
           </UserProfileInfo>
           {/* 유저 아이디 */}
           <UserProfileId>
-            <UserIdInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>{screenId}</UserIdInfo>
+            <UserIdInfo onClick={() => goURL({ pathname: `/myboard/[id]?tab=all`, as: `/myboard/${screenId}` })}>@{screenId}</UserIdInfo>
           </UserProfileId>
           {/* 메뉴 더보기 */}
-          <FdMoreMenuAnchor onClick={() => checkMoreMenuType(screenId)}>
-            <MoreMenuDot />
-          </FdMoreMenuAnchor>
+          { type !== 'ORIGIN' &&
+              <FdMoreMenuAnchor onClick={ () => {
+                contentPopup(screenId, user_id, 'Viewer');
+                setTargetUser_Type('Board');
+              } } >
+              <MoreMenuDot />
+            </FdMoreMenuAnchor>
+          }
           {/* 콘텐츠 */}
-          <OriginalContent>{title}</OriginalContent>
-          <TextContent>{converted}</TextContent>
+          { title && <OriginalContent>{ title }</OriginalContent> }
+          { converted.length !== 0 && <TextContent>{ converted }</TextContent> }
           <BottomWrap>
-            { type !== 'ORIGIN' && <PostedTime>Posted by {indicateDate}</PostedTime> }
-            { userData?.edited && <ModifyText>{modified}</ModifyText> }
+            { type !== 'ORIGIN' && <PostedTime>Posted by { indicateDate }</PostedTime> }
+            { edited && <ModifyText>{ _modified }</ModifyText> }
           </BottomWrap>
           {
-            originUserData && (
-              <ContentImgWrap styling={originUserData}>
+            type === 'ORIGIN' && (
+              <ContentImgWrap>
                 {
-                  originUserData ? (
-                    <ContentImgBox onClick={() => goURL({ pathname: `/viewer/${originUserData._id}` })}>
-                      <ContentImg thumNail={ originUserData.boardImg[0] } />
+                  originUserImage ? (
+                    <ContentImgBox onClick={() => goURL({ pathname: `/viewer/${originUserImage._id}` })}>
+                      <ContentImg thumNail={ originUserImage.boardImg[0] } />
                     </ContentImgBox>
                   ) : (
                     <ContentImgBox>
-                      <NullContent>{ removedContents }</NullContent>
+                      <NullContent>{ _removedContents }</NullContent>
                     </ContentImgBox>
                   )
                 }
@@ -212,10 +236,6 @@ const UserUploadInfoImg = styled.svg`
   width: 1.2em;
   height: 1.2em;
   min-width: 1.2em;
-`;
-const UserTransImg = styled(UserUploadInfoImg)`
-  width: 1.1em;
-  height: 1.1em;
 `;
 
 const UserUploadInfo = styled.span`
@@ -275,6 +295,7 @@ const UserProfileId = styled.div`
   display: flex;
   align-items: center;
   min-height: 0;
+  padding-top:0.1em;
 `;
 
 // 유저 닉네임
@@ -383,6 +404,6 @@ const ModifyText = styled.span`
   border-radius: 25px;
   background: ${(props) => props.theme.color.orangeColor};
   font-weight: ${(props) => props.theme.fontWeight.font500};
-  font-size: ${(props) => props.theme.fontSize.font13};
+  font-size: ${(props) => props.theme.fontSize.font12};
   color: ${(props) => props.theme.color.whiteColor};
 `;

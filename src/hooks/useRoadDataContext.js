@@ -18,11 +18,13 @@ const RoadDataContextProvider = (props) => {
       credentials: 'include',
     });
     const articledata = await article.json();
-    const uploadData = articledata.data;
+    const uploadData = articledata?.data;
+    console.log(uploadData);
+
     let urlList = [];
     let imgList = [];
-    for (let i = 0; i < uploadData.boardImg.length; i++) {
-      const res = await fetch(uploadData.boardImg[i], {
+    for (let i = 0; i < uploadData?.boardImg?.length; i++) {
+      const res = await fetch(uploadData?.boardImg[i], {
         mode: 'cors',
         cache: 'no-cache',
       });
@@ -35,12 +37,12 @@ const RoadDataContextProvider = (props) => {
       imgList.push(img);
     }
 
-    if (uploadData.boardImg) {
+    if (uploadData?.boardImg) {
       setBoardImg(boardImg.concat(imgList));
       setURLs(URLs.concat(urlList));
     }
     setRoadData({ uploadData, boardUid });
-    G_index = G_index + uploadData.boardImg.length;
+    G_index = G_index + uploadData?.boardImg?.length;
   };
 
   useEffect(() => {

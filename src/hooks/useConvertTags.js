@@ -1,4 +1,4 @@
-import React,{ useState } from 'react';
+import React,{ useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 
@@ -11,7 +11,7 @@ export const useConvertTags = () => {
     if (!props) return;
     const arr = [];
   
-    new Promise((res, rej) => {
+  new Promise((res, rej) => {
     let data = props.replace(/(\n|\r\n)/g, '+<br/>+').split('+').join('+')
     res(data)
   }).then((data) => {
@@ -49,28 +49,25 @@ export const useConvertTags = () => {
             as={`/search/latest/${str}`}
             key={index}
           >
-            <LinkStyle>{str}</LinkStyle>
+            <LinkStyle>{ str }</LinkStyle>
           </Link>
         );
-      } else if (str.toString().match(regExp) || str.toString().match(regURLHttp)) {
+      } else if ( str.toString().match(regExp) || str.toString().match(regURLHttp) ) {
         // 사이트 주소
         arr.push(
-          <LinkStyle key={index} href={`${str.toString().match(/(http(s)?:\/\/)/gi) ? str : `https://${str}` }`} target="_blank">
-            {str}
+          <LinkStyle key={index} href={ str.toString().match(/(http(s)?:\/\/)/gi) ? str : `https://${str}` } target="_blank">
+            { str }
           </LinkStyle>
         );
       }
       else if (str === '<br/>') {
         arr.push(<br key={index} />);
       } else {
-        arr.push(<TextChild key={index}>{str}</TextChild>);
+        arr.push(<TextChild key={index}>{ str }</TextChild>);
       }
-    });
-  })
-
-    
-
+    })
     setConverted(arr);
+  })
   };
 
   return [converted, convert];

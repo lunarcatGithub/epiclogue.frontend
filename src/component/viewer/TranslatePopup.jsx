@@ -2,17 +2,20 @@ import React, { useContext, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
 // 컴포넌트 import
-import { ReplyListContext } from './Viewer';
 import ViewerLanguage from './Viewer.Language';
 
 // hooks&reducer
 import { useUrlMove } from '@hooks/useUrlMove';
+import { ViewerContext } from '@store/ViewerStore';
 
-const TranslatePopup = ({ writer }) => {
+const TranslatePopup = () => {
+  const { viewerData, setUserPopup } = useContext(ViewerContext);
+
   const [goURL] = useUrlMove();
 
-  const { toggle_Modal_Trans, boardUid, data, boardImg } = useContext(ReplyListContext);
-  const [originBoardId, setOriginBoardId] = useState();
+  const [boardId, setBoardId] = useState();
+
+  const { originBoardId, _id, boardImg, writer } = viewerData;
 
   //언어 변수
   const {
@@ -23,32 +26,40 @@ const TranslatePopup = ({ writer }) => {
   } = ViewerLanguage();
 
   const boardIdDevide = () => {
-    if (data.originBoardId) {
-      setOriginBoardId(data.originBoardId._id);
+    if (originBoardId) {
+      setBoardId(originBoardId?._id);
     } else {
-      setOriginBoardId(boardUid);
+      setBoardId(_id);
     }
   };
 
   useEffect(() => {
     boardIdDevide();
-  }, []);
+  }, [viewerData]);
 
   return (
     <UserContentPopupInner>
       <UserContentTitleBox>{_secondaryOpt}</UserContentTitleBox>
       <UserContentTabBox>
         <UserContentTab
-          onClick={() => {
-            toggle_Modal_Trans();
-            goURL({ pathname: `/editor/${originBoardId}`, query: { writer, boardUid, data: JSON.stringify(data), boardImg } });
-          }}
-        >
+          onClick={ () => {
+            setUserPopup(false);
+            goURL( { 
+              pathname: `/editor/${boardId}`, 
+              query: { 
+                writer, boardUid:boardId, 
+                data: JSON.stringify(viewerData), 
+                boardImg:originBoardId?.boardImg
+              } } );
+          } } >
           {_useEditor}
         </UserContentTab>
-        <UserContentTab onClick={() => goURL({ pathname: `/upload`, query: { writer, boardUid, data: JSON.stringify(data), _type:'noneEditor'} })}>{_selfUpload}</UserContentTab>
+        <UserContentTab 
+        onClick={ () => 
+          goURL( { pathname: `/upload`, query: { writer, boardUid:boardId, data: JSON.stringify(viewerData), _type:'noneEditor'} } )
+        } >{_selfUpload}</UserContentTab>
       </UserContentTabBox>
-      <PopupClose onClick={() => toggle_Modal_Trans()}>{_closeBtn}</PopupClose>
+      <PopupClose onClick={() => setUserPopup(false)}>{_closeBtn}</PopupClose>
     </UserContentPopupInner>
   );
 };
