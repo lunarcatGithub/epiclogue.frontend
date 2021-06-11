@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import styled, { keyframes } from 'styled-components';
 
 // component import
-import ViewerLanguage from '@component/view/Viewer.Language';
+import ViewerLanguage from '@component/viewer/Viewer.Language';
 
 // Hooks
 import useAxiosFetch from '@hooks/useAxiosFetch';

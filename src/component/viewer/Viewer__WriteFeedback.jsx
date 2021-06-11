@@ -34,7 +34,6 @@ export default function ViewerWriteFeedback() {
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/boards/${viewerData?._id}/feedback`
     feedbackFetch(URL, 'post', { feedbackBody:text }, null);
     alertPatch({ type: 'FEEDBACK', payload: true });
-
   }
 
   useEffect(() => {
