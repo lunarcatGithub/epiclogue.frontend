@@ -11,6 +11,7 @@ import { signUpError } from '@language/Lang.Login';
 import { LanguageContext, AlertContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { ViewerContext } from '@store/ViewerStore';
+import { useChange } from '@hooks/useChange';
 
 export default function ConfirmPopup({ handleModal, setAccessConfirm, type, doType }) {
   const { alertPatch } = useContext(AlertContext);
@@ -22,8 +23,8 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type, doTy
 
   // 유저 정보
   const { email, token } = router.query;
-  // const [userPwNew, handleuserPwNew] = useChange('');
-  // const [userPwNewRe, handleUserPwNewRe] = useChange('');
+  const [userPwNew, handleuserPwNew] = useChange('');
+  const [userPwNewRe, handleUserPwNewRe] = useChange('');
 
   // 유효성
   const [valiPw, setValiPw] = useState('');
