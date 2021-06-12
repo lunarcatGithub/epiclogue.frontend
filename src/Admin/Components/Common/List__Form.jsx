@@ -3,13 +3,15 @@ import styled from 'styled-components';
 
 //utils
 import Dropdown from '../Utils/Dropdown';
+import Modal from '@utils/Modal'
 
 //hooks && reduce
-import Modal from '@utils/Modal'
-import {AdminContext} from '../Store/Admin_Context';
+import { AdminContext } from '../Store/Admin_Context';
 
 //component
 import {AdminConfirmPopup} from './Admin_Confirm_Popup';
+import List from './List';
+
 
 export default function ListForm({ type, contentsData }) {
   const {
@@ -199,38 +201,9 @@ export default function ListForm({ type, contentsData }) {
           </TableHead>
           {/*  테이블 본문 시작 */}
           <TableBody>
-            {
-              listData?.map((content, i) => (
-                <TableRowBox key={i}>
-                  <TableDataBox>
-                    <CheckBox
-                      name="contents"
-                      value={content.id}
-                      onChange={(e) => allCheckHandle(e, 'one')}
-                      defaultChecked={content.isSelect}
-                    />
-                  </TableDataBox>
-                  <TableDataBox >{i}</TableDataBox>
-                    <TableDataBox>{content?.suspectUserInfo[0]?.screenId}</TableDataBox>
-                      {content?._contentType && <TableDataBox>{content?._contentType}</TableDataBox>}
-                      {content.join && <TableDataBox>{content.join}</TableDataBox>}
-                      {content.category && <TableDataBox>{content.category}</TableDataBox>}
-                      {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
-                      {content.content && <TableDataBox>{content.content}</TableDataBox>}
-                      {content.count && <TableDataBox>{content.count}</TableDataBox>}
-                      {content.result && <TableDataBox>{content.result}</TableDataBox>}
-                      {content.date && <TableDataBox>{content.date}</TableDataBox>}
-                      <TableDataBox type='btn' >
-                      <AllButton
-                        value={content._id}
-                        onClick={(e) => {
-                          setToggleSelect(e.currentTarget.id);
-                          lastDataConfirm(e);
-                        } } > 처리
-                      </AllButton>
-                    </TableDataBox>
-                </TableRowBox> ))
-            }
+            { listData?.map((content, i) => ( 
+              <List key={i} content={content}/> 
+              ) ) }
           </TableBody>
         </TableBox>
       </MainLayout>
@@ -350,13 +323,7 @@ const TableRowBox = styled.tr`
     :
     null
   };
-
   }
-`;
-
-const TableDataBox = styled.td`
-  text-align: center;
-  padding: 0.8em 0.5em;
 `;
 
 // 본문 레이아웃 - 헤더 UI

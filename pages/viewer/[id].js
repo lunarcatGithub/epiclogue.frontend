@@ -1,5 +1,5 @@
+import React from 'react';
 import Viewer from '@component/viewer/Viewer';
-// import Viewer from '@component/viewer/Viewer';
 import axios from 'axios';
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 

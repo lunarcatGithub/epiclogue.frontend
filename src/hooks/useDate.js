@@ -22,13 +22,17 @@ export function useDate(type) {
     day = '0' + day;
   }
 
-  if (countryDivided === 2) {
-    countryResult = `${month}-${day}-${year}`;
-  } else {
-    countryResult = `${year}-${month}-${day}`;
+  if(type === 'Admin'){ // admin일 경우
+    countryResult = `${year}-${month}-${day} [${hours}:${minutes}]`;
+
+  } else { // 일반 콘텐츠
+    if (countryDivided === 2) {
+      countryResult = `${month}-${day}-${year}`;
+    } else {
+      countryResult = `${year}-${month}-${day}`;
+    }
   }
 
-  if(type === 'Admin') countryResult = `${year}-${month}-${day}/${hours}:${minutes}`;
 
   return [setGetDate, setCountryDivided, countryResult];
 }
