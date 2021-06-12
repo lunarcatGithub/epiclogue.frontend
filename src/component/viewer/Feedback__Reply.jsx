@@ -4,7 +4,7 @@ import styled from 'styled-components';
 // 컴포넌트 import
 import FeedBack from './Feedback';
 import { ProgressSmall } from '@utils/LoadingProgress';
-import WriteInputForm from '@utils/WriteFbForm';
+import WriteInputForm from '@utils/WriteSendForm';
 import ViewerLanguage from './Viewer.Language';
 import MorePopup from './MoreMenuPopup';
 import ReportsPopup from '../report/ReportsPopup';
