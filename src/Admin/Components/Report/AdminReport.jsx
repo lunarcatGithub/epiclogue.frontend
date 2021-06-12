@@ -12,7 +12,7 @@ import { AdminContext } from '../Store/Admin_Context';
 
 export const AdminReport =()=> {
     const { setReportData, reportData } = useContext(AdminContext);
-  console.log(reportData)
+
     //data
     const [userContentsData, setUserContentsData] = useState([
       {id:1, _id:`@asasdd`, title:'신고받을만한 콘텐츠임니다ㅎ', kind:'대댓글', count:5},

@@ -31,8 +31,9 @@ export default function ListForm({ type, contentsData }) {
   // console.log(reportData[0]?.suspactUserInfo[0])
 
   // data 분류
-  const [ listData, setListData ] = useState(null);
+  const [ listData, setListData ] = useState([]);
   // const [ suspectScreenId, setSuspectScreenId ] = useState();
+  console.log(listData);
 
   const [dropDown1, setDropDown1] = useState([]);
   const [dropDown2, setDropDown2] = useState([]);
@@ -71,7 +72,6 @@ export default function ListForm({ type, contentsData }) {
         setDropDown1('');
         setDropDown2('');
         setDropDown3('');
-        setListData(reportData)
         break;
 
       case 'COPYRIGHT':
@@ -140,8 +140,13 @@ export default function ListForm({ type, contentsData }) {
   };
 
   useEffect(() => {
-    contentsData && typeHandler();
-  }, [type, reportData]);
+    typeHandler();
+  }, [type]);
+
+  useEffect(() => {
+    if(reportData?.length === 0) return;
+    setListData(reportData);
+  }, [reportData])
 
   const viewNum = [
     { title: '10개', value: 10 },
@@ -158,9 +163,9 @@ export default function ListForm({ type, contentsData }) {
         </TopLeftLayout>
         {/* 상단 중앙 레이아웃 */}
         <TopCenterLayout>
-          <Dropdown data={viewNum} />
+          {/* <Dropdown data={viewNum} /> */}
           <Dummy2 />
-          <Dropdown data={dropDown1} type={type} />
+          {/* <Dropdown data={dropDown1} type={type} /> */}
           { type !== 'USERS' && (
             <>
               <Dummy />
@@ -171,7 +176,7 @@ export default function ListForm({ type, contentsData }) {
             </> ) }
         </TopCenterLayout>
         <TopRightLayout>
-          <Dropdown data={dropDown3} type={type} />
+          {/* <Dropdown data={dropDown3} type={type} /> */}
           <Dummy />
           <SearchInput />
           <AllButton>검색</AllButton>
@@ -206,7 +211,7 @@ export default function ListForm({ type, contentsData }) {
                     />
                   </TableDataBox>
                   <TableDataBox >{i}</TableDataBox>
-                    <TableDataBox>{content?.suspactUserInfo[0]?.nickname}</TableDataBox>
+                    <TableDataBox>{content?.suspectUserInfo[0]?.screenId}</TableDataBox>
                       {content?._contentType && <TableDataBox>{content?._contentType}</TableDataBox>}
                       {content.join && <TableDataBox>{content.join}</TableDataBox>}
                       {content.category && <TableDataBox>{content.category}</TableDataBox>}
@@ -232,7 +237,7 @@ export default function ListForm({ type, contentsData }) {
       {/* 정지, 탈퇴, 블라인드 팝업 */}
         {
           warnConfrim.bool &&
-          <Modal visible={warnConfrim.bool} closable={true} maskClosable={true} onClose={() => setWarnConfirm({...warnConfrim, bool:false})}>
+          <Modal visible={warnConfrim.bool} closable={true} maskClosable={true} onClose={ () => setWarnConfirm({...warnConfrim, bool:false}) }>
             <AdminConfirmPopup 
               type={warnConfrim.type}
               mainType={type}
