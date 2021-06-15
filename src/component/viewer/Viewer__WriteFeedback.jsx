@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import ViewerLanguage from './Viewer.Language';
 
 // utils
-import WriteInputForm from '@utils/writeFbForm';
+import WriteInputForm from '@utils/WriteSendForm';
 
 // hooks
 import useAxiosFetch from '@hooks/useAxiosFetch';

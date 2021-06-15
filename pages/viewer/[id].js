@@ -5,7 +5,10 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export default function ViewerPage(props) {
   const { boardItem, id, error } = props;
-  return <Viewer boardItem={boardItem} userId={id} nonError={error} />;
+
+  return (
+    <><Viewer boardItem={boardItem} userId={id} nonError={error} /></>
+  );
 }
 
 export async function getServerSideProps(context) {
