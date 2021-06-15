@@ -14,12 +14,17 @@ export default function BookmarkFetch({ _id, initToggle }) {
 
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   
-
   // toggle
   const [bookmark, toggleBookmark] = useToggle();
 
-  const submitHandler = (e) => {
-    e.preventDefault();
+  const toggleHandler = (e) => {
+    if(!loginOn){
+      setUnAuth(true)
+      return;
+    }
+
+    toggleBookmark();
+
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/bookmark`;
     bookmarkFetch(
         URL,
@@ -35,21 +40,12 @@ export default function BookmarkFetch({ _id, initToggle }) {
     toggleBookmark(initToggle);
   }, []);
 
-
-
   return (
-    <form onSubmit={submitHandler}>
       <ReactBtnWrap>
         <BookmarkBtn
           bookmark={bookmark}
-          onClick={ () =>  
-            loginOn ? 
-            toggleBookmark() 
-            :
-            setUnAuth(true)
-          } />
+          onClick={ () => toggleHandler() } />
       </ReactBtnWrap>
-    </form>
   );
 }
 

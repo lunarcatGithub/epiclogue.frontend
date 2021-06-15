@@ -194,10 +194,10 @@ const UploadCategory = (props) => {
         return;
       }
 
-      for (let [key, value] of _uploadData.entries()) { // 전송 전 데이터 검사
-        console.log(key, value);
-      }
-      console.log(uploadType)
+      // for (let [key, value] of _uploadData.entries()) { // 전송 전 데이터 검사
+      //   console.log(key, value);
+      // }
+
       if (uploadType === 'modify') {
         uploadFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${boardUid}/edit`, 'post', null, _uploadData);
       } else if (uploadType === 'noneEditor' || uploadType === 'editor') {

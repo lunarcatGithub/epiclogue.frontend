@@ -21,7 +21,7 @@ export function FindPass() {
   }, [router.query]);
 
   useEffect(() => {
-    findPassApi && console.log(findPassApi);
+    // findPassApi && console.log(findPassApi);
     findPassError && alert(findPassError);
   }, [findPassApi, findPassError]);
 

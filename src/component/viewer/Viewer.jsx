@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from "next-i18next";
+import dynamic from 'next/dynamic'
 
 // componenets
 import ViewerUserForm from './Viewer__UserForm';
@@ -20,12 +21,18 @@ import { useUrlMove } from '@hooks/useUrlMove';
 
 // reduce
 import { ViewerContext } from '@store/ViewerStore';
+import { AppDataContext } from '@store/App_Store';
 
 // utils
 import { Meta } from '@utils/MetaTags';
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
 import { ProgressSmall } from '@utils/LoadingProgress';
+
+const DynamicComponentWithNoSSR = dynamic( // Prevent breaks UI, when refresh
+  () => import('./Viewer__React'),
+  { ssr: false }
+)
 
 export default function Viewer({ boardItem, nonError }) {
   const { t } = useTranslation("common");
@@ -43,6 +50,8 @@ export default function Viewer({ boardItem, nonError }) {
     setTargetUser_Id,
     modifiedFeedbackData
   } = useContext(ViewerContext);
+
+  const { loginOn, setUnAuth } = useContext(AppDataContext);
 
   // 뷰어 언어
   const { 
@@ -107,6 +116,12 @@ export default function Viewer({ boardItem, nonError }) {
 
   // interation user popup
   const contentPopup = (screenId, user_id, fbUid) => {
+    if(!loginOn){
+      setUnAuth(true);
+      setPopupType(null);
+      setUserPopup(null);
+      return;
+    }
     setUserPopup(true);
     setTargetUser_Id(user_id);
     setFeedbackUid(fbUid);
@@ -119,6 +134,7 @@ export default function Viewer({ boardItem, nonError }) {
   };
 
   const reportOrRemoveOrModifyOrTrans = () => { // useEffect에서 popup 관리
+  
     if(popupType === 'ContentReport'){
       setTypeMenuPopup(<ReportsPopup onClose={setUserPopup} contentType="Board" contentId={viewerData._id} suspectUserId={''} />);
     } else if(popupType === 'ContentModify'){
@@ -177,7 +193,15 @@ export default function Viewer({ boardItem, nonError }) {
   }, [boardItem]);
 
   useEffect(() => {
-    reportOrRemoveOrModifyOrTrans();
+    if(!popupType) return;
+    if(!loginOn){
+      setUnAuth(true);
+      setPopupType(null);
+      setUserPopup(null);
+      return;
+    }
+      reportOrRemoveOrModifyOrTrans();
+    
     if(popupType === 'ContentRemove' || popupType === 'FeedbackRemove'){
       return;
     } else { // popupType이 바뀔 때 마다, popup => close 할 때 빈값으로 변경
@@ -215,7 +239,7 @@ export default function Viewer({ boardItem, nonError }) {
     if(!feedbackApi) return;
     setFeedbackData(feedbackApi?.data);
   }, [feedbackApi]);
-  console.log(modifiedFeedbackData)
+
   useEffect(() => { // 피드백 수정 이후 다시 렌더링
     if(modifiedFeedbackData.length === 0) return;
     setFeedbackData(modifiedFeedbackData?.data);
@@ -260,7 +284,8 @@ export default function Viewer({ boardItem, nonError }) {
           </MobileViewerPort>
 
           { /* 반응 탭 */}
-            <ViewerReact />
+            {/* <ViewerReact /> */}
+            <DynamicComponentWithNoSSR />
 
           {/* 유저 피드백 */}
             <ViewerWriteFeedback /> 
