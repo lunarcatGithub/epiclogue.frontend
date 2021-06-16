@@ -18,23 +18,30 @@ export default function LikeFetch({ _id, initLike, initialCount, type }) {
   // toggle
   const [like, toggle_like] = useToggle();
 
-  const submitHandler = (e) => {
-    e.preventDefault();
+  const toggleHandler = () => {
+    if(!loginOn){
+      setUnAuth(true);
+      return;
+    }
+
+    toggle_like();
+
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/like`;
-      likeFetch(
-        URL,
-        like ? 'post' : 'delete',
-        {
-          targetInfo: _id,
-          targetType: type,
-        },
-        null
-      );
-  };
+    likeFetch(
+      URL,
+      like ? 'post' : 'delete',
+      {
+        targetInfo: _id,
+        targetType: type,
+      },
+      null
+    );
+  }
 
   useEffect(() => {
     toggle_like(initLike);
-  }, []);
+    setHeartCount(initialCount)
+  }, [initialCount]);
 
   useEffect(() => {
     if(likeApi?.result === 'ok'){
@@ -42,21 +49,13 @@ export default function LikeFetch({ _id, initLike, initialCount, type }) {
     }
   }, [likeApi]);
 
-
   return (
-    <form onSubmit={submitHandler}>
       <ReactBtnWrap type={type} >
         <LikeFbBtn
           heart={like}
-          onClick={ () =>  
-            loginOn ? 
-            toggle_like() 
-            :
-            setUnAuth(true)
-          } />
+          onClick={ () => toggleHandler() } />
         <LikeFbScore>{ heartCount }</LikeFbScore>
       </ReactBtnWrap>
-    </form>
   );
 }
 

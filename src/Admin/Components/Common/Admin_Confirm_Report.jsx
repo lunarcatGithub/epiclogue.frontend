@@ -1,19 +1,13 @@
-import React from 'react';
-import styled,{css} from 'styled-components';
+import React, { useEffect } from 'react';
+import styled,{ css } from 'styled-components';
 
 //component
 
-export function ConfirmReportPopup() {
+//hooks && reduce
+import { useDate } from '@hooks/useDate';
 
-    const sampleUser = [
-        {id:1, _id:'@adassasdasdasadsaaaf', date:'2020-06-20', report:'혐오'},
-        {id:2, _id:'@123ㅁㄴㅊ', date:'2020-06-20', report:'혐오'},
-        {id:3, _id:'@124flllv', date:'2020-06-20', report:'그냥'},
-        {id:4, _id:'@124flllv', date:'2020-06-20', report:'그냥'},
-        {id:5, _id:'@124flllv', date:'2020-06-20', report:'그냥'},
-        {id:6, _id:'@124flllv', date:'2020-06-20', report:'그냥'},
-        {id:7, _id:'@124flllv', date:'2020-06-20', report:'그냥'},
-    ]
+export function ConfirmReportPopup({ reportData }) {
+
   return (
     <>
       <TextBlock>신고 한 유저</TextBlock>
@@ -24,18 +18,52 @@ export function ConfirmReportPopup() {
             <ReportHeaderTab>신고 날짜</ReportHeaderTab>
           </ReportHeader>
           <ReportBody>
-          { sampleUser.map(({id, _id, report, date}) => (
-              <ReportBodyInner key={id}>
-                <ReportBodyDevide type={'id'}>{_id}</ReportBodyDevide>
-                <ReportBodyDevide>{report}</ReportBodyDevide>
-                <ReportBodyDevide>{date}</ReportBodyDevide>
-              </ReportBodyInner>
-            ) ) }
+          { reportData?.data?.map( ( { reporterId, reportType, createdAt }, i ) => (
+            <ReporterList 
+              reporterId = { reporterId }
+              reportType = { reportType }
+              createdAt = { createdAt }
+              key = { i }
+            /> ) ) }
           </ReportBody>
       </ReportUserBox>
     </>
     )
   }
+
+function ReporterList({ reporterId, reportType, createdAt }){
+  const [ setGetDate, , dateResult ] = useDate('Admin');
+
+  const reportTypeReturn = (_type) => {
+    if(_type === 0){
+      return '스팸'
+    } else if (_type === 1){
+      return '음란/선정적'
+    } else if (_type === 2){
+      return '혐오유발'
+    } else if (_type === 3){
+      return '폭력성'
+    } else if (_type === 4){
+      return '거짓정보'
+    } else if (_type === 5){
+      return '분쟁유발'
+    } else if (_type === 6){
+      return '불법 콘텐츠'
+    }
+  };
+
+  useEffect(() => {
+    setGetDate(createdAt)
+  }, [createdAt]);
+
+  return (
+      <ReportBodyInner>
+        <ReportBodyDevide type='id' >@{ reporterId?.screenId }</ReportBodyDevide>
+        <ReportBodyDevide>{ reportTypeReturn(reportType) }</ReportBodyDevide>
+        <ReportBodyDevide>{ dateResult }</ReportBodyDevide>
+      </ReportBodyInner>
+  )
+}
 
 const TextSize15 = css`
 color:${(props) => props.theme.color.blackColor};

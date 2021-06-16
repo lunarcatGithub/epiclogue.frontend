@@ -4,8 +4,7 @@ import { LangCommon } from '@language/Lang.Common';
 import { langViewer, langViewerUser } from '@language/Lang.Viewer';
 import { LanguageContext } from '@store/App_Store';
 import { langMymoreMenu, langUsermoreMenu } from '@language/Lang.Viewer';
-import { langReactPopup } from '@language/Lang.Viewer';
-import { langSharePopup } from '@language/Lang.Viewer';
+import { langReactPopup, langSharePopup } from '@language/Lang.Viewer';
 import { langTranslatePopup } from '@language/Lang.Viewer';
 import { LangConfirm } from '@language/Lang.Confirm';
 
@@ -56,7 +55,7 @@ export default function ViewerLanguage(){
     // More menu popup
     const { myOptions, modifyContent, deleteContent } = langMymoreMenu;
     const { userOptions, sendDm, reportUser, muteUser } = langUsermoreMenu;
-  
+
     const _myOptions = myOptions[selectedLanguage] || myOptions[defaultLanguage],
         _modifyContent = modifyContent[selectedLanguage] || modifyContent[defaultLanguage],
         _deleteContent = deleteContent[selectedLanguage] || deleteContent[defaultLanguage],

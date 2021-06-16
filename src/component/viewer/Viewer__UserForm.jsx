@@ -20,7 +20,6 @@ import useDebounce from '@hooks/useDebounce';
 // lang
 import ViewerLanguage from './Viewer.Language';
 
-
 export default function ViewerUserForm(props) {
   const { type, contentPopup } = props;
   const { loginOn, setUnAuth } = useContext(AppDataContext);
@@ -51,6 +50,7 @@ export default function ViewerUserForm(props) {
   const [ userType, setUserType ] = useState();
   const [ profileImage, setProfileImage ] = useState();
   const [ originUserImage, setOriginUserImage ] = useState();
+  const [ sourceHref, setSourceHref ] = useState();
 
   // follow
   const [follow, toggleFollow] = useToggle();
@@ -83,6 +83,15 @@ export default function ViewerUserForm(props) {
   const [indicateDate] = useTimeCalculation(writeDate);
 
   useEffect(() => {
+
+    if(sourceUrl === 'null'){
+    setSourceHref(null)
+    } else {
+      setSourceHref(sourceUrl)
+    }
+  }, []);
+
+  useEffect(() => {
     const localScreenId = localStorage.getItem('userid');
 
     if(type === 'SECOND'){
@@ -90,7 +99,7 @@ export default function ViewerUserForm(props) {
       setUserType(_recreateUser);
     } else {
       // type === NOSECOND, ORIGIN
-      setKindContent(<UserUploadInfoImg image={sourceUrl ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />);
+      setKindContent(<UserUploadInfoImg image={sourceHref ? '/static/linkIcon.svg' : '/static/originWrite.svg'} />);
       setUserType(_originalUser);
     }
 
@@ -106,7 +115,7 @@ export default function ViewerUserForm(props) {
     // 다시 한번 확인하기
     convert(type === 'ORIGIN' ? originBoardId?.boardBody : boardBody);
     setOriginUserImage(type === 'ORIGIN' ? originBoardId : null);
-  }, []);
+  }, [sourceHref]);
   
   // follow debounce
   useEffect(() => {
@@ -119,13 +128,13 @@ export default function ViewerUserForm(props) {
     <UserForm>
       <UserProfileWrap>
         { kindContent }
-        { sourceUrl ? (
-          <SourceLink href={`${sourceUrl}`} target="_blank">
-            { sourceUrl }
+        { sourceHref !== null ? 
+          <SourceLink href={`${sourceHref}`} target="_blank">
+            { sourceHref }
           </SourceLink>
-        ) : (
+          : 
           <UserUploadInfo>{ userType }</UserUploadInfo>
-        ) }
+        }
       </UserProfileWrap>
       <ProfileImgContent>
         {/* 프로필 박스 */}

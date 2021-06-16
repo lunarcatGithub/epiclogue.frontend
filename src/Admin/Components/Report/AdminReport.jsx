@@ -5,21 +5,16 @@ import styled from 'styled-components';
 import ListForm from '../Common/List__Form';
 
 // hooks
-import useAxiosFetch from '../../../hooks/useAxiosFetch';
+import useAxiosFetch from '@hooks/useAxiosFetch';
 
 // reduce
 import { AdminContext } from '../Store/Admin_Context';
 
 export const AdminReport =()=> {
     const { setReportData, reportData } = useContext(AdminContext);
-  console.log(reportData)
+
     //data
-    const [userContentsData, setUserContentsData] = useState([
-      {id:1, _id:`@asasdd`, title:'신고받을만한 콘텐츠임니다ㅎ', kind:'대댓글', count:5},
-      {id:2, _id:`@adf`, title:'신고쟁이 ㅎㅎㅋㅎ',  kind:'대댓글',  count:2},
-      {id:3, _id:`@qwerrt`, title:'qwrqsfa', kind:'대댓글', count:1},
-      {id:4, _id:`@qwerrt`, title:'ghhtttt',  kind:'대댓글',  count:1, }
-    ]);
+
 
     const categorySelec = [
       {title:'전체', value:'all'},
@@ -42,45 +37,45 @@ export const AdminReport =()=> {
 
     const [toggleSelect, setToggleSelect] = useState();
 
-    const dataHadler = (e, type) => {
-      userContentsData?.forEach(_contentsData => {
-        if( Number(toggleSelect) === _contentsData.id ){
-          let data = userContentsData
-          if(type === 'main'){
-            // 회원 탈퇴
-            data.splice(Number(toggleSelect)-1, 1)
-            setUserContentsData(data);
+    // const dataHadler = (e, type) => {
+    //   userContentsData?.forEach(_contentsData => {
+    //     if( Number(toggleSelect) === _contentsData.id ){
+    //       let data = userContentsData
+    //       if(type === 'main'){
+    //         // 회원 탈퇴
+    //         data.splice(Number(toggleSelect)-1, 1)
+    //         setUserContentsData(data);
             
-          } else if( type === 'sub'){
-            // 회원 정지
-            if(userContentsData.hide === true){
-                data.hide = false
-            }else {
-                data.hide = true
-            }
-            setUserContentsData(data)
-          }
-        } else {
-            return;
-        }
-      });
-    } 
+    //       } else if( type === 'sub'){
+    //         // 회원 정지
+    //         if(userContentsData.hide === true){
+    //             data.hide = false
+    //         }else {
+    //             data.hide = true
+    //         }
+    //         setUserContentsData(data)
+    //       }
+    //     } else {
+    //         return;
+    //     }
+    //   });
+    // } 
 
     useEffect(() => {
     const params = {
       size:30,
       page:0,
     }
-    reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'get', null, null, params)
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
+    reportFetch(URL, 'get', null, null, params)
     }, []);
 
     useEffect(() => {
       setReportData(reportApi?.data);
-      return () => setReportData(null);
 
     }, [reportApi])
     
-    const headerArr = ['번호', '아이디', '콘텐츠', '신고횟수', '신고날짜', '처리하기'];
+    const headerArr = ['번호', '아이디', '콘텐츠', '신고횟수', '최근 신고날짜', '처리하기'];
 
 
     return (
@@ -91,9 +86,7 @@ export const AdminReport =()=> {
             contentsData={{
             headerArr,
             categorySelec,
-            userContentsData,
             searchFilter,
-            dataHadler,
             setToggleSelect,
             buttonType
           } } />

@@ -25,11 +25,6 @@ export default function ViewerReact() {
     const submitHandler = (type) => {
       unAuthBanned(); // unAuth
 
-      if(type === 'Share'){ // share일 경우 clipboard
-        clipboardShare();
-        return;
-      }
-
       if(type === 'Globe'){ // globe
         setUserPopup(true);
         if (reactData?.originUserId && !reactData?.originBoardId) {
@@ -93,7 +88,7 @@ export default function ViewerReact() {
             initialCount={reactData?.heartCount}
             type="Board"
           />
-          <BtnBox onClick={ () => submitHandler('Share') } >
+          <BtnBox onClick={ () => clipboardShare() } >
             <ShareBtn />
           </BtnBox>
           <BtnBox onClick={ () => submitHandler('Globe') } >

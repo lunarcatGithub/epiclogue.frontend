@@ -19,7 +19,6 @@ const RoadDataContextProvider = (props) => {
     });
     const articledata = await article.json();
     const uploadData = articledata?.data;
-    console.log(uploadData);
 
     let urlList = [];
     let imgList = [];

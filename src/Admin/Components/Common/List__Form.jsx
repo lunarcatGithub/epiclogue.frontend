@@ -3,13 +3,15 @@ import styled from 'styled-components';
 
 //utils
 import Dropdown from '../Utils/Dropdown';
+import Modal from '@utils/Modal'
 
 //hooks && reduce
-import Modal from '@utils/Modal'
-import {AdminContext} from '../Store/Admin_Context';
+import { AdminContext } from '../Store/Admin_Context';
 
 //component
-import {AdminConfirmPopup} from './Admin_Confirm_Popup';
+import { AdminConfirmPopup } from './Admin_Confirm_Popup';
+import List from './List';
+
 
 export default function ListForm({ type, contentsData }) {
   const {
@@ -31,7 +33,7 @@ export default function ListForm({ type, contentsData }) {
   // console.log(reportData[0]?.suspactUserInfo[0])
 
   // data 분류
-  const [ listData, setListData ] = useState(null);
+  const [ listData, setListData ] = useState([]);
   // const [ suspectScreenId, setSuspectScreenId ] = useState();
 
   const [dropDown1, setDropDown1] = useState([]);
@@ -42,7 +44,7 @@ export default function ListForm({ type, contentsData }) {
   const [selectedData, setSelectedData] = useState([]);
  
   // confirm
-  const [warnConfrim, setWarnConfirm] = useState({type:null, bool:false});
+  const [warnConfirm, setWarnConfirm] = useState(false);
   const [userEmail, setUserEmail] = useState({type:null, bool:false});
 
   const typeHandler = () => {
@@ -71,7 +73,6 @@ export default function ListForm({ type, contentsData }) {
         setDropDown1('');
         setDropDown2('');
         setDropDown3('');
-        setListData(reportData)
         break;
 
       case 'COPYRIGHT':
@@ -79,19 +80,20 @@ export default function ListForm({ type, contentsData }) {
         setDropDown2('');
         setDropDown3('');
         break;
+
       default:
         break;
     }
   };
 
   const lastDataConfirm = (e, type) => {
-    setWarnConfirm({type, bool:true});
+    setWarnConfirm(true);
     listData?.filter( uid => uid._id === Number(e.target.id) && setSelectedData(uid));
     setCurrentTargetData()
   };
 
   const userSendEmail = (e, type) => {
-    setUserEmail({type, bool:true});
+    setUserEmail(true);
     const {target:value} = e
     console.log(value)
   }
@@ -140,8 +142,13 @@ export default function ListForm({ type, contentsData }) {
   };
 
   useEffect(() => {
-    contentsData && typeHandler();
-  }, [type, reportData]);
+    typeHandler();
+  }, [type]);
+
+  useEffect(() => {
+    if(reportData?.length === 0) return;
+    setListData(reportData);
+  }, [reportData])
 
   const viewNum = [
     { title: '10개', value: 10 },
@@ -158,20 +165,20 @@ export default function ListForm({ type, contentsData }) {
         </TopLeftLayout>
         {/* 상단 중앙 레이아웃 */}
         <TopCenterLayout>
-          <Dropdown data={viewNum} />
+          {/* <Dropdown data={viewNum} /> */}
           <Dummy2 />
-          <Dropdown data={dropDown1} type={type} />
+          {/* <Dropdown data={dropDown1} type={type} /> */}
           { type !== 'USERS' && (
             <>
               <Dummy />
               <Dropdown
-              data={dropDown2} 
-              type={type} 
+                data={dropDown2} 
+                type={type} 
               />
             </> ) }
         </TopCenterLayout>
         <TopRightLayout>
-          <Dropdown data={dropDown3} type={type} />
+          {/* <Dropdown data={dropDown3} type={type} /> */}
           <Dummy />
           <SearchInput />
           <AllButton>검색</AllButton>
@@ -194,53 +201,25 @@ export default function ListForm({ type, contentsData }) {
           </TableHead>
           {/*  테이블 본문 시작 */}
           <TableBody>
-            {
-              listData?.map((content, i) => (
-                <TableRowBox key={i}>
-                  <TableDataBox>
-                    <CheckBox
-                      name="contents"
-                      value={content.id}
-                      onChange={(e) => allCheckHandle(e, 'one')}
-                      defaultChecked={content.isSelect}
-                    />
-                  </TableDataBox>
-                  <TableDataBox >{i}</TableDataBox>
-                    <TableDataBox>{content?.suspactUserInfo[0]?.nickname}</TableDataBox>
-                      {content?._contentType && <TableDataBox>{content?._contentType}</TableDataBox>}
-                      {content.join && <TableDataBox>{content.join}</TableDataBox>}
-                      {content.category && <TableDataBox>{content.category}</TableDataBox>}
-                      {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
-                      {content.content && <TableDataBox>{content.content}</TableDataBox>}
-                      {content.count && <TableDataBox>{content.count}</TableDataBox>}
-                      {content.result && <TableDataBox>{content.result}</TableDataBox>}
-                      {content.date && <TableDataBox>{content.date}</TableDataBox>}
-                      <TableDataBox type='btn' >
-                      <AllButton
-                        value={content._id}
-                        onClick={(e) => {
-                          setToggleSelect(e.currentTarget.id);
-                          lastDataConfirm(e);
-                        } } > 처리
-                      </AllButton>
-                    </TableDataBox>
-                </TableRowBox> ))
-            }
+            { listData?.map( (content, i) => ( 
+              <List key={i} content={content} setWarnConfirm={setWarnConfirm}/> 
+              ) ) }
           </TableBody>
         </TableBox>
       </MainLayout>
       {/* 정지, 탈퇴, 블라인드 팝업 */}
         {
-          warnConfrim.bool &&
-          <Modal visible={warnConfrim.bool} closable={true} maskClosable={true} onClose={() => setWarnConfirm({...warnConfrim, bool:false})}>
+          warnConfirm &&
+          <Modal visible={warnConfirm} closable={true} maskClosable={true} onClose={ () => setWarnConfirm(false) }>
             <AdminConfirmPopup 
-              type={warnConfrim.type}
+              // type={warnConfirm}
               mainType={type}
               dataHandler={dataHandler}
               reportList={reportList}
-              closePopup={setWarnConfirm}
+              setWarnConfirm={setWarnConfirm}
               listData={selectedData}
               dangerConfirm={dangerConfirm}
+              lastDataConfirm={lastDataConfirm}
             />
           </Modal>
         }
@@ -345,13 +324,7 @@ const TableRowBox = styled.tr`
     :
     null
   };
-
   }
-`;
-
-const TableDataBox = styled.td`
-  text-align: center;
-  padding: 0.8em 0.5em;
 `;
 
 // 본문 레이아웃 - 헤더 UI

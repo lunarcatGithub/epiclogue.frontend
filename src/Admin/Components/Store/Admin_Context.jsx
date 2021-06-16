@@ -14,6 +14,10 @@ const AdminContextStore = ({ children }) => {
   const [ reportData, setReportData ] = useState();
   const [ currentTargetData, setCurrentTargetData ] = useState();
 
+  // data
+  const [currentData, setCurrentData] = useState([]);
+
+
   const reportList = [
     { id: 0, title: '스팸성', value: 'spam'},
     { id: 1, title: '음란물', value: 'adult'},
@@ -33,7 +37,10 @@ const AdminContextStore = ({ children }) => {
         reportData,
         setReportData,
         currentTargetData,
-        setCurrentTargetData
+        setCurrentTargetData,
+        // data
+        currentData,
+        setCurrentData
       }}
     >{children}
 

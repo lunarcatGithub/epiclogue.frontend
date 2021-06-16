@@ -11,7 +11,7 @@ import { AdminContents } from '../Contents/AdminContents';
 import { AdminReport } from '../Report/AdminReport';
 import { AdminCopyright } from '../Copyright/Copyright';
 import { AdminReportResult } from '../Report/AdminReport_Result';
-import {CopyRightReportResult} from '../Copyright/Copyright_Result';
+import { CopyRightReportResult } from '../Copyright/Copyright_Result';
 
 
 import GNB from '@Component/GNB/Gnb';
