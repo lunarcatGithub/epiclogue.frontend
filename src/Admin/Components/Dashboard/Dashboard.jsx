@@ -28,14 +28,14 @@ export const Dashboard = () => {
       <Layout>
         {/* 상단 브리핑 */}
         <BriefBox>
-          {Object.entries(dashObj).map(([key, value], i) => (
+          { Object.entries(dashObj).map( ( [key, value], i ) => (
             <ContentBox key={i}>
               <ContentInner>
                 <ContentTitle>{value}</ContentTitle>
                 <ContentDescript>{key}</ContentDescript>
               </ContentInner>
             </ContentBox>
-          ))}
+          ) ) }
         </BriefBox>
       </Layout>
     </>

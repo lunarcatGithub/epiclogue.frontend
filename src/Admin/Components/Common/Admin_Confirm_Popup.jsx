@@ -18,8 +18,6 @@ import { AdminContext } from '../Store/Admin_Context';
 export function AdminConfirmPopup(props) {
   const { currentData } = useContext(AdminContext);
 
-  console.log(currentData);
-
   const {
       mainType,
       type,
@@ -118,7 +116,7 @@ export function AdminConfirmPopup(props) {
       } else if(currentType === 'TurnBack'){
         setDataSendComponent(<AdminConfirmTurnBack/>)
       }
-    }, [currentType])
+    }, [currentType]);
 
     const popupTab = [
       {id:1, value:1, name:'신고정보'},
@@ -202,7 +200,7 @@ export function AdminConfirmPopup(props) {
           <ConfirmDivBottom>
           { 
             isTab === 1 &&
-            decision.map( ( { title, value },index ) => (
+            decision.map( ( { title, value }, index ) => (
               <ConfirmBtn 
               key={index} 
               type={value} 

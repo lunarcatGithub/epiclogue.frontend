@@ -5,8 +5,13 @@ import { useRouter } from 'next/router';
 // 컴포넌트 import
 import ReportLanguage from './Report_Language';
 
+// hooks&reducer
+import useAxiosFetch from '@hooks/useAxiosFetch';
+
 const Report = () => {
   const router = useRouter();
+  // fetch Data
+  const [ , reportData, , reportFetch] = useAxiosFetch();
 
   // 언어 import
   const { _privateAgree,

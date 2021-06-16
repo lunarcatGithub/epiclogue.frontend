@@ -34,7 +34,7 @@ export const AdminReport =()=> {
 
   // fetch
     const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
-    
+
     const [toggleSelect, setToggleSelect] = useState();
 
     // const dataHadler = (e, type) => {
@@ -72,7 +72,6 @@ export const AdminReport =()=> {
 
     useEffect(() => {
       setReportData(reportApi?.data);
-      return () => setReportData(null);
 
     }, [reportApi])
     

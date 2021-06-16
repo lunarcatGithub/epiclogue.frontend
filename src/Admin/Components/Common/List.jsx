@@ -14,10 +14,6 @@ export default function List({ content, setWarnConfirm }) {
     setGetDate(content?._createdAt);
   }, [content]);
 
-  useEffect(() => { // 현재 content
-    setCurrentData(content);
-  }, []);
-
   return (
     <TableRowBox>
       <TableDataBox>
@@ -31,20 +27,21 @@ export default function List({ content, setWarnConfirm }) {
       <TableDataBox >{0}</TableDataBox>
         <TableDataBox>{content?.suspectUserInfo[0]?.screenId}</TableDataBox>
           {content?._contentType && <TableDataBox>{content?._contentType}</TableDataBox>}
-          {content.join && <TableDataBox>{content.join}</TableDataBox>}
-          {content.category && <TableDataBox>{content.category}</TableDataBox>}
-          {content.kind && <TableDataBox>{content.kind}</TableDataBox>}
-          {content.content && <TableDataBox>{content.content}</TableDataBox>}
-          {content.count && <TableDataBox>{content.count}</TableDataBox>}
-          {content.result && <TableDataBox>{content.result}</TableDataBox>}
+          {content?.join && <TableDataBox>{content.join}</TableDataBox>}
+          {content?.category && <TableDataBox>{content.category}</TableDataBox>}
+          {content?.kind && <TableDataBox>{content.kind}</TableDataBox>}
+          {content?.content && <TableDataBox>{content.content}</TableDataBox>}
+          {content?.count && <TableDataBox>{content.count}</TableDataBox>}
+          {content?.result && <TableDataBox>{content.result}</TableDataBox>}
           {dateResult && <TableDataBox>{dateResult}</TableDataBox>}
         <TableDataBox type='btn' >
           <AllButton
             value={content._id}
-            onClick={(e) => {
+            onClick={ () => {
               // setToggleSelect(e.currentTarget.id);
               // lastDataConfirm(e);
-              setWarnConfirm(true)
+              setWarnConfirm(true);
+              setCurrentData(content);
             } } > 처리
           </AllButton>
       </TableDataBox>

@@ -20,7 +20,7 @@ const Main = ({ metaLang }) => {
     title: t('metaMainTitle'),
     contentsTitle:t('metaContentTitle'),
     description: t('metaMainDesc'),
-    image: ["<%= require('/static/logo192.svg') %>"],
+    image: ['https://www.epiclogue.com/static/Logo.svg'],
     canonical: ``,
     lang:metaLang
   };

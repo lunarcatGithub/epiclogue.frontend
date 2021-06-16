@@ -7,7 +7,6 @@ import dynamic from 'next/dynamic'
 import ViewerUserForm from './Viewer__UserForm';
 import MorePopup from './MoreMenuPopup';
 import ReportsPopup from '../report/ReportsPopup';
-import ViewerReact from './Viewer__React';
 import TranslatePopup from './TranslatePopup';
 import ViewerWriteFeedback from './Viewer__WriteFeedback';
 import FeedBack from './Feedback';
@@ -84,6 +83,7 @@ export default function Viewer({ boardItem, nonError }) {
   const [ prevFeeback, setPrevFeeback ] = useState(5);
   const [ feedbackEventCtrl, setFeedbackEventCtrl ] = useState(false);
   const [ feedbackUid, setFeedbackUid ] = useState('');
+  
   // fetch
   const [ , dataApi, dataLoading, dataFetch ] = useAxiosFetch();
   const [ , feedbackApi, feedbackLoading, FeedbackFetch ] = useAxiosFetch();
