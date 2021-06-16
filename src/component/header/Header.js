@@ -140,7 +140,7 @@ const Header = () => {
     profileApi?.data?.availableLanguage.forEach((num) => avalLang.push(Number(num)))
     availableLangPatch({type:'AVAILABLE_LANG', payload:avalLang})
   }, [profileApi?.data?.availableLanguage])
-
+  console.log(profileApi)
   useEffect(() => {
     if (profileApi) {
       langPatch({ type: 'LANGUAGE_UPDATE', payload: profileApi?.data?.displayLanguage });

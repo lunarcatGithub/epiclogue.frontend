@@ -9,7 +9,7 @@ import Modal from '@utils/Modal'
 import { AdminContext } from '../Store/Admin_Context';
 
 //component
-import {AdminConfirmPopup} from './Admin_Confirm_Popup';
+import { AdminConfirmPopup } from './Admin_Confirm_Popup';
 import List from './List';
 
 
@@ -35,7 +35,6 @@ export default function ListForm({ type, contentsData }) {
   // data 분류
   const [ listData, setListData ] = useState([]);
   // const [ suspectScreenId, setSuspectScreenId ] = useState();
-  console.log(listData);
 
   const [dropDown1, setDropDown1] = useState([]);
   const [dropDown2, setDropDown2] = useState([]);
@@ -45,7 +44,7 @@ export default function ListForm({ type, contentsData }) {
   const [selectedData, setSelectedData] = useState([]);
  
   // confirm
-  const [warnConfrim, setWarnConfirm] = useState({type:null, bool:false});
+  const [warnConfirm, setWarnConfirm] = useState(false);
   const [userEmail, setUserEmail] = useState({type:null, bool:false});
 
   const typeHandler = () => {
@@ -81,19 +80,20 @@ export default function ListForm({ type, contentsData }) {
         setDropDown2('');
         setDropDown3('');
         break;
+
       default:
         break;
     }
   };
 
   const lastDataConfirm = (e, type) => {
-    setWarnConfirm({type, bool:true});
+    setWarnConfirm(true);
     listData?.filter( uid => uid._id === Number(e.target.id) && setSelectedData(uid));
     setCurrentTargetData()
   };
 
   const userSendEmail = (e, type) => {
-    setUserEmail({type, bool:true});
+    setUserEmail(true);
     const {target:value} = e
     console.log(value)
   }
@@ -172,8 +172,8 @@ export default function ListForm({ type, contentsData }) {
             <>
               <Dummy />
               <Dropdown
-              data={dropDown2} 
-              type={type} 
+                data={dropDown2} 
+                type={type} 
               />
             </> ) }
         </TopCenterLayout>
@@ -201,24 +201,25 @@ export default function ListForm({ type, contentsData }) {
           </TableHead>
           {/*  테이블 본문 시작 */}
           <TableBody>
-            { listData?.map((content, i) => ( 
-              <List key={i} content={content}/> 
+            { listData?.map( (content, i) => ( 
+              <List key={i} content={content} setWarnConfirm={setWarnConfirm}/> 
               ) ) }
           </TableBody>
         </TableBox>
       </MainLayout>
       {/* 정지, 탈퇴, 블라인드 팝업 */}
         {
-          warnConfrim.bool &&
-          <Modal visible={warnConfrim.bool} closable={true} maskClosable={true} onClose={ () => setWarnConfirm({...warnConfrim, bool:false}) }>
+          warnConfirm &&
+          <Modal visible={warnConfirm} closable={true} maskClosable={true} onClose={ () => setWarnConfirm(false) }>
             <AdminConfirmPopup 
-              type={warnConfrim.type}
+              // type={warnConfirm}
               mainType={type}
               dataHandler={dataHandler}
               reportList={reportList}
-              closePopup={setWarnConfirm}
+              setWarnConfirm={setWarnConfirm}
               listData={selectedData}
               dangerConfirm={dangerConfirm}
+              lastDataConfirm={lastDataConfirm}
             />
           </Modal>
         }

@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import styled from 'styled-components';
 
 //hooks && reduce
 import { useDate } from '@hooks/useDate';
+import { AdminContext } from '../Store/Admin_Context';
 
-export default function List({ content }) {
+export default function List({ content, setWarnConfirm }) {
+  const { setCurrentData } = useContext(AdminContext);
 
-  const [ latestDate, setLatestDate ] = useState(null);
   const [ setGetDate, , dateResult ] = useDate('Admin');
 
   useEffect(() => {
     setGetDate(content?._createdAt);
   }, [content]);
+
+  useEffect(() => { // 현재 content
+    setCurrentData(content);
+  }, []);
 
   return (
     <TableRowBox>
@@ -39,6 +44,7 @@ export default function List({ content }) {
             onClick={(e) => {
               // setToggleSelect(e.currentTarget.id);
               // lastDataConfirm(e);
+              setWarnConfirm(true)
             } } > 처리
           </AllButton>
       </TableDataBox>

@@ -10,13 +10,17 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import { ViewerContext } from '@store/ViewerStore';
 
 const ReportsPopup = ({ onClose = null, contentId }) => {
-  const { setFeedbackModalCtrl, setFeedbackPopupType, targetUser_Id, targetUser_Type } = useContext(ViewerContext);
+  const {
+    setFeedbackModalCtrl,
+    setFeedbackPopupType,
+    targetUser_Id,
+    targetUser_Type
+  } = useContext(ViewerContext);
 
   // fetch Data
   const [ , reportData, , reportFetch] = useAxiosFetch();
 
   const { alertPatch } = useContext(AlertContext);
-  // const { toggle_Modal_MoreMenu } = useContext(ReplyListContext); 
   const [goURL] = useUrlMove();
 
   // type
@@ -46,15 +50,14 @@ const ReportsPopup = ({ onClose = null, contentId }) => {
       isCopyright: false
     };
 
-    reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'post', bodyData, null);
-
-    closeHandler(); // 전송 후 팝업 닫기
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
+    reportFetch(URL, 'post', bodyData, null);
   };
 
   const closeHandler = () => {
     if(targetUser_Type === 'Reply'){ // feedback popup에서 신고하기 팝업 띄웠을 때
       setFeedbackModalCtrl(false);
-      setFeedbackPopupType('');
+      setFeedbackPopupType(null);
     } else {
       onClose(false);
     }
@@ -62,8 +65,10 @@ const ReportsPopup = ({ onClose = null, contentId }) => {
 
     useEffect(() => {
       if(!reportData) return;
-      reportData?.result === 'ok' && alertPatch({ type: 'REPORT_SUBMIT', payload: true });
-      
+      if(reportData?.result === 'ok') {
+        alertPatch({ type: 'REPORT_SUBMIT', payload: true });
+        closeHandler(); // 전송 후 팝업 닫기
+      }
     }, [reportData])
 
   return (
@@ -75,7 +80,7 @@ const ReportsPopup = ({ onClose = null, contentId }) => {
         </BtnWrap>
         <ReportTabBox onClick={(e) => e.stopPropagation()}>
           {
-            reportList.map( (item, index) => (
+            reportList.map( ( item, index ) => (
               <ReportTab key={item.id}>
                 <ReportTxtWrap>
                   <ReportTxt>{item.title}</ReportTxt>

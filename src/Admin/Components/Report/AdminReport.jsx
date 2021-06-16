@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import ListForm from '../Common/List__Form';
 
 // hooks
-import useAxiosFetch from '../../../hooks/useAxiosFetch';
+import useAxiosFetch from '@hooks/useAxiosFetch';
 
 // reduce
 import { AdminContext } from '../Store/Admin_Context';
@@ -34,7 +34,7 @@ export const AdminReport =()=> {
 
   // fetch
     const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
-
+    
     const [toggleSelect, setToggleSelect] = useState();
 
     // const dataHadler = (e, type) => {
@@ -66,7 +66,8 @@ export const AdminReport =()=> {
       size:30,
       page:0,
     }
-    reportFetch(`${process.env.NEXT_PUBLIC_API_URL}/report`, 'get', null, null, params)
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
+    reportFetch(URL, 'get', null, null, params)
     }, []);
 
     useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled,{css} from 'styled-components';
 
 //component
@@ -6,12 +6,32 @@ import {AdminConfirmEmail} from './Admin_Confirm_EmailForm';
 import {ConfirmReportPopup} from './Admin_Confirm_Report';
 import {AdminConfirmInform} from './Admin_Confirm_Inform';
 import {AdminConfirmTurnBack} from './Admin_Confirm_TurnBack'
+
 // utils
 
 // hook
-export function AdminConfirmPopup(props) {
-    const {mainType, type, dataHandler, reportList, closePopup, listData, dangerConfirm} = props
+import useAxiosFetch from '@hooks/useAxiosFetch';
 
+// reduce 
+import { AdminContext } from '../Store/Admin_Context';
+
+export function AdminConfirmPopup(props) {
+  const { currentData } = useContext(AdminContext);
+
+  console.log(currentData);
+
+  const {
+      mainType,
+      type,
+      dataHandler,
+      reportList,
+      setWarnConfirm,
+      listData,
+      dangerConfirm,
+    } = props
+
+    const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
+    
     const [headerTitle, setHeaderTitle] = useState({});
     const [dataOnChange, dataOnChangeHandler] = useState('스팸성');
     const [userInform, setUserInform] = useState('');
@@ -24,6 +44,17 @@ export function AdminConfirmPopup(props) {
 
     // 탭 스타일용
     const [isTab, setIsTab] = useState(1)
+
+    const reportFetchHandler = () => {
+      const params = {
+        contentId:currentData?._id,
+        contentType:currentData?._contentType,
+        isCopyright:false
+      }
+      const URL = `${process.env.NEXT_PUBLIC_API_URL}/report/submittedReports`;
+      reportFetch(URL, 'get', null, null, params)
+  
+    }
 
     const deviedHandler = () => {
         let _type,
@@ -62,10 +93,22 @@ export function AdminConfirmPopup(props) {
         setUserInform(`해당 게시물 내에서 ${dataOnChange} 내용이 확인되어 ${postType}이 ${_type}었습니다 `)
     }
 
+    const goUrlHandle = () => {
+      if(currentData?._contentType === 'Board'){
+        window.open('about:blank').location.href=`http://localhost:3000/viewer/${currentData?._id}`
+      } else {
+        return;
+      }
+      
+    }
+
     useEffect(()=> {
         deviedHandler();
     },[currentType, dataOnChange])
 
+    useEffect(() => {
+      reportFetchHandler();
+    }, []);
 
     useEffect(() => {
       if(currentType === 'Hide' || currentType === 'Remove'){
@@ -74,7 +117,7 @@ export function AdminConfirmPopup(props) {
         setDataSendComponent(<AdminConfirmEmail listData={listData} mainType={mainType} />)
       } else if(currentType === 'TurnBack'){
         setDataSendComponent(<AdminConfirmTurnBack/>)
-      };
+      }
     }, [currentType])
 
     const popupTab = [
@@ -135,15 +178,17 @@ export function AdminConfirmPopup(props) {
               <ConfirmInBody>
                   <BlockWrap>
                       <TextBlock>콘텐츠 정보</TextBlock>
-                      <InformBox>{listData?.title}</InformBox>
+                        <InformBox>
+                          <GoTargetPage onClick={()=> goUrlHandle()} >{currentData?._contentType}</GoTargetPage>
+                        </InformBox>
                   </BlockWrap>
                   {/* 콘텐츠 업로드 유저 */}
                   <BlockWrap>
                   <TextBlock>신고 받은 유저</TextBlock>
-                      <InformBox>{listData?._id}</InformBox>
+                      <InformBox>@{currentData?.suspectUserInfo[0]?.screenId}</InformBox>
                   </BlockWrap>
                   <BlockWrap>
-                    <ConfirmReportPopup />
+                    <ConfirmReportPopup reportData={reportApi} />
                   </BlockWrap>
               </ConfirmInBody>
               :
@@ -171,7 +216,7 @@ export function AdminConfirmPopup(props) {
             isTab === 2 &&
             <>
               <ConfirmBtn type="confirm" onClick={dangerConfirm} >최종확인</ConfirmBtn>
-              <ConfirmBtn type="cancel" onClick={()=>closePopup(false)}>취소</ConfirmBtn>
+              {/* <ConfirmBtn type="cancel" onClick={()=>setWarnConfirm({false})}>취소</ConfirmBtn> */}
             </>
           }
           </ConfirmDivBottom>
@@ -184,6 +229,10 @@ const TextSize15 = css`
 color:${(props) => props.theme.color.blackColor};
 font-weight:${(props) => props.theme.fontWeight.font700};
 font-size:${(props) => props.theme.fontSize.font15};
+`
+
+const GoTargetPage = styled.a`
+cursor:pointer;
 `
 
 const FormWrap = styled.form``
@@ -276,20 +325,19 @@ const BlockWrap = styled.div`
 margin-bottom:0.8em;
 `
 
+
 // 상단 유저 정보
 const InformBox = styled.span`
 display:flex;
 width:100%;
 height:auto;
 max-height:5em;
-overflow-y:hidden;
-overflow-y:scroll;
+
 border: 1px solid #999;
 border-radius:0.3em;
-padding:0.8em 0.5em;
+padding:0.6em 0.8em;
 ${TextSize15};
 font-weight:${(props) => props.theme.fontWeight.font500};
-
 `
 
 // 신고한 유저 목록용

@@ -205,8 +205,9 @@ export default function Viewer({ boardItem, nonError }) {
     if(popupType === 'ContentRemove' || popupType === 'FeedbackRemove'){
       return;
     } else { // popupType이 바뀔 때 마다, popup => close 할 때 빈값으로 변경
-      setPopupType('');
+      setPopupType(null);
     }
+
   }, [popupType, userPopup]);
 
   useEffect(() => {
@@ -220,9 +221,8 @@ export default function Viewer({ boardItem, nonError }) {
       setFeedbackRemoveConfirm(false);
 
     }
-
     setUserPopup(false);
-    setPopupType(''); // reportOrRemoveOrModifyOrTrans 렌더링 순서 때문에 여기서 처리함
+    setPopupType(null); // reportOrRemoveOrModifyOrTrans 렌더링 순서 때문에 여기서 처리함
 
   }, [accessConfirm, feedbackRemove]);
 
@@ -249,7 +249,7 @@ export default function Viewer({ boardItem, nonError }) {
     feedbackData?.reverse();
     setFeedbackSliceData(feedbackData?.slice(0, prevFeeback));
     // checkFbLength(feedbackData.length);
-    fbMoreText(feedbackData?.length)
+    fbMoreText(feedbackData?.length);
   }, [prevFeeback, feedbackData, feedbackApi, modifiedFeedbackData])
 
     // Meta 전용
