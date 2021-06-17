@@ -17,7 +17,7 @@ export default function LikeFetch({ _id, initLike, initialCount, type }) {
   const [ heartCount, setHeartCount ] = useState(initialCount);
   // toggle
   const [like, toggle_like] = useToggle();
-
+  console.log(initLike)
   const toggleHandler = () => {
     if(!loginOn){
       setUnAuth(true);

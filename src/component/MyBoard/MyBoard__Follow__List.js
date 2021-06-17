@@ -12,7 +12,7 @@ import useDebounce from '@hooks/useDebounce';
 
 const MyBoardFollowList = ({ data, type }) => {
   const {userId, targetUserId, following} = data;
-
+  
   const [goURL] = useUrlMove();
   const [follow, toggleFollow] = useToggle();
   const [userData, setUserData] = useState();

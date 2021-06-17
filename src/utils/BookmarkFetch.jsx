@@ -9,6 +9,7 @@ import { useToggle } from '@hooks/useToggle';
 import { AppDataContext } from '@store/App_Store';
 
 export default function BookmarkFetch({ _id, initToggle }) {
+  console.log(initToggle)
   // fetch
   const [ , , , bookmarkFetch] = useAxiosFetch();
 

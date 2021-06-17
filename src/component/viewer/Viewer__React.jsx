@@ -50,7 +50,6 @@ export default function ViewerReact() {
     
     useEffect(() => {
       setReactData(viewerData);
-      return () => setReactData(null);
     }, [viewerData]);
 
     // 공유하기 클립보드
@@ -67,7 +66,7 @@ export default function ViewerReact() {
       // 성공 푸시탭
       alertPatch({ type: 'SHARE', payload: true });
     };
-
+    console.log(reactData)
     return (
       <ReactTab>
         <ReactInfoWrap onClick={ () => openReactPopupHandler() }>
