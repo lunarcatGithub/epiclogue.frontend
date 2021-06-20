@@ -49,6 +49,7 @@ const ContextStore = ({ children }) => {
   const [paramsData, setParamsData] = useState();
   const [myboardData, setMyboardData] = useState([]);
   const [followData, setFollowData] = useState();
+  const [renderComponent, setRenderComponent] = useState([]);
 
   // content component
   const [renderList, setRenderList] = useState([]);
@@ -90,10 +91,12 @@ const ContextStore = ({ children }) => {
       }
     }
   }, [loginOn]);
-
+  console.log(renderComponent)
   return (
     <AppDataContext.Provider
       value={{
+        renderComponent, 
+        setRenderComponent,
         searchData,
         setSearchData,
         clickedComic,

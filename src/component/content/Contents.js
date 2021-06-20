@@ -15,11 +15,13 @@ import useScroll from '@hooks/useScroll';
 
   const Contents = ({ type, searchType }) => {
     const router = useRouter();
+        
   const {
+    renderComponent, 
+    setRenderComponent,
     searchData,
     clickedComic,
     clickedIllust,
-    paramsData
   } = useContext(AppDataContext);
 
   const [resultKeyword, setResultKeyword] = useState();
@@ -28,7 +30,7 @@ import useScroll from '@hooks/useScroll';
   const keyword = router.query.text;
 
   // 콘텐츠 렌더링
-  const [renderComponent, setRenderComponent] = useState(null);
+  // const [renderComponent, setRenderComponent] = useState(null);
   const [initRender, setInitRender] = useState([]);
   const [userRender, setUserRender] = useState([]);
   const [onlyUser, setOnlyUser] = useState([]);

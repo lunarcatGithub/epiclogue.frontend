@@ -35,7 +35,7 @@ export const AdminReport =()=> {
   // fetch
     const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
     
-    const [toggleSelect, setToggleSelect] = useState();
+    const [ toggleSelect, setToggleSelect ] = useState();
 
     // const dataHadler = (e, type) => {
     //   userContentsData?.forEach(_contentsData => {
@@ -74,14 +74,16 @@ export const AdminReport =()=> {
       if(reportApi?.result === 'ok'){
         setIsAdmin(true);
         setReportData(reportApi?.data);
-      } else {
+
+      } else if(reportError?.status === 401) {
         setIsAdmin(false);
-      }      
+
+      } else {
+        return;
+      }
     }, [reportApi, reportError]);
 
-    console.log(reportApi)
     const headerArr = ['번호', '아이디', '콘텐츠', '신고횟수', '최근 신고날짜', '처리하기'];
-
 
     return (
       <Layout>
