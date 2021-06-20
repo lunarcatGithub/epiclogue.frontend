@@ -13,6 +13,7 @@ const combineReducers = (...reducers) => (state, action) => {
 const AdminContextStore = ({ children }) => {
   const [ reportData, setReportData ] = useState();
   const [ currentTargetData, setCurrentTargetData ] = useState();
+  const [ isAdmin, setIsAdmin ] = useState(true);
 
   // data
   const [currentData, setCurrentData] = useState([]);
@@ -38,6 +39,9 @@ const AdminContextStore = ({ children }) => {
         setReportData,
         currentTargetData,
         setCurrentTargetData,
+        // admin check
+        isAdmin,
+        setIsAdmin,
         // data
         currentData,
         setCurrentData

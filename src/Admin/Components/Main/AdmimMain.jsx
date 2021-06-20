@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
-import { AdminUsers } from '../User/User';
 import styled from 'styled-components';
 
 // context
+import { AdminContext } from '../Store/Admin_Context';
 
 // 컴포넌트 import
 import { Dashboard } from '../Dashboard/Dashboard';
@@ -12,6 +12,11 @@ import { AdminReport } from '../Report/AdminReport';
 import { AdminCopyright } from '../Copyright/Copyright';
 import { AdminReportResult } from '../Report/AdminReport_Result';
 import { CopyRightReportResult } from '../Copyright/Copyright_Result';
+import { AdminUsers } from '../User/User';
+
+
+// hooks
+import { useUrlMove } from '@hooks/useUrlMove';
 
 
 import GNB from '@Component/GNB/Gnb';
@@ -19,8 +24,12 @@ import { Nav } from '@Component/NAV/Nav';
 
 export const AdmimMain = () => {
   const router = useRouter();
+  const { isAdmin } = useContext(AdminContext);
+
+  const [goURL] = useUrlMove();
 
   const [viewTab, setViewTab] = useState();
+
   useEffect(() => {
     if (router.query.tab === 'dashboard') {
       setViewTab(<Dashboard />);
@@ -39,13 +48,23 @@ export const AdmimMain = () => {
     }
   }, [router.query]);
 
+  useEffect(() => {
+    // !isAdmin && alert('넌 어드민이 아니야');
+    !isAdmin && goURL({pathname:'/'});
+
+  }, [isAdmin])
+
   return (
-    <Layout>
-      <GNB />
-      <LayoutDivision>
-        <Nav routeCheck={router.query.tab} />
-        <LayoutInner>{viewTab}</LayoutInner>
-      </LayoutDivision>
+    <Layout> 
+       { isAdmin &&
+        <>
+          <GNB />
+          <LayoutDivision>
+            <Nav routeCheck={router.query.tab} />
+            <LayoutInner>{viewTab}</LayoutInner>
+          </LayoutDivision>
+        </>
+      }
     </Layout>
   );
 };

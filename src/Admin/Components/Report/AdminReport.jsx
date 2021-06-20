@@ -11,7 +11,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import { AdminContext } from '../Store/Admin_Context';
 
 export const AdminReport =()=> {
-    const { setReportData, reportData } = useContext(AdminContext);
+    const { setReportData, reportData, setIsAdmin } = useContext(AdminContext);
 
     //data
 
@@ -34,7 +34,7 @@ export const AdminReport =()=> {
 
   // fetch
     const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
-
+    
     const [toggleSelect, setToggleSelect] = useState();
 
     // const dataHadler = (e, type) => {
@@ -71,10 +71,15 @@ export const AdminReport =()=> {
     }, []);
 
     useEffect(() => {
-      setReportData(reportApi?.data);
+      if(reportApi?.result === 'ok'){
+        setIsAdmin(true);
+        setReportData(reportApi?.data);
+      } else {
+        setIsAdmin(false);
+      }      
+    }, [reportApi, reportError]);
 
-    }, [reportApi])
-    
+    console.log(reportApi)
     const headerArr = ['번호', '아이디', '콘텐츠', '신고횟수', '최근 신고날짜', '처리하기'];
 
 

@@ -10,8 +10,10 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 
 const Report = () => {
   const router = useRouter();
+
   // fetch Data
   const [ , reportData, , reportFetch] = useAxiosFetch();
+  const { targetUserId, contentId, contentType } = router?.query;
 
   // 언어 import
   const { _privateAgree,
@@ -48,7 +50,7 @@ const Report = () => {
   const [originSite, setOriginSite] = useState(2);
   const [originForm, setOriginForm] = useState();
   const [descript, setDescript] = useState('');
-  // const [agreeCheck, setAgreeCheck] = useState();
+  const [agreeCheck, setAgreeCheck] = useState(agreeList);
   const [signitrue, setSignitrue] = useState('');
 
   const handleChangeValue = (e, type) => {
@@ -64,7 +66,7 @@ const Report = () => {
           list.isChecked = e.target.checked;
         }
       });
-      // setAgreeCheck(selectArr);
+      setAgreeCheck(selectArr);
     } else {
       setUserData({ ...userData, [type]: value });
     }
@@ -72,15 +74,39 @@ const Report = () => {
 
   const reportSubmit = (e) => {
     e.preventDefault();
-    // let formData = new FormData();
-    // formData.append()
+    let formData = new FormData();
+    formData.append('reporterName', userData.name);
+    formData.append('reporterCompany', userData.company);
+    formData.append('tel', userData.contact);
+    formData.append('reporterEmail', userData.email);
+    formData.append('originLink', []);
+    formData.append('contentSubject', descript);
+    formData.append('isAgreePolicy', agreeList[0]?.isChecked);
+    formData.append('isAgreeCorrect', agreeList[1]?.isChecked);
+    formData.append('signature', signitrue);
+
     if (agreeList[0].isChecked === false) {
       alert(_privateAlert);
     } else if (agreeList[1].isChecked === false){
       alert(_swearAlert);
     } 
 
-    // formData.append('')
+    // formData.append('');
+
+      // const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/${type}`;
+      let bodyData = {
+        reportType:7,
+        suspectUserId: targetUserId,
+        contentId,
+        contentType,
+        reportBody:formData
+      };
+      const URL = `${process.env.NEXT_PUBLIC_API_URL}/report/copyright`;
+      console.log(bodyData)
+       for (let [key, value] of formData.entries()) { // 전송 전 데이터 검사
+        console.log(key, value);
+      }
+      reportFetch(URL, 'post', bodyData, null);
   };
 
   useEffect(() => {
