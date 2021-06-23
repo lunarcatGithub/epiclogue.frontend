@@ -53,6 +53,7 @@ const Report = () => {
   const [agreeCheck, setAgreeCheck] = useState(agreeList);
   const [signitrue, setSignitrue] = useState('');
 
+
   const handleChangeValue = (e, type) => {
     const { value } = e.target;
     let arr = [];
@@ -60,13 +61,13 @@ const Report = () => {
       arr.push([...originData, value]);
       setOrignData(arr);
     } else if (type === 'checkBox') {
-      let selectArr = agreeList;
-      selectArr.forEach((list) => {
+      agreeCheck.forEach( ( list ) => {
         if (list.id === e.target.id) {
           list.isChecked = e.target.checked;
-        }
-      });
-      setAgreeCheck(selectArr);
+        } } );
+      // setAgreeCheck(selectArr);
+      console.log(agreeCheck);
+
     } else {
       setUserData({ ...userData, [type]: value });
     }
@@ -81,13 +82,13 @@ const Report = () => {
     formData.append('reporterEmail', userData.email);
     formData.append('originLink', []);
     formData.append('contentSubject', descript);
-    formData.append('isAgreePolicy', agreeList[0]?.isChecked);
-    formData.append('isAgreeCorrect', agreeList[1]?.isChecked);
+    formData.append('isAgreePolicy', agreeCheck[0]?.isChecked);
+    formData.append('isAgreeCorrect', agreeCheck[1]?.isChecked);
     formData.append('signature', signitrue);
 
-    if (agreeList[0].isChecked === false) {
+    if (agreeCheck[0].isChecked === false) {
       alert(_privateAlert);
-    } else if (agreeList[1].isChecked === false){
+    } else if (agreeCheck[1].isChecked === false){
       alert(_swearAlert);
     } 
 
@@ -112,7 +113,13 @@ const Report = () => {
   useEffect(() => {
     let form = [];
     for (let i = 0; i <= originSite; i++) {
-      form.push(<TxtInput key={i} placeholder={'ex) https://'} onChange={(e) => handleChangeValue(e, 'origin')} />);
+      form.push(
+        <TxtInput 
+          key={i} 
+          placeholder={'ex) https://'} 
+          onChange={(e) => handleChangeValue(e, 'origin')} 
+        />
+      );
     }
     setOriginForm(form);
   }, []);
@@ -176,8 +183,8 @@ const Report = () => {
             <InputWrap>
               <ReportSubTitle>{_agreeAbove}</ReportSubTitle>
               {
-                agreeList?.map(({ id, title }) => (
-                  <AgreeBoxWrap key={id}>
+                agreeList?.map(({ id, title }, i) => (
+                  <AgreeBoxWrap key={i}>
                     <PvAgreeBox id={id} onChange={(e) => handleChangeValue(e, 'checkBox')} />
                     <PvAgreeBoxLabel htmlFor={id}>{title}</PvAgreeBoxLabel>
                   </AgreeBoxWrap>
