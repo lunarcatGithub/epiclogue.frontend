@@ -65,6 +65,7 @@ export const AdminReport =()=> {
     const params = {
       size:30,
       page:0,
+      isCopyright:false
     }
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
     reportFetch(URL, 'get', null, null, params)

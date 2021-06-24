@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 
 // 컴포넌트 import
 import ListForm from '../Common/List__Form';
 
-// utils
+// hooks
+import useAxiosFetch from '@hooks/useAxiosFetch';
+
+// reduce
+import { AdminContext } from '../Store/Admin_Context';
 
 export const AdminCopyright = () => {
+  const { setReportData, reportData, setIsAdmin } = useContext(AdminContext);
+
   //data
   const [userContentsData, setUserContentsData] = useState([
     { id: 1, email: 'asd@ads.com', _id: `@asasdd`, title: 'adasd', date: '2020-11-28', ban: false },
     { id: 2, email: 'ascvcvd@xcvx.com', _id: `@adf`, title: '1234', date: '2021-01-02', ban: true },
     { id: 3, email: 'asxzcvzxd@ads.com', _id: `@qwerrt`, title: 'qqqqq', date: '2021-02-28', ban: false },
   ]);
-
+  console.log(reportData)
   const categorySelec = [
     { title: '전체', value: 'all' },
     { title: '정상', value: 'normal' },
@@ -27,6 +33,8 @@ export const AdminCopyright = () => {
     { title: '아이디', value: 'id' },
     { title: '제목', value: 'title' },
   ];
+  // fetch
+  const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
 
   const [toggleSelect, setToggleSelect] = useState();
 
@@ -52,6 +60,28 @@ export const AdminCopyright = () => {
       }
     });
   };
+  useEffect(() => {
+    const params = {
+      size:30,
+      page:0,
+      isCopyright:true
+    }
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
+    reportFetch(URL, 'get', null, null, params);
+    }, []);
+
+  useEffect(() => {
+    if(reportApi?.result === 'ok'){
+      setIsAdmin(true);
+      setReportData(reportApi?.data);
+
+    } else if(reportError?.status === 401) {
+      setIsAdmin(false);
+
+    } else {
+      return;
+    }
+  }, [reportApi, reportError]);
 
   const headerArr = ['번호', '아이디', '신고날짜', '처리하기'];
   const buttonType = [
