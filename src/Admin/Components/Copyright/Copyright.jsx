@@ -11,7 +11,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import { AdminContext } from '../Store/Admin_Context';
 
 export const AdminCopyright = () => {
-  const { setReportData, reportData, setIsAdmin } = useContext(AdminContext);
+  const { setIsAdmin, copyrightData, setCopyrightData } = useContext(AdminContext);
 
   //data
   const [userContentsData, setUserContentsData] = useState([
@@ -19,7 +19,7 @@ export const AdminCopyright = () => {
     { id: 2, email: 'ascvcvd@xcvx.com', _id: `@adf`, title: '1234', date: '2021-01-02', ban: true },
     { id: 3, email: 'asxzcvzxd@ads.com', _id: `@qwerrt`, title: 'qqqqq', date: '2021-02-28', ban: false },
   ]);
-  console.log(reportData)
+  console.log(copyrightData);
   const categorySelec = [
     { title: '전체', value: 'all' },
     { title: '정상', value: 'normal' },
@@ -73,7 +73,7 @@ export const AdminCopyright = () => {
   useEffect(() => {
     if(reportApi?.result === 'ok'){
       setIsAdmin(true);
-      setReportData(reportApi?.data);
+      setCopyrightData(reportApi?.data);
 
     } else if(reportError?.status === 401) {
       setIsAdmin(false);

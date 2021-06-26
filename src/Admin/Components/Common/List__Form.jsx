@@ -28,7 +28,7 @@ export default function ListForm({ type, contentsData }) {
     buttonType
   } = contentsData;
 
-  const { reportList, reportData, setCurrentTargetData } = useContext(AdminContext);
+  const { reportList, reportData, setCurrentTargetData, copyrightData } = useContext(AdminContext);
 
   // console.log(reportData[0]?.suspactUserInfo[0])
 
@@ -99,7 +99,7 @@ export default function ListForm({ type, contentsData }) {
   }
 
   const allCheckHandle = (e, type) => {
-    bodyData.forEach((list) => {
+    bodyData.forEach( ( list ) => {
       if (type === 'one') {
         if (Number(e.target.value) === list.id) {
           list.isSelect = e.target.checked;
@@ -147,8 +147,14 @@ export default function ListForm({ type, contentsData }) {
 
   useEffect(() => {
     if(reportData?.length === 0) return;
-    setListData(reportData);
-  }, [reportData])
+    if( type === 'REPORT' ){
+      setListData(reportData);
+
+    } else {
+      setListData(copyrightData);
+
+    }
+  }, [reportData, copyrightData])
 
   const viewNum = [
     { title: '10개', value: 10 },
@@ -201,8 +207,8 @@ export default function ListForm({ type, contentsData }) {
           </TableHead>
           {/*  테이블 본문 시작 */}
           <TableBody>
-            { listData?.map( (content, i) => ( 
-              <List key={i} content={content} setWarnConfirm={setWarnConfirm}/> 
+            { listData?.map( ( content, i ) => ( 
+              <List key={i} content={content} setWarnConfirm={setWarnConfirm} mainType={type}/> 
               ) ) }
           </TableBody>
         </TableBox>

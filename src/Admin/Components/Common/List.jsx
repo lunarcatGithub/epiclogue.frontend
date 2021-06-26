@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useDate } from '@hooks/useDate';
 import { AdminContext } from '../Store/Admin_Context';
 
-export default function List({ content, setWarnConfirm }) {
+export default function List({ content, setWarnConfirm, mainType }) {
   const { setCurrentData } = useContext(AdminContext);
 
   const [ setGetDate, , dateResult ] = useDate('Admin');
@@ -13,7 +13,7 @@ export default function List({ content, setWarnConfirm }) {
   useEffect(() => {
     setGetDate(content?._createdAt);
   }, [content]);
-
+  console.log(content)
   return (
     <TableRowBox>
       <TableDataBox>
@@ -26,6 +26,12 @@ export default function List({ content, setWarnConfirm }) {
       </TableDataBox>
       <TableDataBox >{0}</TableDataBox>
         <TableDataBox>{content?.suspectUserInfo[0]?.screenId}</TableDataBox>
+        { mainType === 'COPYRIGHT' ?
+        [
+          <TableDataBox key={0} >{dateResult}</TableDataBox>,
+        ]
+        :
+        <>
           {content?._contentType && <TableDataBox>{content?._contentType}</TableDataBox>}
           {content?.join && <TableDataBox>{content.join}</TableDataBox>}
           {content?.category && <TableDataBox>{content.category}</TableDataBox>}
@@ -34,6 +40,8 @@ export default function List({ content, setWarnConfirm }) {
           {content?.count && <TableDataBox>{content.count}</TableDataBox>}
           {content?.result && <TableDataBox>{content.result}</TableDataBox>}
           {dateResult && <TableDataBox>{dateResult}</TableDataBox>}
+        </>
+      }
         <TableDataBox type='btn' >
           <AllButton
             value={content._id}

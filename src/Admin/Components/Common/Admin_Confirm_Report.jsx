@@ -95,6 +95,7 @@ flex-direction:column;
 min-height:5em;
 max-height:15em;
 `
+
 const ReportHeader = styled.div`
 position:absolute;
 top:0;

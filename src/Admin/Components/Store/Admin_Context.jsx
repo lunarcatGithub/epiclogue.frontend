@@ -12,11 +12,13 @@ const combineReducers = (...reducers) => (state, action) => {
 // context provider
 const AdminContextStore = ({ children }) => {
   const [ reportData, setReportData ] = useState();
+  const [ copyrightData, setCopyrightData ] = useState([]);
   const [ currentTargetData, setCurrentTargetData ] = useState();
   const [ isAdmin, setIsAdmin ] = useState(true);
 
   // data
   const [currentData, setCurrentData] = useState([]);
+  const [currentCopyrightData, setCurrentCopyrightData] = useState([]);
 
 
   const reportList = [
@@ -37,6 +39,8 @@ const AdminContextStore = ({ children }) => {
         reportList,
         reportData,
         setReportData,
+        copyrightData,
+        setCopyrightData,
         currentTargetData,
         setCurrentTargetData,
         // admin check
@@ -44,10 +48,10 @@ const AdminContextStore = ({ children }) => {
         setIsAdmin,
         // data
         currentData,
-        setCurrentData
-      }}
-    >{children}
-
+        setCurrentData,
+        currentCopyrightData, 
+        setCurrentCopyrightData
+      } } >{ children }
     </AdminContext.Provider>
   );
 };

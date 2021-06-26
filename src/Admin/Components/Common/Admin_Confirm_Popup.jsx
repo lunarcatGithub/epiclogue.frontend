@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import styled,{css} from 'styled-components';
+import styled from 'styled-components';
 
 //component
 import {AdminConfirmEmail} from './Admin_Confirm_EmailForm';
-import {ConfirmReportPopup} from './Admin_Confirm_Report';
 import {AdminConfirmInform} from './Admin_Confirm_Inform';
 import {AdminConfirmTurnBack} from './Admin_Confirm_TurnBack'
+import AdminPopupReportForm from './Admin_Popup_Report_Form';
+import AdminPopupCopyrightForm from './Admin_Popup_Copyright_Form';
 
 // utils
 
@@ -26,7 +27,7 @@ export function AdminConfirmPopup(props) {
       setWarnConfirm,
       listData,
       dangerConfirm,
-    } = props
+    } = props;
 
     const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
     
@@ -34,6 +35,9 @@ export function AdminConfirmPopup(props) {
     const [dataOnChange, dataOnChangeHandler] = useState('스팸성');
     const [userInform, setUserInform] = useState('');
     const [dataSendComponent, setDataSendComponent] = useState();
+    const [firstTabComponent, setFirstTabComponent] = useState();
+    console.log(reportApi);
+    
     // contents type
     const [currentType, setCurrentType] = useState();
 
@@ -49,9 +53,13 @@ export function AdminConfirmPopup(props) {
         contentType:currentData?._contentType,
         isCopyright:false
       }
+
+      if(mainType === 'COPYRIGHT') { // mainType이 copyright일 경우
+        params.isCopyright = true
+      }
+
       const URL = `${process.env.NEXT_PUBLIC_API_URL}/report/submittedReports`;
-      reportFetch(URL, 'get', null, null, params)
-  
+      reportFetch(URL, 'get', null, null, params);
     }
 
     const deviedHandler = () => {
@@ -91,18 +99,9 @@ export function AdminConfirmPopup(props) {
         setUserInform(`해당 게시물 내에서 ${dataOnChange} 내용이 확인되어 ${postType}이 ${_type}었습니다 `)
     }
 
-    const goUrlHandle = () => {
-      if(currentData?._contentType === 'Board'){
-        window.open('about:blank').location.href=`http://localhost:3000/viewer/${currentData?._id}`
-      } else {
-        return;
-      }
-      
-    }
-
     useEffect(()=> {
         deviedHandler();
-    },[currentType, dataOnChange])
+    },[currentType, dataOnChange]);
 
     useEffect(() => {
       reportFetchHandler();
@@ -117,6 +116,15 @@ export function AdminConfirmPopup(props) {
         setDataSendComponent(<AdminConfirmTurnBack/>)
       }
     }, [currentType]);
+
+    console.log(mainType)
+    useEffect(()=> { // tab 1 form ctrl
+      if(mainType === 'REPORT'){
+        setFirstTabComponent(<AdminPopupReportForm reportApi={reportApi}/>);
+      } else if (mainType === 'COPYRIGHT') {
+        setFirstTabComponent(<AdminPopupCopyrightForm />);
+      }
+    }, [mainType])
 
     const popupTab = [
       {id:1, value:1, name:'신고정보'},
@@ -160,10 +168,10 @@ export function AdminConfirmPopup(props) {
           {/* 내용 desc */}
         <ConfirmDivBody>
             <ConfirmDivBodyInner>
-                {/* 탭 부문 */}
+                { /* 탭 부문 */ }
             <PopupTabWrap>
               { popupTab.map( items => (
-                <PopupTab 
+                <PopupTab
                   key={items.id} 
                   // onClick={() => setIsTab(items.value)} 
                   isSelect={isTab}
@@ -173,25 +181,10 @@ export function AdminConfirmPopup(props) {
               ) ) }
             </PopupTabWrap>
             { isTab === 1 ? 
-              <ConfirmInBody>
-                  <BlockWrap>
-                      <TextBlock>콘텐츠 정보</TextBlock>
-                        <InformBox>
-                          <GoTargetPage onClick={()=> goUrlHandle()} >{currentData?._contentType}</GoTargetPage>
-                        </InformBox>
-                  </BlockWrap>
-                  {/* 콘텐츠 업로드 유저 */}
-                  <BlockWrap>
-                  <TextBlock>신고 받은 유저</TextBlock>
-                      <InformBox>@{currentData?.suspectUserInfo[0]?.screenId}</InformBox>
-                  </BlockWrap>
-                  <BlockWrap>
-                    <ConfirmReportPopup reportData={reportApi} />
-                  </BlockWrap>
-              </ConfirmInBody>
+                firstTabComponent
               :
               <FormWrap>
-                {dataSendComponent}
+                { dataSendComponent }
               </FormWrap> }
             </ConfirmDivBodyInner>
         </ConfirmDivBody>
@@ -223,15 +216,7 @@ export function AdminConfirmPopup(props) {
     </ConfirmLayout>
   )
 }
-const TextSize15 = css`
-color:${(props) => props.theme.color.blackColor};
-font-weight:${(props) => props.theme.fontWeight.font700};
-font-size:${(props) => props.theme.fontSize.font15};
-`
 
-const GoTargetPage = styled.a`
-cursor:pointer;
-`
 
 const FormWrap = styled.form``
 
@@ -288,12 +273,6 @@ flex-direction:column;
 width:100%;
 margin: 0.2em 0;
 `
-const ConfirmInBody = styled.div`
-display:flex;
-flex-direction:column;
-width:100%;
-padding: 2em 0;
-`
 
 // 팝업 body ===> 탭 부문
 const PopupTabWrap = styled.span`
@@ -318,33 +297,6 @@ const ConfirmDivBottom = styled(ConfirmDivHeader)`
 justify-content:flex-end;
 `
 
-//block wrap
-const BlockWrap = styled.div`
-margin-bottom:0.8em;
-`
-
-
-// 상단 유저 정보
-const InformBox = styled.span`
-display:flex;
-width:100%;
-height:auto;
-max-height:5em;
-
-border: 1px solid #999;
-border-radius:0.3em;
-padding:0.6em 0.8em;
-${TextSize15};
-font-weight:${(props) => props.theme.fontWeight.font500};
-`
-
-// 신고한 유저 목록용
-
-const TextBlock = styled.span`
-display:flex;
-${TextSize15};
-margin-bottom:0.7em;
-`
 
 // 버튼
 const ConfirmBtn = styled.button`
