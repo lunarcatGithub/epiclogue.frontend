@@ -35,9 +35,9 @@ export const InteractTab = () => {
     pwChange,
     nowUpload,
     successLang,
-    failLang
+    failLang,
   } = LangPush;
-  
+
   const _errorPush = errorPush[selectedLanguage] || errorPush[defaultLanguage],
     _uploadedPush = uploadedPush[selectedLanguage] || uploadedPush[defaultLanguage],
     _uploadedFeedback = uploadedFeedback[selectedLanguage] || uploadedFeedback[defaultLanguage],
@@ -60,7 +60,6 @@ export const InteractTab = () => {
     _nowUpload = nowUpload[selectedLanguage] || nowUpload[defaultLanguage],
     _successLang = successLang[selectedLanguage] || successLang[defaultLanguage],
     _failLang = failLang[selectedLanguage] || failLang[defaultLanguage];
-
 
   const [alert, setAlert] = useState();
   const [bottom, setBottom] = useState();
@@ -199,25 +198,24 @@ export const InteractTab = () => {
   }, [errorHandler]);
   return (
     <>
-      {
-        kind !== 'LOADING_PUSH' ? 
-          <PushBox bool={bool} color={color}>
-            {/* 푸쉬바 내부 콘텐츠 */}
-            <PushBoxInner>
-              <Contents>{alert}</Contents>
-              {/* // 푸쉬바 내부 콘텐츠 끝 */}
-            </PushBoxInner>
-          </PushBox>
-          : 
-          <Modal bool={bool}>
-            <PushLayout bool={bool} color={color}>
-              <ProgressSmall disabled={true} />
-              <TextBox>
-                <InformText>{_nowUpload}</InformText>
-              </TextBox>
-            </PushLayout>
-          </Modal> 
-      }
+      {kind !== 'LOADING_PUSH' ? (
+        <PushBox bool={bool} color={color}>
+          {/* 푸쉬바 내부 콘텐츠 */}
+          <PushBoxInner>
+            <Contents>{alert}</Contents>
+            {/* // 푸쉬바 내부 콘텐츠 끝 */}
+          </PushBoxInner>
+        </PushBox>
+      ) : (
+        <Modal bool={bool}>
+          <PushLayout bool={bool} color={color}>
+            <ProgressSmall disabled={true} />
+            <TextBox>
+              <InformText>{_nowUpload}</InformText>
+            </TextBox>
+          </PushLayout>
+        </Modal>
+      )}
     </>
   );
 };

@@ -73,7 +73,6 @@ const LogoRotate = styled.svg`
   animation: ${Rotate} 3s infinite linear;
 `;
 
-
 const ProgressSmall = ({ disabled }) => {
   return (
     <SmallLayout>

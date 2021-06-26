@@ -12,10 +12,9 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { useCookie } from '@hooks/useCookie';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
-React.useLayoutEffect = React.useEffect
+React.useLayoutEffect = React.useEffect;
 // 프로필 팝업
 const HeaderPfPopup = () => {
-
   const [goURL] = useUrlMove();
   //profile
   const [ProfileImg, setProfileImg] = useState();
@@ -28,51 +27,46 @@ const HeaderPfPopup = () => {
   const { setLoginOn } = useContext(AppDataContext);
 
   const { show, profileApi, profileError } = useContext(HeaderDataContext);
-  const [ , , , logoutFetch] = useAxiosFetch();
+  const [, , , logoutFetch] = useAxiosFetch();
 
   const [isOpen, setIsOpen] = useToggle();
 
   //언어 변수
-  const {
-    _profileSet,
-    _goToBookMark,
-    _policyInform,
-    _changeAccount,
-    _logOutTab,
-    _sessionExpire
-  } = HeaderLanguage();
-  
-  const logout = () => {
-      setIsOpen();
-      cookieHandle('DELETE', 'access_token');
-      // testCookieHandle('DELETE', 'dev');
-      logoutFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, 'get')
-      setLoginOn(false);
-      localStorage.removeItem('userNick');
-      localStorage.removeItem('userid');
-      localStorage.setItem('keepLogin', false);
+  const { _profileSet, _goToBookMark, _policyInform, _changeAccount, _logOutTab, _sessionExpire } = HeaderLanguage();
 
-      goURL({ pathname: '/login' });
+  const logout = () => {
+    setIsOpen();
+    cookieHandle('DELETE', 'access_token');
+    // testCookieHandle('DELETE', 'dev');
+    logoutFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, 'get');
+    setLoginOn(false);
+    localStorage.removeItem('userNick');
+    localStorage.removeItem('userid');
+    localStorage.setItem('keepLogin', false);
+
+    goURL({ pathname: '/login' });
   };
 
   useEffect(() => {
-    if(!profileError) return;
+    if (!profileError) return;
     // if (profileError?.status === 401) {
     //   alert(_sessionExpire)
     //   logout();
     // }
     // return ()=> logout();
-    
   }, [profileError, loginOn]);
 
-  
   useLayoutEffect(() => {
     setProfileImg(profileApi?.data?.profile?.thumbnail);
-  }, [profileApi?.data?.profile])
+  }, [profileApi?.data?.profile]);
 
   const navTabArr = [
     { method: () => [setIsOpen(), goURL({ pathname: `/mypage/profile` })], title: _profileSet, icon: '/static/header/profileIcon.svg' },
-    { method: () => [setIsOpen(), goURL({ pathname: `/myboard/${profileApi?.data?.screenId}`, as:`/myboard/${profileApi?.data?.screenId}` , query:{tab:'bookmarks'} })], title: _goToBookMark, icon: '/static/header/headerBookMark.svg' },
+    {
+      method: () => [setIsOpen(), goURL({ pathname: `/myboard/${profileApi?.data?.screenId}`, as: `/myboard/${profileApi?.data?.screenId}`, query: { tab: 'bookmarks' } })],
+      title: _goToBookMark,
+      icon: '/static/header/headerBookMark.svg',
+    },
     { method: () => [setIsOpen(), goURL({ pathname: `/policy/service` })], title: _policyInform, icon: '/static/header/policyIcon.svg' },
     { method: () => alertPatch({ type: 'NOT_SERVICE', payload: true }), title: _changeAccount, icon: '/static/header/switchIcon.svg' },
     { method: () => logout(), title: _logOutTab, icon: '/static/header/logoutIcon.svg' },
@@ -83,40 +77,38 @@ const HeaderPfPopup = () => {
       <ProfileImgBox onClick={() => setIsOpen()}>
         <ProfileImgInner profile={ProfileImg} />
       </ProfileImgBox>
-      {
-        isOpen && (
-          <PopupLayout id="closemodal" onClick={() => setIsOpen()}>
-            <PopUpInner show={show}>
-              {/* 유저 프로필 팝업의 헤더 부분 */}
-              <PopupAnchorHd>
-                <TabWrap onClick={() => goURL({ pathname: `/myboard/${profileApi.data.screenId}` })}>
-                  <ProfileImgBox>
-                    <ProfileImgInner profile={ProfileImg} />
-                  </ProfileImgBox>
-                  <TabIdWrap>
-                    <ProfileNick>{profileApi?.data?.nickname}</ProfileNick>
-                    <ProfileId>{profileApi?.data?.screenId}</ProfileId>
-                  </TabIdWrap>
-                </TabWrap>
-                <ClosedBox>
-                  <ClosedBtn onClick={() => setIsOpen()} />
-                </ClosedBox>
-              </PopupAnchorHd>
-              {/* // 유저 프로필 팝업의 헤더 부분 끝 */}
+      {isOpen && (
+        <PopupLayout id="closemodal" onClick={() => setIsOpen()}>
+          <PopUpInner show={show}>
+            {/* 유저 프로필 팝업의 헤더 부분 */}
+            <PopupAnchorHd>
+              <TabWrap onClick={() => goURL({ pathname: `/myboard/${profileApi.data.screenId}` })}>
+                <ProfileImgBox>
+                  <ProfileImgInner profile={ProfileImg} />
+                </ProfileImgBox>
+                <TabIdWrap>
+                  <ProfileNick>{profileApi?.data?.nickname}</ProfileNick>
+                  <ProfileId>{profileApi?.data?.screenId}</ProfileId>
+                </TabIdWrap>
+              </TabWrap>
+              <ClosedBox>
+                <ClosedBtn onClick={() => setIsOpen()} />
+              </ClosedBox>
+            </PopupAnchorHd>
+            {/* // 유저 프로필 팝업의 헤더 부분 끝 */}
 
-              {/* 프로필 설정 */}
-              {
-                navTabArr.map((navTab, index) => (
-                  <PopupAnchor key={index}>
-                    <TabWrap onClick={navTab.method}>
-                      <IconImg icon={navTab.icon} />
-                      <ProfileTextTab>{navTab.title}</ProfileTextTab>
-                    </TabWrap>
-                  </PopupAnchor> ))
-              }
-            </PopUpInner>
-          </PopupLayout> )
-      }
+            {/* 프로필 설정 */}
+            {navTabArr.map((navTab, index) => (
+              <PopupAnchor key={index}>
+                <TabWrap onClick={navTab.method}>
+                  <IconImg icon={navTab.icon} />
+                  <ProfileTextTab>{navTab.title}</ProfileTextTab>
+                </TabWrap>
+              </PopupAnchor>
+            ))}
+          </PopUpInner>
+        </PopupLayout>
+      )}
     </>
   );
 };

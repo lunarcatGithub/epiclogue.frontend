@@ -9,14 +9,14 @@ import UploadLanguage from './Upload.Language';
 
 // Hooks & Reducer
 
-const UploadFile = ({type, editData, boardUid}) => {
+const UploadFile = ({ type, editData, boardUid }) => {
   const [dragging, toggleDragging] = useState(false);
   const [imageData, setImageData] = useState([]);
   const [urlData, setUrlData] = useState([]);
   const [initialData, setInitialData] = useState([]);
-  const [indexNum, setIndexNum] = useState(0)
+  const [indexNum, setIndexNum] = useState(0);
   // 언어 변수
-  const {_dropImage} = UploadLanguage()
+  const { _dropImage } = UploadLanguage();
   // convert
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -45,21 +45,21 @@ const UploadFile = ({type, editData, boardUid}) => {
     setInitialData(files);
   };
 
-  const fetchImage = async() => {
+  const fetchImage = async () => {
     let box = [];
-    if(type !== 'modify') return;
-      for (let i = 0; i < editData?.boardImg.length; i++) {
-        const res = await fetch(editData.boardImg[i], {
-          mode: 'cors',
-          cache: 'no-cache',
-        });
-        const blob = await res.blob();
-        let name = editData.boardImg[i].split('/');
-        let file = new File([blob], name[3]);
-        box.push(file)
+    if (type !== 'modify') return;
+    for (let i = 0; i < editData?.boardImg.length; i++) {
+      const res = await fetch(editData.boardImg[i], {
+        mode: 'cors',
+        cache: 'no-cache',
+      });
+      const blob = await res.blob();
+      let name = editData.boardImg[i].split('/');
+      let file = new File([blob], name[3]);
+      box.push(file);
     }
     setInitialData(box);
-}
+  };
 
   const dataConvertHandler = () => {
     let urlList = [];
@@ -70,7 +70,7 @@ const UploadFile = ({type, editData, boardUid}) => {
       const img = { key: indexNum + index, img: file };
       urlList.push(url);
       imgList.push(img);
-      setIndexNum(urlData.length  + 1)
+      setIndexNum(urlData.length + 1);
     });
 
     if (initialData) {
@@ -78,7 +78,7 @@ const UploadFile = ({type, editData, boardUid}) => {
       setUrlData(urlData.concat(urlList));
       toggleDragging(false);
     }
-  }
+  };
 
   const removeImage = useCallback(
     (key) => {
@@ -90,11 +90,11 @@ const UploadFile = ({type, editData, boardUid}) => {
 
   useEffect(() => {
     dataConvertHandler();
-  }, [initialData])
+  }, [initialData]);
 
   useEffect(() => {
     fetchImage();
-  }, [type, editData?.boardImg])
+  }, [type, editData?.boardImg]);
 
   return (
     <MainContainer>
@@ -114,21 +114,18 @@ const UploadFile = ({type, editData, boardUid}) => {
       </UploadLayout>
       <ContentContainer>
         <ContentImgBox>
-          {
-            urlData?.length === 0? 
-              <SliderEmpty />
-              : 
-              urlData.map( file => (
-                <PreviewImgWrap key={file.key}>
-                  <PreviewImg src={file.url} draggable="false" />
-                </PreviewImgWrap> ))
-          }
+          {urlData?.length === 0 ? (
+            <SliderEmpty />
+          ) : (
+            urlData.map((file) => (
+              <PreviewImgWrap key={file.key}>
+                <PreviewImg src={file.url} draggable="false" />
+              </PreviewImgWrap>
+            ))
+          )}
         </ContentImgBox>
         <ContentOptionBox>
-          <UploadCategory 
-          boardImg={imageData} 
-          editData={editData}
-          type={type || 'upload'} />
+          <UploadCategory boardImg={imageData} editData={editData} type={type || 'upload'} />
         </ContentOptionBox>
         <DummyLayout />
       </ContentContainer>

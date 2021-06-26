@@ -53,33 +53,31 @@ const UploadCategory = (props) => {
   const [disabled, setDisabled] = useState(false);
 
   //fetch
-  const [, uploadApi, ,uploadFetch] = useFetchData();
+  const [, uploadApi, , uploadFetch] = useFetchData();
 
   useEffect(() => {
-    
     switch (uploadType) {
       case 'noneEditor':
-        setOriginData(JSON.parse(data))
+        setOriginData(JSON.parse(data));
         break;
 
       case 'modify':
-        setOriginData(editData)
+        setOriginData(editData);
         break;
-    
+
       case 'upload':
-        setOriginData('')
+        setOriginData('');
         break;
 
       case 'editor':
-        setOriginData(editorData)
+        setOriginData(editorData);
         // setOriginData('')
         break;
 
       default:
         break;
     }
-
-  }, [uploadType, editData, editorData])
+  }, [uploadType, editData, editorData]);
 
   // useEffect(() => {
   //   setOriginData(uploadType === 'noneEditor' ? JSON.parse(data) : uploadData);
@@ -89,15 +87,7 @@ const UploadCategory = (props) => {
   const { langState } = useContext(LanguageContext);
   const { selectedLanguage, defaultLanguage } = langState;
 
-  const {
-    _titlePlaceholder,
-    _alertPlaceholder,
-    _descPlaceholder,
-    _uploadBtn,
-    _fileSizeErr,
-    _sourceAlert
-
-  } = UploadLanguage()
+  const { _titlePlaceholder, _alertPlaceholder, _descPlaceholder, _uploadBtn, _fileSizeErr, _sourceAlert } = UploadLanguage();
 
   const changeBoardTitle = (e) => {
     setBoardTitle(e.target.value);
@@ -227,17 +217,17 @@ const UploadCategory = (props) => {
       return;
     }
   }, [uploadApi]);
-  
+
   useEffect(() => {
     // 콘텐츠 수정하기 할 때 기존의 데이터 대입
     if (!originData) return;
-      setBoardTitle(originData?.boardTitle);
-      setBoardBody(originData?.boardBody);
-      setCategory(Number(originData?.category));
-      setPublic(Number(originData?.pub));
-      setSecondCreate(originData?.allowSecondaryCreation);
-      setSourceHref(originData?.sourceUrl)
-      setSourceToggleOn(originData?.sourceUrl && true)
+    setBoardTitle(originData?.boardTitle);
+    setBoardBody(originData?.boardBody);
+    setCategory(Number(originData?.category));
+    setPublic(Number(originData?.pub));
+    setSecondCreate(originData?.allowSecondaryCreation);
+    setSourceHref(originData?.sourceUrl);
+    setSourceToggleOn(originData?.sourceUrl && true);
   }, [originData, uploadType, editorData]);
 
   return (
@@ -290,7 +280,7 @@ const UploadCategory = (props) => {
           <UploadCategoryForm type="PUB" initialNum={pub} />
 
           {/* 2차 창작 허용 여부 */}
-          { uploadType === 'upload' ? <UploadCategoryForm type="SECONDARY" initialNum={secondCreate} /> : null}
+          {uploadType === 'upload' ? <UploadCategoryForm type="SECONDARY" initialNum={secondCreate} /> : null}
 
           {/* 작품의 언어 설정 */}
           <UploadCategoryForm type="LANGUAGE" initialNum={selectedLanguage || defaultLanguage} />

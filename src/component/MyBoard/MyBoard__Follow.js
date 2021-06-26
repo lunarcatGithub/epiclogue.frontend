@@ -34,51 +34,51 @@ const MyBoardFollow = () => {
   // 데이터 호출 함수
   const handleScroller = () => {
     const params = {
-      size:20,
-      type:routerTab,
-      screenId:router?.query?.id,
+      size: 20,
+      type: routerTab,
+      screenId: router?.query?.id,
       latestId,
-    }
-    if(!loginOn) return;
-    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, 'get', null, null, params)
-  }
+    };
+    if (!loginOn) return;
+    followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, 'get', null, null, params);
+  };
 
   // 데이터 호출
-useEffect(() => {
-  if(!stopData) return;
-  handleScroller();
-}, [page, routerTab, stopData])
+  useEffect(() => {
+    if (!stopData) return;
+    handleScroller();
+  }, [page, routerTab, stopData]);
 
   useEffect(() => {
-    followListApi?.data?.length === 0 && setStopData(false)
-  }, [followListApi])
+    followListApi?.data?.length === 0 && setStopData(false);
+  }, [followListApi]);
 
   useEffect(() => {
     setFollowData();
     setStopData(true);
     setLatestId(null);
-  }, [routerTab])
+  }, [routerTab]);
 
   // 데이터 분리
   useEffect(() => {
     followListApi && setFollowData(followsData ? [...followsData, ...followListApi?.data] : [...followListApi?.data]);
   }, [followListApi]);
-  
+
   // latestId 찾기
   useEffect(() => {
-    setLatestId(followListApi?.data[followListApi?.data?.length - 1]?._id)
+    setLatestId(followListApi?.data[followListApi?.data?.length - 1]?._id);
   }, [followListApi, page]);
 
   useEffect(() => {
-    setFinalRender(followsData?.map((i, index) => (<MyBoardFollowList key={index} data={i} type={routerTab} />) ) )
+    setFinalRender(followsData?.map((i, index) => <MyBoardFollowList key={index} data={i} type={routerTab} />));
   }, [routerTab, followsData]);
-    
-  const followTab = [
-      {id:0, title:'Following', value:'following'},
-      {id:1, title:'Follower', value:'follower'}
-    ];
 
-    return (
+  const followTab = [
+    { id: 0, title: 'Following', value: 'following' },
+    { id: 1, title: 'Follower', value: 'follower' },
+  ];
+
+  return (
     <Layout>
       <FollowsLayout>
         <LayoutInner>
@@ -94,21 +94,18 @@ useEffect(() => {
               </UserPfBox>
             </TopHeaderBox>
             <FollowTabBox>
-              { followTab.map(({id, title, value}) => (
-                <FollowTab 
-                key={id} 
-                tabType={routerTab === value} 
-                onClick={ () => setRouterTab(value) }>
+              {followTab.map(({ id, title, value }) => (
+                <FollowTab key={id} tabType={routerTab === value} onClick={() => setRouterTab(value)}>
                   {title}
                 </FollowTab>
-              ) ) }
+              ))}
             </FollowTabBox>
             {/* // 팔로우 헤더 상단 끝*/}
           </HeaderBox>
           {/* 팔로우 본문 */}
           <ContentBox>
-            { finalRender }
-            
+            {finalRender}
+
             {!followLoding ? <Observer {...scroll} /> : null}
             {/* // 팔로우 본문 끝 */}
           </ContentBox>

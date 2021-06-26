@@ -12,7 +12,7 @@ let initialX = null,
   boxes,
   boxesWidth;
 
-const Slider = ({imgData, onRemove}) => {
+const Slider = ({ imgData, onRemove }) => {
   const layoutRef = useRef();
   const moveRef = useRef();
   const [distanceInit, setDistanceInit] = useState(null);

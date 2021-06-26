@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import LoginLanguage from './Login.Language';
 
 export const SignUpComplete = ({ email, backToLogin }) => {
-
   const sendEmail = () => {
     let check1 = email.indexOf('@');
     let check2 = email.indexOf('.');
@@ -14,26 +13,21 @@ export const SignUpComplete = ({ email, backToLogin }) => {
   };
 
   //언어 변수
-  const {
-    _completeTitle,
-    _completeTxt,
-    _backHome,
-    _mailConfirmBtn,
-  } = LoginLanguage();
+  const { _completeTitle, _completeTxt, _backHome, _mailConfirmBtn } = LoginLanguage();
 
   return (
-      <SignUpModal>
-        <SignUpCompleteLayout>
-          <CompleteInner>
-            <SignUpCompleTitle>{_completeTitle}</SignUpCompleTitle>
-            <SignUpCompleTxt>{_completeTxt}</SignUpCompleTxt>
-            <CompleBtnWrap>
-              <BackPageBtn onClick={backToLogin}>{_backHome}</BackPageBtn>
-              <CompleBtn onClick={sendEmail}>{_mailConfirmBtn}</CompleBtn>
-            </CompleBtnWrap>
-          </CompleteInner>
-        </SignUpCompleteLayout>
-      </SignUpModal>
+    <SignUpModal>
+      <SignUpCompleteLayout>
+        <CompleteInner>
+          <SignUpCompleTitle>{_completeTitle}</SignUpCompleTitle>
+          <SignUpCompleTxt>{_completeTxt}</SignUpCompleTxt>
+          <CompleBtnWrap>
+            <BackPageBtn onClick={backToLogin}>{_backHome}</BackPageBtn>
+            <CompleBtn onClick={sendEmail}>{_mailConfirmBtn}</CompleBtn>
+          </CompleBtnWrap>
+        </CompleteInner>
+      </SignUpCompleteLayout>
+    </SignUpModal>
   );
 };
 

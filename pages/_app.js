@@ -7,8 +7,8 @@ import '../styles/App.css';
 import { InteractTab } from '@utils/Push__Interaction';
 import Helmet from 'react-helmet';
 import { useRouter } from 'next/router';
-import { appWithTranslation } from "next-i18next";
-import {AdminContextStore} from '../src/Admin/Components/Store/Admin_Context';
+import { appWithTranslation } from 'next-i18next';
+import { AdminContextStore } from '../src/Admin/Components/Store/Admin_Context';
 // hooks & reducer
 import { ContextStore } from '@store/App_Store';
 import ViewerStore from '@store/ViewerStore';
@@ -22,12 +22,12 @@ function MyApp({ Component, pageProps }) {
       <GlobalStyles />
       <ContextStore>
         <AdminContextStore>
-        {!router.asPath.match('/epicadmin/') && <Helmet />}
-        {!router.asPath.match('/epicadmin/') && <Header />}
-        <ViewerStore>
-        <Component {...pageProps} />
-        <InteractTab />
-        </ViewerStore>
+          {!router.asPath.match('/epicadmin/') && <Helmet />}
+          {!router.asPath.match('/epicadmin/') && <Header />}
+          <ViewerStore>
+            <Component {...pageProps} />
+            <InteractTab />
+          </ViewerStore>
         </AdminContextStore>
       </ContextStore>
     </ThemeProvider>

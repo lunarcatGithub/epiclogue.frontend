@@ -27,51 +27,41 @@ const UserInform = () => {
   const [stopData, setStopData] = useState(true);
 
   //언어 변수
-  const {
-    _headerInfrom,
-    _userReactLike,
-    _userFeedback,
-    _userSecondary,
-    _userBookmark,
-    _userFollowMe,
-    _userReply,
-    _dataRemove,  
-  } = HeaderLanguage();
+  const { _headerInfrom, _userReactLike, _userFeedback, _userSecondary, _userBookmark, _userFollowMe, _userReply, _dataRemove } = HeaderLanguage();
 
   //fetch
   const [notiLoding, notiApi, , notiFetch] = useAxiosFetch();
   const [, , , infromFetch] = useAxiosFetch();
   // 유저 알림 API
 
-    //스크롤
-    const handleScroller = () => {
-      if (!loginOn) return;
-      const params = {
-        size:20,
-        latestId
-      }
-        notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, params);
-    }
+  //스크롤
+  const handleScroller = () => {
+    if (!loginOn) return;
+    const params = {
+      size: 20,
+      latestId,
+    };
+    notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, params);
+  };
 
-    useEffect(()=> {
-      if(!stopData) return;
-      handleScroller()
-    },[page, stopData])
+  useEffect(() => {
+    if (!stopData) return;
+    handleScroller();
+  }, [page, stopData]);
 
-    useEffect(() => {
-      notiApi?.data?.length === 0 && setStopData(false)
-    }, [notiApi])
+  useEffect(() => {
+    notiApi?.data?.length === 0 && setStopData(false);
+  }, [notiApi]);
 
-    // latestId 찾기
-    useEffect(() => {
-      setLatestId(notiApi?.data[notiApi?.data?.length - 1]?._id)
-    }, [notiApi, page]);
+  // latestId 찾기
+  useEffect(() => {
+    setLatestId(notiApi?.data[notiApi?.data?.length - 1]?._id);
+  }, [notiApi, page]);
 
-    useEffect(() => {
-      if (!notiApi) return;
-      setTargetUser(targetUser ? [...targetUser, ...notiApi?.data] : [...notiApi?.data]);
-    }, [notiApi]);
-
+  useEffect(() => {
+    if (!notiApi) return;
+    setTargetUser(targetUser ? [...targetUser, ...notiApi?.data] : [...notiApi?.data]);
+  }, [notiApi]);
 
   // 읽음 처리용
   useEffect(() => {
@@ -89,7 +79,7 @@ const UserInform = () => {
         </ClosedBox>
       </InformHeader>
       <InformBodyInner>
-        { targetUser?.map(({ maker, notificationType, read, targetInfo }, key) => (
+        {targetUser?.map(({ maker, notificationType, read, targetInfo }, key) => (
           <ContentBox
             key={key}
             read={read}
@@ -103,7 +93,7 @@ const UserInform = () => {
                 goURL({ pathname: `/viewer/${targetInfo?._id}` });
               }
               toggleNoti();
-            } }
+            }}
           >
             {/* 유저 이미지 */}
             <UserImgWrap>
@@ -137,7 +127,7 @@ const UserInform = () => {
           </ContentBox>
         ))}
 
-        { !notiLoding ? <Observer {...scroll} /> : null }
+        {!notiLoding ? <Observer {...scroll} /> : null}
       </InformBodyInner>
     </InformContainer>
   );
