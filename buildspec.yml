@@ -6,11 +6,11 @@ phases:
       nodejs: latest
     commands:
       - echo 'Install npm dependencies...'
-      - npm install
+      - yarn install
   build:
     commands:
       - echo 'Build started...'
-      - npm run build
+      - yarn build
       - echo 'Build completed!'
 
 artifacts:
