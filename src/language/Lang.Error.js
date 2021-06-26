@@ -31,4 +31,3 @@ export const LangError = {
     2: 'A server error has occurred',
   },
 };
-

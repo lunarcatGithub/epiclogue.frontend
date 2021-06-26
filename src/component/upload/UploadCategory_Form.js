@@ -44,8 +44,7 @@ export default function UploadCategoryForm({ type, initialNum }) {
   const typeHandler = () => {
     switch (type) {
       case 'CONTENTS':
-
-      if (categoryNum === 0) {
+        if (categoryNum === 0) {
           setCategoryIcon(<IllustIcon />);
           setCategoryTxt(_thisIllust);
           setCategory(0);
@@ -129,26 +128,22 @@ export default function UploadCategoryForm({ type, initialNum }) {
           {categoryIcon}
           <CategoryTxt>{categoryTxt}</CategoryTxt>
         </CategoryBtn>
-        {
-          isCategory && (
-            <ModalLayout>
-              <ModalInnerTop onClick={() => toggleModal_Category(false)}>
-                {
-                  contents.map((value) => (
-                    <CategoryBtnTxt key={value.id} onClick={() => setCategoryNum(value.id)}>
-                      <SelectTxt>{value.lang}</SelectTxt>
-                    </CategoryBtnTxt>
-                  ))
-                }
-              </ModalInnerTop>
-              <DummyLine />
-              <ModalInnerBottom>
-                <CategoryTxt>{scriptTxt.title}</CategoryTxt>
-                <CategoryDescript>{scriptTxt.sub}</CategoryDescript>
-              </ModalInnerBottom>
-            </ModalLayout>
-          )
-        }
+        {isCategory && (
+          <ModalLayout>
+            <ModalInnerTop onClick={() => toggleModal_Category(false)}>
+              {contents.map((value) => (
+                <CategoryBtnTxt key={value.id} onClick={() => setCategoryNum(value.id)}>
+                  <SelectTxt>{value.lang}</SelectTxt>
+                </CategoryBtnTxt>
+              ))}
+            </ModalInnerTop>
+            <DummyLine />
+            <ModalInnerBottom>
+              <CategoryTxt>{scriptTxt.title}</CategoryTxt>
+              <CategoryDescript>{scriptTxt.sub}</CategoryDescript>
+            </ModalInnerBottom>
+          </ModalLayout>
+        )}
       </CategoryBox>
       {isCategory && <Modal id="modal" onClick={() => toggleModal_Category(false)} />}
     </>

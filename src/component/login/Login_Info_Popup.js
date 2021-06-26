@@ -8,19 +8,12 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import LoginLanguage from './Login.Language';
 
 export const LoginInfoPopup = ({ handleModal }) => {
-
   const { alertPatch } = useContext(AlertContext);
 
   const [values, handleChange] = useChange({ email: '' });
   const [errPlaceHolder, setErrPlaceHolder] = useState('');
   //언어 변수
-  const {
-    _lostTitle,
-    _inputEmail,
-    _sendButton,
-    _closeBtn,
-    _noEmail,
-  } = LoginLanguage();
+  const { _lostTitle, _inputEmail, _sendButton, _closeBtn, _noEmail } = LoginLanguage();
 
   // fetch
   const [, pwApi, , pwFetch] = useAxiosFetch();

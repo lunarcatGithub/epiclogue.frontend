@@ -18,10 +18,7 @@ export default function MainContent({ contentData }) {
   }, [contentData]);
 
   //언어 변수
-  const {
-    _originTxt,
-    _reCreateTxt
-  } = ContentLanguage();
+  const { _originTxt, _reCreateTxt } = ContentLanguage();
 
   return (
     <>

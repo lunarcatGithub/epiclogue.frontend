@@ -5,8 +5,8 @@ import Follow from '@component/MyBoard/MyBoard__Follow';
 //   return ( <Follow routeId={id} routeTab={tab} /> );
 // }
 
-export default function Follows({id = null, tab = null}) {
-  return ( <Follow routeId={id} routeTab={tab} /> );
+export default function Follows({ id = null, tab = null }) {
+  return <Follow routeId={id} routeTab={tab} />;
 }
 // export async function getServerSideProps(context) {
 //   console.log(context)

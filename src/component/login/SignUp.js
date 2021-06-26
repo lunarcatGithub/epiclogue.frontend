@@ -41,7 +41,7 @@ export const SignUp = ({ setChangePage, backToLogin }) => {
     _pwError,
     _rePwError,
     _nickError,
-    _signUpButton
+    _signUpButton,
   } = LoginLanguage();
 
   const [values, handleChange, handleSubmit, disabled, resData, errors] = useForm({

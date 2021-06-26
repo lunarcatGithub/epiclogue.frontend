@@ -6,12 +6,9 @@ import UploadLanguage from './Upload.Language';
 export default function OriginUserSource() {
   const { sourceToggleOn, setSourceToggleOn, setSourceHref, sourceHref } = useContext(uploadContext);
   const inputRef = useRef(null);
-  
+
   // 언어 변수
-  const {
-    _externalSource,
-    _uploadPermission,
-  } = UploadLanguage();
+  const { _externalSource, _uploadPermission } = UploadLanguage();
 
   useEffect(() => {
     inputRef?.current?.focus();
@@ -25,12 +22,11 @@ export default function OriginUserSource() {
           <ToggleTama styling={sourceToggleOn} />
         </Toggle>
         {!sourceToggleOn && <AlertText>{_uploadPermission}</AlertText>}
-        {
-          sourceToggleOn && 
-            <SourceDataWrap>
-              <SourceData placeholder={'https://'} ref={inputRef} defaultValue={sourceHref} onChange={(e) => setSourceHref(e.target.value)} />
-            </SourceDataWrap> 
-        }
+        {sourceToggleOn && (
+          <SourceDataWrap>
+            <SourceData placeholder={'https://'} ref={inputRef} defaultValue={sourceHref} onChange={(e) => setSourceHref(e.target.value)} />
+          </SourceDataWrap>
+        )}
       </LayoutInner>
     </Layout>
   );

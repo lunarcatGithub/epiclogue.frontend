@@ -6,7 +6,6 @@ export default function useFetchData() {
   const [error, setError] = useState();
 
   const fetchHandler = async (url, type, importData = null, importBody = null) => {
-
     setLoding(true);
 
     await fetch(url, {
