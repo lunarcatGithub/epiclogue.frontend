@@ -1,7 +1,7 @@
 let selectLang,
-// defaultLang = typeof window !== 'undefined' && navigator.language,
-defaultLang = typeof window !== 'undefined' && document.documentElement.lang.toLowerCase(),
-_defaultLang;
+  // defaultLang = typeof window !== 'undefined' && navigator.language,
+  defaultLang = typeof window !== 'undefined' && document.documentElement.lang.toLowerCase(),
+  _defaultLang;
 
 switch (defaultLang) {
   case 'ko' || 'ko-KR' || 'ko-kr':

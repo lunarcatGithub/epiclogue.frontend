@@ -1,6 +1,6 @@
-import React, {useContext, useEffect} from 'react';
+import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from "next-i18next";
+import { useTranslation } from 'next-i18next';
 // import { useRouter } from 'next/router';
 
 //component
@@ -15,20 +15,20 @@ const Main = ({ metaLang }) => {
   // const router = useRouter();
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   const [goURL] = useUrlMove();
-  const { t } = useTranslation("common");
+  const { t } = useTranslation('common');
 
-// useEffect(() => {
-//   router.events.on('routeChangeComplete', console.log('test'));
+  // useEffect(() => {
+  //   router.events.on('routeChangeComplete', console.log('test'));
 
-// }, [])
+  // }, [])
   // Meta 전용
   const metaData = {
     title: t('metaMainTitle'),
-    contentsTitle:t('metaContentTitle'),
+    contentsTitle: t('metaContentTitle'),
     description: t('metaMainDesc'),
     image: ['https://www.epiclogue.com/static/Logo.svg'],
     canonical: ``,
-    lang:metaLang
+    lang: metaLang,
   };
 
   return (
@@ -37,15 +37,16 @@ const Main = ({ metaLang }) => {
       <Layout>
         <Contents type="MAIN" />
         {/*업로드 버튼*/}
-        <UploadButton onClick={() => {
-          if(!loginOn){
-          setUnAuth(true);
-          return;
-        } else {
-          goURL({ pathname: '/upload', query:{_type:'upload'} })
-        }
-          
-          }}>
+        <UploadButton
+          onClick={() => {
+            if (!loginOn) {
+              setUnAuth(true);
+              return;
+            } else {
+              goURL({ pathname: '/upload', query: { _type: 'upload' } });
+            }
+          }}
+        >
           <UploadSvg />
         </UploadButton>
       </Layout>

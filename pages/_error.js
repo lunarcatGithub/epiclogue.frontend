@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorDesc from '@component/error/ErrorDesc';
 export default function Error({ statusCode }) {
-  return <ErrorDesc type={ statusCode ? 'server' : 'client' }/>
+  return <ErrorDesc type={statusCode ? 'server' : 'client'} />;
 }
 
 Error.getInitialProps = ({ res, err }) => {

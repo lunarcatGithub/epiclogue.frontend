@@ -30,7 +30,7 @@ export const SignIn = ({ setChangePage }) => {
   const [errorTitle, setErrorTitle] = useState();
   const [goURL] = useUrlMove();
   const [_isShowing, _toggle] = useModal();
-  
+
   // 로그인 에러
   // fetch
   const [, snsLoginListApi, , snsLoginFetch] = useAxiosFetch();
@@ -52,7 +52,7 @@ export const SignIn = ({ setChangePage }) => {
     _loginErr,
     _leaveUser,
     _lostPassword,
-    _backLogin
+    _backLogin,
   } = LoginLanguage();
 
   //create cookie

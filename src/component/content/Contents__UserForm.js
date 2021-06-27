@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 // Hooks&&reducer import
 
-export default function ContentsUserForm({searchData}) {
+export default function ContentsUserForm({ searchData }) {
   const { banner, comicCount, illustCount, intro, nickname, profile, screenId } = searchData;
   return (
     <BodyLayout>

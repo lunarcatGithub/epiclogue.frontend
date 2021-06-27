@@ -31,21 +31,9 @@ const Header = () => {
   const { alertPatch } = useContext(AlertContext);
 
   //언어 변경
-  const {
-    langPatch,
-    availableLangPatch
-  } = useContext(LanguageContext);
+  const { langPatch, availableLangPatch } = useContext(LanguageContext);
 
-  const {
-    setSearchData,
-    setClickedComic,
-    setClickedIllust,
-    clickedComic,
-    clickedIllust,
-    loginOn,
-    setUnAuth,
-    paramsData,
-  } = useContext(AppDataContext);
+  const { setSearchData, setClickedComic, setClickedIllust, clickedComic, clickedIllust, loginOn, setUnAuth, paramsData } = useContext(AppDataContext);
 
   // 팝업용
   const [isOpen, toggleIsOpen] = useModal();
@@ -72,11 +60,7 @@ const Header = () => {
   const [preventHeader, setPreventHeader] = useState();
 
   //언어 변수
-  const {
-    _followsButton,
-    _searchPlaceholder,
-    _fbBtn,  
-  } = HeaderLanguage();
+  const { _followsButton, _searchPlaceholder, _fbBtn } = HeaderLanguage();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -102,7 +86,7 @@ const Header = () => {
 
   // 헤더 코믹/일러스트 필터링
   const selectFilter = (type) => {
-    if(type === 'comic'){
+    if (type === 'comic') {
       setClickedComic(!clickedComic);
     } else {
       setClickedIllust(!clickedIllust);
@@ -112,7 +96,6 @@ const Header = () => {
       setClickedIllust(true);
     }
   };
-
 
   // 유저 알림 Read 여부
   const readObserver = () => {
@@ -137,9 +120,9 @@ const Header = () => {
   useEffect(() => {
     // 유저 선택 언어로 콘텐츠 필터링
     const avalLang = [];
-    profileApi?.data?.availableLanguage.forEach((num) => avalLang.push(Number(num)))
-    availableLangPatch({type:'AVAILABLE_LANG', payload:avalLang})
-  }, [profileApi?.data?.availableLanguage])
+    profileApi?.data?.availableLanguage.forEach((num) => avalLang.push(Number(num)));
+    availableLangPatch({ type: 'AVAILABLE_LANG', payload: avalLang });
+  }, [profileApi?.data?.availableLanguage]);
 
   useEffect(() => {
     if (profileApi) {
@@ -149,21 +132,22 @@ const Header = () => {
 
   useEffect(() => {
     ['/epiclogueadmin', '/welcome', '/login', '/login/'].includes(pathname) || pathname.match('/editor/') || pathname.match('/findPass') ? setPreventHeader(false) : setPreventHeader(true);
-  return () => {
-    setPreventHeader(null)
-  }
+    return () => {
+      setPreventHeader(null);
+    };
   }, [pathname]);
 
   return (
-    <HeaderDataContext.Provider 
-      value={{ 
-        searchBody, 
-        toggleSearchPop, 
-        toggleIsOpen, 
-        toggleNoti, 
-        profileApi, 
-        profileError 
-      }}>
+    <HeaderDataContext.Provider
+      value={{
+        searchBody,
+        toggleSearchPop,
+        toggleIsOpen,
+        toggleNoti,
+        profileApi,
+        profileError,
+      }}
+    >
       {/* 헤더 레이아웃 */}
       {preventHeader && (
         <>
@@ -192,47 +176,45 @@ const Header = () => {
                 </CategoryWrap>
                 <Dummy />
                 {/* 팔로우 작품 및 프로필 버튼 영역 */}
-                {
-                  loginOn ? (
-                    <>
-                      <ProfileWrap>
-                        <FollowBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
-                          <ProfileFollow />
-                          <FollowTxt>{_followsButton}</FollowTxt>
-                        </FollowBtn>
-                        {/* </NavItem> */}
-                        <HeaderPfPopupWrap>
-                          {/* header profile */}
-                          <HeaderPfPopup />
-                        </HeaderPfPopupWrap>
-                      </ProfileWrap>
-                      <Dummy />
-                      {/* 옵션 set 영역 */}
-                      <OptionWrap>
-                        <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
-                          <OptionDm />
-                        </OptionBtn>
-                        {/* 알림 */}
-                        <OptionBtn
-                          onClick={() => {
-                            toggleNoti();
-                            setRead(0);
-                          }}
-                        >
-                          <OptionInfomation styling={isNotification} />
-                          {read > 0 && <InformIconRing />}
-                        </OptionBtn>
+                {loginOn ? (
+                  <>
+                    <ProfileWrap>
+                      <FollowBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+                        <ProfileFollow />
+                        <FollowTxt>{_followsButton}</FollowTxt>
+                      </FollowBtn>
+                      {/* </NavItem> */}
+                      <HeaderPfPopupWrap>
+                        {/* header profile */}
+                        <HeaderPfPopup />
+                      </HeaderPfPopupWrap>
+                    </ProfileWrap>
+                    <Dummy />
+                    {/* 옵션 set 영역 */}
+                    <OptionWrap>
+                      <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+                        <OptionDm />
+                      </OptionBtn>
+                      {/* 알림 */}
+                      <OptionBtn
+                        onClick={() => {
+                          toggleNoti();
+                          setRead(0);
+                        }}
+                      >
+                        <OptionInfomation styling={isNotification} />
+                        {read > 0 && <InformIconRing />}
+                      </OptionBtn>
 
-                        {/* setting */}
-                        <OptionBtn onClick={() => goURL({ pathname: `/mypage/profile` })}>
-                          <OptionSetting styling={['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)} />
-                        </OptionBtn>
-                      </OptionWrap>
-                    </>
-                  ) : (
-                    <HeaderUnauth />
-                  )
-                }
+                      {/* setting */}
+                      <OptionBtn onClick={() => goURL({ pathname: `/mypage/profile` })}>
+                        <OptionSetting styling={['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)} />
+                      </OptionBtn>
+                    </OptionWrap>
+                  </>
+                ) : (
+                  <HeaderUnauth />
+                )}
               </HeaderInner>
               {/* 뷰어 모바일 전용 뒤로가기 헤더 탭*/}
               <MbHeaderInner pathname={pathname.match('/viewer') ? 'flex' : 'none'}>
@@ -632,18 +614,19 @@ const BackIcon = styled.span`
     border-top: 0.2em solid ${(props) => props.theme.color.popupColor};
     border-right: 0.2em solid ${(props) => props.theme.color.popupColor};
     transform: rotate(-135deg);
-  }`;
+  }
+`;
 
 const GoHomeBtn = styled.button`
-display:flex;
-padding:0.4em 1.1em;
-margin-right:0.2em;
-border-radius:2em;
-border:0.1em solid ${props => props.theme.color.popupColor};;
-font-size:${props => props.theme.fontSize.font15};
-font-weight:${props => props.theme.fontWeight.font700};
-color:${props => props.theme.color.popupColor};
-`
+  display: flex;
+  padding: 0.4em 1.1em;
+  margin-right: 0.2em;
+  border-radius: 2em;
+  border: 0.1em solid ${(props) => props.theme.color.popupColor};
+  font-size: ${(props) => props.theme.fontSize.font15};
+  font-weight: ${(props) => props.theme.fontWeight.font700};
+  color: ${(props) => props.theme.color.popupColor};
+`;
 
 // 모바일 전용 헤더
 const MobileHeader = styled.div`

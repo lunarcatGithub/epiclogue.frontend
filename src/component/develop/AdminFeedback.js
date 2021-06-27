@@ -34,14 +34,15 @@ export default function AdminFeedback({ toggleIsOpen }) {
           alertPatch({ type: 'FEEDBACK_THANKS', payload: true });
           setLoading(false);
         },
-        (error) => {console.log(error)}
+        (error) => {
+          console.log(error);
+        }
       );
     } else {
       setAlert(true);
       setLoading(false);
     }
     setLoading(false);
-
   };
 
   //언어 변수

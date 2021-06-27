@@ -11,8 +11,8 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import useDebounce from '@hooks/useDebounce';
 
 const MyBoardFollowList = ({ data, type }) => {
-  const {userId, targetUserId, following} = data;
-  
+  const { userId, targetUserId, following } = data;
+
   const [goURL] = useUrlMove();
   const [follow, toggleFollow] = useToggle();
   const [userData, setUserData] = useState();
@@ -25,7 +25,7 @@ const MyBoardFollowList = ({ data, type }) => {
 
   // 언어 변수
   const { _followBtn, _followingBtn } = MyBoardLanguage();
-  
+
   const followSubmit = () => {
     getValue(follow);
     followListFetch(`${process.env.NEXT_PUBLIC_API_URL}/interaction/follow`, followDebounce ? 'delete' : 'post', { targetUserId: userData?._id });
@@ -53,21 +53,19 @@ const MyBoardFollowList = ({ data, type }) => {
         </UserPfContentBox>
       </UserIconNickBox>
 
-      {
-        userData?.screenId !== localStorage.getItem('userid') ? (
-          <FollowBox>
-            <FollowBtn
-              onClick={() => {
-                toggleFollow();
-                followSubmit();
-              }}
-              styling={follow}
-            >
-              {follow ? _followingBtn : _followBtn}
-            </FollowBtn>
-          </FollowBox>
-        ) : null
-      }
+      {userData?.screenId !== localStorage.getItem('userid') ? (
+        <FollowBox>
+          <FollowBtn
+            onClick={() => {
+              toggleFollow();
+              followSubmit();
+            }}
+            styling={follow}
+          >
+            {follow ? _followingBtn : _followBtn}
+          </FollowBtn>
+        </FollowBox>
+      ) : null}
     </ContentInner>
   );
 };

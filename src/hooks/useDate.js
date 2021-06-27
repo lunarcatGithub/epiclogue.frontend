@@ -12,7 +12,6 @@ export function useDate(type) {
   const hours = signUpdate.getHours();
   const minutes = signUpdate.getMinutes();
 
-  
   let countryResult;
 
   if (month < 10) {
@@ -22,17 +21,17 @@ export function useDate(type) {
     day = '0' + day;
   }
 
-  if(type === 'Admin'){ // admin일 경우
+  if (type === 'Admin') {
+    // admin일 경우
     countryResult = `${year}-${month}-${day} [${hours}:${minutes}]`;
-
-  } else { // 일반 콘텐츠
+  } else {
+    // 일반 콘텐츠
     if (countryDivided === 2) {
       countryResult = `${month}-${day}-${year}`;
     } else {
       countryResult = `${year}-${month}-${day}`;
     }
   }
-
 
   return [setGetDate, setCountryDivided, countryResult];
 }

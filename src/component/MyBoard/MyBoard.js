@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from "next-i18next";
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 // 컴포넌트 import
@@ -27,16 +27,10 @@ import useScroll from '@hooks/useScroll';
 
 export default function MyBoard({ boardItem, userId, nonError }) {
   const [goURL] = useUrlMove();
-  const { t } = useTranslation("common");
-  const router = useRouter()
+  const { t } = useTranslation('common');
+  const router = useRouter();
 
-  const {
-    setMyboardData,
-    loginOn,
-    setUnAuth,
-    followData,
-    setFollowData,
-  } = useContext(AppDataContext);
+  const { setMyboardData, loginOn, setUnAuth, followData, setFollowData } = useContext(AppDataContext);
 
   const [follow, toggleFollow] = useToggle();
   // console.log(boardItem)
@@ -76,13 +70,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const { langState } = useContext(LanguageContext);
   const { selectedLanguage, defaultLanguage } = langState;
 
-  const {
-    navTabArr,
-    _signDate,
-    _noIntro,
-    _followingBtn,
-    _followBtn,
-  } = MyBoardLanguage()
+  const { navTabArr, _signDate, _noIntro, _followingBtn, _followBtn } = MyBoardLanguage();
 
   //fetch
   const [, , , followFetch] = useAxiosFetch();
@@ -104,7 +92,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
       setUnAuth(true);
       return;
     }
-    goURL({ pathname: `/follows/[id]`, as:`/follows/${userScreenId}`, query:{tab:type} });
+    goURL({ pathname: `/follows/[id]`, as: `/follows/${userScreenId}`, query: { tab: type } });
   };
 
   useEffect(() => {
@@ -118,9 +106,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   }, [boardItem, countryResult]);
 
   useEffect(() => {
-    const params = {
-      
-    }
+    const params = {};
 
     userScreenId && boardDataFetch(`${process.env.NEXT_PUBLIC_API_URL}/myboard/${userScreenId}/${isTab}`, 'get', null);
   }, [isTab, userScreenId]);
@@ -134,17 +120,17 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   }, [nonError]);
 
   useEffect(() => {
-    boardDataApi && setInitRender(initRender ? [...initRender, ...boardDataApi?.data] : [...boardDataApi?.data])
-  }, [boardDataApi])
+    boardDataApi && setInitRender(initRender ? [...initRender, ...boardDataApi?.data] : [...boardDataApi?.data]);
+  }, [boardDataApi]);
 
   useEffect(() => {
-    setInitRender([])
-  }, [isTab])
+    setInitRender([]);
+  }, [isTab]);
 
   useEffect(() => {
     setRenderComponent(initRender?.map((item, index) => <MainContent key={index} contentData={item} />));
-    return () => setRenderComponent()
-  }, [initRender])
+    return () => setRenderComponent();
+  }, [initRender]);
 
   const metaData = {
     title: `${boardItem?.data?.nickname}${t('metaBoardTitle')}`,
@@ -191,27 +177,29 @@ export default function MyBoard({ boardItem, userId, nonError }) {
                   {_followBtn}
                   <FollowScore>{followData?.followerCount}</FollowScore>
                 </FollowButton>
-                {
-                  !checkMe && (
-                    <ButtonWrap>
-                      {/* <FollowAddButton data={String(follow)} onClick={toggleFollow}>
+                {!checkMe && (
+                  <ButtonWrap>
+                    {/* <FollowAddButton data={String(follow)} onClick={toggleFollow}>
                           {follow ? _followingBtn : _followBtn}
                         </FollowAddButton> */}
-                      <FollowAddButton
-                        styling={follow}
-                        onClick={() => {
-                          if (!loginOn) { setUnAuth(true); return; }
-                          toggleFollow();
-                          submitHandler();
-                        }}
-                      >
-                        {follow ? _followingBtn : _followBtn}
-                      </FollowAddButton>
-                      {/* <MoreMenuBtn>
+                    <FollowAddButton
+                      styling={follow}
+                      onClick={() => {
+                        if (!loginOn) {
+                          setUnAuth(true);
+                          return;
+                        }
+                        toggleFollow();
+                        submitHandler();
+                      }}
+                    >
+                      {follow ? _followingBtn : _followBtn}
+                    </FollowAddButton>
+                    {/* <MoreMenuBtn>
                           <MoreMenu />
                         </MoreMenuBtn> */}
-                    </ButtonWrap> )
-                }
+                  </ButtonWrap>
+                )}
               </FollowsBox>
               {/*// 레이아웃 상단 유저정보 레이아웃 끝 */}
             </UserInformBox>
@@ -219,26 +207,24 @@ export default function MyBoard({ boardItem, userId, nonError }) {
           {/* 네비게이션 시작 */}
           <NavBar show={show}>
             <NavBarInner>
-              {
-                navTabArr.map((nav, index) => (
-                  <NavItem
-                    key={index}
-                    styling={isTab === nav.link}
-                    onClick={() => {
-                      setIsTab(nav.link);
-                      goURL({
-                        pathname: `/myboard/${followData?.screenId}`,
-                        as: `/myboard/${followData?.screenId}`,
-                        query: {
-                          tab: nav.link,
-                        },
-                      });
-                    }}
-                  >
-                    <NavAllButton>{nav.title}</NavAllButton>
-                  </NavItem>
-                ))
-              }
+              {navTabArr.map((nav, index) => (
+                <NavItem
+                  key={index}
+                  styling={isTab === nav.link}
+                  onClick={() => {
+                    setIsTab(nav.link);
+                    goURL({
+                      pathname: `/myboard/${followData?.screenId}`,
+                      as: `/myboard/${followData?.screenId}`,
+                      query: {
+                        tab: nav.link,
+                      },
+                    });
+                  }}
+                >
+                  <NavAllButton>{nav.title}</NavAllButton>
+                </NavItem>
+              ))}
             </NavBarInner>
           </NavBar>
           {/* 작품 콘텐츠 시작 */}
@@ -247,23 +233,21 @@ export default function MyBoard({ boardItem, userId, nonError }) {
               <ContentsInner>
                 <MasonryBox>{renderComponent}</MasonryBox>
               </ContentsInner>
-              {
-              boardDataLoding && (
+              {boardDataLoding && (
                 <DummyLayout>
                   <Progress />
-                </DummyLayout> )
-              }
+                </DummyLayout>
+              )}
               {!boardDataLoding ? <RefLayout {...scroll} /> : null}
-              </ContentsLayout>
+            </ContentsLayout>
           </ContentsBox>
         </LayoutInner>
       </Layout>
-      {
-        state_Confirm && (
-          <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
-            <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={goURL} type={'REMOVE_USER'} />
-          </Modal> )
-      }
+      {state_Confirm && (
+        <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
+          <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={goURL} type={'REMOVE_USER'} />
+        </Modal>
+      )}
     </>
   );
 }
@@ -573,11 +557,11 @@ const ContentsLayout = styled.div`
   flex-direction: column;
   width: 100%;
   margin-top: 0.5em;
-`
+`;
 
 const RefLayout = styled.div`
-  display:flex;
-  color:#222;
+  display: flex;
+  color: #222;
   width: 200px;
   height: 50px;
 `;
@@ -612,7 +596,8 @@ const MasonryBox = styled.section`
   }
   @media (max-width: 380px) {
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-  }`;
+  }
+`;
 
 const DummyLayout = styled.div`
   display: flex;

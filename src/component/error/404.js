@@ -6,10 +6,8 @@ import styled from 'styled-components';
 import ErrorLanguage from './Error.Language';
 
 export default function NotFound() {
-
   //언어 변수
-  const {_error404} = ErrorLanguage();
-
+  const { _error404 } = ErrorLanguage();
 
   return (
     <Layout>

@@ -18,13 +18,7 @@ export function Auth() {
   const [, authApi, , authFetch] = useAxiosFetch();
 
   //언어 변수
-  const {
-    _authTitle,
-    _authSubTitle,
-    _authFailTitle,
-    _authFailSub,
-    _contact,
-  } = LoginLanguage();
+  const { _authTitle, _authSubTitle, _authFailTitle, _authFailSub, _contact } = LoginLanguage();
 
   useEffect(() => {
     const { email, token } = router.query;

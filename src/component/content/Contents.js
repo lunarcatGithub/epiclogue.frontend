@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext, memo } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
@@ -13,16 +12,10 @@ import { AppDataContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
 
-  const Contents = ({ type, searchType }) => {
-    const router = useRouter();
-        
-  const {
-    renderComponent, 
-    setRenderComponent,
-    searchData,
-    clickedComic,
-    clickedIllust,
-  } = useContext(AppDataContext);
+const Contents = ({ type, searchType }) => {
+  const router = useRouter();
+
+  const { renderComponent, setRenderComponent, searchData, clickedComic, clickedIllust } = useContext(AppDataContext);
 
   const [resultKeyword, setResultKeyword] = useState();
 
@@ -39,7 +32,7 @@ import useScroll from '@hooks/useScroll';
   const [stopData, setStopData] = useState(true);
 
   // 유저 설정 가능한 fillter
-  
+
   // 필터링
   const [filtering, setFiltering] = useState('');
 
@@ -55,102 +48,102 @@ import useScroll from '@hooks/useScroll';
 
   // 메인 데이터
   const fetchStore = () => {
-    if(resultKeyword) return;
+    if (resultKeyword) return;
     const params = {
-      type:filtering || '',
-      size:35,
-      latestId:lastContentId || null,
-    }
+      type: filtering || '',
+      size: 35,
+      latestId: lastContentId || null,
+    };
     initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, params);
-  }
+  };
 
   useEffect(() => {
-    if(!stopData) return;
-    if(type !== 'MAIN') return;
+    if (!stopData) return;
+    if (type !== 'MAIN') return;
     fetchStore();
-  }, [page, filtering, stopData])
+  }, [page, filtering, stopData]);
 
   // 검색 데이터
   const searchStore = () => {
-    if(!resultKeyword) return;
+    if (!resultKeyword) return;
     const params = {
-      type:'Board',
-      size:35,
-      latestId:lastContentId,
-      category:null,
-      q:resultKeyword
-    }
+      type: 'Board',
+      size: 35,
+      latestId: lastContentId,
+      category: null,
+      q: resultKeyword,
+    };
 
     if (searchType === 'trend') {
-      alert('서비스 개발 중이에요 (Preparing to open the service)')
+      alert('서비스 개발 중이에요 (Preparing to open the service)');
       return;
-    } else if(searchType === 'latest'){
-      params.category = filtering
-    } else if(searchType === 'users'){
-      params.type = 'User'
+    } else if (searchType === 'latest') {
+      params.category = filtering;
+    } else if (searchType === 'users') {
+      params.type = 'User';
     } else return;
-    
+
     initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, 'get', null, null, params);
-  }
+  };
 
   useEffect(() => {
-    if(!stopData) return;
-    if(type !== 'SEARCH') return;
+    if (!stopData) return;
+    if (type !== 'SEARCH') return;
     searchStore();
-  }, [page, filtering, stopData, searchType])
+  }, [page, filtering, stopData, searchType]);
 
   // 데이터 분리 렌더링
   const devideTypeData = () => {
-      if(searchType === 'users') {
-        initialApi && setUserRender(userRender ? [...userRender, ...initialApi?.data] : [...initialApi?.data])
-      } else {
-        initialApi && setInitRender(initRender ? [...initRender, ...initialApi?.data] : [...initialApi?.data])
-      }
-  }
-
-  useEffect(() => {
-    devideTypeData()
-  }, [initialApi, type])
-
- // latestId 설정
- useEffect(() => {
-  initialApi && setLastContentId(initialApi?.data[initialApi?.data?.length - 1]?._id);
-}, [page, initialApi])
-
-useEffect(() => {
-  initialApi?.data?.length === 0 && setStopData(false)
-}, [initialApi])
-
-  useEffect(() => {
-    setInitRender(null)
-    setLastContentId(null)
-    if(clickedComic && !clickedIllust){
-      setFiltering('Comic')
-    } else if(!clickedComic && clickedIllust) {
-      setFiltering('Illust')
+    if (searchType === 'users') {
+      initialApi && setUserRender(userRender ? [...userRender, ...initialApi?.data] : [...initialApi?.data]);
     } else {
-      setFiltering('')
+      initialApi && setInitRender(initRender ? [...initRender, ...initialApi?.data] : [...initialApi?.data]);
+    }
+  };
+
+  useEffect(() => {
+    devideTypeData();
+  }, [initialApi, type]);
+
+  // latestId 설정
+  useEffect(() => {
+    initialApi && setLastContentId(initialApi?.data[initialApi?.data?.length - 1]?._id);
+  }, [page, initialApi]);
+
+  useEffect(() => {
+    initialApi?.data?.length === 0 && setStopData(false);
+  }, [initialApi]);
+
+  useEffect(() => {
+    setInitRender(null);
+    setLastContentId(null);
+    if (clickedComic && !clickedIllust) {
+      setFiltering('Comic');
+    } else if (!clickedComic && clickedIllust) {
+      setFiltering('Illust');
+    } else {
+      setFiltering('');
     }
   }, [clickedComic, clickedIllust]);
-  
+
   useEffect(() => {
-    if(searchType === 'users'){
-      setOnlyUser(userRender)
-    }else {
-      setRenderList(initRender)
+    if (searchType === 'users') {
+      setOnlyUser(userRender);
+    } else {
+      setRenderList(initRender);
     }
-  }, [initRender, userRender, searchType])
+  }, [initRender, userRender, searchType]);
 
   // 검색 탭 바뀔 때 마다 초기화
   useEffect(() => {
-    setStopData(true)
+    setStopData(true);
   }, [type, searchType, filtering, url]);
 
   useEffect(() => {
     // setRenderList(null)
     // setOnlyUser(null)
-    setUserRender(null)
-    setInitRender(null)
+    setUserRender(null);
+    setInitRender(null);
     setLastContentId(null);
   }, [type, searchType, resultKeyword, url]);
 
@@ -161,33 +154,31 @@ useEffect(() => {
     } else {
       setRenderComponent(renderList?.map((item, index) => <MainContent key={index} contentData={item} />));
     }
-    return () => setRenderComponent()
-  }, [renderList, onlyUser, searchType])
+    return () => setRenderComponent();
+  }, [renderList, onlyUser, searchType]);
 
   return (
     <>
       <Layout>
         <LayoutInner>
-          {
-            !url.match('main') && renderComponent?.length !== 0 ? <MasonryBox >{renderComponent}</MasonryBox>
-            :
+          {!url.match('main') && renderComponent?.length !== 0 ? (
+            <MasonryBox>{renderComponent}</MasonryBox>
+          ) : (
             <NoResultWrap>
               <NoResultImg />
-            </NoResultWrap> 
-          }
+            </NoResultWrap>
+          )}
         </LayoutInner>
-          {
-          initDataLoading && (
-            <DummyLayout>
-              <Progress />
-            </DummyLayout> )
-          }
-          {!initDataLoading ? <RefLayout {...scroll} /> : null}
+        {initDataLoading && (
+          <DummyLayout>
+            <Progress />
+          </DummyLayout>
+        )}
+        {!initDataLoading ? <RefLayout {...scroll} /> : null}
       </Layout>
     </>
   );
 };
-
 
 const DummyLayout = styled.div`
   display: flex;
@@ -229,11 +220,12 @@ const MasonryBox = styled.section`
   }
   @media (max-width: 380px) {
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-  }`;
+  }
+`;
 
 const RefLayout = styled.div`
-  display:flex;
-  color:#222;
+  display: flex;
+  color: #222;
   width: 200px;
   height: 50px;
 `;
