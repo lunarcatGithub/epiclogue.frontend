@@ -36,7 +36,6 @@ export function AdminConfirmPopup(props) {
     const [userInform, setUserInform] = useState('');
     const [dataSendComponent, setDataSendComponent] = useState();
     const [firstTabComponent, setFirstTabComponent] = useState();
-    console.log(reportApi);
     
     // contents type
     const [currentType, setCurrentType] = useState();
@@ -117,14 +116,13 @@ export function AdminConfirmPopup(props) {
       }
     }, [currentType]);
 
-    console.log(mainType)
     useEffect(()=> { // tab 1 form ctrl
       if(mainType === 'REPORT'){
-        setFirstTabComponent(<AdminPopupReportForm reportApi={reportApi}/>);
+        setFirstTabComponent(<AdminPopupReportForm reportApi={reportApi} />);
       } else if (mainType === 'COPYRIGHT') {
-        setFirstTabComponent(<AdminPopupCopyrightForm />);
+        setFirstTabComponent(<AdminPopupCopyrightForm reportApi={reportApi} />);
       }
-    }, [mainType])
+    }, [mainType, reportApi])
 
     const popupTab = [
       {id:1, value:1, name:'신고정보'},

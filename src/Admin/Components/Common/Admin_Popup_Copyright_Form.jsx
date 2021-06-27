@@ -1,11 +1,59 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled,{ css } from 'styled-components';
+import { useUrlMove } from '@hooks/useUrlMove';
 
-export default function AdminPopupCopyrightForm() {
+// reduce 
+
+export default function AdminPopupCopyrightForm({ reportApi }) {
+  const [ copyrightData, setCopyrightData ] = useState();
+  const [goURL] = useUrlMove();
+
+  console.log(copyrightData);
+
+  useEffect(() => {
+    setCopyrightData(reportApi?.data[0]);
+  }, [reportApi]);
+
+  const listData = [
+    {title:'회사 소속', desc:copyrightData?.reportBody?.reporterCompany},
+    {title:'신고자 이메일', desc:copyrightData?.reportBody?.reporterEmail},
+    {title:'신고자 이름', desc:copyrightData?.reportBody?.reporterEmail},
+    {title:'연락처', desc:copyrightData?.reportBody?.tel},
+    {title:'서명', desc:copyrightData?.reportBody?.signature},
+    {title:'침해 사실 설명', desc:copyrightData?.reportBody?.contentSubject},
+  ]
+
   return (
-    <div>
-      zzz
-    </div>
+    <UserInfoWrap>
+      {/* 콘텐츠 상세 정보 */}
+      <DetailAboutContent>
+      <Textwrap>
+        <Title>콘텐츠 제목</Title>
+        <Desc>{copyrightData?.contentId?.boardTitle}</Desc>
+      </Textwrap>
+
+      <Textwrap>
+      <Title>콘텐츠 정보</Title>
+      <LinkDesc onClick={ 
+        () => goURL({pathname:`/viewer/${copyrightData?.contentId?._id}`})}
+        >www.epiclogue.com/viewer/{copyrightData?.contentId?._id}</LinkDesc>
+      </Textwrap>
+
+      </DetailAboutContent>
+      {/* 유저 상세 정보 */}
+      {/* <ReportUserBox>
+        { listData?.map( ( { title, desc }, i) => (
+        <Textwrap key={i}>
+          <Title>
+            {title}
+          </Title>
+          <Desc>
+            {desc}
+          </Desc>
+        </Textwrap>
+        ) ) }
+      </ReportUserBox> */}
+    </UserInfoWrap>
   )
 }
 
@@ -15,12 +63,22 @@ font-weight:${(props) => props.theme.fontWeight.font700};
 font-size:${(props) => props.theme.fontSize.font15};
 `;
 
-// 상단 유저 정보
-const InformBox = styled.span`
+// 신고 당한 유저 목록용
+const UserInfoWrap = styled.div`
 display:flex;
+flex-direction:column;
+`;
+
+const DetailAboutContent = styled(UserInfoWrap)`
+
+`
+
+const ReportUserBox = styled(UserInfoWrap)`
+position: relative;
 width:100%;
 height:auto;
-max-height:5em;
+min-height:5em;
+max-height:20em;
 overflow-y:hidden;
 overflow-y:scroll;
 border: 1px solid #999;
@@ -30,11 +88,26 @@ ${TextSize15};
 font-weight:${(props) => props.theme.fontWeight.font500};
 `;
 
-// 신고한 유저 목록용
-const ReportUserBox = styled(InformBox)`
-position: relative;
+// text
+const Textwrap = styled.div`
 display:flex;
 flex-direction:column;
-min-height:5em;
-max-height:15em;
+margin-bottom:1.8em;
 `;
+
+const Title = styled.span`
+color:${(props) => props.theme.color.popupColor};
+font-weight:${(props) => props.theme.fontWeight.font700};
+font-size:${(props) => props.theme.fontSize.font16};
+margin-bottom:0.6em;
+user-select: none;
+`;
+
+const Desc = styled.span`
+${TextSize15};
+font-weight:${(props) => props.theme.fontWeight.font500};
+`;
+
+const LinkDesc = styled.span`
+
+`

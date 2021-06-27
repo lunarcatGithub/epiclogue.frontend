@@ -32,14 +32,14 @@ export default function List({ content, setWarnConfirm, mainType }) {
         ]
         :
         <>
-          {content?._contentType && <TableDataBox>{content?._contentType}</TableDataBox>}
-          {content?.join && <TableDataBox>{content.join}</TableDataBox>}
-          {content?.category && <TableDataBox>{content.category}</TableDataBox>}
-          {content?.kind && <TableDataBox>{content.kind}</TableDataBox>}
-          {content?.content && <TableDataBox>{content.content}</TableDataBox>}
-          {content?.count && <TableDataBox>{content.count}</TableDataBox>}
-          {content?.result && <TableDataBox>{content.result}</TableDataBox>}
-          {dateResult && <TableDataBox>{dateResult}</TableDataBox>}
+          { content?._contentType && <TableDataBox>{content?._contentType}</TableDataBox> }
+          { content?.join && <TableDataBox>{content.join}</TableDataBox> }
+          { content?.category && <TableDataBox>{content.category}</TableDataBox> }
+          { content?.kind && <TableDataBox>{content.kind}</TableDataBox> }
+          { content?.content && <TableDataBox>{content.content}</TableDataBox> }
+          { content?.count && <TableDataBox>{content.count}</TableDataBox> }
+          { content?.result && <TableDataBox>{content.result}</TableDataBox> }
+          { dateResult && <TableDataBox>{dateResult}</TableDataBox> }
         </>
       }
         <TableDataBox type='btn' >

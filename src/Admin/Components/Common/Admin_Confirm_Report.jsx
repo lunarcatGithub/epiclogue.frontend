@@ -53,7 +53,7 @@ function ReporterList({ reporterId, reportType, createdAt }){
   };
 
   useEffect(() => {
-    setGetDate(createdAt)
+    setGetDate(createdAt);
   }, [createdAt]);
 
   return (

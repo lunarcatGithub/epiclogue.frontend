@@ -94,7 +94,7 @@ export default function ListForm({ type, contentsData }) {
 
   const userSendEmail = (e, type) => {
     setUserEmail(true);
-    const {target:value} = e
+    const { target: value } = e
     console.log(value)
   }
 
