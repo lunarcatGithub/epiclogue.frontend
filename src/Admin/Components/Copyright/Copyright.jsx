@@ -19,7 +19,7 @@ export const AdminCopyright = () => {
     { id: 2, email: 'ascvcvd@xcvx.com', _id: `@adf`, title: '1234', date: '2021-01-02', ban: true },
     { id: 3, email: 'asxzcvzxd@ads.com', _id: `@qwerrt`, title: 'qqqqq', date: '2021-02-28', ban: false },
   ]);
-  console.log(copyrightData);
+
   const categorySelec = [
     { title: '전체', value: 'all' },
     { title: '정상', value: 'normal' },

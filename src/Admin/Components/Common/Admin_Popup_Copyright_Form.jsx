@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import styled,{ css } from 'styled-components';
-import { useUrlMove } from '@hooks/useUrlMove';
 
 // reduce 
 
 export default function AdminPopupCopyrightForm({ reportApi }) {
   const [ copyrightData, setCopyrightData ] = useState();
-  const [goURL] = useUrlMove();
-
-  console.log(copyrightData);
 
   useEffect(() => {
     setCopyrightData(reportApi?.data[0]);
@@ -34,14 +30,12 @@ export default function AdminPopupCopyrightForm({ reportApi }) {
 
       <Textwrap>
       <Title>콘텐츠 정보</Title>
-      <LinkDesc onClick={ 
-        () => goURL({pathname:`/viewer/${copyrightData?.contentId?._id}`})}
-        >www.epiclogue.com/viewer/{copyrightData?.contentId?._id}</LinkDesc>
+      <LinkDesc target='_blank' href={`/viewer/${copyrightData?.contentId?._id}`}>www.epiclogue.com/viewer/{copyrightData?.contentId?._id}</LinkDesc>
       </Textwrap>
 
       </DetailAboutContent>
       {/* 유저 상세 정보 */}
-      {/* <ReportUserBox>
+      <ReportUserBox>
         { listData?.map( ( { title, desc }, i) => (
         <Textwrap key={i}>
           <Title>
@@ -52,7 +46,17 @@ export default function AdminPopupCopyrightForm({ reportApi }) {
           </Desc>
         </Textwrap>
         ) ) }
-      </ReportUserBox> */}
+        <Textwrap>
+          <Title>관련 링크</Title>
+          { copyrightData?.reportBody?.originLink.map( ( list, i ) => (
+          <LinkDesc
+          key={i}
+          target='_blank' 
+          href={`https://${list}`}
+          >{list}</LinkDesc>
+          ) ) }
+        </Textwrap>
+      </ReportUserBox>
     </UserInfoWrap>
   )
 }
@@ -108,6 +112,9 @@ ${TextSize15};
 font-weight:${(props) => props.theme.fontWeight.font500};
 `;
 
-const LinkDesc = styled.span`
-
+const LinkDesc = styled.a`
+cursor:pointer;
+font-weight:${(props) => props.theme.fontWeight.font700};
+color:${(props) => props.theme.color.orangeColor};
+margin-bottom:0.4em;
 `
