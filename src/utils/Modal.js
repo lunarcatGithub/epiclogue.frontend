@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import Portal from './Portal';
+import styled, { keyframes } from 'styled-components';
+// import Portal from './Portal';
 
 function Modal({ onClose, maskClosable, closable, visible, children }) {
   const onMaskClick = (e) => {
@@ -45,12 +45,23 @@ Modal.propTypes = {
   visible: PropTypes.bool,
 };
 
+//animation
+const modalAni = keyframes`
+0% {
+opacity: 0;
+},
+100% {
+  opacity: 1;
+}
+`
+
+// layout
+
 const ModalOverlay = styled.div`
   display: ${(props) => (props.visible ? 'block' : 'none')};
   box-sizing: border-box;
   position: fixed;
   /* display: flex; */
-
   top: 0;
   left: 0;
   bottom: 0;
@@ -59,6 +70,9 @@ const ModalOverlay = styled.div`
   align-items: center;
   background: ${(props) => props.theme.color.blackOpacity};
   z-index: 99999;
+
+  animation:${modalAni} .2s ease-in-out normal;
+
 `;
 
 const ModalWrapper = styled.section`

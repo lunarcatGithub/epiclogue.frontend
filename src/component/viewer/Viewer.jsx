@@ -284,7 +284,6 @@ export default function Viewer({ boardItem, nonError }) {
           </MobileViewerPort>
 
           { /* 반응 탭 */}
-            {/* <ViewerReact /> */}
             <DynamicComponentWithNoSSR />
 
           {/* 유저 피드백 */}

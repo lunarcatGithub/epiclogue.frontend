@@ -61,7 +61,13 @@ export default function WriteInputForm({ getText, _placeholder, loading, targetR
   return (
     <form action="" method="post" onSubmit={handleSubmit} autoComplete="off">
       <FeedbackInputWrap>
-        <FeedbackInput ref={targetRef} onChange={handleChange} value={feedbackBody} placeholder={_placeholder} />
+        <FeedbackInput 
+        ref={targetRef} 
+        onChange={handleChange} 
+        value={feedbackBody}
+        placeholder={_placeholder}
+        maxLength={300}
+        />
         <InputSendBtn loading={loading} feedbackBody={feedbackBody.length > 1}>
           { !loading ? <InputSendImg imgOn={feedbackBody.length > 1} /> : <ProgressSmall /> }
         </InputSendBtn>
@@ -90,7 +96,7 @@ const FeedbackInput = styled.input.attrs({
   height: 100%;
   font-weight: ${(props) => props.theme.fontWeight.font700};
   color: ${(props) => props.theme.color.blackColor};
-  padding: 0 1.5em;
+  padding: 0 3.3em 0 1.5em ;
 
   transition: 0.1s background-color ease-in-out;
   &::placeholder {
@@ -101,12 +107,13 @@ const FeedbackInput = styled.input.attrs({
     background: ${(props) => props.theme.color.microOrangeColor};
   }
 `;
+
 const InputSendBtn = styled.button`
   position: absolute;
   top: 50%;
   right: 1.2em;
   transform: translateY(-50%);
-  cursor: ${(props) => (Boolean(props.loading) && !props.feedbackBody ? 'default' : 'pointer')};
+  cursor: ${(props) => (Boolean(props.loading) || !props.feedbackBody ? 'default' : 'pointer')};
 `;
 
 const InputSendImg = styled.svg`

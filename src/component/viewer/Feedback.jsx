@@ -171,9 +171,9 @@ const FdMoreMenuAnchor = styled.button.attrs({
 
 const FeedbackUserWrap = styled.div`
   position: relative;
-  padding: 8px;
+  padding: 0.5em;
   height: auto;
-  max-height: 400px;
+  max-height: 25em;
   margin-bottom: 3px;
   background: ${(props) => props.theme.color.whiteColor};
 `;
@@ -265,7 +265,7 @@ const ReactBtnWrap = styled.div`
 `;
 
 // 댓글 및 좋아요 버튼
-const ReFbBtn = styled.button.attrs({ type: 'button' })`
+const ReFbBtn = styled.button`
   position: relative;
   width: 36px;
   height: 36px;

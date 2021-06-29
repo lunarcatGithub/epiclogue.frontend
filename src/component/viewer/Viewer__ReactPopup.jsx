@@ -2,21 +2,17 @@ import React, { useEffect, useContext, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 // 컴포넌트 import
-import { ReplyListContext } from './Viewer';
 import ViewerLanguage from './Viewer.Language';
 
 // Hooks&&reducer
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { ViewerContext } from '@store/ViewerStore';
 
+//utils
+import { popupAni } from '@utils/popupAnimation';
+
 export default function ViewerReactPopup({ boardUid }){
-  const {
-    setUserPopup,
-    setPopupType,
-    targetUser_Type,
-    setFeedbackModalCtrl,
-    setFeedbackPopupType
-  } = useContext(ViewerContext);
+  const { setUserPopup } = useContext(ViewerContext);
 
   const [reactData, setReactData] = useState([]);
 
@@ -91,7 +87,8 @@ export default function ViewerReactPopup({ boardUid }){
       </PopupCloseBox>
     </PopupInner>
   );
-};
+}
+
 
 /* 뷰어 팝업 레이아웃 */
 
@@ -132,6 +129,8 @@ const PopupInner = styled.div`
   border-radius: 12px;
   background: ${(props) => props.theme.color.backgroundColor};
   box-shadow: ${(props) => props.theme.boxshadow.popup};
+
+  animation:${popupAni} .4s ease-in-out normal;
   @media (max-width: 900px) {
     width: 360px;
   }

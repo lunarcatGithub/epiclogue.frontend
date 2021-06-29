@@ -18,6 +18,7 @@ import { ViewerContext } from '@store/ViewerStore';
 // utils
 import Modal from '@utils/Modal';
 import ConfirmPopup from '@utils/ConfirmPopup';
+import { popupDisplayAni } from '@utils/popupAnimation';
 
 const FeedbackReply = ({ boardUid, feedbackUid, FeedbackData }) => {
   const targetRef = useRef();
@@ -177,17 +178,22 @@ const FeedbackLayout = styled.section`
   background: ${(props) => props.theme.color.backgroundColor};
   box-shadow: ${(props) => props.theme.boxshadow.popup};
   box-sizing: content-box;
+
+  animation:${popupDisplayAni} .4s ease-in-out normal;
+
   @media (max-width: 900px) {
     max-width: 100vh;
     min-width: 100vw;
     height: 100%;
     border-radius: 0;
+    animation:none;
+
   }
 `;
 // 피드백 팝업 헤더
 const FBheader = styled.article`
   width: 100%;
-  height: 5.2em;
+  height: 5.8em;
   margin-bottom: 0.1em;
   background: ${(props) => props.theme.color.whiteColor};
   box-shadow: ${(props) => props.theme.boxshadow.nav};

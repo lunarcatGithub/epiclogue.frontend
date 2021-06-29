@@ -110,12 +110,12 @@ const center = css`
 
 // 버튼 wrap
 const ReactBtnWrap = styled.div`
-  
   display:flex;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: ${props => props.type === 'Board' ? 0 : `4em`};
+  margin-top:0.2em;
 `;
 
 const BtnBox = styled.div`

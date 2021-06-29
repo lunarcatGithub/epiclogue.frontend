@@ -84,9 +84,9 @@ export default function ViewerReact() {
 
     return (
       <ReactTab>
-        <ReactInfoWrap onClick={ () => openReactPopupHandler() }>
+        <ReactInfoWrap>
           <ReactImg />
-          <ReactTitle>
+          <ReactTitle onClick={ () => openReactPopupHandler() } >
             { reactData?.reactCount }
             { _contentsReact }
           </ReactTitle>
@@ -207,7 +207,7 @@ const BtnBox = styled.button`
   height: auto;
 `;
 
-const ShareBtn = styled.button`
+const ShareBtn = styled.span`
   ${center};
   display:flex;
   width:2em;

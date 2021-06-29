@@ -1,7 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'next-i18next';
-// import { useRouter } from 'next/router';
 
 //component
 import Contents from '@component/content/Contents';
@@ -12,15 +11,11 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { AppDataContext } from '@store/App_Store';
 
 const Main = ({ metaLang }) => {
-  // const router = useRouter();
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   const [goURL] = useUrlMove();
   const { t } = useTranslation('common');
 
-  // useEffect(() => {
-  //   router.events.on('routeChangeComplete', console.log('test'));
 
-  // }, [])
   // Meta 전용
   const metaData = {
     title: t('metaMainTitle'),
