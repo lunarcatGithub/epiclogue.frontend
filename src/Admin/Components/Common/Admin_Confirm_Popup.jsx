@@ -26,17 +26,18 @@ export function AdminConfirmPopup(props) {
       reportList,
       setWarnConfirm,
       listData,
-      dangerConfirm,
     } = props;
 
     const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
-    
+    const [ , doReportApi, doReportError, doReportFetch] = useAxiosFetch();
+
     const [headerTitle, setHeaderTitle] = useState({});
     const [dataOnChange, dataOnChangeHandler] = useState('스팸성');
     const [userInform, setUserInform] = useState('');
-    const [dataSendComponent, setDataSendComponent] = useState();
-    const [firstTabComponent, setFirstTabComponent] = useState();
-    
+    const [dataSendComponent, setDataSendComponent] = useState(null);
+    const [firstTabComponent, setFirstTabComponent] = useState(null);
+    const [ reportStatus, setReportStatus ] = useState(0); // 0:삭제, 1:정지, 3:탈퇴, 4:반려
+    const [ reportType, setReportType ] = useState(null);
     // contents type
     const [currentType, setCurrentType] = useState();
 
@@ -98,6 +99,24 @@ export function AdminConfirmPopup(props) {
         setUserInform(`해당 게시물 내에서 ${dataOnChange} 내용이 확인되어 ${postType}이 ${_type}었습니다 `)
     }
 
+
+
+    const dangerConfirm = () => { // 처리 관리 함수
+      const body = {
+        reportType: reportStatus,
+        reportStatus: reportStatus,
+        suspectUserId: currentData?._suspectUserId,
+        contentId: currentData?._id,
+        contentType: currentData?._contentType
+      }
+
+      const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
+      doReportFetch(URL, 'delete', body, null, null);
+    }
+
+
+
+
     useEffect(()=> {
         deviedHandler();
     },[currentType, dataOnChange]);
@@ -107,11 +126,11 @@ export function AdminConfirmPopup(props) {
     }, []);
 
     useEffect(() => {
-      if(currentType === 'Hide' || currentType === 'Remove'){
+      if(currentType === 'Hide' || currentType === 'remove'){
         setDataSendComponent(<AdminConfirmInform type={type} reportList={reportList}/>)
-      } else if(currentType === 'Suspension' || currentType === 'Leave'){
+      } else if(currentType === 'suspension' || currentType === 'leave'){
         setDataSendComponent(<AdminConfirmEmail listData={listData} mainType={mainType} />)
-      } else if(currentType === 'TurnBack'){
+      } else if(currentType === 'turnBack'){
         setDataSendComponent(<AdminConfirmTurnBack/>)
       }
     }, [currentType]);
@@ -132,10 +151,10 @@ export function AdminConfirmPopup(props) {
     // 신고 or 복구 하기
     useEffect(() => {
       const processingBtn = [
-        {title:'삭제', value:'Remove'},
-        {title:'정지', value:'Suspension'},
-        {title:'탈퇴', value:'Leave'},
-        {title:'반려', value:'TurnBack'},
+        {title:'삭제', value:'remove', type:0},
+        {title:'정지', value:'suspension', type:1},
+        {title:'탈퇴', value:'leave', type:2},
+        {title:'반려', value:'turnBack', type:3},
       ];
 
       const restoreBtn = [
@@ -191,13 +210,15 @@ export function AdminConfirmPopup(props) {
           <ConfirmDivBottom>
           { 
             isTab === 1 &&
-            decision.map( ( { title, value }, index ) => (
+            decision.map( ( { title, value, type}, index ) => (
               <ConfirmBtn 
               key={index} 
               type={value} 
               onClick={ () => {
                 setIsTab(2);
                 setCurrentType(value);
+                setReportType(value);
+                setReportStatus(type)
               } } >{title}</ConfirmBtn>
             ) )
           }

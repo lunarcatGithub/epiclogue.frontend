@@ -13,7 +13,7 @@ export default function List({ content, setWarnConfirm, mainType }) {
   useEffect(() => {
     setGetDate(content?._createdAt);
   }, [content]);
-  console.log(content)
+
   return (
     <TableRowBox>
       <TableDataBox>

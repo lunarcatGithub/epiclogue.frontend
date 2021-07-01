@@ -1,10 +1,23 @@
-import React,{ useState } from 'react'
+import React,{ useState, useEffect, useContext } from 'react'
 import styled from 'styled-components';
 
 // 컴포넌트 import
 import ListForm from '../Common/List__Form';
 
+// reduce
+import { AdminContext } from '../Store/Admin_Context';
+
+// hooks
+import useAxiosFetch from '@hooks/useAxiosFetch';
+
 export const AdminReportResult =()=> {
+	const { setReportData, reportData, setIsAdmin } = useContext(AdminContext);
+
+	const [toggleSelect, setToggleSelect] = useState();
+
+  // fetch
+  const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
+  console.log(reportApi)
     //data
     const [userContentsData, setUserContentsData] = useState([
         {id:1, _id:`@asasdd`, title:'신고받을만한 콘텐츠임니다ㅎ',  result:'삭제', kind:'대댓글', date:'2019-05-14'},
@@ -27,9 +40,32 @@ export const AdminReportResult =()=> {
     
     const buttonType = [
         {title:'복구', value:'Restore'},
-    ]   
+    ]
+		
+		useEffect(() => {
+      const params = {
+        size:30,
+        page:0,
+        isCopyright:false
+      }
+      const URL = `${process.env.NEXT_PUBLIC_API_URL}/report/processedReports`;
+      reportFetch(URL, 'get', null, null, params)
+      }, []);
+      
+    useEffect(() => {
+      if(reportApi?.result === 'ok'){
+        setIsAdmin(true);
+        // setReportData(reportApi?.data);
 
-    const [toggleSelect, setToggleSelect] = useState();
+      } else if(reportError?.status === 401) {
+        setIsAdmin(false);
+
+      } else {
+        return;
+      }
+    }, [reportApi, reportError]);
+
+
 
     const dataHadler = (e, type) => {
         userContentsData?.forEach(_contentsData => {
@@ -58,21 +94,21 @@ export const AdminReportResult =()=> {
 
 
     return (
-        <Layout>
-          <LayoutInner>
-          <ListForm 
-            type='REPORTSRESULT' 
-            contentsData={{
-            headerArr,
-            categorySelec,
-            userContentsData,
-            searchFilter,
-            dataHadler,
-            setToggleSelect,
-            buttonType
-            }} />
-          </LayoutInner>
-        </Layout>
+			<Layout>
+				<LayoutInner>
+				<ListForm 
+					type='REPORTSRESULT' 
+					contentsData={{
+					headerArr,
+					categorySelec,
+					userContentsData,
+					searchFilter,
+					dataHadler,
+					setToggleSelect,
+					buttonType
+					}} />
+				</LayoutInner>
+			</Layout>
     )
 }
 
