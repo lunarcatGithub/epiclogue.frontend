@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 // component import
 import FeedbackReply from './Feedback__Reply';
@@ -137,6 +137,17 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
   );
 };
 
+const fadeIn = keyframes`
+0% {
+  opacity:0;
+  max-height:0;
+},
+100% {
+  opacity:1;
+  max-height:25em;
+}
+`
+
 //버튼
 const MoreMenuDot = styled.span`
   display: flex;
@@ -176,6 +187,8 @@ const FeedbackUserWrap = styled.div`
   max-height: 25em;
   margin-bottom: 3px;
   background: ${(props) => props.theme.color.whiteColor};
+  animation:${fadeIn} .5s ease-in-out normal;
+
 `;
 
 // 반응 탭

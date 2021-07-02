@@ -63,19 +63,12 @@ const ContextStore = ({ children }) => {
   const isLogin = typeof window !== 'undefined' && localStorage.getItem('keepLogin');
   const [loginOn, setLoginOn] = useState(JSON.parse(isLogin) || false);
 
+  // current Path
+  const [currentPath, setCurrentPath] = useState();
+  // const [lengthStore, setLengthStore] = useState([]);
   // 개발 & 프로덕션 로그인 분기처리
   const devProductionHandle = () => {
     let divied = process.env.NODE_ENV;
-    // cookieHandle('GET', 'access_token');
-    // if(divied === 'production'){
-    //   if(cookieValue?.length > 1) { // 쿠키값이 있다면 로컬스토리지 갱신
-    //     localStorage.setItem('keepLogin', true);
-    //     setLoginOn(true)
-    //   }
-    // } else { // 푸시 전에 주석처리
-    //   localStorage.setItem('keepLogin', true);
-    //   setLoginOn(true)
-    // }
   };
 
   useLayoutEffect(() => {
@@ -91,7 +84,11 @@ const ContextStore = ({ children }) => {
       }
     }
   }, [loginOn]);
-  console.log(renderComponent);
+
+  useEffect(() => {
+    setCurrentPath(router?.query?.path);
+  }, [router.query])
+
   return (
     <AppDataContext.Provider
       value={{
@@ -118,16 +115,17 @@ const ContextStore = ({ children }) => {
         setRenderList,
         page,
         setPage,
+        currentPath
       }}
     >
       <LanguageContext.Provider value={{ langState, langPatch, availableLanguage, availableLangPatch }}>
         <AlertContext.Provider value={{ alertState, alertPatch }}>
           {children}
-          {unAuth && (
+          { unAuth && (
             <Modal visible={unAuth} maskClosable={unAuth} onClose={setUnAuth}>
               <UnauthLogin setUnAuth={setUnAuth} />
             </Modal>
-          )}
+          ) }
         </AlertContext.Provider>
       </LanguageContext.Provider>
     </AppDataContext.Provider>

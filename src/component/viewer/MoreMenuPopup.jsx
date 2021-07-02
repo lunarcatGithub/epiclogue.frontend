@@ -152,7 +152,7 @@ const MyPopupInner = styled.div`
   border-radius: 12px;
   background: ${(props) => props.theme.color.backgroundColor};
   box-shadow: ${(props) => props.theme.boxshadow.popup};
-  animation:${popupAni} .4s ease-in-out normal;
+  animation:${popupAni} .3s ease-in-out normal;
 
 `;
 //버튼

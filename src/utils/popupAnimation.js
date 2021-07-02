@@ -21,6 +21,11 @@ export const popupAni = keyframes` // position abolute 일 때
   top: 48.5%;
 
 }
+95% {
+  opacity:1;
+  top: 49.5%;
+
+}
 100% {
   opacity:1;
   top: 50%;

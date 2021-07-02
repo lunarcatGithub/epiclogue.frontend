@@ -1,6 +1,6 @@
 let selectLang,
   // defaultLang = typeof window !== 'undefined' && navigator.language,
-  defaultLang = typeof window !== 'undefined' && document.documentElement.lang.toLowerCase(),
+  defaultLang = typeof window !== 'undefined' && document?.documentElement?.lang?.toLowerCase(),
   _defaultLang;
 
 switch (defaultLang) {

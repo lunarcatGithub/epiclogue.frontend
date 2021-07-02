@@ -6,6 +6,9 @@ import { useUrlMove } from '@hooks/useUrlMove';
 import { LanguageContext } from '@store/App_Store';
 import { unAuthLang } from '@language/Lang.Common';
 
+//utils
+import { popupAni } from '@utils/popupAnimation';
+
 export default function UnauthLogin(props) {
   const { setUnAuth } = props;
   const [goURL] = useUrlMove();
@@ -52,10 +55,11 @@ const Layout = styled.div`
   transform: translate(-50%, -50%);
   max-width: 30em;
   width: calc(100% - 4em);
-
   background: ${(props) => props.theme.color.whiteColor};
   border-radius: 0.4em;
   overflow: hidden;
+  animation:${popupAni} .3s ease-in-out normal;
+
   @media (max-width: 900px) {
     width: calc(100% - 3em);
   }

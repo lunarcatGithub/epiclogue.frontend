@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 // 컴포넌트 import
 import HeaderLanguage from './Header.Language';
@@ -15,6 +16,8 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 React.useLayoutEffect = React.useEffect;
 // 프로필 팝업
 const HeaderPfPopup = () => {
+  const router = useRouter();
+
   const [goURL] = useUrlMove();
   //profile
   const [ProfileImg, setProfileImg] = useState();
@@ -24,7 +27,7 @@ const HeaderPfPopup = () => {
   const [, testCookieHandle] = useCookie();
 
   const { alertPatch, loginOn } = useContext(AlertContext);
-  const { setLoginOn } = useContext(AppDataContext);
+  const { setLoginOn, setCurrentPath } = useContext(AppDataContext);
 
   const { show, profileApi, profileError } = useContext(HeaderDataContext);
   const [, , , logoutFetch] = useAxiosFetch();
@@ -44,7 +47,7 @@ const HeaderPfPopup = () => {
     localStorage.removeItem('userid');
     localStorage.setItem('keepLogin', false);
 
-    goURL({ pathname: '/login' });
+    goURL({ pathname: '/login', as:'/login', query:{path:router?.asPath} });
   };
 
   useEffect(() => {

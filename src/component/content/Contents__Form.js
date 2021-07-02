@@ -14,7 +14,7 @@ export default function MainContent({ contentData }) {
   const [goURL] = useUrlMove();
 
   useEffect(() => {
-    setContents(contentData.board ? contentData.board : contentData);
+    setContents(contentData.board ? contentData?.board : contentData);
   }, [contentData]);
 
   //언어 변수

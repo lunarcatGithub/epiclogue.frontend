@@ -6,7 +6,10 @@ import ViewerLanguage from './Viewer.Language';
 
 // hooks&reducer
 import { useUrlMove } from '@hooks/useUrlMove';
-import { ViewerContext } from '@store/ViewerStore';
+import { ViewerContext } from '@store/ViewerStore'
+;
+//utils
+import { popupAni } from '@utils/popupAnimation';
 
 const TranslatePopup = () => {
   const { viewerData, setUserPopup } = useContext(ViewerContext);
@@ -86,6 +89,7 @@ const UserContentPopupInner = styled.div`
   border-radius: 12px;
   background: ${(props) => props.theme.color.backgroundColor};
   box-shadow: ${(props) => props.theme.boxshadow.popup};
+  animation:${popupAni} .3s ease-in-out normal;
 `;
 
 //헤더 탭
