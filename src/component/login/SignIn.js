@@ -82,6 +82,7 @@ export const SignIn = ({ setChangePage }) => {
     if (Object.keys(errors).length === 0) return;
     if (errors === 'incorrect') {
       setErrorTitle(_loginFailHolder);
+      
     } else if (errors === 'leave') {
       setErrorTitle(_leaveUser);
     } else {

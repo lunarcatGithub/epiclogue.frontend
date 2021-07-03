@@ -17,7 +17,7 @@ export default function AdminPopupCopyrightForm({ reportApi }) {
     {title:'연락처', desc:copyrightData?.reportBody?.tel},
     {title:'서명', desc:copyrightData?.reportBody?.signature},
     {title:'침해 사실 설명', desc:copyrightData?.reportBody?.contentSubject},
-  ]
+  ];
 
   return (
     <UserInfoWrap>

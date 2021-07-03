@@ -109,9 +109,14 @@ export function AdminConfirmPopup(props) {
         contentId: currentData?._id,
         contentType: currentData?._contentType
       }
-
+      const confirmResult = confirm('정말 처리하시겠습니까?');
+      if(confirmResult){
       const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
       doReportFetch(URL, 'delete', body, null, null);
+
+      } else {
+        return
+      }
     }
 
 

@@ -52,7 +52,7 @@ const TranslatePopup = () => {
               query: { 
                 writer, boardUid:boardId, 
                 data: JSON.stringify(viewerData), 
-                boardImg:originBoardId?.boardImg
+                boardImg
               } } );
           } } >
           {_useEditor}

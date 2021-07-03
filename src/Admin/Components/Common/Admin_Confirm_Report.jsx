@@ -20,7 +20,7 @@ export function ConfirmReportPopup({ reportData }) {
           <ReportBody>
           { reportData?.data?.map( ( { reporterId, reportType, createdAt }, i ) => (
             <ReporterList 
-              reporterId = { reporterId }
+            reporterId = { reporterId }
               reportType = { reportType }
               createdAt = { createdAt }
               key = { i }

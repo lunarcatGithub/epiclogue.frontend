@@ -252,6 +252,7 @@ export default function Viewer({ boardItem, nonError }) {
     fbMoreText(feedbackData?.length);
   }, [prevFeeback, feedbackData, feedbackApi, modifiedFeedbackData])
 
+
     // Meta 전용
 
     const metaData = {

@@ -32,7 +32,15 @@ export default function List({ content, setWarnConfirm, mainType }) {
         ]
         :
         <>
-          { content?._contentType && <TableDataBox>{content?._contentType}</TableDataBox> }
+          { content?._contentType && 
+          <TableDataBox> 
+            <a href={`https://www.epiclogue.com/viewer/${content?._id}`} 
+              target="_blank" 
+              rel="noreferrer"
+            >
+            {content?._contentType}
+            </a>
+          </TableDataBox> }
           { content?.join && <TableDataBox>{content.join}</TableDataBox> }
           { content?.category && <TableDataBox>{content.category}</TableDataBox> }
           { content?.kind && <TableDataBox>{content.kind}</TableDataBox> }
