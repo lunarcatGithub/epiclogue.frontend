@@ -11,7 +11,8 @@ import { AdminContext } from '../Store/Admin_Context';
 //component
 import { AdminConfirmPopup } from './Admin_Confirm_Popup';
 import List from './List';
-
+import ResultList from './Result__List';
+import Page from './Page';
 
 export default function ListForm({ type, contentsData }) {
   const {
@@ -28,7 +29,15 @@ export default function ListForm({ type, contentsData }) {
     buttonType
   } = contentsData;
 
-  const { reportList, reportData, setCurrentTargetData, copyrightData } = useContext(AdminContext);
+  const {
+    reportList,
+    reportData,
+    setCurrentTargetData,
+    copyrightData,
+    currentPage,
+    copyrightResultData,
+    reportResultData
+  } = useContext(AdminContext);
 
   // console.log(reportData[0]?.suspactUserInfo[0])
 
@@ -145,22 +154,18 @@ export default function ListForm({ type, contentsData }) {
     typeHandler();
   }, [type]);
 
+  const reportTypeArr = {
+    'REPORT':reportData, 
+    'REPORTSRESULT':reportResultData,
+    'COPYRIGHT':copyrightData,
+    'COPYRIGHTRESULT':copyrightResultData,
+  };
+
   useEffect(() => {
-    if(reportData?.length === 0) return;
-    if( type === 'REPORT' ){
-      setListData(reportData);
-
-    } else {
-      setListData(copyrightData);
-
+    for(let[key, value] of Object.entries(reportTypeArr)){
+      if(key === type) setListData(value);
     }
-  }, [reportData, copyrightData])
-
-  const viewNum = [
-    { title: '10개', value: 10 },
-    { title: '30개', value: 30 },
-    { title: '50개', value: 50 },
-  ];
+  }, [type, currentPage, reportData, copyrightData, reportResultData, copyrightResultData]);
 
   return (
     <>
@@ -181,7 +186,8 @@ export default function ListForm({ type, contentsData }) {
                 data={dropDown2} 
                 type={type} 
               />
-            </> ) }
+            </> 
+            ) }
         </TopCenterLayout>
         <TopRightLayout>
           {/* <Dropdown data={dropDown3} type={type} /> */}
@@ -207,11 +213,22 @@ export default function ListForm({ type, contentsData }) {
           </TableHead>
           {/*  테이블 본문 시작 */}
           <TableBody>
-            { listData?.map( ( content, i ) => ( 
+            {type === 'REPORT' || type === 'COPYRIGHT' ? listData?.map( ( content, i ) => ( 
               <List key={i} content={content} setWarnConfirm={setWarnConfirm} mainType={type}/> 
-              ) ) }
+              ) )
+            :
+              null
+            }
+            {type === 'REPORTSRESULT' || type === 'COPYRIGHTRESULT' ? listData?.map( ( content, i ) => ( 
+              <ResultList key={i} content={content} setWarnConfirm={setWarnConfirm} mainType={type}/> 
+              ) ) 
+            :
+              null
+            }
           </TableBody>
         </TableBox>
+        { /* page */ }
+        <Page/>
       </MainLayout>
       {/* 정지, 탈퇴, 블라인드 팝업 */}
         {

@@ -11,7 +11,7 @@ import { AdminContext } from '../Store/Admin_Context';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 export const AdminReportResult =()=> {
-	const { setReportData, reportData, setIsAdmin } = useContext(AdminContext);
+	const { setReportResultData, setIsAdmin, currentPage } = useContext(AdminContext);
 
 	const [toggleSelect, setToggleSelect] = useState();
 
@@ -45,7 +45,7 @@ export const AdminReportResult =()=> {
 		useEffect(() => {
       const params = {
         size:30,
-        page:0,
+        page:currentPage,
         isCopyright:false
       }
       const URL = `${process.env.NEXT_PUBLIC_API_URL}/report/processedReports`;
@@ -55,7 +55,7 @@ export const AdminReportResult =()=> {
     useEffect(() => {
       if(reportApi?.result === 'ok'){
         setIsAdmin(true);
-        // setReportData(reportApi?.data);
+        setReportResultData(reportApi?.data);
 
       } else if(reportError?.status === 401) {
         setIsAdmin(false);
@@ -64,7 +64,6 @@ export const AdminReportResult =()=> {
         return;
       }
     }, [reportApi, reportError]);
-
 
 
     const dataHadler = (e, type) => {

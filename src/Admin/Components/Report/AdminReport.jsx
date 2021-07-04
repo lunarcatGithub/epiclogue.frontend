@@ -11,7 +11,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import { AdminContext } from '../Store/Admin_Context';
 
 export const AdminReport =()=> {
-    const { setReportData, reportData, setIsAdmin } = useContext(AdminContext);
+    const { setReportData, reportData, setIsAdmin, currentPage } = useContext(AdminContext);
 
     //data
 
@@ -36,40 +36,16 @@ export const AdminReport =()=> {
     const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
     
     const [ toggleSelect, setToggleSelect ] = useState();
-
-    // const dataHadler = (e, type) => {
-    //   userContentsData?.forEach(_contentsData => {
-    //     if( Number(toggleSelect) === _contentsData.id ){
-    //       let data = userContentsData
-    //       if(type === 'main'){
-    //         // 회원 탈퇴
-    //         data.splice(Number(toggleSelect)-1, 1)
-    //         setUserContentsData(data);
-            
-    //       } else if( type === 'sub'){
-    //         // 회원 정지
-    //         if(userContentsData.hide === true){
-    //             data.hide = false
-    //         }else {
-    //             data.hide = true
-    //         }
-    //         setUserContentsData(data)
-    //       }
-    //     } else {
-    //         return;
-    //     }
-    //   });
-    // } 
-
+    console.log(currentPage)
     useEffect(() => {
     const params = {
       size:30,
-      page:0,
+      page:currentPage,
       isCopyright:false
     }
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
     reportFetch(URL, 'get', null, null, params)
-    }, []);
+    }, [currentPage]);
 
     useEffect(() => {
       if(reportApi?.result === 'ok'){

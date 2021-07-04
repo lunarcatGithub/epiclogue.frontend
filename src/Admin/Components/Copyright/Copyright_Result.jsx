@@ -11,7 +11,7 @@ import { AdminContext } from '../Store/Admin_Context';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 export const CopyRightReportResult =()=> {
-  const { setReportData, reportData, setIsAdmin } = useContext(AdminContext);
+  const { setReportData, setCopyrightResultData, setIsAdmin } = useContext(AdminContext);
 
   // fetch
   const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
@@ -78,7 +78,7 @@ export const CopyRightReportResult =()=> {
     useEffect(() => {
       if(reportApi?.result === 'ok'){
         setIsAdmin(true);
-        // setReportData(reportApi?.data);
+        setCopyrightResultData(reportApi?.data);
 
       } else if(reportError?.status === 401) {
         setIsAdmin(false);

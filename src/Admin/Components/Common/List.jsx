@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import styled from 'styled-components';
 
 //hooks && reduce
@@ -9,9 +9,11 @@ export default function List({ content, setWarnConfirm, mainType }) {
   const { setCurrentData } = useContext(AdminContext);
 
   const [ setGetDate, , dateResult ] = useDate('Admin');
-
+  const [ reportData, setReportData ] = useState(null);
+  console.log(content)
   useEffect(() => {
     setGetDate(content?._createdAt);
+    setReportData(content)
   }, [content]);
 
   return (
@@ -19,34 +21,34 @@ export default function List({ content, setWarnConfirm, mainType }) {
       <TableDataBox>
         <CheckBox
           name="contents"
-          value={content.id}
+          value={reportData?.id}
           // onChange={(e) => allCheckHandle(e, 'one')}
-          defaultChecked={content.isSelect}
+          defaultChecked={reportData?.isSelect}
         />
       </TableDataBox>
       <TableDataBox >{0}</TableDataBox>
-        <TableDataBox>{content?.suspectUserInfo[0]?.screenId}</TableDataBox>
+        <TableDataBox>{reportData?.suspectUserInfo[0]?.screenId}</TableDataBox>
         { mainType === 'COPYRIGHT' ?
         [
           <TableDataBox key={0} >{dateResult}</TableDataBox>,
         ]
         :
         <>
-          { content?._contentType && 
+          { reportData?._contentType && 
           <TableDataBox> 
-            <a href={`https://www.epiclogue.com/viewer/${content?._id}`} 
+            <a href={`https://www.epiclogue.com/viewer/${reportData?._id}`} 
               target="_blank" 
               rel="noreferrer"
             >
-            {content?._contentType}
+            {reportData?._contentType}
             </a>
           </TableDataBox> }
-          { content?.join && <TableDataBox>{content.join}</TableDataBox> }
-          { content?.category && <TableDataBox>{content.category}</TableDataBox> }
-          { content?.kind && <TableDataBox>{content.kind}</TableDataBox> }
-          { content?.content && <TableDataBox>{content.content}</TableDataBox> }
-          { content?.count && <TableDataBox>{content.count}</TableDataBox> }
-          { content?.result && <TableDataBox>{content.result}</TableDataBox> }
+          { reportData?.join && <TableDataBox>{reportData.join}</TableDataBox> }
+          { reportData?.category && <TableDataBox>{reportData.category}</TableDataBox> }
+          { reportData?.kind && <TableDataBox>{reportData.kind}</TableDataBox> }
+          { reportData?.reportData && <TableDataBox>{reportData.content}</TableDataBox> }
+          { reportData?.count && <TableDataBox>{reportData.count}</TableDataBox> }
+          { reportData?.result && <TableDataBox>{reportData.result}</TableDataBox> }
           { dateResult && <TableDataBox>{dateResult}</TableDataBox> }
         </>
       }
@@ -57,7 +59,7 @@ export default function List({ content, setWarnConfirm, mainType }) {
               // setToggleSelect(e.currentTarget.id);
               // lastDataConfirm(e);
               setWarnConfirm(true);
-              setCurrentData(content);
+              setCurrentData(reportData);
             } } > 처리
           </AllButton>
       </TableDataBox>
