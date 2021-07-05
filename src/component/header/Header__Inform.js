@@ -27,7 +27,7 @@ const UserInform = () => {
   const [stopData, setStopData] = useState(true);
 
   //언어 변수
-  const { _headerInfrom, _userReactLike, _userFeedback, _userSecondary, _userBookmark, _userFollowMe, _userReply, _dataRemove } = HeaderLanguage();
+  const { _headerInfrom, _userReactLike, _userFeedback, _userSecondary, _userBookmark, _userFollowMe, _userReply, _dataRemove, _adminInform } = HeaderLanguage();
 
   //fetch
   const [notiLoding, notiApi, , notiFetch] = useAxiosFetch();
@@ -99,13 +99,14 @@ const UserInform = () => {
             <UserImgWrap>
               <UserImgBox>
                 <UserImg profile={maker?.profile?.thumbnail} />
-                <InformTypeIcon>
+                <InformTypeIcon stylig={notificationType}>
                   {notificationType === 'Bookmark' && <BookmarkImg infoImg={'/static/bookmark-2.svg'} />}
                   {notificationType === 'Feedback' && <FeedbackImg infoImg={'/static/comment-3.svg'} />}
                   {notificationType === 'Like' && <LikeImg infoImg={'/static/heart-2.svg'} />}
                   {notificationType === 'Secondary' && <RecreateImg infoImg={'/static/globe-2.svg'} />}
                   {notificationType === 'Follow' && <FollowImg infoImg={'/static/followAdd.svg'} />}
                   {notificationType === 'Reply' && <ReplyImg infoImg={'/static/comment-2.svg'} />}
+                  {notificationType === 'Notice' && <NoticeImg infoImg={'/static/alert.svg'} />}
                 </InformTypeIcon>
               </UserImgBox>
             </UserImgWrap>
@@ -113,13 +114,14 @@ const UserInform = () => {
             <ContentRColumn>
               <TextBox>
                 <UserText>
-                  {maker?.nickname}
+                  {notificationType === 'Notice' ? 'Admin' : maker?.nickname}
                   {notificationType === 'Bookmark' && <UserInteract>{_userBookmark}</UserInteract>}
                   {notificationType === 'Feedback' && <UserInteract>{_userFeedback}</UserInteract>}
                   {notificationType === 'Like' && <UserInteract>{_userReactLike}</UserInteract>}
                   {notificationType === 'Secondary' && <UserInteract>{_userSecondary}</UserInteract>}
                   {notificationType === 'Follow' && <UserInteract>{_userFollowMe}</UserInteract>}
                   {notificationType === 'Reply' && <UserInteract>{_userReply}</UserInteract>}
+                  {notificationType === 'Notice' && <UserInteract>{_adminInform}</UserInteract>}
                 </UserText>
               </TextBox>
               {targetInfo ? <InteractContent>{targetInfo?.boardTitle || targetInfo?.feedbackBody}</InteractContent> : <DeletedContent>{_dataRemove}</DeletedContent>}
@@ -272,6 +274,7 @@ const InformTypeIcon = styled.div`
   height: 32px;
   border-radius: 50%;
   background: #fff;
+  ${({ stylig, theme }) => stylig === 'Notice' && `border: 2px solid ${theme.color.middlePinkColor}`};
 `;
 
 // 좋아요 아이콘
@@ -295,6 +298,11 @@ const RecreateImg = styled(BookmarkImg)``;
 const FollowImg = styled(BookmarkImg)``;
 // 대댓글
 const ReplyImg = styled(BookmarkImg)``;
+
+const NoticeImg = styled(BookmarkImg)`
+  width: 1.5em;
+  height: 1.5em;
+`;
 
 // 콘텐츠 내용
 const TextBox = styled.div`

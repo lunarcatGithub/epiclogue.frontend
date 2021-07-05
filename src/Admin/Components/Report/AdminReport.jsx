@@ -36,7 +36,7 @@ export const AdminReport =()=> {
     const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
     
     const [ toggleSelect, setToggleSelect ] = useState();
-    console.log(currentPage)
+
     useEffect(() => {
     const params = {
       size:30,

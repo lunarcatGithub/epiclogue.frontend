@@ -47,7 +47,7 @@ const HeaderPfPopup = () => {
     localStorage.removeItem('userid');
     localStorage.setItem('keepLogin', false);
 
-    goURL({ pathname: '/login', as:'/login', query:{path:router?.asPath} });
+    goURL({ pathname: '/login', as: '/login', query: { path: router?.asPath } });
   };
 
   useEffect(() => {

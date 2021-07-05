@@ -17,8 +17,8 @@ export const AdminReportResult =()=> {
 
   // fetch
   const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
-  console.log(reportApi)
-    //data
+
+  //data
     const [userContentsData, setUserContentsData] = useState([
         {id:1, _id:`@asasdd`, title:'신고받을만한 콘텐츠임니다ㅎ',  result:'삭제', kind:'대댓글', date:'2019-05-14'},
         {id:2, _id:`@adf`, title:'신고쟁이 ㅎㅎㅋㅎ', result:'삭제',  kind:'대댓글', date:'2019-05-14'},

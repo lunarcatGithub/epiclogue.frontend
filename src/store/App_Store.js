@@ -87,7 +87,7 @@ const ContextStore = ({ children }) => {
 
   useEffect(() => {
     setCurrentPath(router?.query?.path);
-  }, [router.query])
+  }, [router.query]);
 
   return (
     <AppDataContext.Provider
@@ -115,17 +115,17 @@ const ContextStore = ({ children }) => {
         setRenderList,
         page,
         setPage,
-        currentPath
+        currentPath,
       }}
     >
       <LanguageContext.Provider value={{ langState, langPatch, availableLanguage, availableLangPatch }}>
         <AlertContext.Provider value={{ alertState, alertPatch }}>
           {children}
-          { unAuth && (
+          {unAuth && (
             <Modal visible={unAuth} maskClosable={unAuth} onClose={setUnAuth}>
               <UnauthLogin setUnAuth={setUnAuth} />
             </Modal>
-          ) }
+          )}
         </AlertContext.Provider>
       </LanguageContext.Provider>
     </AppDataContext.Provider>

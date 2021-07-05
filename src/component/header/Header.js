@@ -128,6 +128,7 @@ const Header = () => {
   useEffect(() => {
     if (profileApi) {
       langPatch({ type: 'LANGUAGE_UPDATE', payload: profileApi?.data?.displayLanguage });
+      sessionStorage.setItem("lang", profileApi?.data?.displayLanguage);
     }
   }, [profileApi?.data?.displayLanguage]);
 
@@ -276,15 +277,8 @@ const Header = () => {
           </AdminFeedbackBtn>
         </>
       )}
-      { /* filter */ }
-      { category ? (
-        < HeaderFilter 
-          selectFilter={ selectFilter }
-          clickedComic={ clickedComic }
-          clickedIllust={ clickedIllust }
-          toggleCategory={ toggleCategory }
-        />
-      ) : null}
+      {/* filter */}
+      {category ? <HeaderFilter selectFilter={selectFilter} clickedComic={clickedComic} clickedIllust={clickedIllust} toggleCategory={toggleCategory} /> : null}
 
       {searchPopup ? <SearchPopup /> : ''}
       {isNotification && (

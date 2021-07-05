@@ -14,8 +14,8 @@ export default function HeaderUnauth() {
   return (
     <>
       <LayoutInner>
-        <LoginBtn onClick={() => goURL({ pathname: '/login', as: '/login', query: { main: true, path:router?.asPath } })}>Login</LoginBtn>
-        <SignUpBtn onClick={() => goURL({ pathname: '/login', as: '/login', query: { sign: true, path:router?.asPath } })}>Sign up</SignUpBtn>
+        <LoginBtn onClick={() => goURL({ pathname: '/login', as: '/login', query: { main: true, path: router?.asPath } })}>Login</LoginBtn>
+        <SignUpBtn onClick={() => goURL({ pathname: '/login', as: '/login', query: { sign: true, path: router?.asPath } })}>Sign up</SignUpBtn>
         <Link href={`/mypage/setting`}>
           <NavItem>
             <OptionSetting />

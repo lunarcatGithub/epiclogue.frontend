@@ -10,7 +10,7 @@ export default function List({ content, setWarnConfirm, mainType }) {
 
   const [ setGetDate, , dateResult ] = useDate('Admin');
   const [ reportData, setReportData ] = useState(null);
-  console.log(content)
+
   useEffect(() => {
     setGetDate(content?._createdAt);
     setReportData(content)

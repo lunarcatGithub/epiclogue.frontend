@@ -58,7 +58,7 @@ const Layout = styled.div`
   background: ${(props) => props.theme.color.whiteColor};
   border-radius: 0.4em;
   overflow: hidden;
-  animation:${popupAni} .3s ease-in-out normal;
+  animation: ${popupAni} 0.3s ease-in-out normal;
 
   @media (max-width: 900px) {
     width: calc(100% - 3em);

@@ -82,7 +82,6 @@ export const SignIn = ({ setChangePage }) => {
     if (Object.keys(errors).length === 0) return;
     if (errors === 'incorrect') {
       setErrorTitle(_loginFailHolder);
-      
     } else if (errors === 'leave') {
       setErrorTitle(_leaveUser);
     } else {
@@ -101,7 +100,7 @@ export const SignIn = ({ setChangePage }) => {
       localStorage.setItem('userNick', mergyData?.data?.nick);
       localStorage.setItem('userid', mergyData?.data?.screenId);
 
-      if(currentPath){
+      if (currentPath) {
         goURL({ pathname: currentPath });
       } else {
         goURL({ pathname: '/' });
@@ -143,12 +142,7 @@ export const SignIn = ({ setChangePage }) => {
                 <PlaceHolderTxt>{errorTitle}</PlaceHolderTxt>
               </PlaceHolderBox>
               {/* 로그인 하기 */}
-              <LoginButton 
-                login={values.userPw.length}
-                userPw={values.userPw} 
-                email={values.email} 
-                disabled={disabled}
-              >
+              <LoginButton login={values.userPw.length} userPw={values.userPw} email={values.email} disabled={disabled}>
                 {disabled ? <ProgressSmall disabled={disabled} /> : _loginButton}
               </LoginButton>
             </form>

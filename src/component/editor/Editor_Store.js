@@ -135,7 +135,8 @@ export const EditorStore = () => {
     setOriginData(JSON.parse(data));
   }, [router?.query]);
 
-  useEffect(() => { // refresh 할 경우 저장 경고
+  useEffect(() => {
+    // refresh 할 경우 저장 경고
     window.onbeforeunload = (event) => {
       const e = event || window.event;
       // Cancel the event
@@ -145,7 +146,7 @@ export const EditorStore = () => {
       // }
       return '';
     };
-  }, [])
+  }, []);
 
   return (
     <EditorContext.Provider

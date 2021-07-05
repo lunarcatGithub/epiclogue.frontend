@@ -53,7 +53,7 @@ opacity: 0;
 100% {
   opacity: 1;
 }
-`
+`;
 
 // layout
 
@@ -71,8 +71,7 @@ const ModalOverlay = styled.div`
   background: ${(props) => props.theme.color.blackOpacity};
   z-index: 99999;
 
-  animation:${modalAni} .2s ease-in-out normal;
-
+  animation: ${modalAni} 0.2s ease-in-out normal;
 `;
 
 const ModalWrapper = styled.section`

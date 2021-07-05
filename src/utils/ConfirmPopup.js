@@ -216,7 +216,7 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type, doTy
             </ContentsDesc>
             <ButtonWrap>
               {/* 비밀번호 변경, 비공개 작품, 삭제된 작품, 탈퇴유저, 2차 창작 금지, 원작글 삭제가 아닐 경우 [취소] 버튼 나타남 */}
-              { type !== 'PWCHANGE' && type !== 'GOBACK' && type !== 'REMOVE' && type !== 'REMOVE_USER' && type !== 'TRANS' && type !== 'REMOVEORIGIN' && (
+              {type !== 'PWCHANGE' && type !== 'GOBACK' && type !== 'REMOVE' && type !== 'REMOVE_USER' && type !== 'TRANS' && type !== 'REMOVEORIGIN' && (
                 <CancelBtn
                   onClick={() => {
                     // handleModal();
@@ -227,10 +227,11 @@ export default function ConfirmPopup({ handleModal, setAccessConfirm, type, doTy
                       setTypeMenuPopup(null);
                       setPopupType('');
                     }
-                  } } >
+                  }}
+                >
                   {_cancleBtn}
                 </CancelBtn>
-              ) }
+              )}
               {/*  비공개 작품, 삭제된 작품, 탈퇴유저일 경우 [메인으로 가기] 버튼이 됨 */}
               {type === 'GOBACK' || type === 'REMOVE' || type === 'REMOVE_USER' ? (
                 <ConfirmBtn
