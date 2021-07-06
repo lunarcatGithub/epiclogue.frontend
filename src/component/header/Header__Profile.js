@@ -46,7 +46,9 @@ const HeaderPfPopup = () => {
     localStorage.removeItem('userNick');
     localStorage.removeItem('userid');
     localStorage.setItem('keepLogin', false);
-
+  }
+  
+    useEffect(() => {
     if (!profileError) return;
     // if (profileError?.status === 401) {
     //   alert(_sessionExpire)
