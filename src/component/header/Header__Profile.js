@@ -47,10 +47,6 @@ const HeaderPfPopup = () => {
     localStorage.removeItem('userid');
     localStorage.setItem('keepLogin', false);
 
-    goURL({ pathname: '/login', as: '/login', query: { path: router?.asPath } });
-  };
-
-  useEffect(() => {
     if (!profileError) return;
     // if (profileError?.status === 401) {
     //   alert(_sessionExpire)

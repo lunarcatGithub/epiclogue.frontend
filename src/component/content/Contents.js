@@ -14,8 +14,8 @@ import useScroll from '@hooks/useScroll';
 
 const Contents = ({ type, searchType }) => {
   const router = useRouter();
-
   const { renderComponent, setRenderComponent, searchData, clickedComic, clickedIllust } = useContext(AppDataContext);
+  // const { searchData, clickedComic, clickedIllust, paramsData } = useContext(AppDataContext);
 
   const [resultKeyword, setResultKeyword] = useState();
 

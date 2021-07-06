@@ -15,7 +15,6 @@ const Main = ({ metaLang }) => {
   const [goURL] = useUrlMove();
   const { t } = useTranslation('common');
 
-
   // Meta 전용
   const metaData = {
     title: t('metaMainTitle'),
