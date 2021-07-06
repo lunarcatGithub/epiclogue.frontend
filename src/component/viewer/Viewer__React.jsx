@@ -81,7 +81,7 @@ export default function ViewerReact() {
       }, 800);
 
     }, [toggleShare, toggleTrans])
-
+    console.log(reactData?.bookmarked)
     return (
       <ReactTab>
         <ReactInfoWrap>

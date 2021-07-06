@@ -8,15 +8,15 @@ import { useToggle } from '@hooks/useToggle';
 // reduce
 import { AppDataContext } from '@store/App_Store';
 
-export default function BookmarkFetch({ _id, initToggle }) {
-
+export default function BookmarkFetch({ _id, initToggle = false }) {
+  // console.log(initToggle)
   // fetch
   const [ , , , bookmarkFetch] = useAxiosFetch();
 
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   
   // toggle
-  const [bookmark, toggleBookmark] = useToggle();
+  const [bookmark, toggleBookmark] = useToggle(initToggle);
 
   const toggleHandler = () => {
     if(!loginOn){
@@ -24,12 +24,10 @@ export default function BookmarkFetch({ _id, initToggle }) {
       return;
     }
 
-    toggleBookmark();
-
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/bookmark`;
     bookmarkFetch(
         URL,
-        bookmark ? 'post' : 'delete',
+        bookmark ? 'delete' : 'post',
         {
           boardId: _id,
         },
@@ -37,16 +35,13 @@ export default function BookmarkFetch({ _id, initToggle }) {
       );
   };
 
-  useEffect(() => {
-    toggleBookmark(initToggle);
-  }, []);
 
   return (
       <ReactBtnWrap>
         <BtnBox>
         <BookmarkBtn
           bookmark={bookmark}
-          onClick={ () => toggleHandler() }
+          onClick={ () => { toggleBookmark(); toggleHandler() } }
         />
         </BtnBox>
       </ReactBtnWrap>
