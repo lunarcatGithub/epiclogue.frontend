@@ -57,6 +57,11 @@ export const LangHeaderInform = {
     0: '삭제된 피드백입니다',
     1: '削除されたフィードバックです',
   },
+  adminInform: {
+    2: 'Admin Notice',
+    0: '관리자 알림',
+    1: '管理者通知',
+  },
 };
 
 export const LangHeaderSearch = {

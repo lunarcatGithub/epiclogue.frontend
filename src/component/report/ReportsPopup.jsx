@@ -46,8 +46,7 @@ const ReportsPopup = ({ onClose = null, contentId }) => {
       reportType:selectValue,
       suspectUserId: targetUser_Id,
       contentId,
-      contentType: targetUser_Type,
-      isCopyright: false
+      contentType: targetUser_Type
     };
 
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
@@ -96,7 +95,16 @@ const ReportsPopup = ({ onClose = null, contentId }) => {
               </ReportTab>
             ) )
           }
-          <ReportTab onClick={() => goURL({ pathname: '/report' })}>
+          <ReportTab onClick={() => 
+            goURL( { 
+              pathname: '/report', 
+              query:{
+                targetUserId:targetUser_Id,
+                contentId,
+                contentType:targetUser_Type
+              }
+            } )
+          } >
             <ReportTxtWrap>
               <ReportTxt>{_infringementlReport}</ReportTxt>
             </ReportTxtWrap>

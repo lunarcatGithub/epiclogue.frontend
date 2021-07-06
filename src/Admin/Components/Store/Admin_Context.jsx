@@ -11,11 +11,21 @@ const combineReducers = (...reducers) => (state, action) => {
 
 // context provider
 const AdminContextStore = ({ children }) => {
-  const [ reportData, setReportData ] = useState();
+  const [ reportData, setReportData ] = useState([]);
+  const [ reportResultData, setReportResultData ] = useState([]);
+  const [ copyrightData, setCopyrightData ] = useState([]); // 저작권 report data
+  const [ copyrightResultData, setCopyrightResultData ] = useState([]); // 저작권 신고 결과 data
+  
   const [ currentTargetData, setCurrentTargetData ] = useState();
+  const [ isAdmin, setIsAdmin ] = useState(true);
 
   // data
   const [currentData, setCurrentData] = useState([]);
+  const [currentCopyrightData, setCurrentCopyrightData] = useState([]);
+
+  // page
+  const [currentPage, setCurrentPage] = useState(0);
+  const [currentSize, setCurrentSize] = useState(30);
 
 
   const reportList = [
@@ -36,14 +46,28 @@ const AdminContextStore = ({ children }) => {
         reportList,
         reportData,
         setReportData,
+        copyrightData,
+        setCopyrightData,
         currentTargetData,
         setCurrentTargetData,
+        // admin check
+        isAdmin,
+        setIsAdmin,
         // data
         currentData,
-        setCurrentData
-      }}
-    >{children}
-
+        setCurrentData,
+        currentCopyrightData, 
+        setCurrentCopyrightData,
+        copyrightResultData,
+        setCopyrightResultData,
+        reportResultData,
+        setReportResultData,
+        // page
+        currentPage,
+        setCurrentPage,
+        currentSize,
+        setCurrentSize
+      } } >{ children }
     </AdminContext.Provider>
   );
 };

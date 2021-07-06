@@ -13,11 +13,7 @@ export const EditorTextSetting = () => {
   const { radioBtn, UseRadioBtn, textBold, toggleBold, textSlope, toggleSlope, textUnderbar, toggleUnderbar, textHeight, setTextHeight, textSpace, setTextSpace } = useContext(EditorContext);
 
   // 언어 변수
-  const {
-    _detailText,
-    _heightText,
-    _spacingText,
-  } = EditorLanguage();
+  const { _detailText, _heightText, _spacingText } = EditorLanguage();
 
   const popupHandler = (e) => {
     if (!e) return;

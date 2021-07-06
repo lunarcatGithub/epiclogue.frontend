@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { LangCommon } from '@language/Lang.Common';
 import { langViewer, langViewerUser } from '@language/Lang.Viewer';
@@ -9,8 +9,9 @@ import { langTranslatePopup } from '@language/Lang.Viewer';
 import { LangConfirm } from '@language/Lang.Confirm';
 
 export default function ViewerLanguage(){
+    const [lang, setLang] = useState({});
       //언어 변수
-    const { langState } = useContext(LanguageContext);
+    const { langState, langRender } = useContext(LanguageContext);
 
     const { selectedLanguage, defaultLanguage } = langState;
 
@@ -33,24 +34,24 @@ export default function ViewerLanguage(){
 
     const { confirmTxt, cancleBtn } = LangConfirm;
 
-    const _contentsReact = contentsReact[selectedLanguage] || contentsReact[defaultLanguage],
-        _feedbackScore = feedbackScore[selectedLanguage] || feedbackScore[defaultLanguage],
-        _feedbackScoreEnd = feedbackScoreEnd[selectedLanguage] || feedbackScoreEnd[defaultLanguage],
-        _feedbackPlaceholder = feedbackPlaceholder[selectedLanguage] || feedbackPlaceholder[defaultLanguage],
-        _replyPlaceholder = replyPlaceholder[selectedLanguage] || replyPlaceholder[defaultLanguage],
-        _moreFeedback = moreFeedback[selectedLanguage] || moreFeedback[defaultLanguage],
-        _firstFeedback = firstFeedback[selectedLanguage] || firstFeedback[defaultLanguage],
-        _foldFeedback = foldFeedback[selectedLanguage] || foldFeedback[defaultLanguage],
-        _moreContents = moreContents[selectedLanguage] || moreContents[defaultLanguage],
-        _originalUser = originalUser[selectedLanguage] || originalUser[defaultLanguage],
-        _recreateUser = recreateUser[selectedLanguage] || recreateUser[defaultLanguage],
-        _removedContents = removedContents[selectedLanguage] || removedContents[defaultLanguage],
-        _followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage],
-        _followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
-        _modified = modified[selectedLanguage] || modified[defaultLanguage],
-        _closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage],
-        _confirmTxt = confirmTxt[selectedLanguage] || confirmTxt[defaultLanguage],
-        _cancleBtn = cancleBtn[selectedLanguage] || cancleBtn[defaultLanguage];
+    const $contentsReact = contentsReact[selectedLanguage] || contentsReact[defaultLanguage],
+        $feedbackScore = feedbackScore[selectedLanguage] || feedbackScore[defaultLanguage],
+        $feedbackScoreEnd = feedbackScoreEnd[selectedLanguage] || feedbackScoreEnd[defaultLanguage],
+        $feedbackPlaceholder = feedbackPlaceholder[selectedLanguage] || feedbackPlaceholder[defaultLanguage],
+        $replyPlaceholder = replyPlaceholder[selectedLanguage] || replyPlaceholder[defaultLanguage],
+        $moreFeedback = moreFeedback[selectedLanguage] || moreFeedback[defaultLanguage],
+        $firstFeedback = firstFeedback[selectedLanguage] || firstFeedback[defaultLanguage],
+        $foldFeedback = foldFeedback[selectedLanguage] || foldFeedback[defaultLanguage],
+        $moreContents = moreContents[selectedLanguage] || moreContents[defaultLanguage],
+        $originalUser = originalUser[selectedLanguage] || originalUser[defaultLanguage],
+        $recreateUser = recreateUser[selectedLanguage] || recreateUser[defaultLanguage],
+        $removedContents = removedContents[selectedLanguage] || removedContents[defaultLanguage],
+        $followBtn = followBtn[selectedLanguage] || followBtn[defaultLanguage],
+        $followingBtn = followingBtn[selectedLanguage] || followingBtn[defaultLanguage],
+        $modified = modified[selectedLanguage] || modified[defaultLanguage],
+        $closeBtn = closeBtn[selectedLanguage] || closeBtn[defaultLanguage],
+        $confirmTxt = confirmTxt[selectedLanguage] || confirmTxt[defaultLanguage],
+        $cancleBtn = cancleBtn[selectedLanguage] || cancleBtn[defaultLanguage];
     
     // More menu popup
     const { myOptions, modifyContent, deleteContent } = langMymoreMenu;
@@ -82,6 +83,48 @@ export default function ViewerLanguage(){
         _useEditor = useEditor[selectedLanguage] || useEditor[defaultLanguage],
         _selfUpload = selfUpload[selectedLanguage] || selfUpload[defaultLanguage];        
         
+        useEffect(() => {
+            setLang({
+                _contentsReact:$contentsReact,
+                _feedbackScore:$feedbackScore,
+                _feedbackScoreEnd:$feedbackScoreEnd,
+                _feedbackPlaceholder:$feedbackPlaceholder,
+                _replyPlaceholder:$replyPlaceholder,
+                _moreFeedback:$moreFeedback,
+                _firstFeedback:$firstFeedback,
+                _foldFeedback:$foldFeedback,
+                _moreContents:$moreContents,
+                _originalUser:$originalUser,
+                _recreateUser:$recreateUser,
+                _removedContents:$removedContents,
+                _followBtn:$followBtn,
+                _followingBtn:$followingBtn,
+                _modified:$modified,
+                _closeBtn:$closeBtn,
+                _confirmTxt:$confirmTxt,
+                _cancleBtn:$cancleBtn
+            })
+        }, [langRender]);
+        
+        const { 
+            _contentsReact,
+            _feedbackScore,
+            _feedbackScoreEnd,
+            _feedbackPlaceholder,
+            _replyPlaceholder,
+            _moreFeedback,
+            _firstFeedback,
+            _foldFeedback,
+            _moreContents,
+            _originalUser,
+            _recreateUser,
+            _removedContents,
+            _followBtn,
+            _followingBtn,
+            _modified,
+            _closeBtn,
+            _confirmTxt,
+            _cancleBtn } = lang
     return {
         // 뷰어 body
         _contentsReact,

@@ -1,10 +1,21 @@
-import React,{ useState } from 'react'
+import React,{ useState, useEffect, useContext } from 'react'
 import styled from 'styled-components';
 
 // 컴포넌트 import
 import ListForm from '../Common/List__Form';
 
+// reduce
+import { AdminContext } from '../Store/Admin_Context';
+
+// hooks
+import useAxiosFetch from '@hooks/useAxiosFetch';
+
 export const CopyRightReportResult =()=> {
+  const { setReportData, setCopyrightResultData, setIsAdmin } = useContext(AdminContext);
+
+  // fetch
+  const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
+
     //data
     const [userContentsData, setUserContentsData] = useState([
       {id:1, _id:`@asasdd`, title:'신고받을만한 콘텐츠임니다ㅎ',  result:'삭제',  date:'2019-05-14'},
@@ -53,6 +64,29 @@ export const CopyRightReportResult =()=> {
         }
       });
     }  
+
+    useEffect(() => {
+      const params = {
+        size:30,
+        page:0,
+        isCopyright:true
+      }
+      const URL = `${process.env.NEXT_PUBLIC_API_URL}/report/processedReports`;
+      reportFetch(URL, 'get', null, null, params)
+      }, []);
+      
+    useEffect(() => {
+      if(reportApi?.result === 'ok'){
+        setIsAdmin(true);
+        setCopyrightResultData(reportApi?.data);
+
+      } else if(reportError?.status === 401) {
+        setIsAdmin(false);
+
+      } else {
+        return;
+      }
+    }, [reportApi, reportError]);
 
     const headerArr = ['번호', '아이디', '처리결과', '처리일자', '복구'];
 

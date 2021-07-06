@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import styled from 'styled-components';
+import styled, { keyframes, css }  from 'styled-components';
 
 // reduce
 import { ViewerContext } from '@store/ViewerStore';
@@ -15,6 +15,8 @@ export default function ViewerReact() {
   const { viewerData, setPopupType, setUserPopup } = useContext(ViewerContext);
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   const { alertPatch } = useContext(AlertContext);
+  const [ toggleShare, setToggleShare ] = useState(false);
+  const [ toggleTrans, setToggleTrans ] = useState(false);
 
   // data rendering
   const [ reactData, setReactData ] = useState();
@@ -27,6 +29,7 @@ export default function ViewerReact() {
 
       if(type === 'Globe'){ // globe
         setUserPopup(true);
+        setToggleTrans(true);
         if (reactData?.originUserId && !reactData?.originBoardId) {
           setPopupType('RemovedBoard');
         } else {
@@ -47,14 +50,10 @@ export default function ViewerReact() {
         return;
       }
     }
-    
-    useEffect(() => {
-      setReactData(viewerData);
-      return () => setReactData(null);
-    }, [viewerData]);
 
     // 공유하기 클립보드
     const clipboardShare = () => {
+      setToggleShare(true)
       const link = document.location.href;
       const clipBoard = document.createElement('textarea');
 
@@ -63,16 +62,31 @@ export default function ViewerReact() {
       clipBoard.select();
       document.execCommand('copy');
       document.body.removeChild(clipBoard);
-
       // 성공 푸시탭
       alertPatch({ type: 'SHARE', payload: true });
     };
+    
+    useEffect(() => {
+      setReactData(viewerData);
+    }, [viewerData]);
+
+    useEffect(() => { // 토글 버튼 ctrl
+
+      toggleShare && setTimeout(() => {
+        setToggleShare(false);
+      }, 800);
+
+      toggleTrans && setTimeout(() => {
+        setToggleTrans(false);
+      }, 800);
+
+    }, [toggleShare, toggleTrans])
 
     return (
       <ReactTab>
-        <ReactInfoWrap onClick={ () => openReactPopupHandler() }>
+        <ReactInfoWrap>
           <ReactImg />
-          <ReactTitle>
+          <ReactTitle onClick={ () => openReactPopupHandler() } >
             { reactData?.reactCount }
             { _contentsReact }
           </ReactTitle>
@@ -88,17 +102,58 @@ export default function ViewerReact() {
             initialCount={reactData?.heartCount}
             type="Board"
           />
-          <BtnBox onClick={ () => clipboardShare() } >
-            <ShareBtn />
-          </BtnBox>
-          <BtnBox onClick={ () => submitHandler('Globe') } >
-            <GlobeBtn />
-          </BtnBox>
+            <BtnBox onClick={ () => clipboardShare() } >
+              <ShareBtn share={toggleShare} />
+            </BtnBox>
+            <BtnBox onClick={ () => submitHandler('Globe') } >
+              <GlobeBtn globe={toggleTrans} />
+            </BtnBox>
 
         </ReactSelector>
       </ReactTab>
     );
   }
+// keyframes
+const buttonAnimation = keyframes`
+50% {
+  width:2.6em;
+  height:2.6em;
+}
+`;
+
+const restoreBtn = keyframes`
+0% {
+  width:0em;
+  height:0em;
+  opacity:0;
+}
+50% {
+  width:2.4em;
+  height:2.4em;
+  opacity:1;
+}
+60% {
+  width:2.7em;
+  height:2.7em;
+  opacity:0.3;
+}
+80% {
+  width:2.9em;
+  height:2.9em;
+  opacity:0.1;
+}
+100% {
+  width:3.5em;
+  height:3.5em;
+  opacity:0;
+}
+`
+const center = css`
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+`
 
 
 // 반응 탭 레이아웃
@@ -136,72 +191,99 @@ const ReactTitle = styled.button.attrs({
   color: ${(props) => props.theme.color.softBlackColor};
 `;
 
-
 const ReactSelector = styled.div`
   display: flex;
   justify-content: space-around;
   height: auto;
   padding-top: 10px;
 `;
+
 const BtnBox = styled.button`
+  position:relative;
+  width:2em;
   display: flex;
   justify-content: center;
   align-items: center;
   height: auto;
 `;
-const BookmarkBtn = styled.button.attrs({ type: 'submit' })`
-  position: relative;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  transition: transform 0.1s ease-in-out;
-  cursor: pointer;
-  &::before {
-    content: '';
-    background: url(${(props) => (props.bookmark ? '/static/bookmark-2.svg' : '/static/bookmark-1.svg')}) no-repeat center / contain;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 28px;
-    height: 28px;
-  }
+
+const ShareBtn = styled.span`
+  ${center};
+  display:flex;
+  width:2em;
+  height:2em;
+  background:url( ${ ( { share } ) => share ? '/static/share-2.svg' : '/static/share-1.svg' }) no-repeat center center / contain;
+  transition: all 0.2s ease-in-out;
+
   &:active {
-    transform: scale(1.3);
-    transition: all 0.2s ease-in-out;
-    &::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: ${(props) => props.theme.color.orangeOpacityColor};
-    }
+    ${ ({ share }) => !share &&
+    ` 
+    width:1.2em; 
+    height:1.2em;
+    `
+    };
+      animation:${buttonAnimation} 0.2s ease-in-out normal;
+
+  }
+  
+  &::before {
+    ${ ({ share }) => share &&
+    `
+    content:'';
+    border:2px solid #986444;
+    `
+    };
+    ${center};
+    left:51%;
+    opacity:0;
+    border-radius:50%;
+    animation:${restoreBtn} 0.5s ease-in-out normal;
+  }
+
+  &::after {
+    ${ ({ share }) => share &&
+    `
+    content:'';
+    border:1px solid #986444;
+    `
+    };
+    ${center};
+    left:51%;
+    opacity:0;
+    border-radius:50%;
+    animation:${restoreBtn} 0.5s 0.1s ease-in-out normal;
   }
 `;
 
-const ShareBtn = styled(BookmarkBtn)`
-  &::before {
-    background: url(${(props) => (props.share ? '/static/share-2.svg' : '/static/share-1.svg')}) no-repeat center / contain;
-    transform: translate(-58%, -50%);
-  }
-  &:active {
-    &:after {
-      background: ${(props) => props.theme.color.softBrownColor};
-    }
-  }
-`;
+const GlobeBtn = styled(ShareBtn)`
+  width:2em;
+  height:2em;
+  background:url( ${ ( { globe } ) => globe ? '/static/secondary.svg' : '/static/secondary.svg' }) no-repeat center center / contain;
 
-const GlobeBtn = styled(BookmarkBtn)`
-  &::before {
-    background: url(${(props) => (props.globe ? '/static/secondary.svg' : '/static/secondary.svg')}) no-repeat center / contain;
-  }
   &:active {
-    &:after {
-      background: ${(props) => props.theme.color.softGreenColor};
-    }
+    ${ ({ globe }) => !globe &&
+    ` 
+    width:1.2em; 
+    height:1.2em;
+    `
+    };
+  }
+  
+  &::before {
+    ${ ({ globe }) => globe &&
+    `
+    content:'';
+    border:2px solid #358786;
+    `
+    };
+  }
+
+  &::after {
+    ${ ({ globe }) => globe &&
+    `
+    content:'';
+    border:1px solid #358786;
+    `
+    };
   }
 `;

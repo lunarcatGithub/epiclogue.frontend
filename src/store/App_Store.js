@@ -1,4 +1,4 @@
-import React,{ useState, useEffect, useReducer, createContext, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useReducer, createContext, useLayoutEffect } from 'react';
 import { languageReducer, langInit } from '@reducer/LanguageReducer';
 import { useRouter } from 'next/router';
 import { initialAlert, alertReducer } from '@reducer/AlertReducer';
@@ -25,7 +25,7 @@ const combineReducers = (...reducers) => (state, action) => {
   return state;
 };
 
-React.useLayoutEffect = React.useEffect 
+React.useLayoutEffect = React.useEffect;
 
 // context provider
 const ContextStore = ({ children }) => {
@@ -49,6 +49,7 @@ const ContextStore = ({ children }) => {
   const [paramsData, setParamsData] = useState();
   const [myboardData, setMyboardData] = useState([]);
   const [followData, setFollowData] = useState();
+  const [renderComponent, setRenderComponent] = useState([]);
 
   // content component
   const [renderList, setRenderList] = useState([]);
@@ -62,38 +63,37 @@ const ContextStore = ({ children }) => {
   const isLogin = typeof window !== 'undefined' && localStorage.getItem('keepLogin');
   const [loginOn, setLoginOn] = useState(JSON.parse(isLogin) || false);
 
+  // current Path
+  const [currentPath, setCurrentPath] = useState();
+  // const [lengthStore, setLengthStore] = useState([]);
   // 개발 & 프로덕션 로그인 분기처리
   const devProductionHandle = () => {
     let divied = process.env.NODE_ENV;
-      // cookieHandle('GET', 'access_token');
-      // if(divied === 'production'){
-      //   if(cookieValue?.length > 1) { // 쿠키값이 있다면 로컬스토리지 갱신
-      //     localStorage.setItem('keepLogin', true);
-      //     setLoginOn(true)
-      //   }
-      // } else { // 푸시 전에 주석처리
-      //   localStorage.setItem('keepLogin', true);
-      //   setLoginOn(true)
-      // }
-    }
+  };
 
   useLayoutEffect(() => {
-    devProductionHandle()
-  }, [cookieValue?.length])
+    devProductionHandle();
+  }, [cookieValue?.length]);
 
   useEffect(() => {
     if (!loginOn) {
       if (router.pathname.match('/upload') || router.pathname.match('/follow') || router.pathname.match('/editor')) {
-        alert('please SignIn!')
+        alert('please SignIn!');
         goURL({ pathname: '/login' });
         return;
       }
     }
   }, [loginOn]);
 
+  useEffect(() => {
+    setCurrentPath(router?.query?.path);
+  }, [router.query]);
+
   return (
     <AppDataContext.Provider
       value={{
+        renderComponent,
+        setRenderComponent,
         searchData,
         setSearchData,
         clickedComic,
@@ -109,27 +109,23 @@ const ContextStore = ({ children }) => {
         setParamsData,
         followData,
         setFollowData,
-        lastContentId, 
+        lastContentId,
         setLastContentId,
         renderList,
         setRenderList,
         page,
-        setPage
+        setPage,
+        currentPath,
       }}
     >
-      <LanguageContext.Provider
-        value={{ langState, langPatch, availableLanguage, availableLangPatch }}
-      >
-        <AlertContext.Provider
-          value={{ alertState, alertPatch, }}
-        >
+      <LanguageContext.Provider value={{ langState, langPatch, availableLanguage, availableLangPatch }}>
+        <AlertContext.Provider value={{ alertState, alertPatch }}>
           {children}
-          {
-            unAuth && (
-              <Modal visible={unAuth} maskClosable={unAuth} onClose={setUnAuth}>
-                <UnauthLogin setUnAuth={setUnAuth} />
-              </Modal> )
-          }
+          {unAuth && (
+            <Modal visible={unAuth} maskClosable={unAuth} onClose={setUnAuth}>
+              <UnauthLogin setUnAuth={setUnAuth} />
+            </Modal>
+          )}
         </AlertContext.Provider>
       </LanguageContext.Provider>
     </AppDataContext.Provider>

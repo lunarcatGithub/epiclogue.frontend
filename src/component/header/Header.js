@@ -9,6 +9,7 @@ import SearchPopup from './Header__Search';
 import AdminFeedback from '@component/develop/AdminFeedback';
 import HeaderUnauth from './Header__Unauth';
 import HeaderLanguage from './Header.Language';
+import HeaderFilter from './Header__Filter';
 
 // utils
 import AutoHiding from '@utils/autoHiding';
@@ -31,21 +32,9 @@ const Header = () => {
   const { alertPatch } = useContext(AlertContext);
 
   //언어 변경
-  const {
-    langPatch,
-    availableLangPatch
-  } = useContext(LanguageContext);
+  const { langPatch, availableLangPatch } = useContext(LanguageContext);
 
-  const {
-    setSearchData,
-    setClickedComic,
-    setClickedIllust,
-    clickedComic,
-    clickedIllust,
-    loginOn,
-    setUnAuth,
-    paramsData,
-  } = useContext(AppDataContext);
+  const { setSearchData, setClickedComic, setClickedIllust, clickedComic, clickedIllust, loginOn, setUnAuth, paramsData } = useContext(AppDataContext);
 
   // 팝업용
   const [isOpen, toggleIsOpen] = useModal();
@@ -72,11 +61,7 @@ const Header = () => {
   const [preventHeader, setPreventHeader] = useState();
 
   //언어 변수
-  const {
-    _followsButton,
-    _searchPlaceholder,
-    _fbBtn,  
-  } = HeaderLanguage();
+  const { _followsButton, _searchPlaceholder, _fbBtn } = HeaderLanguage();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -102,7 +87,7 @@ const Header = () => {
 
   // 헤더 코믹/일러스트 필터링
   const selectFilter = (type) => {
-    if(type === 'comic'){
+    if (type === 'comic') {
       setClickedComic(!clickedComic);
     } else {
       setClickedIllust(!clickedIllust);
@@ -112,7 +97,6 @@ const Header = () => {
       setClickedIllust(true);
     }
   };
-
 
   // 유저 알림 Read 여부
   const readObserver = () => {
@@ -137,33 +121,35 @@ const Header = () => {
   useEffect(() => {
     // 유저 선택 언어로 콘텐츠 필터링
     const avalLang = [];
-    profileApi?.data?.availableLanguage.forEach((num) => avalLang.push(Number(num)))
-    availableLangPatch({type:'AVAILABLE_LANG', payload:avalLang})
-  }, [profileApi?.data?.availableLanguage])
+    profileApi?.data?.availableLanguage.forEach((num) => avalLang.push(Number(num)));
+    availableLangPatch({ type: 'AVAILABLE_LANG', payload: avalLang });
+  }, [profileApi?.data?.availableLanguage]);
 
   useEffect(() => {
     if (profileApi) {
       langPatch({ type: 'LANGUAGE_UPDATE', payload: profileApi?.data?.displayLanguage });
+      sessionStorage.setItem("lang", profileApi?.data?.displayLanguage);
     }
   }, [profileApi?.data?.displayLanguage]);
 
   useEffect(() => {
     ['/epiclogueadmin', '/welcome', '/login', '/login/'].includes(pathname) || pathname.match('/editor/') || pathname.match('/findPass') ? setPreventHeader(false) : setPreventHeader(true);
-  return () => {
-    setPreventHeader(null)
-  }
+    return () => {
+      setPreventHeader(null);
+    };
   }, [pathname]);
 
   return (
-    <HeaderDataContext.Provider 
-      value={{ 
-        searchBody, 
-        toggleSearchPop, 
-        toggleIsOpen, 
-        toggleNoti, 
-        profileApi, 
-        profileError 
-      }}>
+    <HeaderDataContext.Provider
+      value={{
+        searchBody,
+        toggleSearchPop,
+        toggleIsOpen,
+        toggleNoti,
+        profileApi,
+        profileError,
+      }}
+    >
       {/* 헤더 레이아웃 */}
       {preventHeader && (
         <>
@@ -192,47 +178,45 @@ const Header = () => {
                 </CategoryWrap>
                 <Dummy />
                 {/* 팔로우 작품 및 프로필 버튼 영역 */}
-                {
-                  loginOn ? (
-                    <>
-                      <ProfileWrap>
-                        <FollowBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
-                          <ProfileFollow />
-                          <FollowTxt>{_followsButton}</FollowTxt>
-                        </FollowBtn>
-                        {/* </NavItem> */}
-                        <HeaderPfPopupWrap>
-                          {/* header profile */}
-                          <HeaderPfPopup />
-                        </HeaderPfPopupWrap>
-                      </ProfileWrap>
-                      <Dummy />
-                      {/* 옵션 set 영역 */}
-                      <OptionWrap>
-                        <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
-                          <OptionDm />
-                        </OptionBtn>
-                        {/* 알림 */}
-                        <OptionBtn
-                          onClick={() => {
-                            toggleNoti();
-                            setRead(0);
-                          }}
-                        >
-                          <OptionInfomation styling={isNotification} />
-                          {read > 0 && <InformIconRing />}
-                        </OptionBtn>
+                {loginOn ? (
+                  <>
+                    <ProfileWrap>
+                      <FollowBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+                        <ProfileFollow />
+                        <FollowTxt>{_followsButton}</FollowTxt>
+                      </FollowBtn>
+                      {/* </NavItem> */}
+                      <HeaderPfPopupWrap>
+                        {/* header profile */}
+                        <HeaderPfPopup />
+                      </HeaderPfPopupWrap>
+                    </ProfileWrap>
+                    <Dummy />
+                    {/* 옵션 set 영역 */}
+                    <OptionWrap>
+                      <OptionBtn onClick={() => alertPatch({ type: 'NOT_SERVICE', payload: true })}>
+                        <OptionDm />
+                      </OptionBtn>
+                      {/* 알림 */}
+                      <OptionBtn
+                        onClick={() => {
+                          toggleNoti();
+                          setRead(0);
+                        }}
+                      >
+                        <OptionInfomation styling={isNotification} />
+                        {read > 0 && <InformIconRing />}
+                      </OptionBtn>
 
-                        {/* setting */}
-                        <OptionBtn onClick={() => goURL({ pathname: `/mypage/profile` })}>
-                          <OptionSetting styling={['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)} />
-                        </OptionBtn>
-                      </OptionWrap>
-                    </>
-                  ) : (
-                    <HeaderUnauth />
-                  )
-                }
+                      {/* setting */}
+                      <OptionBtn onClick={() => goURL({ pathname: `/mypage/profile` })}>
+                        <OptionSetting styling={['/mypage/profile', '/mypage/inform', '/mypage/setting'].includes(pathname)} />
+                      </OptionBtn>
+                    </OptionWrap>
+                  </>
+                ) : (
+                  <HeaderUnauth />
+                )}
               </HeaderInner>
               {/* 뷰어 모바일 전용 뒤로가기 헤더 탭*/}
               <MbHeaderInner pathname={pathname.match('/viewer') ? 'flex' : 'none'}>
@@ -293,24 +277,8 @@ const Header = () => {
           </AdminFeedbackBtn>
         </>
       )}
-      {category ? (
-        <CategoryBox>
-          <CategoryHeader>
-            <HeaderTxt>Filter</HeaderTxt>
-            <ClosedBox>
-              <ClosedBtn onClick={() => toggleCategory()} />
-            </ClosedBox>
-          </CategoryHeader>
-          <CategoryInner>
-            <MbCategoryComic styling={clickedComic} onClick={() => selectFilter('comic')}>
-              Comic
-            </MbCategoryComic>
-            <MbCategoryIllust styling={clickedIllust} onClick={() => selectFilter('illust')}>
-              Illust
-            </MbCategoryIllust>
-          </CategoryInner>
-        </CategoryBox>
-      ) : null}
+      {/* filter */}
+      {category ? <HeaderFilter selectFilter={selectFilter} clickedComic={clickedComic} clickedIllust={clickedIllust} toggleCategory={toggleCategory} /> : null}
 
       {searchPopup ? <SearchPopup /> : ''}
       {isNotification && (
@@ -334,15 +302,7 @@ const PositionCenter = css`
   left: 50%;
   transform: translate(-50%, -50%);
 `;
-const Button = css`
-  width: 100%;
-  min-width: 128px;
-  height: 42px;
-  border-radius: 25px;
-  font-size: ${(props) => props.theme.fontSize.font15};
-  font-weight: ${(props) => props.theme.fontWeight.font700};
-  cursor: pointer;
-`;
+
 const Dummy = styled.div`
   margin: 0 0.6em;
   width: 4px;
@@ -632,18 +592,19 @@ const BackIcon = styled.span`
     border-top: 0.2em solid ${(props) => props.theme.color.popupColor};
     border-right: 0.2em solid ${(props) => props.theme.color.popupColor};
     transform: rotate(-135deg);
-  }`;
+  }
+`;
 
 const GoHomeBtn = styled.button`
-display:flex;
-padding:0.4em 1.1em;
-margin-right:0.2em;
-border-radius:2em;
-border:0.1em solid ${props => props.theme.color.popupColor};;
-font-size:${props => props.theme.fontSize.font15};
-font-weight:${props => props.theme.fontWeight.font700};
-color:${props => props.theme.color.popupColor};
-`
+  display: flex;
+  padding: 0.4em 1.1em;
+  margin-right: 0.2em;
+  border-radius: 2em;
+  border: 0.1em solid ${(props) => props.theme.color.popupColor};
+  font-size: ${(props) => props.theme.fontSize.font15};
+  font-weight: ${(props) => props.theme.fontWeight.font700};
+  color: ${(props) => props.theme.color.popupColor};
+`;
 
 // 모바일 전용 헤더
 const MobileHeader = styled.div`
@@ -729,93 +690,7 @@ const MbCategory = styled(MbOptionDm)`
   }
 `;
 
-// NavLink 스타일 ****
-const NavItem = styled.span``;
-
 // 카테고리 영역
-const CategoryBox = styled.div`
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  top: 3.8em;
-  right: 20em;
-  width: 28em;
-  border-radius: 0.4em;
-  overflow: hidden;
-  z-index: 99999;
-  background: ${(props) => props.theme.color.backgroundColor};
-  box-shadow: ${(props) => props.theme.boxshadow.popup3};
-  @media (max-width: 900px) {
-    top: initial;
-    bottom: 0;
-    left: 0;
-    right: initial;
-    width: 100%;
-    border-radius: 0.4em 0.4em 0 0;
-  }
-`;
-const CategoryHeader = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  padding: 1em 0.3em;
-  margin-bottom: 0.2em;
-  background: ${(props) => props.theme.color.whiteColor};
-`;
-const CategoryInner = styled.div`
-  display: flex;
-  flex-direction: column;
-  background: ${(props) => props.theme.color.whiteColor};
-  padding: 1.1em 2.5em;
-`;
-const HeaderTxt = styled.span`
-  font-size: ${(props) => props.theme.fontSize.font18};
-  font-weight: ${(props) => props.theme.fontWeight.font700};
-  color: ${(props) => props.theme.color.softBlackColor};
-  @media (max-width: 900px) {
-    font-size: ${(props) => props.theme.fontSize.font15};
-  }
-`;
-const MbCategoryComic = styled.button`
-  display: flex;
-  justify-content: center;
-  line-height: 38px;
-  padding: 0 5px;
-  ${Button};
-  border: 2px solid ${(props) => props.theme.color.orangeColor};
-  color: ${(props) => (props.styling ? props.theme.color.whiteColor : props.theme.color.orangeColor)};
-  background: ${(props) => (props.styling ? props.theme.color.orangeColor : props.theme.color.whiteColor)};
-  margin-right: 4px;
-`;
-
-const MbCategoryIllust = styled(MbCategoryComic)`
-  border: 2px solid ${(props) => props.theme.color.darkGray};
-  color: ${(props) => (props.styling ? props.theme.color.whiteColor : props.theme.color.darkGray)};
-  background: ${(props) => (props.styling ? props.theme.color.darkGray : props.theme.color.whiteColor)};
-  margin-top: 6px;
-`;
-// 닫기 버튼
-
-const ClosedBox = styled.button`
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 0.4em;
-  right: 1.5em;
-  border-radius: 50%;
-  width: 3em;
-  height: 3em;
-  overflow: hidden;
-`;
-
-const ClosedBtn = styled.span`
-  ${(props) => props.theme.closeBtn};
-  &:hover {
-    background: ${(props) => props.theme.color.hoverColor};
-  }
-`;
 // 피드백 버튼
 const AdminFeedbackBtn = styled.div`
   position: fixed;

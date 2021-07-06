@@ -11,7 +11,8 @@ import { AdminContext } from '../Store/Admin_Context';
 //component
 import { AdminConfirmPopup } from './Admin_Confirm_Popup';
 import List from './List';
-
+import ResultList from './Result__List';
+import Page from './Page';
 
 export default function ListForm({ type, contentsData }) {
   const {
@@ -28,7 +29,15 @@ export default function ListForm({ type, contentsData }) {
     buttonType
   } = contentsData;
 
-  const { reportList, reportData, setCurrentTargetData } = useContext(AdminContext);
+  const {
+    reportList,
+    reportData,
+    setCurrentTargetData,
+    copyrightData,
+    currentPage,
+    copyrightResultData,
+    reportResultData
+  } = useContext(AdminContext);
 
   // console.log(reportData[0]?.suspactUserInfo[0])
 
@@ -94,12 +103,12 @@ export default function ListForm({ type, contentsData }) {
 
   const userSendEmail = (e, type) => {
     setUserEmail(true);
-    const {target:value} = e
+    const { target: value } = e
     console.log(value)
   }
 
   const allCheckHandle = (e, type) => {
-    bodyData.forEach((list) => {
+    bodyData.forEach( ( list ) => {
       if (type === 'one') {
         if (Number(e.target.value) === list.id) {
           list.isSelect = e.target.checked;
@@ -145,16 +154,18 @@ export default function ListForm({ type, contentsData }) {
     typeHandler();
   }, [type]);
 
-  useEffect(() => {
-    if(reportData?.length === 0) return;
-    setListData(reportData);
-  }, [reportData])
+  const reportTypeArr = {
+    'REPORT':reportData, 
+    'REPORTSRESULT':reportResultData,
+    'COPYRIGHT':copyrightData,
+    'COPYRIGHTRESULT':copyrightResultData,
+  };
 
-  const viewNum = [
-    { title: '10개', value: 10 },
-    { title: '30개', value: 30 },
-    { title: '50개', value: 50 },
-  ];
+  useEffect(() => {
+    for(let[key, value] of Object.entries(reportTypeArr)){
+      if(key === type) setListData(value);
+    }
+  }, [type, currentPage, reportData, copyrightData, reportResultData, copyrightResultData]);
 
   return (
     <>
@@ -175,7 +186,8 @@ export default function ListForm({ type, contentsData }) {
                 data={dropDown2} 
                 type={type} 
               />
-            </> ) }
+            </> 
+            ) }
         </TopCenterLayout>
         <TopRightLayout>
           {/* <Dropdown data={dropDown3} type={type} /> */}
@@ -201,11 +213,22 @@ export default function ListForm({ type, contentsData }) {
           </TableHead>
           {/*  테이블 본문 시작 */}
           <TableBody>
-            { listData?.map( (content, i) => ( 
-              <List key={i} content={content} setWarnConfirm={setWarnConfirm}/> 
-              ) ) }
+            {type === 'REPORT' || type === 'COPYRIGHT' ? listData?.map( ( content, i ) => ( 
+              <List key={i} content={content} setWarnConfirm={setWarnConfirm} mainType={type}/> 
+              ) )
+            :
+              null
+            }
+            {type === 'REPORTSRESULT' || type === 'COPYRIGHTRESULT' ? listData?.map( ( content, i ) => ( 
+              <ResultList key={i} content={content} setWarnConfirm={setWarnConfirm} mainType={type}/> 
+              ) ) 
+            :
+              null
+            }
           </TableBody>
         </TableBox>
+        { /* page */ }
+        <Page/>
       </MainLayout>
       {/* 정지, 탈퇴, 블라인드 팝업 */}
         {

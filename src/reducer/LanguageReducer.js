@@ -1,7 +1,7 @@
 let selectLang,
-// defaultLang = typeof window !== 'undefined' && navigator.language,
-defaultLang = typeof window !== 'undefined' && document.documentElement.lang.toLowerCase(),
-_defaultLang;
+  // defaultLang = typeof window !== 'undefined' && navigator.language,
+  defaultLang = typeof window !== 'undefined' && document?.documentElement?.lang?.toLowerCase(),
+  _defaultLang;
 
 switch (defaultLang) {
   case 'ko' || 'ko-KR' || 'ko-kr':
@@ -15,11 +15,18 @@ switch (defaultLang) {
     _defaultLang = 2;
     break;
 }
+let sessionLang;
+if(typeof window !== 'undefined'){
+  sessionLang = sessionStorage.getItem('lang');
+}
 
 export const langInit = {
-  defaultLanguage: _defaultLang,
+  defaultLanguage: sessionLang || _defaultLang,
   selectedLanguage: selectLang,
 };
+
+console.log(langInit)
+
 
 export function languageReducer(state, { type, payload }) {
   switch (type) {

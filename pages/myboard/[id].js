@@ -1,6 +1,6 @@
 import MyBoard from '@component/MyBoard/MyBoard';
 import axios from 'axios';
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 export default function Myboard({ boardItem, id, error }) {
   return <MyBoard boardItem={boardItem} userId={id} nonError={error} />;
@@ -26,7 +26,7 @@ export async function getServerSideProps({ query, req, locale }) {
       boardItem: res?.data,
       id: id,
       error,
-      ...await serverSideTranslations(locale, ["common"])
+      ...(await serverSideTranslations(locale, ['common'])),
     },
   };
 }

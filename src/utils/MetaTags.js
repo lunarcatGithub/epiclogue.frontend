@@ -26,19 +26,19 @@ export const Meta = ({ meta }) => {
 
   return (
     <Helmet titleTemplate="%s">
-      <html lang={lang}/>
+      <html lang={lang} />
       <title>{title}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={`https://www.epiclogue.com/${canonical}`} />
       <link rel="image_src" href={image} />
       <meta itemProp="image" content={image} />
       <meta property="og:site_name" content="Epic_Logue!" key="ogsitename" />
-      <meta property="og:title" content={title} key="ogtitle"/>
+      <meta property="og:title" content={title} key="ogtitle" />
       <meta property="og:description" content={description} key="ogdesc" />
       <meta property="og:url" content={`https://www.epiclogue.com/${canonical}`} key="ogurl" />
       <meta property="og:locale" content={locales[lang]} key="oglocale" />
-      <meta property="og:type" content={type} key="ogtype"/>
-      <meta property="og:image" content={image} key="ogimg"/>
+      <meta property="og:type" content={type} key="ogtype" />
+      <meta property="og:image" content={image} key="ogimg" />
       <meta property="og:image:width" content={width} />
       <meta property="og:image:height" content={height} />
       <meta property="fb:pages" content="Epic_Logue!" />

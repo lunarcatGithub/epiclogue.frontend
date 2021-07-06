@@ -20,7 +20,7 @@ export function ConfirmReportPopup({ reportData }) {
           <ReportBody>
           { reportData?.data?.map( ( { reporterId, reportType, createdAt }, i ) => (
             <ReporterList 
-              reporterId = { reporterId }
+            reporterId = { reporterId }
               reportType = { reportType }
               createdAt = { createdAt }
               key = { i }
@@ -53,7 +53,7 @@ function ReporterList({ reporterId, reportType, createdAt }){
   };
 
   useEffect(() => {
-    setGetDate(createdAt)
+    setGetDate(createdAt);
   }, [createdAt]);
 
   return (
@@ -95,6 +95,7 @@ flex-direction:column;
 min-height:5em;
 max-height:15em;
 `
+
 const ReportHeader = styled.div`
 position:absolute;
 top:0;

@@ -10,8 +10,10 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 
 const Report = () => {
   const router = useRouter();
+
   // fetch Data
   const [ , reportData, , reportFetch] = useAxiosFetch();
+  const { targetUserId, contentId, contentType } = router?.query;
 
   // 언어 import
   const { _privateAgree,
@@ -42,29 +44,33 @@ const Report = () => {
     country: '',
   });
 
-  const [originData, setOrignData] = useState([]);
   //침해받은 저작물
+  const [linkData, setLinkData] = useState([]);
+
   const [infringement, setInfringement] = useState();
-  const [originSite, setOriginSite] = useState(2);
-  const [originForm, setOriginForm] = useState();
+  const [originForm, setOriginForm] = useState([
+    {id:0, title:''}, {id:1, title:''}, {id:2, title:''}
+  ]);
   const [descript, setDescript] = useState('');
-  // const [agreeCheck, setAgreeCheck] = useState();
+  const [agreeCheck, setAgreeCheck] = useState(agreeList);
   const [signitrue, setSignitrue] = useState('');
+
 
   const handleChangeValue = (e, type) => {
     const { value } = e.target;
-    let arr = [];
-    if (type === 'origin') {
-      arr.push([...originData, value]);
-      setOrignData(arr);
-    } else if (type === 'checkBox') {
+    if (type === 'checkBox') {
       let selectArr = agreeList;
       selectArr.forEach((list) => {
+
         if (list.id === e.target.id) {
+          console.log(e.target.id === list.id)
+          list.isChecked = e.target.checked;
+        } else {
           list.isChecked = e.target.checked;
         }
-      });
-      // setAgreeCheck(selectArr);
+      } );
+      setAgreeCheck(selectArr);
+
     } else {
       setUserData({ ...userData, [type]: value });
     }
@@ -72,25 +78,44 @@ const Report = () => {
 
   const reportSubmit = (e) => {
     e.preventDefault();
-    // let formData = new FormData();
-    // formData.append()
-    if (agreeList[0].isChecked === false) {
+
+    if (agreeCheck[0].isChecked === false) {
       alert(_privateAlert);
-    } else if (agreeList[1].isChecked === false){
+    } else if (agreeCheck[1].isChecked === false){
       alert(_swearAlert);
     } 
-
-    // formData.append('')
+      const { name, company, contact, email } = userData;
+      const bodyData = {
+        reportType:7,
+        suspectUserId: targetUserId,
+        contentId,
+        contentType,
+        reportBody:{
+          reporterName:name,
+          reporterCompany:company,
+          tel:contact,
+          reporterEmail:email,
+          originLink:linkData,
+          contentSubject:descript,
+          isAgreePolicy:agreeCheck[0]?.isChecked,
+          isAgreeCorrect:agreeCheck[1]?.isChecked,
+          signature:signitrue,
+        }
+      };
+      const URL = `${process.env.NEXT_PUBLIC_API_URL}/report/copyright`;
+      reportFetch(URL, 'post', bodyData, null);
   };
 
-  useEffect(() => {
-    let form = [];
-    for (let i = 0; i <= originSite; i++) {
-      form.push(<TxtInput key={i} placeholder={'ex) https://'} onChange={(e) => handleChangeValue(e, 'origin')} />);
-    }
-    setOriginForm(form);
-  }, []);
+  const linkHandler = (e, id) => {
+    originForm[id].title = e.target.value;
+    let arr = []
+    for(let value in originForm){
+      arr.push(originForm[value].title)
 
+    }
+    setLinkData(arr);
+  }
+  
   return (
     <Layout>
       <LayoutInner>
@@ -106,14 +131,12 @@ const Report = () => {
 
             <ReportSubTitle>{_reporterInfo}</ReportSubTitle>
             {
-              copyRightinformArr?.map(({ id, title, name, required }) => (
+              copyRightinformArr?.map( ( { id, title, name, required } ) => (
                 <InputWrap key={id}>
                   <ReportTxt>{title}</ReportTxt>
                   <TxtInput
                     name={name}
-                    onChange={(e) => {
-                      handleChangeValue(e, name);
-                    }}
+                    onChange={ e => handleChangeValue(e, name) }
                     required={required}
                   />
                 </InputWrap> ) )
@@ -130,7 +153,13 @@ const Report = () => {
             </InputWrap>
             <InputWrap>
               <ReportTxt>{_filloutContents}</ReportTxt>
-              {originForm}
+              { originForm?.map( ( { id } ) => 
+              <TxtInput 
+              key={id} 
+              id={id} 
+              placeholder={'ex) https://'}
+              onChange={ e => linkHandler(e, id) }
+              /> ) }
             </InputWrap>
             <InputWrap>
               <ReportTxt>{_proofOrigin}</ReportTxt>
@@ -150,12 +179,12 @@ const Report = () => {
             <InputWrap>
               <ReportSubTitle>{_agreeAbove}</ReportSubTitle>
               {
-                agreeList?.map(({ id, title }) => (
+                agreeList?.map( ( { id, title } ) => (
                   <AgreeBoxWrap key={id}>
-                    <PvAgreeBox id={id} onChange={(e) => handleChangeValue(e, 'checkBox')} />
+                    <PvAgreeBox id={id} onChange={ e => handleChangeValue(e, 'checkBox')} />
                     <PvAgreeBoxLabel htmlFor={id}>{title}</PvAgreeBoxLabel>
                   </AgreeBoxWrap>
-                ))
+                ) )
               }
             </InputWrap>
             <InputWrap>

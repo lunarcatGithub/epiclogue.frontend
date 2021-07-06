@@ -96,13 +96,7 @@ export const ImageEditor = ({ image, id }) => {
   const [initCoord, setInitCoord] = useState({ x: 0, y: 0 });
 
   // 언어 변수
-  const {
-    _colorTxt,
-    _brushTxt,
-    _txtSize,
-    _outlineTxt,
-    _resetConfirm,
-  } = EditorLanguage();
+  const { _colorTxt, _brushTxt, _txtSize, _outlineTxt, _resetConfirm } = EditorLanguage();
 
   // 초기 캔버스 값 세팅
   const initCanvas = (id) => {
@@ -814,11 +808,9 @@ export const ImageEditor = ({ image, id }) => {
                 <ToolDummy />
                 <LeftMoveBtn onClick={() => moveTab('left', currentPage)}>{`<<`}</LeftMoveBtn>
                 <CanvasListBox>
-                  {
-                    imageSample.map((i, key) => (
-                      <CanvasList styling={currentPage === i.id} key={key} onClick={() => moveTab('click', i.id)}>{`Image ${i.id + 1}`}</CanvasList>
-                    ))
-                  }
+                  {imageSample.map((i, key) => (
+                    <CanvasList styling={currentPage === i.id} key={key} onClick={() => moveTab('click', i.id)}>{`Image ${i.id + 1}`}</CanvasList>
+                  ))}
                   <CanvasListFakeBox />
                 </CanvasListBox>
                 <RightMoveBtn onClick={() => moveTab('right', currentPage)}>{`>>`}</RightMoveBtn>

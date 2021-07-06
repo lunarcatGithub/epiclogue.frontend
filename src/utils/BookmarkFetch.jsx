@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 // Hooks
 import useAxiosFetch from '@hooks/useAxiosFetch';
@@ -9,6 +9,7 @@ import { useToggle } from '@hooks/useToggle';
 import { AppDataContext } from '@store/App_Store';
 
 export default function BookmarkFetch({ _id, initToggle }) {
+
   // fetch
   const [ , , , bookmarkFetch] = useAxiosFetch();
 
@@ -17,7 +18,7 @@ export default function BookmarkFetch({ _id, initToggle }) {
   // toggle
   const [bookmark, toggleBookmark] = useToggle();
 
-  const toggleHandler = (e) => {
+  const toggleHandler = () => {
     if(!loginOn){
       setUnAuth(true)
       return;
@@ -42,12 +43,57 @@ export default function BookmarkFetch({ _id, initToggle }) {
 
   return (
       <ReactBtnWrap>
+        <BtnBox>
         <BookmarkBtn
           bookmark={bookmark}
-          onClick={ () => toggleHandler() } />
+          onClick={ () => toggleHandler() }
+        />
+        </BtnBox>
       </ReactBtnWrap>
   );
 }
+
+// keyframes
+const buttonAnimation = keyframes`
+50% {
+  width:2.6em;
+  height:2.6em;
+}
+`;
+
+const restoreBtn = keyframes`
+0% {
+  width:0em;
+  height:0em;
+  opacity:0;
+}
+50% {
+  width:2.4em;
+  height:2.4em;
+  opacity:1;
+}
+60% {
+  width:2.7em;
+  height:2.7em;
+  opacity:0.3;
+}
+80% {
+  width:2.9em;
+  height:2.9em;
+  opacity:0.1;
+}
+100% {
+  width:3.5em;
+  height:3.5em;
+  opacity:0;
+}
+`
+const center = css`
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+`
 
 // 버튼 wrap
 const ReactBtnWrap = styled.div`
@@ -56,36 +102,55 @@ const ReactBtnWrap = styled.div`
   justify-content: center;
 `;
 
-const BookmarkBtn = styled.button.attrs({ type: 'submit' })`
-  position: relative;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  transition: transform 0.1s ease-in-out;
-  cursor: pointer;
-  &::before {
-    content: '';
-    background: url(${(props) => (props.bookmark ? '/static/bookmark-2.svg' : '/static/bookmark-1.svg')}) no-repeat center / contain;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 28px;
-    height: 28px;
-  }
+const BtnBox = styled.div`
+position:relative;
+width:2em;
+`
+
+const BookmarkBtn = styled.button`
+  ${center};
+  display:flex;
+  width:2em;
+  height:2em;
+  background:url( ${ ( { bookmark } ) => bookmark ? '/static/bookmark-2.svg' : '/static/bookmark-1.svg' }) no-repeat center center / contain;
+  transition: all 0.2s ease-in-out;
+
   &:active {
-    transform: scale(1.3);
-    transition: all 0.2s ease-in-out;
-    &::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: ${(props) => props.theme.color.orangeOpacityColor};
-    }
+    ${ ({ bookmark }) => !bookmark &&
+    ` 
+    width:1.2em; 
+    height:1.2em;
+    `
+    };
+      animation:${buttonAnimation} 0.2s ease-in-out normal;
+
+  }
+  
+  &::before {
+    ${ ({ bookmark }) => bookmark &&
+    `
+    content:'';
+    border:2px solid #F3BD60;
+    `
+    };
+    ${center};
+    left:51%;
+    opacity:0;
+    border-radius:50%;
+    animation:${restoreBtn} 0.5s ease-in-out normal;
+  }
+
+  &::after {
+    ${ ({ bookmark }) => bookmark &&
+    `
+    content:'';
+    border:1px solid #F3BD60;
+    `
+    };
+    ${center};
+    left:51%;
+    opacity:0;
+    border-radius:50%;
+    animation:${restoreBtn} 0.5s 0.1s ease-in-out normal;
   }
 `;

@@ -213,7 +213,7 @@ const FdMoreMenuAnchor = styled.button.attrs({
   right: 12px;
   ${(props) => props.theme.ImgButtonHover};
 `;
-const MoreMenuDot = styled.div`
+const MoreMenuDot = styled.span`
   display: flex;
   ${(props) => props.theme.moreMenu};
 `;

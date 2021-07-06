@@ -25,7 +25,18 @@ export default function HeaderLanguage(){
         _sessionExpire = sessionExpire[selectedLanguage] || sessionExpire[defaultLanguage];
   
   // header inform
-  const { headerInfrom, userReactLike, userFeedback, userSecondary, userBookmark, userFollowMe, userReply, dataRemove, feedbackRemove } = LangHeaderInform;
+  const {
+    headerInfrom,
+    userReactLike,
+    userFeedback,
+    userSecondary,
+    userBookmark,
+    userFollowMe,
+    userReply,
+    dataRemove,
+    feedbackRemove,
+    adminInform
+  } = LangHeaderInform;
 
   const _headerInfrom = headerInfrom[selectedLanguage] || headerInfrom[defaultLanguage],
         _userReactLike = userReactLike[selectedLanguage] || userReactLike[defaultLanguage],
@@ -34,6 +45,7 @@ export default function HeaderLanguage(){
         _userBookmark = userBookmark[selectedLanguage] || userBookmark[defaultLanguage],
         _userFollowMe = userFollowMe[selectedLanguage] || userFollowMe[defaultLanguage],
         _userReply = userReply[selectedLanguage] || userReply[defaultLanguage],
+        _adminInform = adminInform[selectedLanguage] || adminInform[defaultLanguage],
         _dataRemove = dataRemove[selectedLanguage] || dataRemove[defaultLanguage],
         _feedbackRemove = feedbackRemove[selectedLanguage] || feedbackRemove[defaultLanguage];
 
@@ -59,6 +71,6 @@ return {
   _userReply,
   _dataRemove,
   _feedbackRemove,
-
+  _adminInform
 }
 }

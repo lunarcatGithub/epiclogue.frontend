@@ -7,6 +7,9 @@ import ViewerLanguage from './Viewer.Language';
 // Hooks&&reducer import
 import { ViewerContext } from '@store/ViewerStore';
 
+//utils
+import { popupAni } from '@utils/popupAnimation';
+
 const MorePopup = ({ type, doType }) => {
   const {
     setUserPopup,
@@ -149,6 +152,8 @@ const MyPopupInner = styled.div`
   border-radius: 12px;
   background: ${(props) => props.theme.color.backgroundColor};
   box-shadow: ${(props) => props.theme.boxshadow.popup};
+  animation:${popupAni} .3s ease-in-out normal;
+
 `;
 //버튼
 

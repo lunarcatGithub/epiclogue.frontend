@@ -252,6 +252,7 @@ export default function Viewer({ boardItem, nonError }) {
     fbMoreText(feedbackData?.length);
   }, [prevFeeback, feedbackData, feedbackApi, modifiedFeedbackData])
 
+
     // Meta 전용
 
     const metaData = {
@@ -284,7 +285,6 @@ export default function Viewer({ boardItem, nonError }) {
           </MobileViewerPort>
 
           { /* 반응 탭 */}
-            {/* <ViewerReact /> */}
             <DynamicComponentWithNoSSR />
 
           {/* 유저 피드백 */}
@@ -317,9 +317,12 @@ export default function Viewer({ boardItem, nonError }) {
         <Contents boardId={viewerData?._id} type="MAIN" />
       </MoreContents>
       { /* 모달 팝업 관리 */ }
-      <Modal visible={userPopup} onClose={() => setUserPopup(false)}>
-        { typeMenuPopup }
-      </Modal>
+      { userPopup &&
+        <Modal visible={userPopup} onClose={() => setUserPopup(false)}>
+          { typeMenuPopup }
+        </Modal>
+      }
+    
   </>
   );
 } 

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 export const ViewerContext = React.createContext(null);
 
 export default function ViewerStore({ children }) {
-  const [ viewerData, setViewerData ] = useState(null);
+  const [ viewerData, setViewerData ] = useState([]);
 
   // user popup ctrl
   const [ userPopup, setUserPopup ] = useState(false);

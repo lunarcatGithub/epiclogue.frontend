@@ -11,7 +11,7 @@ import useAxiosFetch from '@hooks/useAxiosFetch';
 import { AdminContext } from '../Store/Admin_Context';
 
 export const AdminReport =()=> {
-    const { setReportData, reportData } = useContext(AdminContext);
+    const { setReportData, reportData, setIsAdmin, currentPage } = useContext(AdminContext);
 
     //data
 
@@ -34,49 +34,33 @@ export const AdminReport =()=> {
 
   // fetch
     const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
-
-    const [toggleSelect, setToggleSelect] = useState();
-
-    // const dataHadler = (e, type) => {
-    //   userContentsData?.forEach(_contentsData => {
-    //     if( Number(toggleSelect) === _contentsData.id ){
-    //       let data = userContentsData
-    //       if(type === 'main'){
-    //         // 회원 탈퇴
-    //         data.splice(Number(toggleSelect)-1, 1)
-    //         setUserContentsData(data);
-            
-    //       } else if( type === 'sub'){
-    //         // 회원 정지
-    //         if(userContentsData.hide === true){
-    //             data.hide = false
-    //         }else {
-    //             data.hide = true
-    //         }
-    //         setUserContentsData(data)
-    //       }
-    //     } else {
-    //         return;
-    //     }
-    //   });
-    // } 
+    
+    const [ toggleSelect, setToggleSelect ] = useState();
 
     useEffect(() => {
     const params = {
       size:30,
-      page:0,
+      page:currentPage,
+      isCopyright:false
     }
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
     reportFetch(URL, 'get', null, null, params)
-    }, []);
+    }, [currentPage]);
 
     useEffect(() => {
-      setReportData(reportApi?.data);
+      if(reportApi?.result === 'ok'){
+        setIsAdmin(true);
+        setReportData(reportApi?.data);
 
-    }, [reportApi])
-    
+      } else if(reportError?.status === 401) {
+        setIsAdmin(false);
+
+      } else {
+        return;
+      }
+    }, [reportApi, reportError]);
+
     const headerArr = ['번호', '아이디', '콘텐츠', '신고횟수', '최근 신고날짜', '처리하기'];
-
 
     return (
       <Layout>

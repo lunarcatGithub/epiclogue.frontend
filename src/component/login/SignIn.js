@@ -26,11 +26,11 @@ import { useCookie } from '@hooks/useCookie';
 export const SignIn = ({ setChangePage }) => {
   const router = useRouter();
   const { main } = router.query;
-  const { setLoginOn } = useContext(AppDataContext);
+  const { setLoginOn, currentPath } = useContext(AppDataContext);
   const [errorTitle, setErrorTitle] = useState();
   const [goURL] = useUrlMove();
   const [_isShowing, _toggle] = useModal();
-  
+
   // 로그인 에러
   // fetch
   const [, snsLoginListApi, , snsLoginFetch] = useAxiosFetch();
@@ -52,7 +52,7 @@ export const SignIn = ({ setChangePage }) => {
     _loginErr,
     _leaveUser,
     _lostPassword,
-    _backLogin
+    _backLogin,
   } = LoginLanguage();
 
   //create cookie
@@ -99,7 +99,12 @@ export const SignIn = ({ setChangePage }) => {
       setLoginOn(isLogin || true);
       localStorage.setItem('userNick', mergyData?.data?.nick);
       localStorage.setItem('userid', mergyData?.data?.screenId);
-      goURL({ pathname: '/' });
+
+      if (currentPath) {
+        goURL({ pathname: currentPath });
+      } else {
+        goURL({ pathname: '/' });
+      }
     }
   }, [resData, snsLoginListApi]);
 
@@ -136,6 +141,7 @@ export const SignIn = ({ setChangePage }) => {
               <PlaceHolderBox>
                 <PlaceHolderTxt>{errorTitle}</PlaceHolderTxt>
               </PlaceHolderBox>
+              {/* 로그인 하기 */}
               <LoginButton login={values.userPw.length} userPw={values.userPw} email={values.email} disabled={disabled}>
                 {disabled ? <ProgressSmall disabled={disabled} /> : _loginButton}
               </LoginButton>
