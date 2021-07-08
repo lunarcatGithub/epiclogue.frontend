@@ -23,7 +23,7 @@ export default function BookmarkFetch({ _id, initToggle = false }) {
       setUnAuth(true)
       return;
     }
-
+    toggleBookmark()
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/bookmark`;
     bookmarkFetch(
         URL,
@@ -41,7 +41,7 @@ export default function BookmarkFetch({ _id, initToggle = false }) {
         <BtnBox>
         <BookmarkBtn
           bookmark={bookmark}
-          onClick={ () => { toggleBookmark(); toggleHandler() } }
+          onClick={ () => { toggleHandler() } }
         />
         </BtnBox>
       </ReactBtnWrap>

@@ -102,7 +102,7 @@ export default function Viewer({ boardItem, nonError }) {
 
   const fbMoreText = (length) => {
     setFeedbackEventCtrl(true);
-    if (length <= 3) {
+    if (length <= 5) {
       setFeedbackTxt(_firstFeedback);
       setFeedbackEventCtrl(false);
     } else {

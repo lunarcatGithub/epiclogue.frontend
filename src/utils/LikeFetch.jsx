@@ -24,7 +24,7 @@ export default function LikeFetch({ _id, initLike = false, initialCount, type })
       setUnAuth(true);
       return;
     }
-
+    toggle_like();
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/like`;
     likeFetch(
       URL,
@@ -52,7 +52,7 @@ export default function LikeFetch({ _id, initLike = false, initialCount, type })
           <BtnBox>
             <LikeFbBtn
               heart={like}
-              onClick={ () => { toggle_like(); toggleHandler() } }
+              onClick={ () => { toggleHandler() } }
             />
           </BtnBox>
           {/* <BtnDummy/> */}
