@@ -33,7 +33,7 @@ export const AdminReport =()=> {
     ]   
 
   // fetch
-    const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
+    const [ reportLoading, reportApi, reportError, reportFetch] = useAxiosFetch();
     
     const [ toggleSelect, setToggleSelect ] = useState();
 
@@ -72,7 +72,8 @@ export const AdminReport =()=> {
             categorySelec,
             searchFilter,
             setToggleSelect,
-            buttonType
+            buttonType,
+            reportLoading
           } } />
         </LayoutInner>
       </Layout>

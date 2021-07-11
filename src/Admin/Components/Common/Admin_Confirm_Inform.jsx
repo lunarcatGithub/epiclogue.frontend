@@ -48,23 +48,23 @@ export function AdminConfirmInform({type, reportList}) {
             <TextBlock>해당 제재 목록</TextBlock>
             <DropdownBtn onClick={()=>toggleSelectList(!selectList)}>{dataOnChange}</DropdownBtn>
             { 
-                selectList &&
-                <Dropdown>
-                    {
-                        reportList?.map( list => (
-                        <ListTxtBox key={list.id}>
-                            <TextList>{list.title}</TextList>
-                            <ListTxtRadio
-                            readOnly 
-                            value={list.id}
-                            checked={list.title === dataOnChange}
-                            onChange={() => dataOnChangeHandler(list.title)}
-                            onClick={()=>toggleSelectList(!selectList)} 
-                            />
-                            <ListRadioCustom/>
-                        </ListTxtBox> ) )
-                    }
-                </Dropdown>
+							selectList &&
+							<Dropdown>
+								{
+									reportList?.map( list => (
+									<ListTxtBox key={list.id}>
+										<TextList>{list.title}</TextList>
+										<ListTxtRadio
+										readOnly 
+										value={list.id}
+										checked={list.title === dataOnChange}
+										onChange={() => dataOnChangeHandler(list.title)}
+										onClick={()=>toggleSelectList(!selectList)} 
+										/>
+										<ListRadioCustom/>
+									</ListTxtBox> ) )
+								}
+							</Dropdown>
             }
         </BlockWrap>
         <BlockWrap>

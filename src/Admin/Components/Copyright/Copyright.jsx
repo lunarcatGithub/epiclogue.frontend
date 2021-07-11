@@ -34,7 +34,7 @@ export const AdminCopyright = () => {
     { title: '제목', value: 'title' },
   ];
   // fetch
-  const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
+  const [ reportLoading, reportApi, reportError, reportFetch] = useAxiosFetch();
 
   const [toggleSelect, setToggleSelect] = useState();
 
@@ -99,7 +99,8 @@ export const AdminCopyright = () => {
             searchFilter,
             dataHadler,
             setToggleSelect,
-            buttonType
+            buttonType,
+            reportLoading
           }}
         />
       </LayoutInner>
