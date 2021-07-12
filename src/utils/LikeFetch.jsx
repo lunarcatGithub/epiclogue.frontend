@@ -8,8 +8,8 @@ import { useToggle } from '@hooks/useToggle';
 // reduce
 import { AppDataContext } from '@store/App_Store';
 
-export default function LikeFetch({ _id, initLike = false, initialCount, type }) {
-  // console.log(initLike)
+export default function LikeFetch({ _id, initLike, initialCount, type }) {
+
   // fetch
   const [ , likeApi, , likeFetch] = useAxiosFetch();
 
@@ -17,7 +17,7 @@ export default function LikeFetch({ _id, initLike = false, initialCount, type })
   
   const [ heartCount, setHeartCount ] = useState(initialCount);
   // toggle
-  const [like, toggle_like] = useToggle(initLike);
+  const [like, toggle_like] = useToggle();
 
   const toggleHandler = () => {
     if(!loginOn){
@@ -37,6 +37,11 @@ export default function LikeFetch({ _id, initLike = false, initialCount, type })
     );
   }
 
+  useEffect(() => { // 초기 좋아요 값 세팅
+    if(initLike === undefined) return;
+    useToggle(initLike);
+  }, [initLike])
+
   useEffect(() => {
     setHeartCount(initialCount)
   }, [initialCount]);
@@ -46,21 +51,23 @@ export default function LikeFetch({ _id, initLike = false, initialCount, type })
       setHeartCount(likeApi?.data?.heartCount);
     }
   }, [likeApi]);
+  
+
 
   return (
       <ReactBtnWrap type={type} >
-          <BtnBox>
-            <LikeFbBtn
-              heart={like}
-              onClick={ () => { toggleHandler() } }
-            />
-          </BtnBox>
-          {/* <BtnDummy/> */}
-        <ScoreBox>
-          {/* <ScoreDummy>{ heartCount }</ScoreDummy> */}
-          <LikeFbScore heart={like} >{ heartCount }</LikeFbScore>
-        </ScoreBox>
-      </ReactBtnWrap>
+        <BtnBox>
+          <LikeFbBtn
+            heart={like}
+            onClick={ () => { toggle_like(); toggleHandler() } }
+          />
+        </BtnBox>
+        {/* <BtnDummy/> */}
+      <ScoreBox>
+        {/* <ScoreDummy>{ heartCount }</ScoreDummy> */}
+        <LikeFbScore heart={like} >{ heartCount }</LikeFbScore>
+      </ScoreBox>
+    </ReactBtnWrap>
   );
 }
 // keyframes

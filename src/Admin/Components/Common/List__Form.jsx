@@ -7,6 +7,7 @@ import Modal from '@utils/Modal'
 
 //hooks && reduce
 import { AdminContext } from '../Store/Admin_Context';
+import useAxiosFetch from '@hooks/useAxiosFetch';
 
 //component
 import { AdminConfirmPopup } from './Admin_Confirm_Popup';
@@ -22,11 +23,11 @@ export default function ListForm({ type, contentsData }) {
     headerArr,
     userContentsData,
     tableRef,
-    setToggleSelect,
     //remove
     toggleSelect,
     setUserContentsData,
-    buttonType
+    buttonType,
+    reportLoading
   } = contentsData;
 
   const {
@@ -36,10 +37,13 @@ export default function ListForm({ type, contentsData }) {
     copyrightData,
     currentPage,
     copyrightResultData,
-    reportResultData
+    reportResultData,
+    currentData
   } = useContext(AdminContext);
 
-  // console.log(reportData[0]?.suspactUserInfo[0])
+  // reducer
+  const [ , doReportApi, doReportError, doReportFetch] = useAxiosFetch();
+
 
   // data 분류
   const [ listData, setListData ] = useState([]);
@@ -55,6 +59,7 @@ export default function ListForm({ type, contentsData }) {
   // confirm
   const [warnConfirm, setWarnConfirm] = useState(false);
   const [userEmail, setUserEmail] = useState({type:null, bool:false});
+  const [isProcessSuccess, setIsProcessSuccess] = useState(null);
 
   const typeHandler = () => {
     let arr = [];
@@ -120,6 +125,39 @@ export default function ListForm({ type, contentsData }) {
     setBodyData(bodyData);
   };
 
+  useEffect(()=> {
+    console.log(doReportApi);
+    console.log(doReportError);
+    if(!doReportApi || !doReportError) return;
+    if(doReportApi?.data.result === 'ok'){
+      alert('처리되었습니다');
+    } else if(doReportError?.data.result) {
+      alert('처리에 실패 했습니다. 다시 시도해주세요');
+    } else {
+      return;
+    }
+
+  },[doReportApi, doReportError]);
+
+  const dangerConfirm = (reportStatus) => { // 처리 관리 함수
+    const body = {
+      reportType: reportStatus,
+      reportStatus: reportStatus,
+      suspectUserId: currentData?._suspectUserId,
+      contentId: currentData?._id,
+      contentType: currentData?._contentType
+    }
+    const confirmResult = confirm('정말 처리하시겠습니까?');
+    if(confirmResult){
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
+    doReportFetch(URL, 'delete', body, null, null);
+    setWarnConfirm(false);
+    } else {
+      return
+    }
+  }
+
+
   const dataHandler = (e, subType) => {
     userContentsData?.forEach((_contentsData) => {
       if (Number(toggleSelect) === _contentsData.id) {
@@ -145,11 +183,6 @@ export default function ListForm({ type, contentsData }) {
     });
   };
 
-  // 최종 확인
-  const dangerConfirm = () => {
-
-  };
-
   useEffect(() => {
     typeHandler();
   }, [type]);
@@ -166,6 +199,8 @@ export default function ListForm({ type, contentsData }) {
       if(key === type) setListData(value);
     }
   }, [type, currentPage, reportData, copyrightData, reportResultData, copyrightResultData]);
+
+
 
   return (
     <>
@@ -212,7 +247,7 @@ export default function ListForm({ type, contentsData }) {
             </TableRowBox>
           </TableHead>
           {/*  테이블 본문 시작 */}
-          <TableBody>
+          <TableBody>{ reportLoading ? <div>Loading</div> : <>
             {type === 'REPORT' || type === 'COPYRIGHT' ? listData?.map( ( content, i ) => ( 
               <List key={i} content={content} setWarnConfirm={setWarnConfirm} mainType={type}/> 
               ) )
@@ -224,6 +259,8 @@ export default function ListForm({ type, contentsData }) {
               ) ) 
             :
               null
+            }
+            </>
             }
           </TableBody>
         </TableBox>
@@ -239,9 +276,8 @@ export default function ListForm({ type, contentsData }) {
               mainType={type}
               dataHandler={dataHandler}
               reportList={reportList}
-              setWarnConfirm={setWarnConfirm}
-              listData={selectedData}
               dangerConfirm={dangerConfirm}
+              listData={selectedData}
               lastDataConfirm={lastDataConfirm}
             />
           </Modal>

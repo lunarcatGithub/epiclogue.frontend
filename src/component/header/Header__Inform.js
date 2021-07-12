@@ -44,6 +44,12 @@ const UserInform = () => {
     notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, params);
   };
 
+  // Admin Niti
+  const adminNoti = (target ,message) => {
+    console.log(target ,message)
+    return(message);
+  }
+
   useEffect(() => {
     if (!stopData) return;
     handleScroller();
@@ -62,6 +68,7 @@ const UserInform = () => {
     if (!notiApi) return;
     setTargetUser(targetUser ? [...targetUser, ...notiApi?.data] : [...notiApi?.data]);
   }, [notiApi]);
+  console.log(notiApi);
 
   // 읽음 처리용
   useEffect(() => {
@@ -79,7 +86,7 @@ const UserInform = () => {
         </ClosedBox>
       </InformHeader>
       <InformBodyInner>
-        {targetUser?.map(({ maker, notificationType, read, targetInfo }, key) => (
+        {targetUser?.map(({ maker, notificationType, read, targetInfo, message }, key) => (
           <ContentBox
             key={key}
             read={read}
@@ -121,7 +128,7 @@ const UserInform = () => {
                   {notificationType === 'Secondary' && <UserInteract>{_userSecondary}</UserInteract>}
                   {notificationType === 'Follow' && <UserInteract>{_userFollowMe}</UserInteract>}
                   {notificationType === 'Reply' && <UserInteract>{_userReply}</UserInteract>}
-                  {notificationType === 'Notice' && <UserInteract>{_adminInform}</UserInteract>}
+                  {notificationType === 'Notice' ? <AdminInteract>{ adminNoti(notificationType, message) }</AdminInteract> : null}
                 </UserText>
               </TextBox>
               {targetInfo ? <InteractContent>{targetInfo?.boardTitle || targetInfo?.feedbackBody}</InteractContent> : <DeletedContent>{_dataRemove}</DeletedContent>}
@@ -328,6 +335,11 @@ const UserInteract = styled.span`
   font-weight: ${(props) => props.theme.fontWeight.font500};
   color: ${(props) => props.theme.color.darkGray};
 `;
+
+const AdminInteract = styled(UserInteract)`
+
+`;
+
 const InteractContent = styled.span`
   ${(props) => props.theme.textOneLine};
   flex-shrink: 0;

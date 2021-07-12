@@ -8,7 +8,7 @@ import { useToggle } from '@hooks/useToggle';
 // reduce
 import { AppDataContext } from '@store/App_Store';
 
-export default function BookmarkFetch({ _id, initToggle = false }) {
+export default function BookmarkFetch({ _id, initToggle }) {
   // console.log(initToggle)
   // fetch
   const [ , , , bookmarkFetch] = useAxiosFetch();
@@ -16,7 +16,7 @@ export default function BookmarkFetch({ _id, initToggle = false }) {
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   
   // toggle
-  const [bookmark, toggleBookmark] = useToggle(initToggle);
+  const [bookmark, toggleBookmark] = useToggle();
 
   const toggleHandler = () => {
     if(!loginOn){
@@ -34,6 +34,11 @@ export default function BookmarkFetch({ _id, initToggle = false }) {
         null
       );
   };
+
+  useEffect(() => {
+    if(initToggle === undefined) return;
+    toggleBookmark(initToggle)
+  }, [initToggle])
 
 
   return (

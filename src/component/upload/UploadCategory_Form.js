@@ -11,7 +11,7 @@ export default function UploadCategoryForm({ type, initialNum }) {
 
   const [isCategory, toggleModal_Category] = useToggle();
   const [categoryIcon, setCategoryIcon] = useState();
-  const [categoryNum, setCategoryNum] = useState(type && initialNum);
+  const [categoryNum, setCategoryNum] = useState(type && Number(initialNum));
   const [categoryTxt, setCategoryTxt] = useState();
   const [contents, setContents] = useState([]);
   const [scriptTxt, setScriptTxt] = useState({ title: null, sub: null });
