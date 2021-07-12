@@ -1,29 +1,28 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled, { keyframes, css } from 'styled-components';
 
 // Hooks
 import useAxiosFetch from '@hooks/useAxiosFetch';
-import { useToggle } from '@hooks/useToggle';
 
 // reduce
 import { AppDataContext } from '@store/App_Store';
 
 export default function BookmarkFetch({ _id, initToggle }) {
-  // console.log(initToggle)
+
   // fetch
-  const [ , , , bookmarkFetch] = useAxiosFetch();
+  const [ , bookmarkApi, , bookmarkFetch] = useAxiosFetch();
 
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   
   // toggle
-  const [bookmark, toggleBookmark] = useToggle();
+  const [bookmark, toggleBookmark] = useState();
 
   const toggleHandler = () => {
     if(!loginOn){
       setUnAuth(true)
       return;
     }
-    toggleBookmark()
+    toggleBookmark(!bookmark);
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/bookmark`;
     bookmarkFetch(
         URL,
@@ -38,7 +37,7 @@ export default function BookmarkFetch({ _id, initToggle }) {
   useEffect(() => {
     if(initToggle === undefined) return;
     toggleBookmark(initToggle)
-  }, [initToggle])
+  }, [initToggle, bookmarkApi])
 
 
   return (

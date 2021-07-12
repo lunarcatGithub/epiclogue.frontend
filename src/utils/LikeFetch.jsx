@@ -3,7 +3,6 @@ import styled, { keyframes, css } from 'styled-components';
 
 // Hooks
 import useAxiosFetch from '@hooks/useAxiosFetch';
-import { useToggle } from '@hooks/useToggle';
 
 // reduce
 import { AppDataContext } from '@store/App_Store';
@@ -16,15 +15,16 @@ export default function LikeFetch({ _id, initLike, initialCount, type }) {
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   
   const [ heartCount, setHeartCount ] = useState(initialCount);
+  
   // toggle
-  const [like, toggle_like] = useToggle();
+  const [like, toggle_like] = useState();
 
   const toggleHandler = () => {
     if(!loginOn){
       setUnAuth(true);
       return;
     }
-    toggle_like();
+    toggle_like(!like);
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/like`;
     likeFetch(
       URL,
@@ -39,12 +39,12 @@ export default function LikeFetch({ _id, initLike, initialCount, type }) {
 
   useEffect(() => { // 초기 좋아요 값 세팅
     if(initLike === undefined) return;
-    useToggle(initLike);
+    toggle_like(initLike);
   }, [initLike])
 
   useEffect(() => {
-    setHeartCount(initialCount)
-  }, [initialCount]);
+    setHeartCount(initialCount || heartCount);
+  }, [initialCount, heartCount]);
 
   useEffect(() => {
     if(likeApi?.result === 'ok'){
@@ -52,7 +52,6 @@ export default function LikeFetch({ _id, initLike, initialCount, type }) {
     }
   }, [likeApi]);
   
-
 
   return (
       <ReactBtnWrap type={type} >

@@ -195,7 +195,7 @@ const ReactSelector = styled.div`
   display: flex;
   justify-content: space-around;
   height: auto;
-  padding-top: 10px;
+  padding-top: 1em;
 `;
 
 const BtnBox = styled.button`
