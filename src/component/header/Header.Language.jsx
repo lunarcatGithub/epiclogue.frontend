@@ -35,7 +35,9 @@ export default function HeaderLanguage(){
     userReply,
     dataRemove,
     feedbackRemove,
-    adminInform
+    adminInform,
+    adminResultCenter,
+    adminPostRemoveFirst
   } = LangHeaderInform;
 
   const _headerInfrom = headerInfrom[selectedLanguage] || headerInfrom[defaultLanguage],
@@ -47,7 +49,11 @@ export default function HeaderLanguage(){
         _userReply = userReply[selectedLanguage] || userReply[defaultLanguage],
         _adminInform = adminInform[selectedLanguage] || adminInform[defaultLanguage],
         _dataRemove = dataRemove[selectedLanguage] || dataRemove[defaultLanguage],
-        _feedbackRemove = feedbackRemove[selectedLanguage] || feedbackRemove[defaultLanguage];
+        _feedbackRemove = feedbackRemove[selectedLanguage] || feedbackRemove[defaultLanguage],
+        _adminResultCenter = adminResultCenter[selectedLanguage] || adminResultCenter[defaultLanguage],
+        _adminPostRemoveFirst = adminPostRemoveFirst[selectedLanguage] || adminPostRemoveFirst[defaultLanguage];
+        
+    
 
 return {
 // header
@@ -71,6 +77,8 @@ return {
   _userReply,
   _dataRemove,
   _feedbackRemove,
-  _adminInform
+  _adminInform,
+  _adminResultCenter,
+  _adminPostRemoveFirst
 }
 }

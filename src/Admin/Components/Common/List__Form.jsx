@@ -31,14 +31,14 @@ export default function ListForm({ type, contentsData }) {
   } = contentsData;
 
   const {
-    reportList,
     reportData,
     setCurrentTargetData,
     copyrightData,
     currentPage,
     copyrightResultData,
     reportResultData,
-    currentData
+    currentData,
+    decideReportType
   } = useContext(AdminContext);
 
   // reducer
@@ -141,7 +141,7 @@ export default function ListForm({ type, contentsData }) {
 
   const dangerConfirm = (reportStatus) => { // 처리 관리 함수
     const body = {
-      reportType: reportStatus,
+      reportType: decideReportType,
       reportStatus: reportStatus,
       suspectUserId: currentData?._suspectUserId,
       contentId: currentData?._id,
@@ -275,7 +275,6 @@ export default function ListForm({ type, contentsData }) {
               // type={warnConfirm}
               mainType={type}
               dataHandler={dataHandler}
-              reportList={reportList}
               dangerConfirm={dangerConfirm}
               listData={selectedData}
               lastDataConfirm={lastDataConfirm}
