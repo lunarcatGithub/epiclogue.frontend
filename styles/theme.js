@@ -57,6 +57,7 @@ const textTwoLine = css`
   -webkit-line-clamp: 2;/* 라인수 */
   -webkit-box-orient: vertical;
   word-wrap:break-word;
+  word-break: break-all;
 `
 const ImgButtonHover = css`
   position: absolute;

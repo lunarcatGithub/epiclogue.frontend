@@ -11,10 +11,10 @@ import { AdminContext } from '../Store/Admin_Context';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 
 export const CopyRightReportResult =()=> {
-  const { setReportData, setCopyrightResultData, setIsAdmin } = useContext(AdminContext);
+  const { setCopyrightResultData, setIsAdmin } = useContext(AdminContext);
 
   // fetch
-  const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
+  const [ reportLoading, reportApi, reportError, reportFetch] = useAxiosFetch();
 
     //data
     const [userContentsData, setUserContentsData] = useState([
@@ -103,7 +103,8 @@ export const CopyRightReportResult =()=> {
           searchFilter,
           dataHadler,
           setToggleSelect,
-          buttonType
+          buttonType,
+          reportLoading
           }} />
       </LayoutInner>
     </Layout>

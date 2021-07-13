@@ -3,33 +3,32 @@ import styled, { keyframes, css } from 'styled-components';
 
 // Hooks
 import useAxiosFetch from '@hooks/useAxiosFetch';
-import { useToggle } from '@hooks/useToggle';
 
 // reduce
 import { AppDataContext } from '@store/App_Store';
 
 export default function LikeFetch({ _id, initLike, initialCount, type }) {
+
   // fetch
   const [ , likeApi, , likeFetch] = useAxiosFetch();
 
   const { loginOn, setUnAuth } = useContext(AppDataContext);
   
   const [ heartCount, setHeartCount ] = useState(initialCount);
+  
   // toggle
-  const [like, toggle_like] = useToggle();
+  const [like, toggle_like] = useState();
 
   const toggleHandler = () => {
     if(!loginOn){
       setUnAuth(true);
       return;
     }
-
-    toggle_like();
-
+    toggle_like(!like);
     const URL = `${process.env.NEXT_PUBLIC_API_URL}/interaction/like`;
     likeFetch(
       URL,
-      like ? 'post' : 'delete',
+      like ? 'delete' : 'post',
       {
         targetInfo: _id,
         targetType: type,
@@ -38,31 +37,36 @@ export default function LikeFetch({ _id, initLike, initialCount, type }) {
     );
   }
 
-  useEffect(() => {
+  useEffect(() => { // 초기 좋아요 값 세팅
+    if(initLike === undefined) return;
     toggle_like(initLike);
-    setHeartCount(initialCount)
-  }, [initialCount]);
+  }, [initLike])
+
+  useEffect(() => {
+    setHeartCount(initialCount || heartCount);
+  }, [initialCount, heartCount]);
 
   useEffect(() => {
     if(likeApi?.result === 'ok'){
       setHeartCount(likeApi?.data?.heartCount);
     }
   }, [likeApi]);
+  
 
   return (
       <ReactBtnWrap type={type} >
-          <BtnBox>
-            <LikeFbBtn
-              heart={like}
-              onClick={ () => toggleHandler() }
-            />
-          </BtnBox>
-          {/* <BtnDummy/> */}
-        <ScoreBox>
-          {/* <ScoreDummy>{ heartCount }</ScoreDummy> */}
-          <LikeFbScore heart={like} >{ heartCount }</LikeFbScore>
-        </ScoreBox>
-      </ReactBtnWrap>
+        <BtnBox>
+          <LikeFbBtn
+            heart={like}
+            onClick={ () => { toggle_like(); toggleHandler() } }
+          />
+        </BtnBox>
+        {/* <BtnDummy/> */}
+      <ScoreBox>
+        {/* <ScoreDummy>{ heartCount }</ScoreDummy> */}
+        <LikeFbScore heart={like} >{ heartCount }</LikeFbScore>
+      </ScoreBox>
+    </ReactBtnWrap>
   );
 }
 // keyframes

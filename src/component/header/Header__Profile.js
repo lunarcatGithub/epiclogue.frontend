@@ -39,7 +39,7 @@ const HeaderPfPopup = () => {
 
   const logout = () => {
     setIsOpen();
-    cookieHandle('DELETE', 'access_token');
+    // cookieHandle('DELETE', 'access_token');
     // testCookieHandle('DELETE', 'dev');
     logoutFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, 'get');
     setLoginOn(false);

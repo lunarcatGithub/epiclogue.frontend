@@ -16,7 +16,8 @@ const Report = () => {
   const { targetUserId, contentId, contentType } = router?.query;
 
   // 언어 import
-  const { _privateAgree,
+  const { 
+        _privateAgree,
         _swearAgree,
         _privateAlert,
         _swearAlert,

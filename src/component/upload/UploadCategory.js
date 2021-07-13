@@ -252,8 +252,7 @@ const UploadCategory = (props) => {
         //업로드 막기
         disabled,
         setDisabled,
-      }}
-    >
+      } } >
       <ContentOptionBox>
         <ContentTitle alertTitle={alertTitle}>
           <TextAreaAutoSize

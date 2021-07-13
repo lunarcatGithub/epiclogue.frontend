@@ -62,6 +62,16 @@ export const LangHeaderInform = {
     0: '관리자 알림',
     1: '管理者通知',
   },
+  adminPostRemoveFirst: {
+    2: 'The post',
+    0: '게시물',
+    1: '掲示物',
+  },
+  adminResultCenter: {
+    2: 'has been deleted by report',
+    0: '가 신고에 의하여 삭제되었습니다',
+    1: 'が申告により削除されました',
+  },
 };
 
 export const LangHeaderSearch = {

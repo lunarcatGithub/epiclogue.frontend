@@ -20,8 +20,9 @@ const AdminContextStore = ({ children }) => {
   const [ isAdmin, setIsAdmin ] = useState(true);
 
   // data
-  const [currentData, setCurrentData] = useState([]);
-  const [currentCopyrightData, setCurrentCopyrightData] = useState([]);
+  const [ currentData, setCurrentData ] = useState([]);
+  const [ currentCopyrightData, setCurrentCopyrightData ] = useState([]);
+  const [ decideReportType, setDecideReportType ] = useState(0);
 
   // page
   const [currentPage, setCurrentPage] = useState(0);
@@ -39,7 +40,7 @@ const AdminContextStore = ({ children }) => {
     { id: 7, title: '저작권 분쟁', value: 'copyright'},
     { id: 8, title: '기타', value: 'etc'},
   ];
-  
+
   return (
     <AdminContext.Provider
       value={{
@@ -62,6 +63,8 @@ const AdminContextStore = ({ children }) => {
         setCopyrightResultData,
         reportResultData,
         setReportResultData,
+        decideReportType,
+        setDecideReportType,
         // page
         currentPage,
         setCurrentPage,

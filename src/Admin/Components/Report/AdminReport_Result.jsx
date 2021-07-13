@@ -16,7 +16,7 @@ export const AdminReportResult =()=> {
 	const [toggleSelect, setToggleSelect] = useState();
 
   // fetch
-  const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
+  const [ reportLoading, reportApi, reportError, reportFetch] = useAxiosFetch();
 
   //data
     const [userContentsData, setUserContentsData] = useState([
@@ -50,7 +50,7 @@ export const AdminReportResult =()=> {
       }
       const URL = `${process.env.NEXT_PUBLIC_API_URL}/report/processedReports`;
       reportFetch(URL, 'get', null, null, params)
-      }, []);
+      }, [currentPage]);
       
     useEffect(() => {
       if(reportApi?.result === 'ok'){
@@ -104,7 +104,8 @@ export const AdminReportResult =()=> {
 					searchFilter,
 					dataHadler,
 					setToggleSelect,
-					buttonType
+					buttonType,
+          reportLoading
 					}} />
 				</LayoutInner>
 			</Layout>

@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import styled,{css} from 'styled-components';
+import React, { useState, useEffect, useContext } from 'react';
+import styled,{ css } from 'styled-components';
 
 //component
+import { AdminContext } from '../Store/Admin_Context';
 
 // utils
 
 // hook
 import { useToggle } from '@hooks/useToggle';
 
-export function AdminConfirmInform({type, reportList}) {
-
+export function AdminConfirmInform({type}) {
+		//reducer
+		const { setDecideReportType, reportList } = useContext(AdminContext);
     const [dataOnChange, dataOnChangeHandler] = useState('스팸성');
     const [selectList, toggleSelectList] = useToggle(false);
     const [userInform, setUserInform] = useState('');
@@ -41,30 +43,29 @@ export function AdminConfirmInform({type, reportList}) {
     },[type, dataOnChange]);
 
 
-
     return (
       <>
         <BlockWrap>
             <TextBlock>해당 제재 목록</TextBlock>
-            <DropdownBtn onClick={()=>toggleSelectList(!selectList)}>{dataOnChange}</DropdownBtn>
+            <DropdownBtn onClick={() => toggleSelectList(!selectList)}>{dataOnChange}</DropdownBtn>
             { 
-                selectList &&
-                <Dropdown>
-                    {
-                        reportList?.map( list => (
-                        <ListTxtBox key={list.id}>
-                            <TextList>{list.title}</TextList>
-                            <ListTxtRadio
-                            readOnly 
-                            value={list.id}
-                            checked={list.title === dataOnChange}
-                            onChange={() => dataOnChangeHandler(list.title)}
-                            onClick={()=>toggleSelectList(!selectList)} 
-                            />
-                            <ListRadioCustom/>
-                        </ListTxtBox> ) )
-                    }
-                </Dropdown>
+							selectList &&
+							<Dropdown>
+								{
+									reportList?.map( list => (
+									<ListTxtBox key={list.id}>
+										<TextList>{list.title}</TextList>
+										<ListTxtRadio
+											readOnly 
+											// value={list.id}
+											checked={list.title === dataOnChange}
+											onChange={() => { dataOnChangeHandler(list.title); setDecideReportType(list.id) }}
+											onClick={()=>toggleSelectList(!selectList)} 
+										/>
+										<ListRadioCustom/>
+									</ListTxtBox> ) )
+								}
+							</Dropdown>
             }
         </BlockWrap>
         <BlockWrap>

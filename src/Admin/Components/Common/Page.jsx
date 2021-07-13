@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 //hooks && reduce
 import { AdminContext } from '../Store/Admin_Context';
@@ -10,8 +11,10 @@ export default function Page() {
   const [ pageArr, setPageArr ] = useState([]);
   const initPage = 30;
   
+  const route = useRouter(); 
+
   const pageHandler = (type, idx) => {
-    if(currentPage === idx - 1) return; // 같은 페이지 요청 방지
+    // if(currentPage === idx - 1) return; // 같은 페이지 요청 방지
     if(type === 'left'){
       if(currentPage < 1){
         return;
@@ -19,7 +22,7 @@ export default function Page() {
         setCurrentPage((page) => page + idx);
       }
     } else if(type === 'num'){ // 번호를 직접 눌렀을 때
-      setCurrentPage(idx - 1);
+      setCurrentPage(idx);
 
     } else if(type === 'right') {
       if(currentPage > initPage.length - 1){
@@ -46,15 +49,20 @@ export default function Page() {
       if(currentPage > 4){
         test = pageArrList.slice(currentPage - 5, currentPage + 5);
       } else if(currentPage >= initPages - 8){
-        // console.log('test')
+        // console.log('test');
         // test = pageArrList.slice(currentPage + 5, currentPage - 5);
       } else {
         test = pageArrList.slice(0, 10);
       }
 
-    setPageArr(test)
+    setPageArr(test);
   }, [currentPage]);
 
+  useEffect(() => {
+    setCurrentPage(0)
+  }, [route.asPath]);
+
+    console.log(currentPage)
   return (
     <Layout>
       <PageButton onClick={() => pageHandler('left', -1)}>{'<'}</PageButton>
@@ -63,7 +71,7 @@ export default function Page() {
           <PageButton 
             key={index} 
             styling={currentPage + 1 === i} 
-            onClick={() => pageHandler('num', i)}
+            onClick={() => pageHandler('num', i - 1)}
           >
             { i }
           </PageButton>

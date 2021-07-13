@@ -1,9 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 // 컴포넌트 import
 import { HeaderDataContext } from './Header';
 import HeaderLanguage from './Header.Language';
+import ReportLanguage from '@component/report/Report_Language';
 
 // hooks&&reducer
 import { useUrlMove } from '@hooks/useUrlMove';
@@ -11,9 +12,13 @@ import { AppDataContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
 
+// utils
+// import reportType from '@utils/reportType';
+
 const UserInform = () => {
   const { toggleNoti } = useContext(HeaderDataContext);
   const { loginOn } = useContext(AppDataContext);
+  // const [value, typeFind] = reportType();
 
   // 유저 알림
   const [goURL] = useUrlMove();
@@ -27,7 +32,20 @@ const UserInform = () => {
   const [stopData, setStopData] = useState(true);
 
   //언어 변수
-  const { _headerInfrom, _userReactLike, _userFeedback, _userSecondary, _userBookmark, _userFollowMe, _userReply, _dataRemove, _adminInform } = HeaderLanguage();
+  const {
+    _headerInfrom,
+    _userReactLike,
+    _userFeedback,
+    _userSecondary,
+    _userBookmark,
+    _userFollowMe,
+    _userReply,
+    _dataRemove,
+    _adminInform,
+    _adminResultCenter,
+    _adminPostRemoveFirst
+  } = HeaderLanguage();
+  const { reportList } = ReportLanguage();
 
   //fetch
   const [notiLoding, notiApi, , notiFetch] = useAxiosFetch();
@@ -43,6 +61,32 @@ const UserInform = () => {
     };
     notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, params);
   };
+
+
+  // Admin Niti
+  const adminNoti = (notiType, target, message) => { // 알림 내용 파트
+
+    if(notiType === 'Notice'){
+      const filtering = reportList.filter(({id, title}) => {
+        if(message?.reportType === id){
+            return title
+        } } );
+        return (`(${filtering[0]?.title}) ${_adminPostRemoveFirst} ${message?.data} ${_adminResultCenter}`);
+    } else if(notiType === 'Like' || notiType === 'Bookmark' || notiType === 'Secondary' || notiType === 'Feedback') {
+      return ( <InteractContentButton 
+                onClick={ () => goURL({ pathname: `/viewer/${target?.boardId}` })} > { target?.boardTitle }
+              </InteractContentButton>
+              ) 
+    } else if(notiType === 'Reply'){
+      console.log(notiType, target, message)
+      return ( <InteractContentButton
+                onClick={ () => goURL({ pathname: `/viewer/${target?.boardId}` })} > { target?.feedbackBody }
+              </InteractContentButton>
+              ) 
+    } else {
+      return(<DeletedContent>{_dataRemove}</DeletedContent>)
+    }
+  }
 
   useEffect(() => {
     if (!stopData) return;
@@ -62,6 +106,7 @@ const UserInform = () => {
     if (!notiApi) return;
     setTargetUser(targetUser ? [...targetUser, ...notiApi?.data] : [...notiApi?.data]);
   }, [notiApi]);
+  console.log(notiApi);
 
   // 읽음 처리용
   useEffect(() => {
@@ -79,7 +124,7 @@ const UserInform = () => {
         </ClosedBox>
       </InformHeader>
       <InformBodyInner>
-        {targetUser?.map(({ maker, notificationType, read, targetInfo }, key) => (
+        { targetUser?.map(({ maker, notificationType, read, targetInfo, message }, key) => (
           <ContentBox
             key={key}
             read={read}
@@ -108,7 +153,7 @@ const UserInform = () => {
                   {notificationType === 'Reply' && <ReplyImg infoImg={'/static/comment-2.svg'} />}
                   {notificationType === 'Notice' && <NoticeImg infoImg={'/static/alert.svg'} />}
                 </InformTypeIcon>
-              </UserImgBox>
+              </UserImgBox> 
             </UserImgWrap>
             {/* 콘텐츠 내용 */}
             <ContentRColumn>
@@ -121,10 +166,10 @@ const UserInform = () => {
                   {notificationType === 'Secondary' && <UserInteract>{_userSecondary}</UserInteract>}
                   {notificationType === 'Follow' && <UserInteract>{_userFollowMe}</UserInteract>}
                   {notificationType === 'Reply' && <UserInteract>{_userReply}</UserInteract>}
-                  {notificationType === 'Notice' && <UserInteract>{_adminInform}</UserInteract>}
+                  {notificationType === 'Notice' ? <AdminInteract>{ _adminInform }</AdminInteract> : null}
                 </UserText>
               </TextBox>
-              {targetInfo ? <InteractContent>{targetInfo?.boardTitle || targetInfo?.feedbackBody}</InteractContent> : <DeletedContent>{_dataRemove}</DeletedContent>}
+              <InteractContent>{adminNoti(notificationType, targetInfo, message)}</InteractContent>
             </ContentRColumn>
           </ContentBox>
         ))}
@@ -328,15 +373,27 @@ const UserInteract = styled.span`
   font-weight: ${(props) => props.theme.fontWeight.font500};
   color: ${(props) => props.theme.color.darkGray};
 `;
-const InteractContent = styled.span`
-  ${(props) => props.theme.textOneLine};
+
+const AdminInteract = styled(UserInteract)`
+
+`;
+const titleCss = css`
+  ${(props) => props.theme.textTwoLine};
   flex-shrink: 0;
   color: ${(props) => props.theme.color.blackColor};
   font-size: ${(props) => props.theme.fontSize.font15};
   font-weight: ${(props) => props.theme.fontWeight.font500};
   margin: 0.15em 0;
-  line-height: 1.2em;
+  line-height: 1.3em;
   cursor: pointer;
+
+`
+const InteractContent = styled.span`
+${titleCss};
+`;
+
+const InteractContentButton = styled.button`
+${titleCss};
 `;
 
 const DeletedContent = styled(InteractContent)`

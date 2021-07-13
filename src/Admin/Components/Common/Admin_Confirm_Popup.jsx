@@ -22,14 +22,12 @@ export function AdminConfirmPopup(props) {
   const {
       mainType,
       type,
-      dataHandler,
       reportList,
-      setWarnConfirm,
       listData,
+      dangerConfirm
     } = props;
 
     const [ , reportApi, reportError, reportFetch] = useAxiosFetch();
-    const [ , doReportApi, doReportError, doReportFetch] = useAxiosFetch();
 
     const [headerTitle, setHeaderTitle] = useState({});
     const [dataOnChange, dataOnChangeHandler] = useState('스팸성');
@@ -99,28 +97,23 @@ export function AdminConfirmPopup(props) {
         setUserInform(`해당 게시물 내에서 ${dataOnChange} 내용이 확인되어 ${postType}이 ${_type}었습니다 `)
     }
 
-
-
-    const dangerConfirm = () => { // 처리 관리 함수
-      const body = {
-        reportType: reportStatus,
-        reportStatus: reportStatus,
-        suspectUserId: currentData?._suspectUserId,
-        contentId: currentData?._id,
-        contentType: currentData?._contentType
-      }
-      const confirmResult = confirm('정말 처리하시겠습니까?');
-      if(confirmResult){
-      const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
-      doReportFetch(URL, 'delete', body, null, null);
-
-      } else {
-        return
-      }
-    }
-
-
-
+    // const dangerConfirm = () => { // 처리 관리 함수
+    //   const body = {
+    //     reportType: reportStatus,
+    //     reportStatus: reportStatus,
+    //     suspectUserId: currentData?._suspectUserId,
+    //     contentId: currentData?._id,
+    //     contentType: currentData?._contentType
+    //   }
+    //   const confirmResult = confirm('정말 처리하시겠습니까?');
+    //   if(confirmResult){
+    //   const URL = `${process.env.NEXT_PUBLIC_API_URL}/report`;
+    //   doReportFetch(URL, 'delete', body, null, null);
+    //   setWarnConfirm(false);
+    //   } else {
+    //     return
+    //   }
+    // }
 
     useEffect(()=> {
         deviedHandler();
@@ -151,7 +144,8 @@ export function AdminConfirmPopup(props) {
     const popupTab = [
       {id:1, value:1, name:'신고정보'},
       {id:2, value:2, name: type === 'Restore' ? '복구하기' : '제재하기'}
-    ]
+    ];
+
 
     // 신고 or 복구 하기
     useEffect(() => {
@@ -229,10 +223,7 @@ export function AdminConfirmPopup(props) {
           }
           { 
             isTab === 2 &&
-            <>
-              <ConfirmBtn type="confirm" onClick={dangerConfirm} >최종확인</ConfirmBtn>
-              {/* <ConfirmBtn type="cancel" onClick={()=>setWarnConfirm({false})}>취소</ConfirmBtn> */}
-            </>
+              <ConfirmBtn type="confirm" onClick={() => dangerConfirm(reportStatus)} >최종확인</ConfirmBtn>
           }
           </ConfirmDivBottom>
         
