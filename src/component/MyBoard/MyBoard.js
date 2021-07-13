@@ -33,7 +33,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
   const { setMyboardData, loginOn, setUnAuth, followData, setFollowData } = useContext(AppDataContext);
 
   const [follow, toggleFollow] = useToggle();
-  // console.log(boardItem)
+
   const [date, setDate] = useState();
   const [checkMe, setCheckMe] = useState();
   const [userScreenId, setUserScreenId] = useState();
@@ -113,7 +113,11 @@ export default function MyBoard({ boardItem, userId, nonError }) {
 
   useEffect(() => {
     setMyboardData(boardDataApi?.data);
-  }, [boardDataApi]);
+  }, [boardDataApi, router?.query?.id]);
+
+  useEffect(() => {
+    setInitRender(null);
+  }, [router?.query?.id]);
 
   useEffect(() => {
     nonError === 404 && toggle_Modal_Confirm(true);
@@ -207,7 +211,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
           {/* 네비게이션 시작 */}
           <NavBar show={show}>
             <NavBarInner>
-              {navTabArr.map((nav, index) => (
+              { navTabArr.map((nav, index) => (
                 <NavItem
                   key={index}
                   styling={isTab === nav.link}
@@ -224,7 +228,7 @@ export default function MyBoard({ boardItem, userId, nonError }) {
                 >
                   <NavAllButton>{nav.title}</NavAllButton>
                 </NavItem>
-              ))}
+              ) ) }
             </NavBarInner>
           </NavBar>
           {/* 작품 콘텐츠 시작 */}
@@ -233,21 +237,21 @@ export default function MyBoard({ boardItem, userId, nonError }) {
               <ContentsInner>
                 <MasonryBox>{renderComponent}</MasonryBox>
               </ContentsInner>
-              {boardDataLoding && (
+              { boardDataLoding && (
                 <DummyLayout>
                   <Progress />
                 </DummyLayout>
-              )}
+              ) }
               {!boardDataLoding ? <RefLayout {...scroll} /> : null}
             </ContentsLayout>
           </ContentsBox>
         </LayoutInner>
       </Layout>
-      {state_Confirm && (
+      { state_Confirm && (
         <Modal visible={state_Confirm} closable={true} maskClosable={true} onClose={() => toggle_Modal_Confirm(false)}>
           <ConfirmPopup handleModal={() => toggle_Modal_Confirm(false)} setAccessConfirm={goURL} type={'REMOVE_USER'} />
         </Modal>
-      )}
+      ) }
     </>
   );
 }
@@ -444,6 +448,7 @@ const FollowScore = styled.span`
   margin-left: 4px;
   cursor: pointer;
 `;
+ 
 // 팔로우하기 버튼
 const FollowAddButton = styled.button`
   font-size: ${(props) => props.theme.fontSize.font13};

@@ -78,11 +78,12 @@ const UserInform = () => {
               </InteractContentButton>
               ) 
     } else if(notiType === 'Reply'){
-      console.log(notiType, target, message)
       return ( <InteractContentButton
                 onClick={ () => goURL({ pathname: `/viewer/${target?.boardId}` })} > { target?.feedbackBody }
               </InteractContentButton>
               ) 
+    } else if(notiType === 'Follow'){
+      return;
     } else {
       return(<DeletedContent>{_dataRemove}</DeletedContent>)
     }
@@ -106,7 +107,6 @@ const UserInform = () => {
     if (!notiApi) return;
     setTargetUser(targetUser ? [...targetUser, ...notiApi?.data] : [...notiApi?.data]);
   }, [notiApi]);
-  console.log(notiApi);
 
   // 읽음 처리용
   useEffect(() => {

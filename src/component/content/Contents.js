@@ -27,7 +27,7 @@ const Contents = ({ type, searchType }) => {
 
   const url = router.asPath;
   const keyword = router.query.text;
-  console.log(router.query)
+
   // 콘텐츠 렌더링
   const [initRender, setInitRender] = useState([]);
   const [userRender, setUserRender] = useState([]);
@@ -91,7 +91,6 @@ const Contents = ({ type, searchType }) => {
       params.type = 'User';
       userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, 'get', null, null, params);
     } else return;
-
   };
 
   useEffect(() => {
@@ -104,9 +103,7 @@ const Contents = ({ type, searchType }) => {
   const devideTypeData = () => {
     if (searchType === 'users') return;
     initialApi && setInitRender(initRender ? [...initRender, ...initialApi?.data] : [...initialApi?.data]);
-    
   };
-  console.log(userApi, searchType)
 
   const userTypeData = () => {
 
@@ -169,7 +166,6 @@ const Contents = ({ type, searchType }) => {
   // 받은 데이터 각 컴포넌트에 뿌려서 렌더링
   useEffect(() => {
     if (searchType === 'users') {
-      console.log(onlyUser)
       setRenderComponent(onlyUser?.map((item, index) => <ContentsUserForm searchData={item} key={index} />));
     } else {
       setRenderComponent(renderList?.map((item, index) => <MainContent key={index} contentData={item} />));
