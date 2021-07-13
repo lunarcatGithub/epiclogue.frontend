@@ -14,16 +14,21 @@ import useScroll from '@hooks/useScroll';
 
 const Contents = ({ type, searchType }) => {
   const router = useRouter();
-  const { renderComponent, setRenderComponent, searchData, clickedComic, clickedIllust } = useContext(AppDataContext);
+  const {
+    renderComponent,
+    setRenderComponent,
+    searchData,
+    clickedComic,
+    clickedIllust
+  } = useContext(AppDataContext);
   // const { searchData, clickedComic, clickedIllust, paramsData } = useContext(AppDataContext);
 
   const [resultKeyword, setResultKeyword] = useState();
 
   const url = router.asPath;
   const keyword = router.query.text;
-
+  console.log(router.query)
   // 콘텐츠 렌더링
-  // const [renderComponent, setRenderComponent] = useState(null);
   const [initRender, setInitRender] = useState([]);
   const [userRender, setUserRender] = useState([]);
   const [onlyUser, setOnlyUser] = useState([]);
@@ -38,6 +43,7 @@ const Contents = ({ type, searchType }) => {
 
   // fetch
   const [initDataLoading, initialApi, , initialFetch] = useAxiosFetch();
+  const [userLoading, userApi, , userFetch] = useAxiosFetch();
 
   // scroll
   const [page, scroll] = useScroll();
@@ -66,6 +72,7 @@ const Contents = ({ type, searchType }) => {
   // 검색 데이터
   const searchStore = () => {
     if (!resultKeyword) return;
+    // if (resultKeyword === keyword) return;
     const params = {
       type: 'Board',
       size: 35,
@@ -79,11 +86,12 @@ const Contents = ({ type, searchType }) => {
       return;
     } else if (searchType === 'latest') {
       params.category = filtering;
+      initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, 'get', null, null, params);
     } else if (searchType === 'users') {
       params.type = 'User';
+      userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, 'get', null, null, params);
     } else return;
 
-    initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, 'get', null, null, params);
   };
 
   useEffect(() => {
@@ -94,16 +102,25 @@ const Contents = ({ type, searchType }) => {
 
   // 데이터 분리 렌더링
   const devideTypeData = () => {
-    if (searchType === 'users') {
-      initialApi && setUserRender(userRender ? [...userRender, ...initialApi?.data] : [...initialApi?.data]);
-    } else {
-      initialApi && setInitRender(initRender ? [...initRender, ...initialApi?.data] : [...initialApi?.data]);
-    }
+    if (searchType === 'users') return;
+    initialApi && setInitRender(initRender ? [...initRender, ...initialApi?.data] : [...initialApi?.data]);
+    
   };
+  console.log(userApi, searchType)
+
+  const userTypeData = () => {
+
+    if(searchType !== 'users') return;
+    userApi && setUserRender(userRender ? [...userRender, ...userApi?.data] : [...userApi?.data]);
+  }
 
   useEffect(() => {
     devideTypeData();
   }, [initialApi, type]);
+
+  useEffect(() => {
+    userTypeData();
+  }, [userApi, searchType]);
 
   // latestId 설정
   useEffect(() => {
@@ -127,12 +144,16 @@ const Contents = ({ type, searchType }) => {
   }, [clickedComic, clickedIllust]);
 
   useEffect(() => {
-    if (searchType === 'users') {
+    if (searchType === 'users') return;
+    setRenderList(initRender);
+    
+  }, [initRender, searchType]);
+
+  useEffect(() => {
+    if (searchType !== 'users') return;
       setOnlyUser(userRender);
-    } else {
-      setRenderList(initRender);
-    }
-  }, [initRender, userRender, searchType]);
+    
+  }, [userRender, searchType]);
 
   // 검색 탭 바뀔 때 마다 초기화
   useEffect(() => {
@@ -140,8 +161,6 @@ const Contents = ({ type, searchType }) => {
   }, [type, searchType, filtering, url]);
 
   useEffect(() => {
-    // setRenderList(null)
-    // setOnlyUser(null)
     setUserRender(null);
     setInitRender(null);
     setLastContentId(null);
@@ -150,6 +169,7 @@ const Contents = ({ type, searchType }) => {
   // 받은 데이터 각 컴포넌트에 뿌려서 렌더링
   useEffect(() => {
     if (searchType === 'users') {
+      console.log(onlyUser)
       setRenderComponent(onlyUser?.map((item, index) => <ContentsUserForm searchData={item} key={index} />));
     } else {
       setRenderComponent(renderList?.map((item, index) => <MainContent key={index} contentData={item} />));
@@ -169,12 +189,12 @@ const Contents = ({ type, searchType }) => {
             </NoResultWrap>
           )}
         </LayoutInner>
-        {initDataLoading && (
+        { initDataLoading || userLoading && (
           <DummyLayout>
             <Progress />
           </DummyLayout>
-        )}
-        {!initDataLoading ? <RefLayout {...scroll} /> : null}
+        ) }
+        {!initDataLoading || !userLoading ? <RefLayout {...scroll} /> : null}
       </Layout>
     </>
   );
