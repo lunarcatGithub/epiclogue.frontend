@@ -196,6 +196,7 @@ const ReactSelector = styled.div`
   justify-content: space-around;
   height: auto;
   padding-top: 1em;
+  margin:0.3em 0;
 `;
 
 const BtnBox = styled.button`

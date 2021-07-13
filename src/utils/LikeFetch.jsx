@@ -64,7 +64,7 @@ export default function LikeFetch({ _id, initLike, initialCount, type }) {
         {/* <BtnDummy/> */}
       <ScoreBox>
         {/* <ScoreDummy>{ heartCount }</ScoreDummy> */}
-        <LikeFbScore heart={like} >{ heartCount }</LikeFbScore>
+        <LikeFbScore heart={like} >{ heartCount ? heartCount : 0 }</LikeFbScore>
       </ScoreBox>
     </ReactBtnWrap>
   );
