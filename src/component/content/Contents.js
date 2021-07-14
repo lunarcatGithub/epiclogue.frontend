@@ -35,9 +35,10 @@ const Contents = ({ type, searchType, contentsRender }) => {
   const [userRender, setUserRender] = useState([]);
   const [onlyUser, setOnlyUser] = useState([]);
   const [renderList, setRenderList] = useState([]);
-  const [lastContentId, setLastContentId] = useState(null);
   const [stopData, setStopData] = useState(true);
-
+  const [lastContentId, setLastContentId] = useState(null);
+  const [lastUserId, setLastUserId] = useState(null);
+  console.log(lastUserId)
   // 유저 설정 가능한 fillter
 
   // 필터링
@@ -47,10 +48,10 @@ const Contents = ({ type, searchType, contentsRender }) => {
   const [initDataLoading, initialApi, , initialFetch] = useAxiosFetch();
   const [viewerDataLoading, viewerApi, , viewerFetch] = useAxiosFetch();
   const [userLoading, userApi, , userFetch] = useAxiosFetch();
-
+  console.log(initialApi)
   // scroll
-  const [page, scroll] = useScroll();
-
+  const [page, scroll, ,setPage] = useScroll();
+  const initSize = 35;
   useEffect(() => {
     searchData ? setResultKeyword(searchData) : setResultKeyword(keyword);
   }, [searchData, keyword]);
@@ -64,7 +65,6 @@ const Contents = ({ type, searchType, contentsRender }) => {
       latestId: lastContentId || null,
     };
 
-
     if(type === 'MAIN'){
       initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, params);
     } else if(type === 'VIEWER') {
@@ -72,7 +72,6 @@ const Contents = ({ type, searchType, contentsRender }) => {
         viewerFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, params);
     }
   };
-  // console.log(contentsRender);
   // console.log(viewerRender);
 
   useEffect(() => {
@@ -84,11 +83,10 @@ const Contents = ({ type, searchType, contentsRender }) => {
   // 검색 데이터
   const searchStore = () => {
     if (!resultKeyword) return;
-    // if (resultKeyword === keyword) return;
     const params = {
       type: 'Board',
       size: 35,
-      latestId: lastContentId,
+      latestId: lastContentId || null,
       category: null,
       q: resultKeyword,
     };
@@ -99,6 +97,7 @@ const Contents = ({ type, searchType, contentsRender }) => {
     } else if (searchType === 'latest') {
       params.category = filtering;
       initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, 'get', null, null, params);
+    
     } else if (searchType === 'users') {
       params.type = 'User';
       userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, 'get', null, null, params);
@@ -109,8 +108,8 @@ const Contents = ({ type, searchType, contentsRender }) => {
     if (!stopData) return;
     if (type !== 'SEARCH') return;
     searchStore();
-  }, [page, filtering, stopData, searchType]);
-
+  }, [page, filtering, stopData, searchType, resultKeyword]);
+  console.log(page)
   // 데이터 분리 렌더링
   const devideTypeData = () => { // 메인 전용
     if (searchType === 'users' || type === 'VIEWER') return;
@@ -143,24 +142,33 @@ const Contents = ({ type, searchType, contentsRender }) => {
 
   // latestId 설정
   useEffect(() => {
-    if(type !== 'MAIN') return;
+    // if(type.match(['MAIN', 'SEARCH'])) return;
     initialApi && setLastContentId(initialApi?.data[initialApi?.data?.length - 1]?._id);
-  }, [page, initialApi]);
+  }, [type, page, initialApi]);
 
   useEffect(() => {
     if(type !== 'VIEWER') return;
     viewerApi && setLastContentId(viewerApi?.data[viewerApi?.data?.length - 1]?._id);
   }, [page, viewerApi]);
 
+  useEffect(() => {
+    if(searchType !== 'users' || type !== 'SEARCH') return;
+    userApi && setLastUserId(userApi?.data[userApi?.data?.length - 1]?._id);
+  }, [page, userApi]);
 
   useEffect(() => {
-    initialApi?.data?.length === 0 && setStopData(false);
+    initialApi?.data?.length < initSize && setStopData(false);
   }, [initialApi]);
 
   useEffect(() => {
-    viewerApi?.data?.length === 0 && setStopData(false);
+    viewerApi?.data?.length < initSize && setStopData(false);
   }, [viewerApi]);
 
+  useEffect(() => {
+    userApi?.data?.length < initSize && setStopData(false);
+  }, [userApi]);
+
+  console.log(userApi?.data?.length)
   useEffect(() => {
     setInitRender(null);
     setLastContentId(null);
@@ -191,9 +199,12 @@ const Contents = ({ type, searchType, contentsRender }) => {
   }, [type, searchType, filtering, url]);
 
   useEffect(() => {
+    setPage(0)
     setUserRender(null);
     setInitRender(null);
     setLastContentId(null);
+    setLastUserId(null)
+
   }, [type, searchType, resultKeyword, url]);
 
   // 받은 데이터 각 컴포넌트에 뿌려서 렌더링
@@ -205,6 +216,13 @@ const Contents = ({ type, searchType, contentsRender }) => {
     }
     return () => setRenderComponent();
   }, [renderList, onlyUser, searchType]);
+
+  const RefReturn = () => {
+    if(initDataLoading) return
+    if(userLoading) return
+    if(viewerDataLoading) return
+      return <RefLayout {...scroll} />
+  }
 
   return (
     <>
@@ -223,7 +241,7 @@ const Contents = ({ type, searchType, contentsRender }) => {
             <Progress />
           </DummyLayout>
         ) }
-        {!initDataLoading || !userLoading || !viewerDataLoading ? <RefLayout {...scroll} /> : null}
+        { RefReturn() }
       </Layout>
     </>
   );

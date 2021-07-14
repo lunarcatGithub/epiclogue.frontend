@@ -27,5 +27,5 @@ export default function useScroll(_ref = null) {
     }
   }, [dom.current, _ref]);
 
-  return [page, { ref: dom }, check];
+  return [page, { ref: dom }, check, setPage];
 }
