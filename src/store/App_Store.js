@@ -53,7 +53,6 @@ const ContextStore = ({ children }) => {
 
   // content component
   const [renderList, setRenderList] = useState([]);
-  const [page, setPage] = useState(0);
 
   // initial Login
   const [unAuth, setUnAuth] = useState(false);
@@ -113,8 +112,6 @@ const ContextStore = ({ children }) => {
         setLastContentId,
         renderList,
         setRenderList,
-        page,
-        setPage,
         currentPath,
       }}
     >

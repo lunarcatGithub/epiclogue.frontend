@@ -17,6 +17,7 @@ import ViewerReactPopup from './Viewer__ReactPopup';
 // Hooks
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import { useUrlMove } from '@hooks/useUrlMove';
+import useScroll from '@hooks/useScroll';
 
 // reduce
 import { ViewerContext } from '@store/ViewerStore';
@@ -87,6 +88,16 @@ export default function Viewer({ boardItem, nonError }) {
   // fetch
   const [ , dataApi, dataLoading, dataFetch ] = useAxiosFetch();
   const [ , feedbackApi, feedbackLoading, FeedbackFetch ] = useAxiosFetch();
+  const [ viewerRefFetch, setViewerRefFetch ] = useState(false);
+
+  // scroll
+  const [ refLayout, setRefLayout ] = useState(null);
+  const [, scroll, moreCheck] = useScroll(refLayout);
+
+  useEffect(() => {
+    if(!viewerRefFetch) return;
+    setRefLayout(<RefLayout {...scroll} />)
+  },[viewerRefFetch]);
 
   // Add feedback list
   const addFeedbackList = () => {
@@ -161,13 +172,19 @@ export default function Viewer({ boardItem, nonError }) {
   // remove board
   const removeBoard = () => {
     dataFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${viewerData?._id}`, 'delete', null, null, null);
-  }
+  };
 
   // remove feedback
   const removeFeedback = () => {
     FeedbackFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards/${viewerData?._id}/feedback/${feedbackUid}`, 'delete', null, null, null);
-  }
+  };
 
+  const imageRender = (event) => {
+    if(event){
+      setViewerRefFetch(true);
+    }
+  }
+  
   useEffect(() => {
     if (!boardItem) return;
     const boardData = boardItem.data;
@@ -190,6 +207,7 @@ export default function Viewer({ boardItem, nonError }) {
     } else {
       setDevidedBoard( <ViewerUserForm type="NOSECOND" contentPopup={contentPopup} /> )
     }
+
   }, [boardItem]);
 
   useEffect(() => {
@@ -252,8 +270,7 @@ export default function Viewer({ boardItem, nonError }) {
     fbMoreText(feedbackData?.length);
   }, [prevFeeback, feedbackData, feedbackApi, modifiedFeedbackData])
 
-
-    // Meta 전용
+  // Meta 전용
 
     const metaData = {
       title: `${boardItem?.data?.writer?.nickname}${t('metaViewerTitle')}${boardItem?.data?.boardTitle}`,
@@ -267,9 +284,10 @@ export default function Viewer({ boardItem, nonError }) {
     };
 
     return (
-  <>
+    <>
     <Meta meta={metaData} />
       <ViewerPortWrap>
+      <ContentsAllViewWrap>
       {/* 뷰어 콘텐츠 레이아웃 */}
         <ContentsAllView>
           <ViewerPort>{ boardImage.map((item, index) => <ViewImg key={index} src={item} category={category} /> ) }</ViewerPort>
@@ -281,7 +299,13 @@ export default function Viewer({ boardItem, nonError }) {
             { devidedBoard }
           {/* 모바일용 뷰어 */}
           <MobileViewerPort>
-            { boardImage.map((item, index) => <ViewImg key={index} src={item} /> ) }
+            { 
+              boardImage.map((item, index) => 
+              <ViewImg 
+                key={index} 
+                src={item} 
+                onLoad={(event) => imageRender(event)}
+              /> ) }
           </MobileViewerPort>
 
           { /* 반응 탭 */}
@@ -311,11 +335,14 @@ export default function Viewer({ boardItem, nonError }) {
           </MoreFb>
           </UserComment>
         </UserCommentWrap>
+        </ContentsAllViewWrap>
+        { refLayout }
       </ViewerPortWrap>
       <MoreContents>
         <ViewMoreTitle>{_moreContents}</ViewMoreTitle>
-        <Contents boardId={viewerData?._id} type="MAIN" />
+        <Contents boardId={viewerData?._id} type="VIEWER" contentsRender={moreCheck} />
       </MoreContents>
+
       { /* 모달 팝업 관리 */ }
       { userPopup &&
         <Modal visible={userPopup} onClose={() => setUserPopup(false)}>
@@ -325,11 +352,19 @@ export default function Viewer({ boardItem, nonError }) {
     
   </>
   );
-} 
+}
+
+const RefLayout = styled.div`
+  display: flex;
+  background: #222;
+  width: 200px;
+  height: 50px;
+`;
 
 // 전체 레이아웃
 const ViewerPortWrap = styled.section`
   display: flex;
+  flex-direction: column;
   width: 100%;
 
   @media (max-width: 900px) {
@@ -338,7 +373,11 @@ const ViewerPortWrap = styled.section`
 `;
 
 // 뷰어 콘텐츠 레이아웃
-
+const ContentsAllViewWrap = styled.div`
+  display: flex;
+  flex-flow: row;
+  width:100%;
+`
 const ContentsAllView = styled.div`
   display: flex;
   flex-flow: column;

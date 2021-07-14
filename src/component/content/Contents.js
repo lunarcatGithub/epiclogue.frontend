@@ -12,8 +12,9 @@ import { AppDataContext } from '@store/App_Store';
 import useAxiosFetch from '@hooks/useAxiosFetch';
 import useScroll from '@hooks/useScroll';
 
-const Contents = ({ type, searchType }) => {
+const Contents = ({ type, searchType, contentsRender }) => {
   const router = useRouter();
+
   const {
     renderComponent,
     setRenderComponent,
@@ -30,6 +31,7 @@ const Contents = ({ type, searchType }) => {
 
   // 콘텐츠 렌더링
   const [initRender, setInitRender] = useState([]);
+  const [viewerRender, setViewerRender] = useState([]);
   const [userRender, setUserRender] = useState([]);
   const [onlyUser, setOnlyUser] = useState([]);
   const [renderList, setRenderList] = useState([]);
@@ -43,6 +45,7 @@ const Contents = ({ type, searchType }) => {
 
   // fetch
   const [initDataLoading, initialApi, , initialFetch] = useAxiosFetch();
+  const [viewerDataLoading, viewerApi, , viewerFetch] = useAxiosFetch();
   const [userLoading, userApi, , userFetch] = useAxiosFetch();
 
   // scroll
@@ -60,14 +63,23 @@ const Contents = ({ type, searchType }) => {
       size: 35,
       latestId: lastContentId || null,
     };
-    initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, params);
+
+
+    if(type === 'MAIN'){
+      initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, params);
+    } else if(type === 'VIEWER') {
+      if(!contentsRender) return;
+        viewerFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, params);
+    }
   };
+  // console.log(contentsRender);
+  // console.log(viewerRender);
 
   useEffect(() => {
     if (!stopData) return;
-    if (type !== 'MAIN') return;
+    // if (type !== 'MAIN' || type !== 'VIEWER') return;
     fetchStore();
-  }, [page, filtering, stopData]);
+  }, [page, filtering, stopData, contentsRender]);
 
   // 검색 데이터
   const searchStore = () => {
@@ -100,9 +112,14 @@ const Contents = ({ type, searchType }) => {
   }, [page, filtering, stopData, searchType]);
 
   // 데이터 분리 렌더링
-  const devideTypeData = () => {
-    if (searchType === 'users') return;
+  const devideTypeData = () => { // 메인 전용
+    if (searchType === 'users' || type === 'VIEWER') return;
     initialApi && setInitRender(initRender ? [...initRender, ...initialApi?.data] : [...initialApi?.data]);
+  };
+
+  const viewerTypeData = () => { // 뷰어 전용
+    if (searchType === 'users' || type === 'MAIN') return;
+    viewerApi && setViewerRender(viewerRender ? [...viewerRender, ...viewerApi?.data] : [...viewerApi?.data]);
   };
 
   const userTypeData = () => {
@@ -111,9 +128,14 @@ const Contents = ({ type, searchType }) => {
     userApi && setUserRender(userRender ? [...userRender, ...userApi?.data] : [...userApi?.data]);
   }
 
-  useEffect(() => {
+  useEffect(() => { // 메인 전용
     devideTypeData();
   }, [initialApi, type]);
+
+  useEffect(() => { // 뷰어 전용
+    viewerTypeData();
+  }, [viewerApi, type]);
+
 
   useEffect(() => {
     userTypeData();
@@ -121,12 +143,23 @@ const Contents = ({ type, searchType }) => {
 
   // latestId 설정
   useEffect(() => {
+    if(type !== 'MAIN') return;
     initialApi && setLastContentId(initialApi?.data[initialApi?.data?.length - 1]?._id);
   }, [page, initialApi]);
 
   useEffect(() => {
+    if(type !== 'VIEWER') return;
+    viewerApi && setLastContentId(viewerApi?.data[viewerApi?.data?.length - 1]?._id);
+  }, [page, viewerApi]);
+
+
+  useEffect(() => {
     initialApi?.data?.length === 0 && setStopData(false);
   }, [initialApi]);
+
+  useEffect(() => {
+    viewerApi?.data?.length === 0 && setStopData(false);
+  }, [viewerApi]);
 
   useEffect(() => {
     setInitRender(null);
@@ -142,9 +175,9 @@ const Contents = ({ type, searchType }) => {
 
   useEffect(() => {
     if (searchType === 'users') return;
-    setRenderList(initRender);
+    setRenderList(initRender || viewerRender);
     
-  }, [initRender, searchType]);
+  }, [initRender, viewerRender, searchType]);
 
   useEffect(() => {
     if (searchType !== 'users') return;
@@ -190,7 +223,7 @@ const Contents = ({ type, searchType }) => {
             <Progress />
           </DummyLayout>
         ) }
-        {!initDataLoading || !userLoading ? <RefLayout {...scroll} /> : null}
+        {!initDataLoading || !userLoading || !viewerDataLoading ? <RefLayout {...scroll} /> : null}
       </Layout>
     </>
   );
