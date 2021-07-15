@@ -38,7 +38,7 @@ const Contents = ({ type, searchType, contentsRender }) => {
   const [stopData, setStopData] = useState(true);
   const [lastContentId, setLastContentId] = useState(null);
   const [lastUserId, setLastUserId] = useState(null);
-  console.log(lastUserId)
+
   // 유저 설정 가능한 fillter
 
   // 필터링
@@ -48,7 +48,7 @@ const Contents = ({ type, searchType, contentsRender }) => {
   const [initDataLoading, initialApi, , initialFetch] = useAxiosFetch();
   const [viewerDataLoading, viewerApi, , viewerFetch] = useAxiosFetch();
   const [userLoading, userApi, , userFetch] = useAxiosFetch();
-  console.log(initialApi)
+
   // scroll
   const [page, scroll, ,setPage] = useScroll();
   const initSize = 35;
@@ -72,7 +72,6 @@ const Contents = ({ type, searchType, contentsRender }) => {
         viewerFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, params);
     }
   };
-  // console.log(viewerRender);
 
   useEffect(() => {
     if (!stopData) return;
@@ -109,7 +108,7 @@ const Contents = ({ type, searchType, contentsRender }) => {
     if (type !== 'SEARCH') return;
     searchStore();
   }, [page, filtering, stopData, searchType, resultKeyword]);
-  console.log(page)
+
   // 데이터 분리 렌더링
   const devideTypeData = () => { // 메인 전용
     if (searchType === 'users' || type === 'VIEWER') return;
@@ -168,7 +167,6 @@ const Contents = ({ type, searchType, contentsRender }) => {
     userApi?.data?.length < initSize && setStopData(false);
   }, [userApi]);
 
-  console.log(userApi?.data?.length)
   useEffect(() => {
     setInitRender(null);
     setLastContentId(null);
@@ -228,7 +226,7 @@ const Contents = ({ type, searchType, contentsRender }) => {
     <>
       <Layout>
         <LayoutInner>
-          {!url.match('main') && renderComponent?.length !== 0 ? (
+          {renderComponent?.length !== 0 ? (
             <MasonryBox>{renderComponent}</MasonryBox>
           ) : (
             <NoResultWrap>

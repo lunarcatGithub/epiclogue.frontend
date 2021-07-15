@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ReportLanguage from '@component/report/Report_Language';
 
 export default function reportType() {
@@ -8,9 +8,7 @@ export default function reportType() {
 
   const typeFind = (type = null) => {
     reportList.map(({id, title}) => {
-      if(type === id){
-        console.log('실행', title)
-  
+      if(type === id){  
         setValue(title);
       } else {
         return;
@@ -18,10 +16,6 @@ export default function reportType() {
   
     })
   }
-
-  // useEffect(() => {
-  //   typeFind();
-  // }, [])
 
   return [value, typeFind]
   
