@@ -37,7 +37,7 @@ export default function BookmarkFetch({ _id, initToggle }) {
   useEffect(() => {
     if(initToggle === undefined) return;
     toggleBookmark(initToggle)
-  }, [initToggle, bookmarkApi])
+  }, [initToggle])
 
 
   return (
