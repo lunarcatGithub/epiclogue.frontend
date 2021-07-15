@@ -82,8 +82,8 @@ const Mypage = () => {
                   if (tab === title) return <div key={id}>{contents}</div>;
                 })
               ) : (
-                <MypageGeneral /> )
-            }
+                <MypageGeneral /> 
+              ) }
           </ProfileInner>
         </ProfileLayout>
       </Container>

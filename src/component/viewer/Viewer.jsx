@@ -356,9 +356,8 @@ export default function Viewer({ boardItem, nonError }) {
 
 const RefLayout = styled.div`
   display: flex;
-  background: #222;
   width: 200px;
-  height: 50px;
+  height: 2em;
 `;
 
 // 전체 레이아웃

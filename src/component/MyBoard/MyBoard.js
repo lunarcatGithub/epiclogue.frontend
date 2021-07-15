@@ -586,7 +586,7 @@ const ContentsInner = styled.div`
 const MasonryBox = styled.section`
   display: grid;
   justify-content: center;
-  height: 100%;
+  /* height: 100%; */
   grid-template-columns: repeat(auto-fill, minmax(14%, 1fr));
   column-gap: 0.4em;
   padding: 0.8em;
