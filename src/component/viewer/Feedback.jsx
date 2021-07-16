@@ -38,6 +38,7 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
   const [nickName, setNickName] = useState('');
   const [screenId, setScreenId] = useState('');
   const [followMe, setFollowMe] = useState('');
+  const [thisIsMe, setThisIsMe] = useState(false);
 
   // const [reConverted, reConvert] = useConvertTags();
 
@@ -58,17 +59,17 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
   };
 
   useEffect(() => { // 뷰어와 피드백 팝업 분기점
-    const { screenId, following, nickname, profile } = FeedbackData?.writer;
-
+    const { screenId, following, nickname, profile, isMe } = FeedbackData?.writer;
+    console.log(isMe)
     setScreenId(screenId);
     setProfileImg(profile?.thumbnail);
     setNickName(nickname);
     setFollowMe(following === 'me');
-
+    setThisIsMe(isMe);
   }, []);
 
   return (
-      <FeedbackUserWrap>
+      <FeedbackUserWrap isMe={thisIsMe}>
         <UserLink onClick={() => goURL({ pathname: `/myboard/${screenId}` })}>
           <ProfileImgBox>
             <FeedbackProfileImg profile={profileImg} />
@@ -187,6 +188,8 @@ const FeedbackUserWrap = styled.div`
   max-height: 25em;
   margin-bottom: 3px;
   background: ${(props) => props.theme.color.whiteColor};
+  border:3px solid ${({ isMe, theme }) => isMe ? theme.color.semiOrangeColor : theme.color.whiteColor};
+  
   animation:${fadeIn} .5s ease-in-out normal;
 
 `;
