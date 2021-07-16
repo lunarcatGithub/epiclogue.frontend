@@ -15,20 +15,19 @@ switch (defaultLang) {
     _defaultLang = 2;
     break;
 }
+
 let sessionLang;
 if(typeof window !== 'undefined'){
   sessionLang = sessionStorage.getItem('lang');
 }
 
 export const langInit = {
-  defaultLanguage: sessionLang || _defaultLang,
+  defaultLanguage: Number(sessionLang) || _defaultLang,
   selectedLanguage: selectLang,
 };
 
-console.log(langInit)
-
-
 export function languageReducer(state, { type, payload }) {
+
   switch (type) {
     case 'LANGUAGE_UPDATE': {
       return { ...state, selectedLanguage: payload };
