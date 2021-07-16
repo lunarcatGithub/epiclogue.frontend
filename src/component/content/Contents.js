@@ -85,7 +85,7 @@ const Contents = ({ type, searchType, contentsRender }) => {
     const params = {
       type: 'Board',
       size: 35,
-      latestId: lastContentId || null,
+      latestId: lastContentId || lastUserId || null,
       category: null,
       q: resultKeyword,
     };
@@ -99,6 +99,7 @@ const Contents = ({ type, searchType, contentsRender }) => {
     
     } else if (searchType === 'users') {
       params.type = 'User';
+      params.latestId = lastUserId
       userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, 'get', null, null, params);
     } else return;
   };
@@ -153,6 +154,7 @@ const Contents = ({ type, searchType, contentsRender }) => {
   useEffect(() => {
     if(searchType !== 'users' || type !== 'SEARCH') return;
     userApi && setLastUserId(userApi?.data[userApi?.data?.length - 1]?._id);
+    console.log(userApi?.data[userApi?.data?.length - 1]?._id)
   }, [page, userApi]);
 
   useEffect(() => {
