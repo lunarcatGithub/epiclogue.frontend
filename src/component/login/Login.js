@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 
 //컴포넌트 import
 import { SignUp } from './SignUp';
@@ -22,18 +23,27 @@ const LoginLayOut = () => {
   const [changePage, setChangePage] = useState(sign || false);
   const [goURL] = useUrlMove();
 
+  const [loginLayout, setLoginLayout] = useState(null);
+
   useEffect(() => {
     if (loginOn) {
       goURL({ pathname: '/' });
     }
   }, []);
 
+  useEffect(() => {
+    if (changePage) {
+      setLoginLayout(<SignUp backToLogin={sign} setChangePage={setChangePage} />);
+    } else {
+      setLoginLayout(<SignIn setChangePage={setChangePage} />);
+    }
+  }, [changePage]);
+
   return (
     <ContentWrap>
       <ContentInner>
         {/* background image */}
-
-        <ContentSection>{changePage ? <SignUp backToLogin={sign} setChangePage={setChangePage} /> : <SignIn setChangePage={setChangePage} />}</ContentSection>
+        <ContentSection>{loginLayout}</ContentSection>
       </ContentInner>
     </ContentWrap>
   );

@@ -29,6 +29,9 @@ const Main = ({ metaLang }) => {
     <>
       <Meta meta={metaData} />
       <Layout>
+        <TitleLayout>
+        <Title>최신 작품</Title>
+        </TitleLayout>
         <Contents type="MAIN" />
         {/*업로드 버튼*/}
         <UploadButton
@@ -53,7 +56,26 @@ const Layout = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: 8px;
+`;
+
+const TitleLayout = styled.div`
+padding:0 2em;
+margin-top:4em;
+@media (max-width:900px){
+  padding:0 1em;
+margin-top:2em;
+}
+`;
+
+// title
+const Title = styled.h2`
+  font-size: ${(props) => props.theme.fontSize.font26};
+  font-weight: ${(props) => props.theme.fontWeight.font700};
+  color: ${(props) => props.theme.color.darkGray};
+
+  @media (max-width:900px){
+  font-size: ${(props) => props.theme.fontSize.font20};
+  }
 `;
 
 //  이미지 업로드 버튼

@@ -115,25 +115,25 @@ const ContentTxtBox = styled.div`
   flex-direction: column;
   flex-shrink: 0;
   border-radius: 0 0 6px 6px;
-  padding: 8px 8px;
+  padding: 0.5em 0.8em;
   background: ${(props) => props.theme.color.whiteColor};
   @media (max-width: 900px) {
-    padding: 8px 4px;
+    padding: 0.5em 0.4em;
   }
 `;
 const ContentTitle = styled.h1`
   font-weight: ${(props) => props.theme.fontWeight.font700};
   font-size: ${(props) => props.theme.fontSize.font15};
   color: ${(props) => props.theme.color.blackColor};
-  margin: 0 0.3em 0 0.5em;
+  margin: 0.3em 0;
+  padding:0 0.2em;
   line-height: 1.4em;
   ${(props) => props.theme.textTwoLine};
   cursor: pointer;
   @media (max-width: 900px) {
-    line-height: 17px;
     font-size: ${(props) => props.theme.fontSize.font13};
-    padding: 0 4px;
-    margin: 0 2px;
+    font-weight: ${(props) => props.theme.fontWeight.font700};
+    padding: 0 0.4em;
   }
 `;
 
@@ -142,8 +142,6 @@ const UserBox = styled.div`
   align-items: center;
   width: 100%;
   min-width: 0;
-  margin-top: 6px;
-  padding: 0 8px;
   @media (max-width: 900px) {
     padding: 0 4px;
   }
@@ -178,10 +176,10 @@ const RecreateType = styled.span`
   position: relative;
   flex-shrink: 0;
   font-weight: ${(props) => props.theme.fontWeight.font300};
-  font-size: ${(props) => props.theme.fontSize.font14};
+  font-size: ${(props) => props.theme.fontSize.font13};
   color: ${(props) => props.theme.color.softBlackColor};
   margin-left: 15px;
-  margin-bottom: 3px;
+  margin-bottom: 1px;
   white-space: nowrap;
   user-select: none;
   &::before {
@@ -194,5 +192,7 @@ const RecreateType = styled.span`
     border-radius: 50%;
     background: #2222;
     margin-left: 2px;
+    font-size: ${(props) => props.theme.fontSize.font12};
+
   }
 `;

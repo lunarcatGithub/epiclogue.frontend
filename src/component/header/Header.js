@@ -120,15 +120,17 @@ const Header = () => {
 
   useEffect(() => {
     // 유저 선택 언어로 콘텐츠 필터링
+    if (!loginOn) return;
     const avalLang = [];
     profileApi?.data?.availableLanguage.forEach((num) => avalLang.push(Number(num)));
     availableLangPatch({ type: 'AVAILABLE_LANG', payload: avalLang });
   }, [profileApi?.data?.availableLanguage]);
 
   useEffect(() => {
+    if (!loginOn) return;
     if (profileApi) {
       langPatch({ type: 'LANGUAGE_UPDATE', payload: profileApi?.data?.displayLanguage });
-      sessionStorage.setItem("lang", profileApi?.data?.displayLanguage);
+      sessionStorage.setItem('lang', profileApi?.data?.displayLanguage);
     }
   }, [profileApi?.data?.displayLanguage]);
 

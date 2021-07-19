@@ -362,6 +362,7 @@ const RefLayout = styled.div`
 
 // 전체 레이아웃
 const ViewerPortWrap = styled.section`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -376,7 +377,29 @@ const ContentsAllViewWrap = styled.div`
   display: flex;
   flex-flow: row;
   width:100%;
-`
+`;
+
+// const RecreateButton = styled.button`
+// position: sticky;
+// display: flex;
+// justify-content: center;
+// align-items: center;
+// bottom:3em;
+// left:3.5em;
+// width:4.5em;
+// height:4.5em;
+// padding:1em;
+// margin-bottom:2em;
+// background: ${(props) => props.theme.color.whiteColor};
+// box-shadow: ${(props) => props.theme.boxshadow.nav};
+// border-radius: 50%;
+// `;
+// const RecreateIcon = styled.span`
+// width:100%;
+// height:100%;
+// background:url( ${ ( { globe } ) => globe ? '/static/secondary.svg' : '/static/secondary.svg' }) no-repeat center center / contain;
+// `;
+
 const ContentsAllView = styled.div`
   display: flex;
   flex-flow: column;
