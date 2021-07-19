@@ -118,7 +118,8 @@ const Header = () => {
     profileFetch(`${process.env.NEXT_PUBLIC_API_URL}/user/editProfile`, 'get', null, null, null);
   }, [loginOn]);
 
-  useEffect(() => { // 유저 선택 언어로 콘텐츠 필터링
+  useEffect(() => {
+    // 유저 선택 언어로 콘텐츠 필터링
     if (!loginOn) return;
     const avalLang = [];
     profileApi?.data?.availableLanguage.forEach((num) => avalLang.push(Number(num)));
@@ -129,7 +130,7 @@ const Header = () => {
     if (!loginOn) return;
     if (profileApi) {
       langPatch({ type: 'LANGUAGE_UPDATE', payload: profileApi?.data?.displayLanguage });
-      sessionStorage.setItem("lang", profileApi?.data?.displayLanguage);
+      sessionStorage.setItem('lang', profileApi?.data?.displayLanguage);
     }
   }, [profileApi?.data?.displayLanguage]);
 

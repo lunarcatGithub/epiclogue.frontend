@@ -17,7 +17,7 @@ switch (defaultLang) {
 }
 
 let sessionLang;
-if(typeof window !== 'undefined'){
+if (typeof window !== 'undefined') {
   sessionLang = sessionStorage.getItem('lang');
 }
 
@@ -27,7 +27,6 @@ export const langInit = {
 };
 
 export function languageReducer(state, { type, payload }) {
-
   switch (type) {
     case 'LANGUAGE_UPDATE': {
       return { ...state, selectedLanguage: payload };

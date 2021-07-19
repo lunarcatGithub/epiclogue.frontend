@@ -291,6 +291,7 @@ export default function Viewer({ boardItem, nonError }) {
       {/* 뷰어 콘텐츠 레이아웃 */}
         <ContentsAllView>
           <ViewerPort>{ boardImage.map((item, index) => <ViewImg key={index} src={item} category={category} /> ) }</ViewerPort>
+          <RecreateButton></RecreateButton>
         </ContentsAllView>
       {/* 유저 인터렉션 레이아웃 */}
         <UserCommentWrap>
@@ -362,6 +363,7 @@ const RefLayout = styled.div`
 
 // 전체 레이아웃
 const ViewerPortWrap = styled.section`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -376,6 +378,16 @@ const ContentsAllViewWrap = styled.div`
   display: flex;
   flex-flow: row;
   width:100%;
+`;
+
+const RecreateButton = styled.button`
+position: sticky;
+bottom:3em;
+left:3em;
+width:6em;
+height:6em;
+background:#222;
+border-radius: 50%;
 `
 const ContentsAllView = styled.div`
   display: flex;

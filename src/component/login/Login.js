@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic'
+import dynamic from 'next/dynamic';
 
 //컴포넌트 import
 import { SignUp } from './SignUp';
@@ -32,20 +32,18 @@ const LoginLayOut = () => {
   }, []);
 
   useEffect(() => {
-    if(changePage){
-      setLoginLayout(<SignUp backToLogin={sign} setChangePage={setChangePage} />)
+    if (changePage) {
+      setLoginLayout(<SignUp backToLogin={sign} setChangePage={setChangePage} />);
     } else {
-      setLoginLayout(<SignIn setChangePage={setChangePage} />)
+      setLoginLayout(<SignIn setChangePage={setChangePage} />);
     }
-  }, [changePage])
+  }, [changePage]);
 
   return (
     <ContentWrap>
       <ContentInner>
         {/* background image */}
-        <ContentSection>
-          { loginLayout }
-        </ContentSection>
+        <ContentSection>{loginLayout}</ContentSection>
       </ContentInner>
     </ContentWrap>
   );

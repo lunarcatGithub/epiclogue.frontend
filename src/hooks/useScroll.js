@@ -16,8 +16,8 @@ export default function useScroll(_ref = null) {
     const { current } = dom;
     let options = {
       root: null,
-      rootMargin: '10px',
-      threshold: 0.7,
+      rootMargin: '200px',
+      threshold: 0.3,
     };
 
     if (current) {

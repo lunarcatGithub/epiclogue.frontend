@@ -43,7 +43,7 @@ const UserInform = () => {
     _dataRemove,
     _adminInform,
     _adminResultCenter,
-    _adminPostRemoveFirst
+    _adminPostRemoveFirst,
   } = HeaderLanguage();
   const { reportList } = ReportLanguage();
 
@@ -62,32 +62,27 @@ const UserInform = () => {
     notiFetch(`${process.env.NEXT_PUBLIC_API_URL}/notification`, 'get', null, null, params);
   };
 
-
   // Admin Niti
-  const adminNoti = (notiType, target, message) => { // 알림 내용 파트
+  const adminNoti = (notiType, target, message) => {
+    // 알림 내용 파트
 
-    if(notiType === 'Notice'){
-      const filtering = reportList.filter(({id, title}) => {
-        if(message?.reportType === id){
-            return title
-        } } );
-        return (`(${filtering[0]?.title}) ${_adminPostRemoveFirst} ${message?.data} ${_adminResultCenter}`);
-    } else if(notiType === 'Like' || notiType === 'Bookmark' || notiType === 'Secondary' || notiType === 'Feedback') {
-      return ( <InteractContentButton 
-                onClick={ () => goURL({ pathname: `/viewer/${target?.boardId}` })} > { target?.boardTitle }
-              </InteractContentButton>
-              ) 
-    } else if(notiType === 'Reply'){
-      return ( <InteractContentButton
-                onClick={ () => goURL({ pathname: `/viewer/${target?.boardId}` })} > { target?.feedbackBody }
-              </InteractContentButton>
-              ) 
-    } else if(notiType === 'Follow'){
+    if (notiType === 'Notice') {
+      const filtering = reportList.filter(({ id, title }) => {
+        if (message?.reportType === id) {
+          return title;
+        }
+      });
+      return `(${filtering[0]?.title}) ${_adminPostRemoveFirst} ${message?.data} ${_adminResultCenter}`;
+    } else if (notiType === 'Like' || notiType === 'Bookmark' || notiType === 'Secondary' || notiType === 'Feedback') {
+      return <InteractContentButton onClick={() => goURL({ pathname: `/viewer/${target?.boardId}` })}> {target?.boardTitle}</InteractContentButton>;
+    } else if (notiType === 'Reply') {
+      return <InteractContentButton onClick={() => goURL({ pathname: `/viewer/${target?.boardId}` })}> {target?.feedbackBody}</InteractContentButton>;
+    } else if (notiType === 'Follow') {
       return;
     } else {
-      return(<DeletedContent>{_dataRemove}</DeletedContent>)
+      return <DeletedContent>{_dataRemove}</DeletedContent>;
     }
-  }
+  };
 
   useEffect(() => {
     if (!stopData) return;
@@ -124,7 +119,7 @@ const UserInform = () => {
         </ClosedBox>
       </InformHeader>
       <InformBodyInner>
-        { targetUser?.map(({ maker, notificationType, read, targetInfo, message }, key) => (
+        {targetUser?.map(({ maker, notificationType, read, targetInfo, message }, key) => (
           <ContentBox
             key={key}
             read={read}
@@ -153,7 +148,7 @@ const UserInform = () => {
                   {notificationType === 'Reply' && <ReplyImg infoImg={'/static/comment-2.svg'} />}
                   {notificationType === 'Notice' && <NoticeImg infoImg={'/static/alert.svg'} />}
                 </InformTypeIcon>
-              </UserImgBox> 
+              </UserImgBox>
             </UserImgWrap>
             {/* 콘텐츠 내용 */}
             <ContentRColumn>
@@ -166,7 +161,7 @@ const UserInform = () => {
                   {notificationType === 'Secondary' && <UserInteract>{_userSecondary}</UserInteract>}
                   {notificationType === 'Follow' && <UserInteract>{_userFollowMe}</UserInteract>}
                   {notificationType === 'Reply' && <UserInteract>{_userReply}</UserInteract>}
-                  {notificationType === 'Notice' ? <AdminInteract>{ _adminInform }</AdminInteract> : null}
+                  {notificationType === 'Notice' ? <AdminInteract>{_adminInform}</AdminInteract> : null}
                 </UserText>
               </TextBox>
               <InteractContent>{adminNoti(notificationType, targetInfo, message)}</InteractContent>
@@ -374,9 +369,7 @@ const UserInteract = styled.span`
   color: ${(props) => props.theme.color.darkGray};
 `;
 
-const AdminInteract = styled(UserInteract)`
-
-`;
+const AdminInteract = styled(UserInteract)``;
 const titleCss = css`
   ${(props) => props.theme.textTwoLine};
   flex-shrink: 0;
@@ -386,14 +379,13 @@ const titleCss = css`
   margin: 0.15em 0;
   line-height: 1.3em;
   cursor: pointer;
-
-`
+`;
 const InteractContent = styled.span`
-${titleCss};
+  ${titleCss};
 `;
 
 const InteractContentButton = styled.button`
-${titleCss};
+  ${titleCss};
 `;
 
 const DeletedContent = styled(InteractContent)`

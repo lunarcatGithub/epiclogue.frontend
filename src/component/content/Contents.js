@@ -15,13 +15,7 @@ import useScroll from '@hooks/useScroll';
 const Contents = ({ type, searchType, contentsRender }) => {
   const router = useRouter();
 
-  const {
-    renderComponent,
-    setRenderComponent,
-    searchData,
-    clickedComic,
-    clickedIllust
-  } = useContext(AppDataContext);
+  const { renderComponent, setRenderComponent, searchData, clickedComic, clickedIllust } = useContext(AppDataContext);
   // const { searchData, clickedComic, clickedIllust, paramsData } = useContext(AppDataContext);
 
   const [resultKeyword, setResultKeyword] = useState();
@@ -50,7 +44,7 @@ const Contents = ({ type, searchType, contentsRender }) => {
   const [userLoading, userApi, , userFetch] = useAxiosFetch();
 
   // scroll
-  const [page, scroll, ,setPage] = useScroll();
+  const [page, scroll, , setPage] = useScroll();
   const initSize = 35;
   useEffect(() => {
     searchData ? setResultKeyword(searchData) : setResultKeyword(keyword);
@@ -65,11 +59,11 @@ const Contents = ({ type, searchType, contentsRender }) => {
       latestId: lastContentId || null,
     };
 
-    if(type === 'MAIN'){
+    if (type === 'MAIN') {
       initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, params);
-    } else if(type === 'VIEWER') {
-      if(!contentsRender) return;
-        viewerFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, params);
+    } else if (type === 'VIEWER') {
+      if (!contentsRender) return;
+      viewerFetch(`${process.env.NEXT_PUBLIC_API_URL}/boards`, 'get', null, null, params);
     }
   };
 
@@ -96,10 +90,9 @@ const Contents = ({ type, searchType, contentsRender }) => {
     } else if (searchType === 'latest') {
       params.category = filtering;
       initialFetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, 'get', null, null, params);
-    
     } else if (searchType === 'users') {
       params.type = 'User';
-      params.latestId = lastUserId
+      params.latestId = lastUserId;
       userFetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, 'get', null, null, params);
     } else return;
   };
@@ -111,30 +104,32 @@ const Contents = ({ type, searchType, contentsRender }) => {
   }, [page, filtering, stopData, searchType, resultKeyword]);
 
   // 데이터 분리 렌더링
-  const devideTypeData = () => { // 메인 전용
+  const devideTypeData = () => {
+    // 메인 전용
     if (searchType === 'users' || type === 'VIEWER') return;
     initialApi && setInitRender(initRender ? [...initRender, ...initialApi?.data] : [...initialApi?.data]);
   };
 
-  const viewerTypeData = () => { // 뷰어 전용
+  const viewerTypeData = () => {
+    // 뷰어 전용
     if (searchType === 'users' || type === 'MAIN') return;
     viewerApi && setViewerRender(viewerRender ? [...viewerRender, ...viewerApi?.data] : [...viewerApi?.data]);
   };
 
   const userTypeData = () => {
-
-    if(searchType !== 'users') return;
+    if (searchType !== 'users') return;
     userApi && setUserRender(userRender ? [...userRender, ...userApi?.data] : [...userApi?.data]);
-  }
+  };
 
-  useEffect(() => { // 메인 전용
+  useEffect(() => {
+    // 메인 전용
     devideTypeData();
   }, [initialApi, type]);
 
-  useEffect(() => { // 뷰어 전용
+  useEffect(() => {
+    // 뷰어 전용
     viewerTypeData();
   }, [viewerApi, type]);
-
 
   useEffect(() => {
     userTypeData();
@@ -147,14 +142,14 @@ const Contents = ({ type, searchType, contentsRender }) => {
   }, [type, page, initialApi]);
 
   useEffect(() => {
-    if(type !== 'VIEWER') return;
+    if (type !== 'VIEWER') return;
     viewerApi && setLastContentId(viewerApi?.data[viewerApi?.data?.length - 1]?._id);
   }, [page, viewerApi]);
 
   useEffect(() => {
-    if(searchType !== 'users' || type !== 'SEARCH') return;
+    if (searchType !== 'users' || type !== 'SEARCH') return;
     userApi && setLastUserId(userApi?.data[userApi?.data?.length - 1]?._id);
-    console.log(userApi?.data[userApi?.data?.length - 1]?._id)
+    console.log(userApi?.data[userApi?.data?.length - 1]?._id);
   }, [page, userApi]);
 
   useEffect(() => {
@@ -184,13 +179,11 @@ const Contents = ({ type, searchType, contentsRender }) => {
   useEffect(() => {
     if (searchType === 'users') return;
     setRenderList(initRender || viewerRender);
-    
   }, [initRender, viewerRender, searchType]);
 
   useEffect(() => {
     if (searchType !== 'users') return;
-      setOnlyUser(userRender);
-    
+    setOnlyUser(userRender);
   }, [userRender, searchType]);
 
   // 검색 탭 바뀔 때 마다 초기화
@@ -199,12 +192,11 @@ const Contents = ({ type, searchType, contentsRender }) => {
   }, [type, searchType, filtering, url]);
 
   useEffect(() => {
-    setPage(0)
+    setPage(0);
     setUserRender(null);
     setInitRender(null);
     setLastContentId(null);
-    setLastUserId(null)
-
+    setLastUserId(null);
   }, [type, searchType, resultKeyword, url]);
 
   // 받은 데이터 각 컴포넌트에 뿌려서 렌더링
@@ -218,30 +210,39 @@ const Contents = ({ type, searchType, contentsRender }) => {
   }, [renderList, onlyUser, searchType]);
 
   const RefReturn = () => {
-    if(initDataLoading) return
-    if(userLoading) return
-    if(viewerDataLoading) return
-      return <RefLayout {...scroll} />
-  }
+    if (initDataLoading) return;
+    if (userLoading) return;
+    if (viewerDataLoading) return;
+    return <RefLayout {...scroll} />;
+  };
 
+  const noresultLayoutHandler = () => {
+    if(url.match('/search')){
+      return <NoResultWrap>
+              <NoResultImg />
+            </NoResultWrap>
+    } else {
+      return;
+    }
+
+  }
   return (
     <>
       <Layout>
         <LayoutInner>
-          {renderComponent?.length !== 0 ? (
+          { renderComponent?.length !== 0 ? (
             <MasonryBox>{renderComponent}</MasonryBox>
-          ) : (
-            <NoResultWrap>
-              <NoResultImg />
-            </NoResultWrap>
-          )}
+          ) : 
+            noresultLayoutHandler()
+          }
         </LayoutInner>
-        { initDataLoading || userLoading && (
-          <DummyLayout>
-            <Progress />
-          </DummyLayout>
-        ) }
-        { RefReturn() }
+        {initDataLoading ||
+          (userLoading && (
+            <DummyLayout>
+              <Progress />
+            </DummyLayout>
+          ))}
+        {RefReturn()}
       </Layout>
     </>
   );
@@ -294,7 +295,7 @@ const RefLayout = styled.div`
   display: flex;
   color: #222;
   width: 200px;
-  height: 50px;
+  height: 5px;
 `;
 
 const NoResultWrap = styled.div`
