@@ -24,8 +24,14 @@ export default function IsFollowFetch({ _id, initFollow }) {
       feedbackFetch(URL, follow ? 'post' : 'delete', { targetUserId: _id }, null);
   };
   
-  useEffect(() => { 
-    toggle_follow(initFollow)
+  useEffect(() => {
+    if(initFollow === 'me'){
+      toggle_follow(false);
+
+    } else {
+      toggle_follow(initFollow);
+      
+    }
   }, [initFollow])
 
   return (
