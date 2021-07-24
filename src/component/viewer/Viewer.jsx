@@ -184,7 +184,7 @@ export default function Viewer({ boardItem, nonError }) {
       setViewerRefFetch(true);
     }
   }
-  
+
   useEffect(() => {
     if (!boardItem) return;
     const boardData = boardItem.data;

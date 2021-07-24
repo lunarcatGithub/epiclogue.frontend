@@ -60,15 +60,15 @@ const FeedBack = ({ type, FeedbackData, contentPopup, feedbackReplyPopup, tagetS
 
   useEffect(() => { // 뷰어와 피드백 팝업 분기점
     const { screenId, following, nickname, profile } = FeedbackData?.writer;
-    console.log(following);
-    console.log(FeedbackData?.writer);
     setScreenId(screenId);
     setProfileImg(profile?.thumbnail);
     setNickName(nickname);
-    setFollowMe(following === 'me');
+    const userid = localStorage.getItem('userid');
+    setFollowMe(userid === screenId);
+    // setFollowMe(following === 'me');
  
-  }, [FeedbackData?.writer]);
-  
+  }, []);
+
   return (
       <FeedbackUserWrap isMe={thisIsMe}>
         <UserLink onClick={() => goURL({ pathname: `/myboard/${screenId}` })}>
