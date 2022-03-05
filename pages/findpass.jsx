@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {FindPass} from '@component/login/Password_Find';
 
 export default function FindPassPage() {

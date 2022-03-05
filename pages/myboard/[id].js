@@ -1,3 +1,4 @@
+import React from 'react';
 import MyBoard from '@component/MyBoard/MyBoard';
 import axios from 'axios';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';

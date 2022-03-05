@@ -1,3 +1,4 @@
+import React from 'react';
 import Mypage from '@component/mypage/Mypage';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 

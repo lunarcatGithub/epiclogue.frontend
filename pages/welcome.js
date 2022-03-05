@@ -1,3 +1,4 @@
+import React from 'react';
 import Welcome from '@component/tutorial/Tutorial_scroll';
 
 export default function Tutorial() {
